@@ -1,0 +1,83 @@
+[
+  {
+    "id": "2708b4b7-9b77-422b-9501-bddba19b1591",
+    "name": "Grande céramique - Jean-Pierre Viot",
+    "date": "",
+    "category": "S'entourer",
+    "subcategory": "",
+    "subcategoryCustom": "",
+    "univers": [],
+    "attributes": {},
+    "price": null,
+    "itemStatus": "Brouillon",
+    "keywords": [],
+    "description": "",
+    "photos": [
+      "73f29ca2-e1ba-40ad-bf89-8a738dd5c56b.png"
+    ],
+    "photoEnhanced": null,
+    "private": {
+      "photos": [],
+      "prixAchat": null,
+      "dateAchat": "",
+      "lieuAchat": "",
+      "location": "",
+      "notes": ""
+    },
+    "createdAt": "2026-04-10T20:09:10.424Z"
+  },
+  {
+    "id": "3e5e1bc3-4573-4402-8403-403dc7fe0ecb",
+    "name": "Objet test",
+    "date": "2026-02",
+    "category": "Autour de la table",
+    "subcategory": "Couverts & argenterie",
+    "subcategoryCustom": "",
+    "univers": [
+      "Intérieurs anciens"
+    ],
+    "attributes": {
+      "matieres": [
+        "étain"
+      ],
+      "origine": [
+        "Art nouveau"
+      ],
+      "motifs": [
+        "animal"
+      ],
+      "usage": [
+        "offrande"
+      ],
+      "couleurs": [
+        "beige"
+      ],
+      "etat_traces": [
+        "numéroté",
+        "signé"
+      ],
+      "emotion": [
+        "nostalgie",
+        "mystérieux"
+      ],
+      "taille": "Moyen (30-60cm)"
+    },
+    "price": 10,
+    "itemStatus": "Réservé",
+    "keywords": [],
+    "description": "Non pas besoin krystina",
+    "photos": [
+      "4b02c6f6-ddce-4c93-ba1f-f61e8f3528df.png",
+      "6eff3071-3c91-47da-9235-338e524161a8.png"
+    ],
+    "photoEnhanced": null,
+    "private": {
+      "prixAchat": 1.5,
+      "dateAchat": "12/05/2025",
+      "lieuAchat": "Marseille",
+      "location": "Stock Maison",
+      "notes": "jhgfdhg"
+    },
+    "createdAt": "2026-04-09T13:41:17.166Z"
+  }
+]

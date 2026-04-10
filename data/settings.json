@@ -1,0 +1,368 @@
+{
+  "siteTitle": "CHARCHIVES . OBJ",
+  "attributeLabels": {
+    "matieres": "Matières",
+    "origine": "Origine",
+    "motifs": "Motifs",
+    "couleurs": "Teintes",
+    "etat_traces": "États",
+    "taille": "Taille",
+    "usage": "Fonctions & Usages"
+  },
+  "navOrder": [
+    "grid",
+    "catalogue",
+    "timeline",
+    "calendar",
+    "stats"
+  ],
+  "attributeSectionsOrder": [
+    {
+      "group": "Identité"
+    },
+    "origine",
+    {
+      "group": "Matière & Apparence"
+    },
+    "matieres",
+    [
+      "motifs",
+      "couleurs"
+    ],
+    {
+      "group": "Vie & Imaginaire"
+    },
+    [
+      "etat_traces",
+      "taille"
+    ],
+    "usage"
+  ],
+  "verbes": [
+    {
+      "name": "S'entourer",
+      "bgColor": "#125603",
+      "textColor": "#C3F380",
+      "typologies": [
+        "Vases",
+        "Céramiques",
+        "Coupes & Vide-poche",
+        "Sculptures & Figurines",
+        "Petits objets",
+        "Objets muraux",
+        "Tapisseries & Coussins "
+      ]
+    },
+    {
+      "name": "Partager",
+      "bgColor": "#D13F13",
+      "textColor": "#FCC5C6",
+      "typologies": [
+        "Verres",
+        "Thé & Café",
+        "Plateaux",
+        "Assiettes & Plats",
+        "Couverts",
+        "Autour de la table"
+      ]
+    },
+    {
+      "name": "S'étonner",
+      "bgColor": "#7523B4",
+      "textColor": "#FAE170",
+      "typologies": [
+        "Curiosités & Fragments",
+        "Minéraux & Fossiles",
+        "Usages oubliés",
+        "Objets scientifiques",
+        "Outils anciens"
+      ]
+    },
+    {
+      "name": "Cacher",
+      "bgColor": "#0D5072",
+      "textColor": "#7FEEFF",
+      "typologies": [
+        "Boîtes & coffrets",
+        "Bonbonnières & Bocaux",
+        "Flacons",
+        "Rangements"
+      ]
+    },
+    {
+      "name": "Raconter",
+      "bgColor": "#630700",
+      "textColor": "#FF97D0",
+      "typologies": [
+        "Beaux arts & Arts graphiques",
+        "Livres",
+        "Revues & Cartes postales",
+        "Cadres"
+      ]
+    },
+    {
+      "name": "Éclairer",
+      "bgColor": "#FAE170",
+      "textColor": "#D13F13",
+      "typologies": [
+        "Bougeoirs & Chandeliers",
+        "Lampes",
+        "Bougies"
+      ]
+    },
+    {
+      "name": "Porter",
+      "bgColor": "#906713",
+      "textColor": "#FFDB58",
+      "typologies": [
+        "Bijoux ",
+        "Accessoires",
+        "Foulards"
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "name": "Objets décoratifs",
+      "color": "#5C6E82",
+      "subcategories": [
+        "Bibelots & petits objets",
+        "Vases & contenants",
+        "Bougeoirs",
+        "Boîtes & coffrets",
+        "Sculptures & figurines",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Arts graphiques & Beaux-Arts",
+      "color": "#C0392B",
+      "subcategories": [
+        "Peintures",
+        "Dessins & gravures",
+        "Cadres",
+        "Estampes",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Autour de la table",
+      "color": "#2A5BA5",
+      "subcategories": [
+        "Vaisselle",
+        "Verres & cristallerie",
+        "Plats & plateaux",
+        "Couverts & argenterie",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Miroirs",
+      "color": "#6B4EA8",
+      "subcategories": [
+        "Miroirs muraux",
+        "Miroirs décoratifs",
+        "Miroirs de sorcière",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Bijoux",
+      "color": "#B45309",
+      "subcategories": [
+        "Bijoux anciens",
+        "Bijoux fantaisie",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Textile & accessoires",
+      "color": "#27826A",
+      "subcategories": [
+        "Tissus anciens",
+        "Coussins",
+        "Dentelle",
+        "Broderie",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Curiosités",
+      "color": "#7B2A1E",
+      "subcategories": [
+        "Cabinet de curiosités",
+        "Objets scientifiques",
+        "Souvenirs",
+        "Fragments",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Mobilier",
+      "color": "#7C5C3B",
+      "subcategories": [
+        "Assises",
+        "Tables",
+        "Rangements",
+        "Petits meubles",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Luminaires",
+      "color": "#C6920A",
+      "subcategories": [
+        "Lampes",
+        "Bougeoirs & chandeliers",
+        "Suspensions",
+        "Appliques",
+        "Autre"
+      ]
+    },
+    {
+      "name": "Gestes oubliés",
+      "color": "#4B5563",
+      "subcategories": [
+        "Outils anciens",
+        "Objets désuets"
+      ]
+    },
+    {
+      "name": "Livres & Papiers",
+      "color": "#3D5A4D",
+      "subcategories": [
+        "Livres anciens",
+        "Revues & journaux",
+        "Cartes postales",
+        "Autre"
+      ]
+    }
+  ],
+  "locations": [
+    "Paris",
+    "Aligre",
+    "Parents"
+  ],
+  "colors": [
+    "transparent",
+    "blanc",
+    "écru",
+    "beige",
+    "doré",
+    "argenté",
+    "noir",
+    "vert",
+    "rouge",
+    "rose",
+    "violet",
+    "jaune",
+    "orange",
+    "brun",
+    "gris",
+    "bleu foncé",
+    "bleu"
+  ],
+  "motifs": [
+    "fleurs",
+    "végétal",
+    "feuillage",
+    "animal",
+    "oiseau",
+    "coquillage",
+    "soleil",
+    "étoile",
+    "religieux",
+    "mythologique",
+    "géométrique",
+    "visage",
+    "main",
+    "blason"
+  ],
+  "univers": [
+    "poétique",
+    "mélancolique",
+    "mystérieux",
+    "précieux",
+    "fragile",
+    "intime",
+    "désuet",
+    "théâtral",
+    "romantique",
+    "inquiétant",
+    "sacré",
+    "onirique",
+    "mémoriel"
+  ],
+  "attributeOptions": {
+    "matieres": [
+      "porcelaine",
+      "faïence",
+      "céramique",
+      "barbotine",
+      "majolique",
+      "émaux de Longwy",
+      "verre",
+      "verre soufflé",
+      "cristal",
+      "cristal taillé",
+      "opaline",
+      "bois",
+      "bois doré",
+      "loupe d'orme",
+      "osier",
+      "rotin",
+      "métal",
+      "laiton",
+      "bronze",
+      "étain",
+      "argent",
+      "vermeil",
+      "marbre",
+      "pierre",
+      "coquillage",
+      "textile",
+      "cuir",
+      "papier"
+    ],
+    "etat_traces": [
+      "patiné",
+      "usé",
+      "fissuré",
+      "restauré",
+      "fragment",
+      "incomplet",
+      "dans son jus",
+      "ancien",
+      "neuf",
+      "rare",
+      "unique",
+      "signé"
+    ],
+    "usage": [
+      "décoratif",
+      "décor de table",
+      "rangement",
+      "contenant",
+      "mural",
+      "vitrine",
+      "rituel",
+      "service"
+    ],
+    "role": [
+      "rituel",
+      "offrande",
+      "souvenir",
+      "transmission",
+      "contemplation",
+      "accumulation",
+      "protection",
+      "symbole",
+      "mémoire",
+      "médiation",
+      "deuil",
+      "célébration",
+      "talisman",
+      "héritage"
+    ]
+  }
+}

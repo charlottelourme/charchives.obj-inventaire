@@ -1,0 +1,29 @@
+# Dépendances
+node_modules/
+package-lock.json
+
+# Variables d'environnement (JAMAIS committer les clés API)
+.env
+.env.local
+.env.*.local
+
+# Images uploadées (binaires — non versionnées)
+# Les images ajoutées en production vivent sur le serveur.
+uploads/*
+!uploads/.gitkeep
+
+# Système macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# Claude Code (config locale de développement)
+.claude/
+
+# Fichiers de test
+bonjour.txt
+
+# Logs
+*.log
+npm-debug.log*

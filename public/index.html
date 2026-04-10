@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brocante Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1 id="siteTitle">ARCHIVE</h1>
+  <div class="header-sep"></div>
+  <div class="search-wrap" id="searchWrap">
+    <div class="search-bar" id="searchBar">
+      <div class="search-active-tags" id="searchActiveTags"></div>
+      <input class="search-input-inner" type="text" id="searchInput" placeholder="Rechercher…">
+    </div>
+    <div class="search-dropdown" id="searchDropdown">
+      <div class="search-kw-list" id="searchKwList"></div>
+    </div>
+  </div>
+  <div class="view-tabs">
+    <button class="view-tab active" id="viewGrid">Grille</button>
+    <button class="view-tab" id="viewCatalogue">Catalogue</button>
+    <button class="view-tab" id="viewTimeline">Frise</button>
+    <button class="view-tab" id="viewCalendar">Calendrier</button>
+    <button class="view-tab" id="viewStats">Stats</button>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-icon-only" id="settingsBtn" title="Paramètres">⚙</button>
+    <button class="btn btn-ghost btn-icon-only" id="darkModeBtn" title="Mode sombre">◑</button>
+    <button class="btn btn-primary" id="newBtn">+ Ajouter un objet</button>
+  </div>
+</header>
+
+<main id="mainArea">
+
+  <!-- ── Grid view ── -->
+  <div id="gridWrapper">
+    <div class="toolbar">
+      <span class="count-label" id="countLabel"></span>
+      <div class="toolbar-gap"></div>
+      <div class="toolbar-right">
+        <select class="status-filter" id="sortSelect">
+          <option value="chrono-desc">Plus récent</option>
+          <option value="chrono">Plus ancien</option>
+          <option value="alpha">Alphabétique</option>
+          <option value="category">Par intention</option>
+          <option value="price-asc">Prix croissant</option>
+          <option value="price-desc">Prix décroissant</option>
+        </select>
+        <div class="toolbar-slider-sep"></div>
+        <input type="range" id="cardSizeSlider" class="card-size-slider" min="140" max="480" value="260" step="10">
+      </div>
+    </div>
+    <div class="status-filter-bar" id="categoryFilterBar">
+      <span class="sfb-label">Catégorie</span>
+      <button class="sfb-pill active" data-cat="">Toutes</button>
+    </div>
+    <div class="status-filter-bar" id="subcategoryFilterBar" style="display:none">
+      <span class="sfb-label">Sous-cat.</span>
+    </div>
+    <div class="status-filter-bar status-filter-bar-sm" id="statusFilterBar">
+      <button class="sfb-pill sfb-pill-sm" data-status="">Tous</button>
+      <button class="sfb-pill sfb-pill-sm active" data-status="Disponible"><span class="sfb-dot sfb-dot-sm" style="background:#22c55e"></span>Disponible</button>
+      <button class="sfb-pill sfb-pill-sm" data-status="Réservé"><span class="sfb-dot sfb-dot-sm" style="background:#f59e0b"></span>Réservé</button>
+      <button class="sfb-pill sfb-pill-sm" data-status="Vendu"><span class="sfb-dot sfb-dot-sm" style="background:#9ca3af"></span>Vendu</button>
+      <button class="sfb-pill sfb-pill-sm" data-status="Brouillon"><span class="sfb-dot sfb-dot-sm" style="background:#d1d5db"></span>Brouillon</button>
+    </div>
+    <div class="attr-filter-bar" id="attrFilterBar" style="display:none">
+      <div class="mf-wrap" id="filterMatieresWrap"></div>
+      <div class="mf-wrap" id="filterStylesWrap"></div>
+      <div class="mf-wrap" id="filterEtatWrap"></div>
+      <div class="mf-wrap" id="filterCouleursWrap"></div>
+      <button class="clear-attr-btn" id="clearAttrFilters">Effacer</button>
+    </div>
+    <div id="gridView" class="grid"></div>
+  </div>
+
+  <!-- ── Timeline view ── -->
+  <div id="timelineView" style="display:none">
+    <div class="tl-controls">
+      <button class="tl-btn" id="zoomOut">−</button>
+      <span id="zoomLabel">100%</span>
+      <button class="tl-btn" id="zoomIn">+</button>
+      <button class="tl-btn tl-reset" id="zoomReset">Réinitialiser</button>
+      <span class="tl-hint">Molette pour zoomer · Glisser pour déplacer</span>
+    </div>
+    <div class="timeline-wrap" id="timelineWrap">
+      <div class="timeline" id="timelineInner">
+        <div class="timeline-line"></div>
+        <div id="timelineItems" style="display:contents"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Calendar view ── -->
+  <div id="calendarView" style="display:none">
+    <div class="cal-controls">
+      <button class="tl-btn" id="calYearBefore">‹ Année</button>
+      <button class="tl-btn" id="calYearAfter">Année ›</button>
+      <span class="cal-controls-sep"></span>
+      <select id="calDateTypeSelect" class="attr-filter-select">
+        <option value="createdAt">Date d'ajout</option>
+        <option value="date">Date (ancienne)</option>
+        <option value="dateAchat">Date d'achat</option>
+      </select>
+      <span class="cal-controls-sep"></span>
+      <span class="tl-hint">Ajouter :</span>
+      <input type="number" id="calManualInput" class="cal-year-input" placeholder="ex. 2027" min="1900" max="2200">
+      <button class="tl-btn" id="calManualAdd">OK</button>
+      <span class="cal-controls-sep"></span>
+      <div id="calCategoryFilters" class="cal-cat-filters"></div>
+    </div>
+    <div class="cal-scroll" id="calScroll">
+      <div id="calGrid" class="cal-grid"></div>
+    </div>
+  </div>
+
+  <!-- ── Catalogue view ── -->
+  <div id="catalogueView" style="display:none">
+    <div class="toolbar catalogue-toolbar">
+      <span class="count-label" id="catalogueCountLabel"></span>
+      <div class="toolbar-gap"></div>
+      <button class="btn btn-ghost" id="catalogueSelectAll">Tout sélectionner</button>
+      <button class="btn btn-primary" id="cataloguePrintBtn">Imprimer / PDF</button>
+    </div>
+    <div id="catalogueContent" class="catalogue-content"></div>
+  </div>
+
+  <!-- ── Stats view ── -->
+  <div id="statsView" style="display:none">
+    <div class="stats-scroll">
+      <div class="stats-kpis">
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpiTotal">—</div>
+          <div class="kpi-label">Objets au total</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpiDisponible">—</div>
+          <div class="kpi-label">Disponibles</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpiCat">—</div>
+          <div class="kpi-label">Catégorie dominante</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value" id="kpiValeur">—</div>
+          <div class="kpi-label">Valeur disponible</div>
+        </div>
+      </div>
+      <div class="stats-charts-row">
+        <div class="stats-chart-box">
+          <div class="stats-chart-title">Objets par catégorie</div>
+          <div class="stats-chart-wrap"><canvas id="chartCat"></canvas></div>
+        </div>
+        <div class="stats-chart-box">
+          <div class="stats-chart-title">Répartition par statut</div>
+          <div class="stats-chart-wrap"><canvas id="chartStatus"></canvas></div>
+        </div>
+      </div>
+      <div class="stats-chart-box">
+        <div class="stats-chart-title">Mots-clés les plus utilisés</div>
+        <div class="stats-chart-wrap stats-chart-wrap-kw"><canvas id="chartKw"></canvas></div>
+        <button id="kwShowAllBtn" class="btn btn-ghost" style="display:none;margin-top:10px;width:100%;font-size:12px"></button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Floating mobile button ── -->
+<button class="fab" id="fabBtn" title="Ajouter un objet">+</button>
+
+<!-- ── Edit / Create Modal ── -->
+<div class="modal-overlay" id="editModal" style="display:none">
+  <div class="modal modal-edit">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Nouvel objet</span>
+      <button class="modal-close" id="editModalClose">✕</button>
+    </div>
+
+    <!-- Modal tabs -->
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-tab="public">Fiche publique</button>
+      <button class="modal-tab" data-tab="private">Privé</button>
+      <button class="modal-tab modal-tab-settings" data-tab="settings">⚙ Paramètres</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- ── Tab PUBLIC ── -->
+      <div class="tab-pane active" id="tabPublic">
+
+        <!-- 1. Nom -->
+        <div class="field">
+          <label>Nom de l'objet</label>
+          <input type="text" id="fName" placeholder="Titre de la fiche…">
+        </div>
+
+        <!-- 2. Photos -->
+        <div class="field">
+          <label>Photos</label>
+          <div class="photos-drop-zone" id="photosDropZone">
+            <div>Glisser les images ici ou <u>parcourir</u></div>
+            <input type="file" id="photosInput" accept="image/*" multiple>
+          </div>
+          <div class="photos-grid" id="photosList"></div>
+        </div>
+
+        <!-- 3. Description -->
+        <div class="field">
+          <label>Description</label>
+          <textarea id="fDesc" placeholder="Description, notes, contexte…" rows="3"></textarea>
+        </div>
+
+        <!-- 4. Prix + Statut (compact) -->
+        <div class="field-row field-row-compact">
+          <div class="field">
+            <label class="label-sm">Prix de vente (€)</label>
+            <input type="number" id="fPrice" min="0" step="0.50" placeholder="0.00" class="input-sm">
+          </div>
+          <div class="field">
+            <label class="label-sm">Statut</label>
+            <select id="fItemStatus" class="input-sm">
+              <option value="Disponible">Disponible</option>
+              <option value="Réservé">Réservé</option>
+              <option value="Vendu">Vendu</option>
+              <option value="Brouillon">Brouillon</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 5. Intention + Typologie -->
+        <div class="field-row">
+          <div class="field">
+            <label>Intention</label>
+            <select id="fCategory">
+              <option value="">— Choisir —</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Typologie</label>
+            <select id="fSubcategory">
+              <option value="">— Choisir —</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" id="fSubcategoryCustomField" style="display:none">
+          <label>Préciser la typologie</label>
+          <input type="text" id="fSubcategoryCustom" placeholder="Votre typologie…">
+        </div>
+
+        <!-- 6. Dépôt vente + Pièce d'artiste -->
+        <div class="checkbox-rows">
+          <div class="checkbox-line">
+            <label class="checkbox-label">
+              <input type="checkbox" id="fDepotVente"> Dépôt-vente
+            </label>
+            <input type="text" class="checkbox-name-input" id="fDepotVenteName" placeholder="Nom du déposant…">
+          </div>
+          <div class="checkbox-line">
+            <label class="checkbox-label">
+              <input type="checkbox" id="fArtiste"> Pièce d'artiste contemporain
+            </label>
+            <input type="text" class="checkbox-name-input" id="fArtisteName" placeholder="Nom de l'artiste…">
+          </div>
+        </div>
+
+        <!-- 7. Univers & Atmosphère (pliable) -->
+        <div class="attr-section" id="universSection">
+          <div class="attr-section-header" id="universHeader">
+            <span>Atmosphère</span><span class="attr-toggle">›</span>
+          </div>
+          <div class="attr-section-body" id="universBody" style="display:none">
+            <div class="attr-chips" id="universChips"></div>
+          </div>
+        </div>
+
+        <!-- 8. Attributs accordion (rendered dynamically by renderAllAttributes()) -->
+        <div class="attrs-accordion" id="attrsAccordion"></div>
+
+        <!-- 8. Tags libres -->
+        <div class="field">
+          <label>Tags libres <span class="field-hint">pour la recherche</span></label>
+          <div class="tags-input-wrap" id="keywordsWrap">
+            <input class="tags-input" id="keywordsInput" placeholder="Taper et Entrée pour ajouter…">
+            <div class="tags-suggestions" id="keywordsSuggestions"></div>
+          </div>
+        </div>
+
+      </div><!-- /tabPublic -->
+
+      <!-- ── Tab PRIVÉ ── -->
+      <div class="tab-pane" id="tabPrivate" style="display:none">
+        <div class="private-notice">Ces informations sont uniquement visibles ici. Elles ne sont jamais exportées (ni CSV Shopify, ni PDF).</div>
+
+        <!-- Photos privées -->
+        <div class="field">
+          <label>Photos privées <span class="field-hint">non exportées</span></label>
+          <div class="photos-drop-zone photos-drop-zone-sm" id="privatePhotosDropZone">
+            <div>Glisser ou <u>parcourir</u></div>
+            <input type="file" id="privatePhotosInput" accept="image/*" multiple>
+          </div>
+          <div class="photos-grid photos-grid-sm" id="privatePhotosList"></div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Prix d'achat (€)</label>
+            <input type="number" id="fPrixAchat" min="0" step="0.50" placeholder="0.00">
+          </div>
+          <div class="field">
+            <label>Date d'achat</label>
+            <div class="date-picker-wrap" id="dateAchatPicker">
+              <div class="date-display" id="dateAchatDisplay">
+                <span id="dateAchatDisplayText">Choisir une date</span>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="date-picker" id="dateAchatPickerPanel">
+                <div class="dp-header">
+                  <button class="dp-nav" id="dpAchatPrev">‹</button>
+                  <span class="dp-year" id="dpAchatYear">2024</span>
+                  <button class="dp-nav" id="dpAchatNext">›</button>
+                </div>
+                <div class="dp-months" id="dpAchatMonths"></div>
+                <button class="dp-clear" id="dpAchatClear">Effacer</button>
+              </div>
+            </div>
+            <input type="hidden" id="fDateAchat">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Lieu d'achat</label>
+          <input type="text" id="fLieuAchat" placeholder="Marché d'Aligre, vide-grenier…">
+        </div>
+
+        <div class="field">
+          <label>Emplacement actuel</label>
+          <select id="fLocation">
+            <option value="">— Choisir —</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Notes annexes</label>
+          <textarea id="fNotes" rows="4" placeholder="Observations, provenance, histoire…"></textarea>
+        </div>
+      </div><!-- /tabPrivate -->
+
+      <!-- ── Tab PARAMÈTRES ── -->
+      <div class="tab-pane" id="tabSettings" style="display:none">
+
+        <!-- Titre du site -->
+        <div class="field" style="margin-bottom:16px">
+          <label>Titre du site</label>
+          <input type="text" id="settingsSiteTitle" placeholder="ARCHIVE">
+        </div>
+
+        <div id="settingsSections" class="settings-accordion">
+
+          <div class="settings-sec settings-section-draggable" data-section="categories">
+            <div class="settings-sec-header">
+              <span class="settings-sec-handle">⠿</span>
+              <span>Verbes &amp; Typologies</span>
+              <span class="attr-toggle">▾</span>
+            </div>
+            <div class="settings-sec-body">
+              <div id="settingsCats" class="settings-cats-list"></div>
+              <div class="settings-add-row">
+                <input type="text" id="newCatName" placeholder="Nouveau verbe…">
+                <button class="btn btn-ghost btn-sm" id="addCatBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="locations">
+            <div class="settings-sec-header">
+              <span>Emplacements de stockage</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsLocations" class="settings-list"></div>
+              <div class="settings-add-row">
+                <input type="text" id="newLocationName" placeholder="Nouvel emplacement…">
+                <button class="btn btn-ghost btn-sm" id="addLocationBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="colors">
+            <div class="settings-sec-header">
+              <span>Couleurs</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsColors" class="settings-chips-list"></div>
+              <div class="settings-add-row">
+                <input type="color" id="newColorHex" value="#888888" class="settings-color-picker">
+                <input type="text" id="newColorName" placeholder="Nom de la couleur…">
+                <button class="btn btn-ghost btn-sm" id="addColorBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="motifs">
+            <div class="settings-sec-header">
+              <span>Motifs</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsMotifs" class="settings-chips-list"></div>
+              <div class="settings-add-row">
+                <input type="text" id="newMotifName" placeholder="Nouveau motif…">
+                <button class="btn btn-ghost btn-sm" id="addMotifBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="univers">
+            <div class="settings-sec-header">
+              <span>Univers &amp; Atmosphère</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsUnivers" class="settings-chips-list"></div>
+              <div class="settings-add-row">
+                <input type="text" id="newUniversName" placeholder="Nouvel univers…">
+                <button class="btn btn-ghost btn-sm" id="addUniversBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="attrOrder">
+            <div class="settings-sec-header">
+              <span>Rubriques du formulaire</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsAttrOrder" class="settings-attr-order-list"></div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /tabSettings -->
+
+    </div><!-- /modal-body -->
+
+    <div class="modal-footer" id="editModalFooter">
+      <!-- Footer fiche (public/privé) -->
+      <div id="footerFiche">
+        <button class="btn btn-danger" id="deleteBtn" style="display:none;margin-right:auto">Supprimer</button>
+        <button class="btn btn-ghost" id="cancelBtn">Annuler</button>
+        <button class="btn btn-ghost" id="draftBtn">Brouillon</button>
+        <button class="btn btn-primary" id="saveBtn">Enregistrer</button>
+      </div>
+      <!-- Footer paramètres -->
+      <div id="footerSettings" style="display:none">
+        <button class="btn btn-ghost" id="settingsCancelBtn">← Retour à la fiche</button>
+        <button class="btn btn-primary" id="settingsSaveBtn">Enregistrer les paramètres</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Detail Modal ── -->
+<div class="modal-overlay" id="detailModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="detail-nav">
+        <button class="detail-nav-btn" id="detailPrev">‹</button>
+        <span class="detail-nav-pos" id="detailNavPos">1 / 1</span>
+        <button class="detail-nav-btn" id="detailNext">›</button>
+      </div>
+      <span class="modal-title" id="detailTitle"></span>
+      <button class="modal-close" id="detailModalClose">✕</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="detailEditBtn">Modifier</button>
+      <button class="btn btn-ghost" id="detailCloseBtn">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Keyword floating preview -->
+<div id="kwFloatPreview" style="display:none;position:fixed;z-index:500;width:264px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.14);overflow:hidden;pointer-events:none"></div>
+
+<!-- Timeline floating preview -->
+<div id="timelineFloatPreview" style="display:none;position:fixed;z-index:500;width:220px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.14);overflow:hidden;pointer-events:none"></div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" style="display:none">
+  <button class="lb-btn lb-close" id="lbClose">✕</button>
+  <button class="lb-btn lb-prev" id="lbPrev">‹</button>
+  <div class="lb-center">
+    <img id="lightboxImg" src="" alt="">
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+  <button class="lb-btn lb-next" id="lbNext">›</button>
+</div>
+
+<!-- Export footer -->
+<div class="export-footer">
+  <button class="btn btn-ghost btn-sm" id="exportJsonBtn">↓ JSON</button>
+  <button class="btn btn-ghost btn-sm" id="exportShopifyBtn">↓ Shopify CSV</button>
+</div>
+
+<!-- ── Settings Modal (standalone) ── -->
+<div class="modal-overlay" id="settingsModal" style="display:none">
+  <div class="modal modal-edit">
+    <div class="modal-header">
+      <span class="modal-title">Paramètres</span>
+      <button class="modal-close" id="settingsModalClose">✕</button>
+    </div>
+    <div class="modal-body" id="settingsModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="settingsModalCancel">Annuler</button>
+      <button class="btn btn-primary" id="settingsModalSave">Enregistrer les modifications</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
