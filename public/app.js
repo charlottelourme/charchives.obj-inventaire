@@ -25,7 +25,7 @@ const ATTRIBUTES_DEF = {
     ]
   },
   origine: {
-    label: 'Origine',
+    label: 'Identité',
     options: [
       'Moyen Âge','Renaissance','XVIIe siècle','XVIIIe siècle','XIXe siècle',
       'Empire','Napoléon III','Belle Époque','Art nouveau','Art déco','Bauhaus',
@@ -89,6 +89,10 @@ const STATUS_COLORS = {
 };
 
 const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
+const MONTHS_FULL = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const DAYS_SHORT = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const CAL_MIN_YEAR = 2025;
+const CAL_MIN_MONTH = 0; // janvier
 
 // ── State ──────────────────────────────────────────────────────────────────────
 const state = {
@@ -116,9 +120,12 @@ const state = {
   dpSelectedDate: '',
   attrFilters: { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [] },
   calDateType: 'createdAt',
+  calYear: 2025,
+  calMonth: 0,
   dpAchatYear: new Date().getFullYear(),
   dpAchatSelectedDate: '',
   darkMode: false,
+  tlMode: 'chrono',     // 'chrono' | 'origine'
   // settings edit
   settingsDraft: null,
 };
@@ -127,6 +134,7 @@ const LB = { photos: [], idx: 0 };
 const TL = { zoom:1, panX:0, panY:0, isDragging:false, hasDragged:false, startX:0, startY:0, startPanX:0, startPanY:0 };
 const _charts = {};
 let _kwShowAll = false;
+let _currentTrio = null; // dernier trio généré
 
 // ── API helpers ────────────────────────────────────────────────────────────────
 const api = {
@@ -137,17 +145,24 @@ const api = {
   uploadPhotos: files => { const fd=new FormData(); files.forEach(f=>fd.append('photos',f)); return fetch('/api/upload',{method:'POST',body:fd}).then(r=>r.json()); }
 };
 
+// ── Photo URL helper — handles both local refs and Cloudinary URLs ─────────────
+function photoUrl(ref) {
+  if (!ref) return '';
+  if (ref.startsWith('http')) return ref;
+  return `/uploads/${ref}`;
+}
+
 // ── Verbes & Typologies helpers ────────────────────────────────────────────────
 // Lit 'verbes' en priorité, 'categories' comme fallback rétrocompat
 function getVerbes() { return state.settings.verbes || state.settings.categories || []; }
 function getCategories() { return getVerbes(); } // alias rétrocompat
 function getVerbeBgColor(name) {
   const v = getVerbes().find(v => v.name === name);
-  return v?.bgColor || v?.color || '#111111';
+  return v?.bgColor || v?.color || '#2D2D2D';
 }
 function getVerbeTextColor(name) {
   const v = getVerbes().find(v => v.name === name);
-  return v?.textColor || '#ffffff';
+  return v?.textColor || '#F5F5F0';
 }
 // Garder getCategoryColor pour rétrocompat (utilisé dans quelques endroits)
 function getCategoryColor(name) { return getVerbeBgColor(name); }
@@ -158,7 +173,7 @@ function getTypologies(verbe) { return verbe?.typologies || verbe?.subcategories
 function getAllTypologies() {
   const seen = new Set();
   const result = [];
-  getVerbes().forEach(v => getTypologies(v).forEach(t => { if (!seen.has(t)) { seen.add(t); result.push({ name: t, verbeName: v.name, color: v.bgColor || v.color, textColor: v.textColor || '#ffffff' }); } }));
+  getVerbes().forEach(v => getTypologies(v).forEach(t => { if (!seen.has(t)) { seen.add(t); result.push({ name: t, verbeName: v.name, color: v.bgColor || v.color, textColor: v.textColor || '#F5F5F0' }); } }));
   return result;
 }
 
@@ -237,12 +252,12 @@ function buildCategoryFilterBar() {
     const isActive = state.categoryFilter === v.name;
     btn.className = 'sfb-pill sfb-pill-verbe' + (isActive ? ' active' : '');
     btn.dataset.cat = v.name;
-    btn.dataset.bg = v.bgColor || v.color || '#111';
+    btn.dataset.bg = v.bgColor || v.color || '#2D2D2D';
     btn.dataset.fg = v.textColor || '#fff';
     if (isActive) {
-      btn.style.background = v.bgColor || v.color || '#111';
+      btn.style.background = v.bgColor || v.color || '#2D2D2D';
       btn.style.color = v.textColor || '#fff';
-      btn.style.borderColor = v.bgColor || v.color || '#111';
+      btn.style.borderColor = v.bgColor || v.color || '#2D2D2D';
     }
     btn.textContent = v.name;
     bar.appendChild(btn);
@@ -302,10 +317,11 @@ function buildTypologiesBar() {
   let typologies;
   if (state.categoryFilter) {
     const verbe = getVerbes().find(v => v.name === state.categoryFilter);
-    typologies = verbe ? getTypologies(verbe).map(t => ({ name: t, color: verbe.bgColor || verbe.color, textColor: verbe.textColor || '#ffffff' })) : [];
+    typologies = verbe ? getTypologies(verbe).map(t => ({ name: t, color: verbe.bgColor || verbe.color, textColor: verbe.textColor || '#F5F5F0' })) : [];
   } else {
     typologies = getAllTypologies().map(t => ({ name: t.name, color: t.color, textColor: t.textColor }));
   }
+  typologies.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
 
   if (!typologies.length) { bar.style.display = 'none'; return; }
   bar.style.display = '';
@@ -321,7 +337,7 @@ function buildTypologiesBar() {
   typologies.forEach(({ name: sub, color, textColor: fg }) => {
     // Retrouver le textColor du verbe parent si pas passé
     const verbeObj = getVerbes().find(v => (v.bgColor || v.color) === color || (v.typologies||v.subcategories||[]).includes(sub));
-    const verbeTextColor = fg || verbeObj?.textColor || '#ffffff';
+    const verbeTextColor = fg || verbeObj?.textColor || '#F5F5F0';
     const isActive = selected.includes(sub);
     const btn = document.createElement('button');
     btn.className = 'sfb-pill sfb-pill-typo' + (isActive ? ' active' : '');
@@ -423,13 +439,13 @@ document.addEventListener('click', e => {
 // ── View switching ─────────────────────────────────────────────────────────────
 function setView(v) {
   state.view = v;
-  const views = {grid:'gridWrapper',timeline:'timelineView',calendar:'calendarView',catalogue:'catalogueView',stats:'statsView'};
+  const views = {grid:'gridWrapper',timeline:'timelineView',calendar:'calendarView',catalogue:'catalogueView',trios:'triosView',stats:'statsView'};
   Object.entries(views).forEach(([k,id]) => {
     const el = document.getElementById(id);
     if (el) el.style.display = k===v ? '' : 'none';
   });
   document.querySelectorAll('.view-tab').forEach(btn => btn.classList.remove('active'));
-  const tabs = {grid:'viewGrid',timeline:'viewTimeline',calendar:'viewCalendar',catalogue:'viewCatalogue',stats:'viewStats'};
+  const tabs = {grid:'viewGrid',timeline:'viewTimeline',calendar:'viewCalendar',catalogue:'viewCatalogue',trios:'viewTrios',stats:'viewStats'};
   const tabEl = document.getElementById(tabs[v]);
   if (tabEl) tabEl.classList.add('active');
   render();
@@ -509,6 +525,7 @@ function render() {
   else if (state.view==='timeline') renderTimeline(filtered);
   else if (state.view==='calendar') renderCalendar();
   else if (state.view==='catalogue') renderCatalogue(filtered);
+  else if (state.view==='trios')    renderTrios();
   else if (state.view==='stats')    renderStats();
 }
 
@@ -583,7 +600,7 @@ function cardHTML(c) {
     <div class="card-thumb-area">
       ${statusBadge}
       ${photo
-        ? `<img class="card-thumb" src="/uploads/${photo}" alt="">`
+        ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="">`
         : `<div class="card-thumb-placeholder">◻</div>`}
       ${hasMultiple ? `<div class="card-nav">
         <button class="card-prev" data-id="${c.id}">‹</button>
@@ -640,78 +657,163 @@ function bindCardEvents(el) {
 
 function updateCardThumb(el,id,photos,idx) {
   const card=el.querySelector(`.card[data-id="${id}"]`); if(!card) return;
-  const img=card.querySelector('.card-thumb'); if(img) img.src=`/uploads/${photos[idx]}`;
+  const img=card.querySelector('.card-thumb'); if(img) img.src=photoUrl(photos[idx]);
   const counter=card.querySelector('.card-photo-count'); if(counter) counter.textContent=`${idx+1} / ${photos.length}`;
 }
 
 // ── Calendar ───────────────────────────────────────────────────────────────────
-function renderCalendarFilters() {
-  const container=document.getElementById('calCategoryFilters'); if(!container) return;
-  const cats=[...getCategoryOrder(),''];
-  container.innerHTML=cats.map(cat=>{
-    const color=getCategoryColor(cat)||'#a09590';
-    const label=cat||'Sans catégorie';
-    const active=state.calendarActiveCategories.has(cat);
-    return `<button class="cal-cat-pill${active?' active':''}" data-cat="${esc(cat)}" style="--cat-color:${color}">${esc(label)}</button>`;
-  }).join('');
-  container.querySelectorAll('.cal-cat-pill').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const cat=btn.dataset.cat;
-      if(state.calendarActiveCategories.has(cat)){state.calendarActiveCategories.delete(cat);btn.classList.remove('active');}
-      else{state.calendarActiveCategories.add(cat);btn.classList.add('active');}
-      renderCalendar();
-    });
-  });
+function _calNavLabel() {
+  return `${MONTHS_FULL[state.calMonth]} ${state.calYear}`;
+}
+
+function _syncCalendarSelects() {
+  const ms = document.getElementById('calMonthSelect');
+  const ys = document.getElementById('calYearSelect');
+  if (ms) ms.value = String(state.calMonth);
+  if (ys) ys.value = String(state.calYear);
 }
 
 function renderCalendar() {
-  const years=state.calendarYears;
-  const byKey={};
-  state.collections.forEach(c=>{
-    if(!state.calendarActiveCategories.has(c.category||'')) return;
-    let dateVal;
-    if (state.calDateType === 'dateAchat') dateVal = c.private?.dateAchat;
-    else if (state.calDateType === 'createdAt') dateVal = c.createdAt ? c.createdAt.slice(0,7) : null;
-    else dateVal = c.date;
-    if (!dateVal) return;
-    const key=dateVal.slice(0,7);
-    if(!byKey[key]) byKey[key]=[];
-    byKey[key].push(c);
+  // Update nav label
+  const label = document.getElementById('calMonthLabel');
+  if (label) label.textContent = _calNavLabel();
+  _syncCalendarSelects();
+
+  // Disable prev if at min month
+  const prevBtn = document.getElementById('calPrevMonth');
+  if (prevBtn) {
+    const atMin = state.calYear === CAL_MIN_YEAR && state.calMonth === CAL_MIN_MONTH;
+    prevBtn.disabled = atMin;
+    prevBtn.style.opacity = atMin ? '.3' : '';
+  }
+
+  // Build day → collections map
+  const byDay = {};
+  state.collections.forEach(c => {
+    let raw = '';
+    if (state.calDateType === 'dateAchat') raw = c.private?.dateAchat || '';
+    else raw = c.createdAt || '';
+    if (!raw || raw.length < 10) return;
+    const day = raw.slice(0, 10); // YYYY-MM-DD
+    const [y, m] = day.split('-');
+    if (parseInt(y) !== state.calYear || parseInt(m) - 1 !== state.calMonth) return;
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(c);
   });
-  const grid=document.getElementById('calGrid');
-  grid.style.gridTemplateColumns=`56px repeat(${years.length},minmax(140px,1fr))`;
-  let html='';
-  html+=`<div class="cal-head-cell"></div>`;
-  years.forEach(y=>{ html+=`<div class="cal-head-cell cal-year-label">${y}</div>`; });
-  MONTHS.forEach((mName,mi)=>{
-    const mm=String(mi+1).padStart(2,'0');
-    html+=`<div class="cal-month-label">${mName}</div>`;
-    years.forEach(y=>{
-      const key=`${y}-${mm}`;
-      const items=byKey[key]||[];
-      const shown=items.slice(0,5); const extra=items.length-shown.length;
-      html+=`<div class="cal-cell">`;
-      shown.forEach(c=>{
-        const color=getCategoryColor(c.category);
-        const thumb=c.photos?.[0]?`<img class="cal-chip-thumb" src="/uploads/${c.photos[0]}" alt="">`:'' ;
-        html+=`<div class="cal-chip" data-id="${c.id}" style="border-left:3px solid ${color}">${thumb}<span class="cal-chip-name">${esc(c.name)}</span></div>`;
-      });
-      if(extra>0) html+=`<div class="cal-extra">+${extra}</div>`;
-      html+=`</div>`;
-    });
+
+  const grid = document.getElementById('calGrid');
+
+  // First day of month (0=Sun … 6=Sat), adjust to Mon-based (0=Mon … 6=Sun)
+  const firstDay = new Date(state.calYear, state.calMonth, 1).getDay();
+  const startOffset = (firstDay === 0) ? 6 : firstDay - 1;
+  const daysInMonth = new Date(state.calYear, state.calMonth + 1, 0).getDate();
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+  let html = '';
+  // Day headers
+  DAYS_SHORT.forEach(d => { html += `<div class="cal-day-header">${d}</div>`; });
+
+  // Leading empty cells
+  for (let i = 0; i < startOffset; i++) html += `<div class="cal-day-cell other-month"></div>`;
+
+  // Day cells
+  for (let d = 1; d <= daysInMonth; d++) {
+    const mm = String(state.calMonth + 1).padStart(2, '0');
+    const dd = String(d).padStart(2, '0');
+    const key = `${state.calYear}-${mm}-${dd}`;
+    const items = byDay[key] || [];
+    const isToday = key === todayStr;
+
+    html += `<div class="cal-day-cell${isToday ? ' today' : ''}">
+      <span class="cal-day-num">${d}</span>`;
+
+    if (items.length > 0) {
+      const first = items[0];
+      const extra = items.length - 1;
+      html += `<div class="cal-day-entry" data-id="${first.id}">`;
+      html += `<div class="cal-day-thumb-wrap">`;
+      if (first.photos?.[0]) {
+        html += `<img class="cal-day-thumb" src="${photoUrl(first.photos[0])}" alt="">`;
+      } else {
+        html += `<div class="cal-day-placeholder">◻</div>`;
+      }
+      if (extra > 0) html += `<span class="cal-day-more">+${extra}</span>`;
+      html += `</div>`;
+      if (first.name) html += `<div class="cal-day-title">${esc(first.name)}</div>`;
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  // Trailing empty cells to complete last row
+  const totalCells = startOffset + daysInMonth;
+  const remainder = totalCells % 7;
+  if (remainder !== 0) {
+    for (let i = 0; i < (7 - remainder); i++) html += `<div class="cal-day-cell other-month"></div>`;
+  }
+
+  grid.innerHTML = html;
+
+  grid.querySelectorAll('.cal-day-entry').forEach(entry => {
+    entry.addEventListener('click', () => openDetail(entry.dataset.id));
   });
-  grid.innerHTML=html;
-  grid.querySelectorAll('.cal-chip').forEach(chip=>chip.addEventListener('click',()=>openDetail(chip.dataset.id)));
 }
 
 function bindCalendarEvents() {
-  renderCalendarFilters();
-  document.getElementById('calYearBefore').addEventListener('click',()=>{ state.calendarYears.unshift(state.calendarYears[0]-1); renderCalendar(); });
-  document.getElementById('calYearAfter').addEventListener('click',()=>{ state.calendarYears.push(state.calendarYears[state.calendarYears.length-1]+1); renderCalendar(); });
-  const addYear=()=>{ const input=document.getElementById('calManualInput'); const y=parseInt(input.value); if(!y||y<1900||y>2200) return; if(!state.calendarYears.includes(y)){ state.calendarYears.push(y); state.calendarYears.sort((a,b)=>a-b); renderCalendar(); } input.value=''; };
-  document.getElementById('calManualAdd').addEventListener('click',addYear);
-  document.getElementById('calManualInput').addEventListener('keydown',e=>{ if(e.key==='Enter') addYear(); });
-  document.getElementById('calDateTypeSelect').addEventListener('change',e=>{
+  // Init to current month/year (at least jan 2025)
+  const now = new Date();
+  state.calYear = Math.max(now.getFullYear(), CAL_MIN_YEAR);
+  state.calMonth = (now.getFullYear() >= CAL_MIN_YEAR) ? now.getMonth() : CAL_MIN_MONTH;
+
+  // Populate month select
+  const ms = document.getElementById('calMonthSelect');
+  if (ms) {
+    MONTHS_FULL.forEach((m, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = m;
+      ms.appendChild(opt);
+    });
+  }
+
+  // Populate year select (2025 → current + 1)
+  const ys = document.getElementById('calYearSelect');
+  if (ys) {
+    const maxYear = Math.max(now.getFullYear(), CAL_MIN_YEAR) + 1;
+    for (let y = CAL_MIN_YEAR; y <= maxYear; y++) {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y;
+      ys.appendChild(opt);
+    }
+  }
+
+  document.getElementById('calPrevMonth').addEventListener('click', () => {
+    if (state.calYear === CAL_MIN_YEAR && state.calMonth === CAL_MIN_MONTH) return;
+    state.calMonth--;
+    if (state.calMonth < 0) { state.calMonth = 11; state.calYear--; }
+    renderCalendar();
+  });
+  document.getElementById('calNextMonth').addEventListener('click', () => {
+    state.calMonth++;
+    if (state.calMonth > 11) { state.calMonth = 0; state.calYear++; }
+    renderCalendar();
+  });
+  if (ms) ms.addEventListener('change', () => {
+    state.calMonth = parseInt(ms.value);
+    renderCalendar();
+  });
+  if (ys) ys.addEventListener('change', () => {
+    state.calYear = parseInt(ys.value);
+    // enforce min boundary
+    if (state.calYear === CAL_MIN_YEAR && state.calMonth < CAL_MIN_MONTH) {
+      state.calMonth = CAL_MIN_MONTH;
+    }
+    renderCalendar();
+  });
+  document.getElementById('calDateTypeSelect').addEventListener('change', e => {
     state.calDateType = e.target.value;
     renderCalendar();
   });
@@ -743,7 +845,7 @@ function renderCatalogue(items) {
       </div>
       <div class="catalogue-rows">`;
     cards.forEach(c=>{
-      const thumb=c.photos?.[0]?`<img src="/uploads/${c.photos[0]}" alt="">`:
+      const thumb=c.photos?.[0]?`<img src="${photoUrl(c.photos[0])}" alt="">`:
         `<div class="cat-row-placeholder">◻</div>`;
       const statusColor=STATUS_COLORS[c.itemStatus]||'#9ca3af';
       const sub=(c.subcategory&&c.subcategory!=='Autre'?c.subcategory:c.subcategoryCustom)||'';
@@ -798,7 +900,7 @@ function cataloguePrint() {
     const color=getCategoryColor(cat)||'#333';
     body+=`<h2 style="border-left:4px solid ${color};padding-left:10px;margin:24px 0 12px;font-size:15px">${esc(cat||'Sans catégorie')}</h2>`;
     cards.forEach(c=>{
-      const thumb=c.photos?.[0]?`<img src="/uploads/${c.photos[0]}" style="width:80px;height:80px;object-fit:cover;border-radius:4px">`:
+      const thumb=c.photos?.[0]?`<img src="${photoUrl(c.photos[0])}" style="width:80px;height:80px;object-fit:cover;border-radius:4px">`:
         `<div style="width:80px;height:80px;background:#f0ede8;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#aaa">◻</div>`;
       const sub=(c.subcategory&&c.subcategory!=='Autre'?c.subcategory:c.subcategoryCustom)||'';
       const attrs=Object.values(c.attributes||{}).flat().filter(Boolean).join(', ');
@@ -831,168 +933,285 @@ function cataloguePrint() {
 
 // ── Timeline ───────────────────────────────────────────────────────────────────
 function renderTimeline(items) {
-  const sorted=[...items].sort((a,b)=>(a.createdAt||a.date||'').localeCompare(b.createdAt||b.date||''));
-  const el=document.getElementById('timelineItems');
-  el.innerHTML=sorted.map(c=>{
-    const color=getCategoryColor(c.category);
-    return `<div class="timeline-item" data-id="${c.id}">
-      <div class="timeline-dot" style="background:${color}"></div>
-      <div class="timeline-label">${formatRelativeDate(c.createdAt)||formatDate(c.date)||'—'}</div>
-      <div class="timeline-name">${esc(c.name)}</div>
-      ${c.category?`<div class="timeline-cat" style="color:${color}">${esc(c.category)}</div>`:''}
-    </div>`;
-  }).join('');
-  const float=document.getElementById('timelineFloatPreview');
-  el.querySelectorAll('.timeline-item').forEach(item=>{
-    const id=item.dataset.id;
-    item.addEventListener('click',()=>{ if(!TL.hasDragged) openDetail(id); });
-    item.addEventListener('mouseenter',()=>{
-      const c=state.collections.find(x=>x.id===id); if(!c) return;
-      const color=getCategoryColor(c.category);
-      const imgHTML=c.photos?.[0]
-        ?`<img src="/uploads/${c.photos[0]}" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block">`
-        :`<div style="width:100%;aspect-ratio:4/3;background:var(--tag-bg);display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:28px">◻</div>`;
-      float.innerHTML=`<div style="border-top:3px solid ${color}">${imgHTML}</div>
-        <div style="padding:10px 12px 12px">
-          <div style="font-size:13px;font-weight:600">${esc(c.name)}</div>
-          ${c.category?`<div style="font-size:11px;color:${color};margin-top:2px">${esc(c.category)}</div>`:''}
-          ${c.description?`<div style="font-size:12px;color:var(--text-2);margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5">${esc(c.description)}</div>`:''}
-        </div>`;
-      float.style.display='block';
-      positionFloatPreview(item);
+  const mode = state.tlMode || 'chrono';
+  document.querySelectorAll('.tl-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+
+  const chronoScroll = document.getElementById('tlChronoScroll');
+  const wrap = document.getElementById('timelineWrap');
+  let origineView = document.getElementById('tlOrigineView');
+
+  if (mode === 'origine') {
+    chronoScroll.style.display = 'none';
+    wrap.style.display = 'none';
+    if (!origineView) {
+      origineView = document.createElement('div');
+      origineView.id = 'tlOrigineView';
+      origineView.className = 'tl-origine-view';
+      document.getElementById('timelineView').appendChild(origineView);
+    }
+    origineView.style.display = '';
+    _renderTimelineOrigine(items, origineView);
+    return;
+  }
+
+  if (origineView) origineView.style.display = 'none';
+  wrap.style.display = 'none';
+  chronoScroll.style.display = '';
+
+  // ── Chrono mode : axe vertical alterné ──────────────────────────────────────
+  const sorted = [...items].sort((a,b) => (a.createdAt||a.date||'').localeCompare(b.createdAt||b.date||''));
+  const el = document.getElementById('tlChronoItems');
+
+  if (!sorted.length) {
+    el.innerHTML = `<div class="tl-none-label">Aucun objet à afficher sur cette frise.</div>`;
+    return;
+  }
+
+  // Group by month (YYYY-MM)
+  const groups = [];
+  let lastKey = null;
+  sorted.forEach(c => {
+    const raw = c.createdAt || c.date || '';
+    const key = raw.slice(0, 7); // YYYY-MM
+    if (key !== lastKey) {
+      groups.push({ key, items: [] });
+      lastKey = key;
+    }
+    groups[groups.length - 1].items.push(c);
+  });
+
+  // Populate jump select
+  const jumpSel = document.getElementById('tlJumpSelect');
+  if (jumpSel) {
+    jumpSel.innerHTML = '<option value="">Aller à…</option>';
+    groups.forEach(({ key }) => {
+      let label = key;
+      if (key && key.length >= 7) {
+        const [y, m] = key.split('-');
+        label = `${MONTHS_FULL[parseInt(m) - 1] || m} ${y}`;
+      }
+      const opt = document.createElement('option');
+      opt.value = `tl-sep-${key}`;
+      opt.textContent = label;
+      jumpSel.appendChild(opt);
     });
-    item.addEventListener('mouseleave',()=>{ float.style.display='none'; });
-    item.addEventListener('mousemove',()=>positionFloatPreview(item));
+    jumpSel.onchange = () => {
+      if (!jumpSel.value) return;
+      const target = document.getElementById(jumpSel.value);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      jumpSel.value = '';
+    };
+  }
+
+  let html = '';
+  let globalIdx = 0; // for left/right alternation across months
+
+  groups.forEach(({ key, items: groupItems }) => {
+    // Month/year separator
+    let sepLabel = '—';
+    if (key && key.length >= 7) {
+      const [y, m] = key.split('-');
+      const mNum = parseInt(m) - 1;
+      sepLabel = `${MONTHS_FULL[mNum] || m} ${y}`;
+    }
+    html += `<div class="tl-sep" id="tl-sep-${key}"><span class="tl-sep-label">${sepLabel}</span></div>`;
+
+    groupItems.forEach(c => {
+      const isLeft = (globalIdx % 2 === 0);
+      globalIdx++;
+      const bg = getVerbeBgColor(c.category);
+      const fg = getVerbeTextColor(c.category);
+      const imgHTML = c.photos?.[0]
+        ? `<img class="tl-card-img" src="${photoUrl(c.photos[0])}" alt="">`
+        : `<div class="tl-card-img-placeholder">◻</div>`;
+      const pillHTML = c.category
+        ? `<span class="tl-card-pill" style="background:${bg};color:${fg}">${esc(c.category)}</span>`
+        : '';
+      const card = `<div class="tl-card" data-id="${c.id}">
+        ${imgHTML}
+        <div class="tl-card-body">
+          <div class="tl-card-name">${esc(c.name)}</div>
+          ${pillHTML}
+        </div>
+      </div>`;
+
+      html += `<div class="tl-card-row">
+        <div class="tl-card-slot-left">${isLeft ? card : ''}</div>
+        <div class="tl-card-center">
+          <div class="tl-card-dot" style="background:${bg}"></div>
+        </div>
+        <div class="tl-card-slot-right">${!isLeft ? card : ''}</div>
+      </div>`;
+    });
+  });
+
+  el.innerHTML = html;
+  el.querySelectorAll('.tl-card').forEach(card => {
+    card.addEventListener('click', () => openDetail(card.dataset.id));
   });
 }
 
-function positionFloatPreview(item) {
-  const float=document.getElementById('timelineFloatPreview');
-  const rect=item.getBoundingClientRect();
-  const W=220,gap=14;
-  let left=rect.left+rect.width/2-W/2;
-  left=Math.max(8,Math.min(left,window.innerWidth-W-8));
-  const floatH=float.offsetHeight||260;
-  let top=rect.top-floatH-gap; if(top<8) top=rect.bottom+gap;
-  float.style.left=left+'px'; float.style.top=top+'px';
+function _renderTimelineOrigine(items, container) {
+  // Période = première valeur de attributes.origine (sinon "Sans période")
+  const PERIODE_ORDER = [
+    'Antiquité','Moyen Âge','Renaissance','XVIe siècle','XVIIe siècle','XVIIIe siècle',
+    'XIXe siècle','Empire','Napoléon III','Belle Époque','Art nouveau','Art déco','Bauhaus',
+    'Années 40-50','Années 60-70','Années 80-90','Contemporain','Création','Sans période'
+  ];
+  const groups = {};
+  items.forEach(c => {
+    const orig = (c.attributes?.origine || []);
+    const période = orig.length > 0 ? orig[0] : 'Sans période';
+    if (!groups[période]) groups[période] = [];
+    groups[période].push(c);
+  });
+  // Sort groups by canonical period order
+  const sorted = Object.keys(groups).sort((a, b) => {
+    const ia = PERIODE_ORDER.indexOf(a), ib = PERIODE_ORDER.indexOf(b);
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1; if (ib === -1) return -1;
+    return ia - ib;
+  });
+  if (sorted.length === 0) {
+    container.innerHTML = `<div class="tl-none-label">Aucun objet à afficher sur cette frise.</div>`; return;
+  }
+  container.innerHTML = sorted.map(période => {
+    const chips = groups[période].map(c => {
+      const bg = getVerbeBgColor(c.category);
+      return `<span class="tl-origine-chip" data-id="${c.id}">
+        <span class="tl-origine-chip-dot" style="background:${bg}"></span>
+        ${esc(c.name)}
+      </span>`;
+    }).join('');
+    return `<div class="tl-origine-group">
+      <div class="tl-origine-axis"><span class="tl-origine-label">${esc(période)}</span></div>
+      <div class="tl-origine-items">${chips}</div>
+    </div>`;
+  }).join('');
+  container.querySelectorAll('.tl-origine-chip').forEach(chip =>
+    chip.addEventListener('click', () => openDetail(chip.dataset.id)));
 }
 
+function positionFloatPreview() {} // plus utilisé
+
 function applyTLTransform() {
-  const inner=document.getElementById('timelineInner');
-  inner.style.transform=`translate(${TL.panX}px,${TL.panY}px) scale(${TL.zoom})`;
-  document.getElementById('zoomLabel').textContent=Math.round(TL.zoom*100)+'%';
+  const inner = document.getElementById('timelineInner'); if (!inner) return;
+  inner.style.transform = `translate(${TL.panX}px,${TL.panY}px) scale(${TL.zoom})`;
 }
 
 function initTimelineZoom() {
-  const wrap=document.getElementById('timelineWrap');
-  wrap.addEventListener('wheel',e=>{
-    e.preventDefault();
-    const rect=wrap.getBoundingClientRect();
-    const mx=e.clientX-rect.left,my=e.clientY-rect.top;
-    const factor=e.deltaY<0?1.12:1/1.12;
-    const newZoom=Math.max(0.15,Math.min(5,TL.zoom*factor));
-    TL.panX=mx-(mx-TL.panX)*(newZoom/TL.zoom);
-    TL.panY=my-(my-TL.panY)*(newZoom/TL.zoom);
-    TL.zoom=newZoom; applyTLTransform();
-  },{passive:false});
-  wrap.addEventListener('mousedown',e=>{
-    if(e.button!==0) return;
-    TL.isDragging=true; TL.hasDragged=false;
-    TL.startX=e.clientX; TL.startY=e.clientY;
-    TL.startPanX=TL.panX; TL.startPanY=TL.panY;
-    wrap.style.cursor='grabbing'; e.preventDefault();
-  });
-  document.addEventListener('mousemove',e=>{
-    if(!TL.isDragging) return;
-    const dx=e.clientX-TL.startX,dy=e.clientY-TL.startY;
-    if(Math.abs(dx)>3||Math.abs(dy)>3) TL.hasDragged=true;
-    TL.panX=TL.startPanX+dx; TL.panY=TL.startPanY+dy; applyTLTransform();
-  });
-  document.addEventListener('mouseup',()=>{
-    if(!TL.isDragging) return;
-    TL.isDragging=false; wrap.style.cursor='grab';
-    setTimeout(()=>{ TL.hasDragged=false; },0);
-  });
-  document.getElementById('zoomIn').addEventListener('click',()=>{ TL.zoom=Math.min(5,TL.zoom*1.25); applyTLTransform(); });
-  document.getElementById('zoomOut').addEventListener('click',()=>{ TL.zoom=Math.max(0.15,TL.zoom/1.25); applyTLTransform(); });
-  document.getElementById('zoomReset').addEventListener('click',()=>{ TL.zoom=1; TL.panX=0; TL.panY=0; applyTLTransform(); });
+  // Zoom/pan désactivé — nouvelle frise verticale avec scroll natif
 }
 
-// ── Detail Modal ───────────────────────────────────────────────────────────────
+// ── Detail Modal — Vue Portrait éditoriale ────────────────────────────────────
 function openDetail(id) {
-  const c=state.collections.find(x=>x.id===id); if(!c) return;
-  state.detailCurrentId=id;
-  const list=state.detailList.length?state.detailList:state.collections;
-  const pos=list.findIndex(x=>x.id===id); const total=list.length;
-  document.getElementById('detailNavPos').textContent=`${pos+1} / ${total}`;
-  document.getElementById('detailPrev').style.visibility=total>1?'visible':'hidden';
-  document.getElementById('detailNext').style.visibility=total>1?'visible':'hidden';
-  document.getElementById('detailTitle').textContent=c.name;
+  const c = state.collections.find(x => x.id === id); if (!c) return;
+  state.detailCurrentId = id;
+  const list = state.detailList.length ? state.detailList : state.collections;
+  const pos  = list.findIndex(x => x.id === id);
+  const total = list.length;
+  document.getElementById('detailNavPos').textContent = `${pos+1} / ${total}`;
+  document.getElementById('detailPrev').style.visibility = total > 1 ? 'visible' : 'hidden';
+  document.getElementById('detailNext').style.visibility = total > 1 ? 'visible' : 'hidden';
+  document.getElementById('detailTitle').textContent = c.name;
 
-  const body=document.getElementById('detailBody');
-  const color=getCategoryColor(c.category);
-  const statusColor=STATUS_COLORS[c.itemStatus]||'#9ca3af';
-  const sub=(c.subcategory&&c.subcategory!=='Autre'?c.subcategory:c.subcategoryCustom)||'';
+  const body      = document.getElementById('detailBody');
+  const bgColor   = getVerbeBgColor(c.category);
+  const fgColor   = getVerbeTextColor(c.category);
+  const statusColor = STATUS_COLORS[c.itemStatus] || '#9ca3af';
+  const sub = (c.subcategory && c.subcategory !== 'Autre' ? c.subcategory : c.subcategoryCustom) || '';
+  const photos = c.photos || [];
 
-  // Build attributes summary with labels
-  const attrs=c.attributes||{};
-  const attrGroups=Object.entries(attrs).filter(([k,v])=>v&&(Array.isArray(v)?v.length>0:v)).map(([k,v])=>{
-    const def=ATTRIBUTES_DEF[k];
-    const label=def?.label||k;
-    const vals=Array.isArray(v)?v:[v];
-    return `<div class="detail-attr-group"><span class="detail-attr-label">${esc(label)} :</span> ${vals.filter(Boolean).map(vv=>`<span class="tag">${esc(vv)}</span>`).join(' ')}</div>`;
-  }).join('');
+  // ── Photo column ──
+  const mainPhotoHTML = photos.length > 0
+    ? `<img src="${photoUrl(photos[0])}" alt="" data-idx="0" class="portrait-main-img" style="cursor:zoom-in">`
+    : `<div class="portrait-no-photo">◻</div>`;
+  const thumbsHTML = photos.length > 1
+    ? `<div class="portrait-thumbs">${photos.map((p,i) =>
+        `<img src="${photoUrl(p)}" alt="" data-idx="${i}" class="portrait-thumb${i===0?' active':''}">`).join('')}</div>`
+    : '';
 
-  const univers=(c.univers||[]).map(u=>`<span class="tag tag-univers">${esc(u)}</span>`).join('');
-  const kwTags=(c.keywords||[]).map(k=>`<span class="tag">${esc(k)}</span>`).join('');
-
-  const photos=c.photos||[];
-  let photoHTML='';
-  if (photos.length > 0) {
-    photoHTML = `<div class="detail-photos-main">
-      <img src="/uploads/${photos[0]}" alt="" data-idx="0" class="detail-main-photo" style="cursor:zoom-in">
-      ${photos.length > 1 ? `<div class="detail-photos-thumbs">
-        ${photos.map((p,i)=>`<img src="/uploads/${p}" alt="" data-idx="${i}" class="detail-thumb-img${i===0?' active':''}">`).join('')}
-      </div>` : ''}
+  // ── Attributes — respect attributeSectionsOrder ──
+  const order = (state.settings.attributeSectionsOrder?.length)
+    ? state.settings.attributeSectionsOrder
+    : ['origine', ['etat_traces','taille'], 'usage', {group:'Matière & Apparence'}, 'matieres', ['couleurs','motifs']];
+  const attrKeys = [];
+  order.forEach(entry => {
+    if (entry && typeof entry === 'object' && !Array.isArray(entry) && entry.group) return;
+    if (Array.isArray(entry)) entry.forEach(k => attrKeys.push(k));
+    else attrKeys.push(entry);
+  });
+  const attrs = c.attributes || {};
+  const attrRowsHTML = attrKeys.map(k => {
+    const vals = attrs[k];
+    if (!vals || (Array.isArray(vals) ? vals.length === 0 : !vals)) return '';
+    const label = ATTRIBUTES_DEF[k]?.label || k;
+    const arr = Array.isArray(vals) ? vals : [vals];
+    return `<div class="portrait-attr-row">
+      <span class="portrait-attr-label">${esc(label)}</span>
+      <div class="portrait-attr-pills">${arr.filter(Boolean).map(v=>`<span class="portrait-attr-pill">${esc(v)}</span>`).join('')}</div>
     </div>`;
-  }
+  }).filter(Boolean).join('');
 
-  body.innerHTML=`
-    <h2 class="detail-name">${esc(c.name)}</h2>
-    <div class="detail-meta">
-      ${c.category?`<span class="detail-cat" style="color:${color};border-color:${color}20;background:${color}12">${esc(c.category)}</span>`:''}
-      ${sub?`<span class="detail-subcat-badge">${esc(sub)}</span>`:''}
-      <span class="detail-status" style="background:${statusColor}20;color:${statusColor};border-color:${statusColor}40">${esc(c.itemStatus||'')}</span>
-      ${c.price!=null&&c.price!==''?`<span class="detail-price">${c.price} €</span>`:''}
-      ${c.depotVente?`<span class="detail-subcat-badge">Dépôt-vente${c.depotVenteName?' · '+esc(c.depotVenteName):''}</span>`:''}
-      ${c.artiste?`<span class="detail-subcat-badge">Artiste contemporain${c.artisteName?' · '+esc(c.artisteName):''}</span>`:''}
-    </div>
-    ${univers?`<div class="detail-tags" style="margin-bottom:10px">${univers}</div>`:''}
-    ${c.description?`<p class="detail-desc">${esc(c.description).replace(/\n/g,'<br>')}</p>`:''}
-    ${attrGroups?`<div class="detail-attrs" style="margin-bottom:12px">${attrGroups}</div>`:''}
-    ${kwTags?`<div class="detail-tags">${kwTags}</div>`:''}
-    ${photoHTML}
-  `;
+  const universHTML = (c.univers||[]).length
+    ? `<div class="portrait-attr-row"><span class="portrait-attr-label">Atmosphère</span>
+        <div class="portrait-attr-pills">${(c.univers||[]).map(u=>`<span class="portrait-attr-pill portrait-pill-univers">${esc(u)}</span>`).join('')}</div>
+       </div>` : '';
+  const kwHTML = (c.keywords||[]).length
+    ? `<div class="portrait-attr-row"><span class="portrait-attr-label">Tags</span>
+        <div class="portrait-attr-pills">${(c.keywords||[]).map(k=>`<span class="portrait-attr-pill">${esc(k)}</span>`).join('')}</div>
+       </div>` : '';
 
-  // Lightbox for main photo
-  body.querySelectorAll('.detail-main-photo').forEach(img=>{
-    img.addEventListener('click',()=>{
-      LB.photos=photos; LB.idx=parseInt(img.dataset.idx)||0; showLightbox();
+  // ── Header pills ──
+  const verbePill = c.category
+    ? `<span class="portrait-verbe-pill" style="background:${bgColor};color:${fgColor}">${esc(c.category)}</span>` : '';
+  const typoPill = sub
+    ? `<span class="portrait-typo-pill">${esc(sub)}</span>` : '';
+
+  // ── Meta line ──
+  const metaHTML = [
+    c.itemStatus ? `<span class="portrait-status-dot" style="background:${statusColor}"></span><span class="portrait-status-text" style="color:${statusColor}">${esc(c.itemStatus)}</span>` : '',
+    (c.price != null && c.price !== '') ? `<span class="portrait-price">${c.price} €</span>` : '',
+    c.depotVente ? `<span class="portrait-meta-tag">Dépôt-vente${c.depotVenteName?' · '+esc(c.depotVenteName):''}</span>` : '',
+    c.artiste    ? `<span class="portrait-meta-tag">Création${c.artisteName?' · '+esc(c.artisteName):''}</span>` : ''
+  ].filter(Boolean).join('');
+
+  body.innerHTML = `
+    <div class="portrait-split">
+      <div class="portrait-photo-col">
+        <div class="portrait-main-wrap">${mainPhotoHTML}</div>
+        ${thumbsHTML}
+      </div>
+      <div class="portrait-info-col">
+        ${(verbePill||typoPill) ? `<div class="portrait-pills-row">${verbePill}${typoPill}</div>` : ''}
+        <h2 class="portrait-title">${esc(c.name)}</h2>
+        ${metaHTML ? `<div class="portrait-meta">${metaHTML}</div>` : ''}
+        <div class="portrait-sep"></div>
+        ${c.description ? `<p class="portrait-desc">${esc(c.description).replace(/\n/g,'<br>')}</p><div class="portrait-sep"></div>` : ''}
+        <div class="portrait-attrs">
+          ${attrRowsHTML}
+          ${universHTML}
+          ${kwHTML}
+        </div>
+      </div>
+    </div>`;
+
+  // Lightbox
+  body.querySelectorAll('.portrait-main-img').forEach(img => {
+    img.addEventListener('click', () => { LB.photos = photos; LB.idx = parseInt(img.dataset.idx)||0; showLightbox(); });
+  });
+  // Thumbnails
+  body.querySelectorAll('.portrait-thumb').forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      const idx = parseInt(thumb.dataset.idx)||0;
+      const main = body.querySelector('.portrait-main-img');
+      if (main) { main.src = photoUrl(photos[idx]); main.dataset.idx = idx; }
+      body.querySelectorAll('.portrait-thumb').forEach(t => t.classList.toggle('active', parseInt(t.dataset.idx)===idx));
     });
   });
 
-  // Thumbnail click → update main photo
-  body.querySelectorAll('.detail-thumb-img').forEach(thumb=>{
-    thumb.addEventListener('click',()=>{
-      const idx=parseInt(thumb.dataset.idx)||0;
-      const mainPhoto=body.querySelector('.detail-main-photo');
-      if(mainPhoto){ mainPhoto.src=`/uploads/${photos[idx]}`; mainPhoto.dataset.idx=idx; }
-      body.querySelectorAll('.detail-thumb-img').forEach(t=>t.classList.toggle('active',parseInt(t.dataset.idx)===idx));
-    });
-  });
-
-  document.getElementById('detailEditBtn').onclick=()=>{ closeDetail(); openEdit(id); };
-  document.getElementById('detailModal').style.display='flex';
+  document.getElementById('detailEditBtn').onclick = () => { closeDetail(); openEdit(id); };
+  document.getElementById('detailModal').style.display = 'flex';
 }
 
 function detailNav(dir) {
@@ -1002,11 +1221,91 @@ function detailNav(dir) {
 }
 function closeDetail() { document.getElementById('detailModal').style.display='none'; }
 
+// ── Trios Generator ────────────────────────────────────────────────────────────
+function _fingerprint(c) {
+  const tags = new Set();
+  (c.univers||[]).forEach(u => tags.add('u:'+u));
+  (c.keywords||[]).forEach(k => tags.add('k:'+k));
+  if (c.category) tags.add('v:'+c.category);
+  const attrs = c.attributes || {};
+  Object.entries(attrs).forEach(([key, vals]) => {
+    (Array.isArray(vals)?vals:[vals]).filter(Boolean).forEach(v => tags.add(`a:${key}:${v}`));
+  });
+  return tags;
+}
+function _sharedTags(fpA, fpB) { return [...fpA].filter(t => fpB.has(t)); }
+function _tagLabel(t) {
+  // 'u:mélancolique' → 'mélancolique', 'a:matieres:laiton' → 'laiton', 'v:Raconter' → 'Raconter'
+  const parts = t.split(':');
+  return parts[parts.length-1];
+}
+
+function _generateTrio() {
+  const cols = state.collections;
+  if (cols.length < 3) return null;
+  for (let attempt = 0; attempt < 30; attempt++) {
+    const seed = cols[Math.floor(Math.random() * cols.length)];
+    const seedFp = _fingerprint(seed);
+    if (seedFp.size === 0) continue;
+    const candidates = cols
+      .filter(c => c.id !== seed.id)
+      .map(c => ({ obj: c, shared: _sharedTags(seedFp, _fingerprint(c)) }))
+      .filter(x => x.shared.length > 0);
+    if (candidates.length < 2) continue;
+    const pool = [...candidates].sort(() => Math.random() - 0.5).slice(0, Math.min(10, candidates.length));
+    pool.sort((a, b) => b.shared.length - a.shared.length);
+    const [c2, c3] = pool;
+    const fp2 = _fingerprint(c2.obj), fp3 = _fingerprint(c3.obj);
+    const triCommon = [...seedFp].filter(t => fp2.has(t) && fp3.has(t));
+    const linkTags = (triCommon.length > 0 ? triCommon : c2.shared).slice(0, 3).map(_tagLabel);
+    return { objects: [seed, c2.obj, c3.obj], linkTags: [...new Set(linkTags)].filter(Boolean) };
+  }
+  // Fallback aléatoire
+  const shuffled = [...cols].sort(() => Math.random() - 0.5);
+  return { objects: shuffled.slice(0, 3), linkTags: [] };
+}
+
+function renderTrios() {
+  const result = document.getElementById('triosResult');
+  const empty  = document.getElementById('triosEmpty');
+  if (state.collections.length < 3) {
+    result.style.display = 'none'; empty.style.display = ''; return;
+  }
+  if (!_currentTrio) _currentTrio = _generateTrio();
+  if (!_currentTrio) { empty.style.display = ''; return; }
+  const { objects, linkTags } = _currentTrio;
+  // Lien narratif
+  document.getElementById('triosLinkBar').innerHTML = linkTags.length
+    ? `<span class="trios-link-pre">Trio lié par</span>${linkTags.map(t=>`<span class="trios-link-tag">${esc(t)}</span>`).join('<span class="trios-link-amp"> &amp; </span>')}`
+    : `<span class="trios-link-pre">Trio aléatoire</span>`;
+  // Cards
+  const grid = document.getElementById('triosGrid');
+  grid.innerHTML = objects.map(c => {
+    const bg = getVerbeBgColor(c.category), fg = getVerbeTextColor(c.category);
+    const sub = (c.subcategory&&c.subcategory!=='Autre'?c.subcategory:c.subcategoryCustom)||'';
+    const img = c.photos?.[0]
+      ? `<img src="${photoUrl(c.photos[0])}" alt="" class="trios-card-img">`
+      : `<div class="trios-card-no-img">◻</div>`;
+    return `<div class="trios-card" data-id="${c.id}">
+      ${img}
+      <div class="trios-card-body">
+        ${c.category?`<span class="trios-verbe-pill" style="background:${bg};color:${fg}">${esc(c.category)}</span>`:''}
+        ${sub?`<span class="trios-typo-pill">${esc(sub)}</span>`:''}
+        <div class="trios-card-name">${esc(c.name)}</div>
+        ${c.description?`<div class="trios-card-desc">${esc(c.description)}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.trios-card').forEach(card =>
+    card.addEventListener('click', () => openDetail(card.dataset.id)));
+  result.style.display = ''; empty.style.display = 'none';
+}
+
 // ── Lightbox ───────────────────────────────────────────────────────────────────
 function showLightbox() { updateLightboxUI(); document.getElementById('lightbox').style.display='flex'; }
 function updateLightboxUI() {
   const {photos,idx}=LB;
-  document.getElementById('lightboxImg').src=`/uploads/${photos[idx]}`;
+  document.getElementById('lightboxImg').src=photoUrl(photos[idx]);
   document.getElementById('lbCounter').textContent=photos.length>1?`${idx+1} / ${photos.length}`:'';
   document.getElementById('lbPrev').style.display=photos.length>1?'flex':'none';
   document.getElementById('lbNext').style.display=photos.length>1?'flex':'none';
@@ -1084,14 +1383,17 @@ function renderAttributeSection(key) {
   const options = def.options;
 
   if (key === 'couleurs') {
-    // Colorized chips
+    // Visual color swatches — round circles with ring on selected
     container.innerHTML = options.map(opt => {
-      const active = def.single ? current===opt : (Array.isArray(current)&&current.includes(opt));
-      const bgColor = COLOR_MAP[opt] || 'var(--tag-bg)';
-      const isDark = DARK_COLORS.has(opt);
-      const textColor = isDark ? '#fff' : '#1a1917';
-      return `<button type="button" class="attr-chip color-chip${active?' selected':''}" data-key="${key}" data-val="${esc(opt)}"
-        style="background:${bgColor};color:${textColor};border-color:${bgColor === 'rgba(200,200,200,0.15)' ? 'var(--border)' : bgColor}">${esc(opt)}</button>`;
+      const active = Array.isArray(current) && current.includes(opt);
+      const bgColor = COLOR_MAP[opt] || '#ccc';
+      const needsBorder = (opt === 'blanc' || opt === 'transparent' || opt === 'écru' || opt === 'ivoire');
+      const borderColor = needsBorder ? 'rgba(45,45,45,.2)' : bgColor;
+      return `<button type="button"
+        class="attr-chip color-swatch${active ? ' selected' : ''}"
+        data-key="${key}" data-val="${esc(opt)}"
+        title="${esc(opt)}"
+        style="--swatch-color:${bgColor};background:${bgColor};border-color:${borderColor}"></button>`;
     }).join('');
   } else if (key === 'matieres' && def.families) {
     // Grouped by families
@@ -1146,7 +1448,7 @@ function migrateAttrs(attrs) {
 }
 
 // Default open sections when modal first renders
-const ATTR_DEFAULT_OPEN = new Set(['matieres','origine','etat_traces']);
+const ATTR_DEFAULT_OPEN = new Set(['matieres','origine','etat_traces','couleurs','motifs','taille','usage']);
 
 // Build the HTML for a single attr section block
 function _buildAttrSectionHTML(key, half = false) {
@@ -1190,7 +1492,7 @@ function renderAllAttributes() {
 
   const order = (state.settings.attributeSectionsOrder && state.settings.attributeSectionsOrder.length)
     ? state.settings.attributeSectionsOrder
-    : ['origine', 'matieres', ['motifs','couleurs'], ['etat_traces','taille'], 'usage'];
+    : ['origine', ['etat_traces','taille'], 'usage', {'group':'Matière & Apparence'}, 'matieres', ['couleurs','motifs']];
 
   accordion.innerHTML = order.map(entry => {
     // Group-marker: {"group": "NOM"}
@@ -1256,6 +1558,30 @@ function renderAllAttributes() {
     if (Array.isArray(entry)) entry.forEach(k => renderAttributeSection(k));
     else renderAttributeSection(entry);
   });
+
+  // ── Atmosphère section — construite entièrement en JS, jamais dupliquée ──
+  const atmosLabel = (state.settings.attributeLabels?.univers) || 'Atmosphère';
+  const atmosSection = document.createElement('div');
+  atmosSection.className = 'attr-section';
+  atmosSection.id = 'universSection';
+  atmosSection.innerHTML = `
+    <div class="attr-section-header" id="universHeader">
+      <span>${esc(atmosLabel)}</span><span class="attr-toggle">›</span>
+    </div>
+    <div class="attr-section-body" id="universBody" style="display:none">
+      <div class="attr-chips" id="universChips"></div>
+    </div>`;
+  accordion.appendChild(atmosSection);
+
+  document.getElementById('universHeader').addEventListener('click', () => {
+    const body = document.getElementById('universBody');
+    const toggle = document.querySelector('#universHeader .attr-toggle');
+    const open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : '';
+    toggle.textContent = open ? '›' : '▾';
+  });
+
+  renderUniversChips();
 }
 
 function openNew() {
@@ -1291,13 +1617,7 @@ function openNew() {
   renderTagChips();
   renderPhotos();
   renderPrivatePhotos();
-  // Reset univers section to collapsed
-  const _uBody = document.getElementById('universBody');
-  const _uToggle = document.querySelector('#universHeader .attr-toggle');
-  if (_uBody) _uBody.style.display = 'none';
-  if (_uToggle) _uToggle.textContent = '›';
-  renderUniversChips();
-  renderAllAttributes();
+  renderAllAttributes(); // includes renderUniversChips() + universSection consolidation
   switchModalTab('public');
   document.getElementById('editModal').style.display = 'flex';
   setTimeout(()=>document.getElementById('fName').focus(),50);
@@ -1314,6 +1634,7 @@ function openEdit(id) {
   state.editUnivers = [...(c.univers||[])];
   state.editAttributes = JSON.parse(JSON.stringify(c.attributes||{}));
   state.editAttributes = migrateAttrs(state.editAttributes);
+  if (!state.editAttributes.couleurs) state.editAttributes.couleurs = c.attributes?.couleurs || [];
   state.dpAchatSelectedDate = c.private?.dateAchat||'';
   if (state.dpAchatSelectedDate) {
     const [y]=state.dpAchatSelectedDate.split('-');
@@ -1353,13 +1674,7 @@ function openEdit(id) {
   renderTagChips();
   renderPhotos();
   renderPrivatePhotos();
-  // Reset univers section to collapsed
-  const _uBody = document.getElementById('universBody');
-  const _uToggle = document.querySelector('#universHeader .attr-toggle');
-  if (_uBody) _uBody.style.display = 'none';
-  if (_uToggle) _uToggle.textContent = '›';
-  renderUniversChips();
-  renderAllAttributes();
+  renderAllAttributes(); // includes renderUniversChips() + universSection consolidation
   switchModalTab('public');
   document.getElementById('editModal').style.display = 'flex';
 }
@@ -1428,26 +1743,68 @@ async function deleteCollection() {
   closeEdit(); render();
 }
 
+// ── Photo helpers ─────────────────────────────────────────────────────────────
+// Returns the textColor hex of the currently selected Intention verbe, or null
+function _getSelectedVerbeTextColor() {
+  const sel = document.getElementById('fCategory');
+  if (!sel) return null;
+  const verbeName = sel.value;
+  if (!verbeName) return null;
+  const verbe = getVerbes().find(v => v.name === verbeName);
+  return verbe ? (verbe.textColor || null) : null;
+}
+
+// Enable / disable all .photo-stylize buttons based on fCategory selection
+function _updateStylizeButtonsState() {
+  const color = _getSelectedVerbeTextColor();
+  document.querySelectorAll('.photo-stylize').forEach(btn => {
+    btn.disabled = !color;
+    btn.title = color
+      ? `Générer une ambiance · teinte ${color}`
+      : 'Choisissez d\'abord une Intention';
+  });
+}
+
 // ── Photos ─────────────────────────────────────────────────────────────────────
+function _showPhotoToast(msg) {
+  let toast = document.getElementById('photoToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'photoToast';
+    toast.className = 'photo-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add('visible');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('visible'), 3500);
+}
+
 function renderPhotos() {
   const el = document.getElementById('photosList'); if (!el) return;
+  const hasIntention = !!_getSelectedVerbeTextColor();
   el.innerHTML = state.editPhotos.map((filename,i) => `
-    <div class="photo-thumb-wrap${i===0&&state.editPhotos.length>1?' is-main':''}" draggable="true" data-i="${i}">
-      ${i===0&&state.editPhotos.length>1?'<div class="photo-main-badge">Principal</div>':''}
-      <img src="/uploads/${filename}" alt="" draggable="false">
-      <div class="photo-actions">
+    <div class="photo-card${i===0&&state.editPhotos.length>1?' is-main':''}" draggable="true" data-i="${i}">
+      <div class="photo-thumb-wrap">
+        ${i===0&&state.editPhotos.length>1?'<div class="photo-main-badge">Principal</div>':''}
+        <img src="${photoUrl(filename)}" alt="" draggable="false">
         <button class="photo-remove" data-i="${i}" title="Supprimer">✕</button>
-        <button class="photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Améliorer avec IA">Améliorer</button>
+      </div>
+      <div class="photo-ai-bar">
+        <button class="photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Retouche studio AI">✦ Packshot</button>
+        <button class="photo-stylize" data-i="${i}" data-filename="${esc(filename)}"
+          ${hasIntention ? '' : 'disabled'}
+          title="${hasIntention ? 'Générer une ambiance' : 'Choisissez d\'abord une Intention'}">✦ Ambiance</button>
       </div>
     </div>`).join('');
 
   let dragSrcIdx = null;
-  el.querySelectorAll('.photo-thumb-wrap').forEach(wrap=>{
-    wrap.addEventListener('dragstart',e=>{ dragSrcIdx=parseInt(wrap.dataset.i); e.dataTransfer.effectAllowed='move'; requestAnimationFrame(()=>wrap.classList.add('dragging')); });
-    wrap.addEventListener('dragend',()=>{ wrap.classList.remove('dragging'); el.querySelectorAll('.photo-thumb-wrap').forEach(w=>w.classList.remove('drop-target')); });
-    wrap.addEventListener('dragover',e=>{ e.preventDefault(); el.querySelectorAll('.photo-thumb-wrap').forEach(w=>w.classList.remove('drop-target')); if(parseInt(wrap.dataset.i)!==dragSrcIdx) wrap.classList.add('drop-target'); });
-    wrap.addEventListener('dragleave',()=>wrap.classList.remove('drop-target'));
-    wrap.addEventListener('drop',e=>{ e.preventDefault(); const targetIdx=parseInt(wrap.dataset.i); if(dragSrcIdx===null||dragSrcIdx===targetIdx) return; const [moved]=state.editPhotos.splice(dragSrcIdx,1); state.editPhotos.splice(targetIdx,0,moved); renderPhotos(); });
+  el.querySelectorAll('.photo-card').forEach(card=>{
+    card.addEventListener('dragstart',e=>{ dragSrcIdx=parseInt(card.dataset.i); e.dataTransfer.effectAllowed='move'; requestAnimationFrame(()=>card.classList.add('dragging')); });
+    card.addEventListener('dragend',()=>{ card.classList.remove('dragging'); el.querySelectorAll('.photo-card').forEach(w=>w.classList.remove('drop-target')); });
+    card.addEventListener('dragover',e=>{ e.preventDefault(); el.querySelectorAll('.photo-card').forEach(w=>w.classList.remove('drop-target')); if(parseInt(card.dataset.i)!==dragSrcIdx) card.classList.add('drop-target'); });
+    card.addEventListener('dragleave',()=>card.classList.remove('drop-target'));
+    card.addEventListener('drop',e=>{ e.preventDefault(); const targetIdx=parseInt(card.dataset.i); if(dragSrcIdx===null||dragSrcIdx===targetIdx) return; const [moved]=state.editPhotos.splice(dragSrcIdx,1); state.editPhotos.splice(targetIdx,0,moved); renderPhotos(); });
   });
 
   el.querySelectorAll('.photo-remove').forEach(btn=>{
@@ -1456,7 +1813,7 @@ function renderPhotos() {
       const i = parseInt(btn.dataset.i);
       const filename = state.editPhotos[i];
       state.editPhotos.splice(i,1);
-      await api.del(`/api/uploads/${filename}`);
+      await api.post('/api/remove-photo', { ref: filename });
       renderPhotos();
     });
   });
@@ -1466,17 +1823,171 @@ function renderPhotos() {
       e.stopPropagation();
       const i = parseInt(btn.dataset.i);
       const filename = state.editPhotos[i];
-      btn.textContent = '…';
+      const wrap = btn.closest('.photo-card');
+
+      // ── Skeleton loading state ──
+      const skeleton = document.createElement('div');
+      skeleton.className = 'photo-skeleton';
+      skeleton.innerHTML = `<div class="photo-skeleton-spinner"></div><div class="photo-skeleton-label">Retouche AI<br>en cours…</div>`;
+      wrap.querySelector(".photo-thumb-wrap").appendChild(skeleton);
       btn.disabled = true;
+
       try {
         const result = await api.post('/api/enhance-photo', { filename });
-        if (result.error) { alert('Erreur : ' + result.error); btn.textContent='Améliorer'; btn.disabled=false; return; }
-        state.editPhotos.splice(i, 1);
-        state.editPhotos.unshift(result.enhancedFilename);
-        renderPhotos();
+        if (result.error) {
+          skeleton.remove();
+          btn.disabled = false;
+          _showPhotoToast('Erreur lors de la retouche AI. Veuillez réessayer.');
+          return;
+        }
+
+        // ── Remove skeleton, show before/after comparison ──
+        skeleton.remove();
+
+        // Build compare block spanning 2 columns, inserted after current wrap
+        const compareEl = document.createElement('div');
+        compareEl.className = 'photo-compare-wrap';
+        compareEl.innerHTML = `
+          <div class="photo-compare-images">
+            <div class="photo-compare-side">
+              <img src="${photoUrl(filename)}" alt="Avant">
+              <div class="photo-compare-label">Avant</div>
+            </div>
+            <div class="photo-compare-sep"></div>
+            <div class="photo-compare-side">
+              <img src="${photoUrl(result.enhancedFilename)}" alt="Après">
+              <div class="photo-compare-label">Après · Retouche AI</div>
+            </div>
+          </div>
+          <div class="photo-compare-actions">
+            <button class="photo-compare-cancel">Annuler</button>
+            <button class="photo-compare-apply">Appliquer la retouche</button>
+          </div>`;
+
+        // Insert after the wrap, or append at end
+        if (wrap.nextSibling) {
+          el.insertBefore(compareEl, wrap.nextSibling);
+        } else {
+          el.appendChild(compareEl);
+        }
+
+        // Hide the original thumbnail during comparison
+        wrap.style.opacity = '.35';
+        wrap.style.pointerEvents = 'none';
+
+        compareEl.querySelector('.photo-compare-apply').addEventListener('click', () => {
+          // Replace original with enhanced, put it first
+          state.editPhotos.splice(i, 1, result.enhancedFilename);
+          // Move to front
+          const [moved] = state.editPhotos.splice(state.editPhotos.indexOf(result.enhancedFilename), 1);
+          state.editPhotos.unshift(moved);
+          compareEl.remove();
+          renderPhotos();
+        });
+
+        compareEl.querySelector('.photo-compare-cancel').addEventListener('click', () => {
+          // Delete the enhanced file from server silently, restore UI
+          api.post('/api/remove-photo', { ref: result.enhancedFilename }).catch(()=>{});
+          compareEl.remove();
+          wrap.style.opacity = '';
+          wrap.style.pointerEvents = '';
+          btn.disabled = false;
+        });
+
       } catch(err) {
-        alert('Erreur lors de la retouche.');
-        btn.textContent='Améliorer'; btn.disabled=false;
+        skeleton.remove();
+        btn.disabled = false;
+        _showPhotoToast('Erreur lors de la retouche AI. Veuillez réessayer.');
+      }
+    });
+  });
+
+  // ── Stylize (ambiance) buttons ──────────────────────────────────────────────
+  el.querySelectorAll('.photo-stylize').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      e.stopPropagation();
+
+      const hexColor = _getSelectedVerbeTextColor();
+      if (!hexColor) {
+        _showPhotoToast('Choisissez d\'abord une Intention pour générer l\'ambiance.');
+        return;
+      }
+
+      const i = parseInt(btn.dataset.i);
+      const filename = state.editPhotos[i];
+      const wrap = btn.closest('.photo-card');
+
+      // ── Skeleton loading ──
+      const skeleton = document.createElement('div');
+      skeleton.className = 'photo-skeleton';
+      skeleton.innerHTML = `<div class="photo-skeleton-spinner"></div><div class="photo-skeleton-label">Ambiance AI<br>en cours…</div>`;
+      wrap.querySelector(".photo-thumb-wrap").appendChild(skeleton);
+      btn.disabled = true;
+      // also disable enhance on same thumb
+      wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = true);
+
+      try {
+        const result = await api.post('/api/stylize-photo', { filename, hexColor });
+        if (result.error) {
+          skeleton.remove();
+          btn.disabled = false;
+          wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = false);
+          _showPhotoToast('Erreur lors de la stylisation AI. Veuillez réessayer.');
+          return;
+        }
+
+        skeleton.remove();
+
+        // Build before/after compare block
+        const compareEl = document.createElement('div');
+        compareEl.className = 'photo-compare-wrap';
+        compareEl.innerHTML = `
+          <div class="photo-compare-images">
+            <div class="photo-compare-side">
+              <img src="${photoUrl(filename)}" alt="Avant">
+              <div class="photo-compare-label">Original</div>
+            </div>
+            <div class="photo-compare-sep"></div>
+            <div class="photo-compare-side">
+              <img src="${photoUrl(result.stylizedFilename)}" alt="Après">
+              <div class="photo-compare-label">✦ Ambiance AI</div>
+            </div>
+          </div>
+          <div class="photo-compare-actions">
+            <button class="photo-compare-cancel">Annuler</button>
+            <button class="photo-compare-apply">Appliquer l'ambiance</button>
+          </div>`;
+
+        if (wrap.nextSibling) {
+          el.insertBefore(compareEl, wrap.nextSibling);
+        } else {
+          el.appendChild(compareEl);
+        }
+
+        wrap.style.opacity = '.35';
+        wrap.style.pointerEvents = 'none';
+
+        compareEl.querySelector('.photo-compare-apply').addEventListener('click', () => {
+          // Add stylized photo at the end (mise en scène, not replacing main packshot)
+          state.editPhotos.push(result.stylizedFilename);
+          compareEl.remove();
+          renderPhotos();
+        });
+
+        compareEl.querySelector('.photo-compare-cancel').addEventListener('click', () => {
+          api.post('/api/remove-photo', { ref: result.stylizedFilename }).catch(() => {});
+          compareEl.remove();
+          wrap.style.opacity = '';
+          wrap.style.pointerEvents = '';
+          btn.disabled = false;
+          wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = false);
+        });
+
+      } catch (err) {
+        skeleton.remove();
+        btn.disabled = false;
+        wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = false);
+        _showPhotoToast('Erreur lors de la stylisation AI. Veuillez réessayer.');
       }
     });
   });
@@ -1494,7 +2005,7 @@ function renderPrivatePhotos() {
   const el = document.getElementById('privatePhotosList'); if (!el) return;
   el.innerHTML = state.editPrivatePhotos.map((filename,i) => `
     <div class="photo-thumb-wrap photo-thumb-sm" data-i="${i}">
-      <img src="/uploads/${filename}" alt="">
+      <img src="${photoUrl(filename)}" alt="">
       <button class="photo-remove photo-remove-priv" data-i="${i}" title="Supprimer">✕</button>
     </div>`).join('');
   el.querySelectorAll('.photo-remove-priv').forEach(btn=>{
@@ -1598,7 +2109,7 @@ function toggleDarkMode() {
 function showKwPreview(kw,mouseEvent) {
   const preview=document.getElementById('kwFloatPreview');
   const cols=state.collections.filter(c=>(c.keywords||[]).includes(kw));
-  const thumbs=cols.filter(c=>c.photos?.length).slice(0,5).map(c=>`<img src="/uploads/${c.photos[0]}" style="width:46px;height:46px;object-fit:cover;border-radius:3px;flex-shrink:0">`).join('');
+  const thumbs=cols.filter(c=>c.photos?.length).slice(0,5).map(c=>`<img src="${photoUrl(c.photos[0])}" style="width:46px;height:46px;object-fit:cover;border-radius:3px;flex-shrink:0">`).join('');
   preview.innerHTML=`<div style="padding:10px 12px"><div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:${thumbs?8:0}px">${esc(kw)} <span style="font-weight:400;color:var(--text-3)">· ${cols.length}</span></div>${thumbs?`<div style="display:flex;gap:4px">${thumbs}</div>`:''}</div>`;
   preview.style.display='block';
   const W=264,gap=12;
@@ -1651,6 +2162,33 @@ function renderStats() {
     data:{labels:statuses,datasets:[{data:statuses.map(s=>statusFreq[s]||0),backgroundColor:statusBg,borderRadius:4,borderSkipped:false}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} objet${ctx.raw>1?'s':''}`}}},scales:{x:{grid:{display:false},border:{color:gridColor}},y:{grid:{color:gridColor},border:{display:false},ticks:{stepSize:1,precision:0}}}}
   });
+
+  // ── Graphe : Répartition par intention (verbes) — barres horizontales duotone ──
+  const verbeDist = getVerbes().map(v => ({
+    name: v.name,
+    count: cols.filter(c => c.category === v.name).length,
+    bg: v.bgColor || v.color || '#2D2D2D',
+    fg: v.textColor || '#F5F5F0'
+  })).filter(v => v.count > 0).sort((a,b) => b.count - a.count);
+  if (verbeDist.length) {
+    const intentWrap = document.querySelector('.stats-chart-wrap-intentions');
+    if (intentWrap) intentWrap.style.height = Math.max(120, verbeDist.length * 42 + 30) + 'px';
+    _charts.intentions = new Chart(document.getElementById('chartIntentions'), {
+      type: 'bar',
+      data: {
+        labels: verbeDist.map(v => v.name),
+        datasets: [{ data: verbeDist.map(v => v.count), backgroundColor: verbeDist.map(v => v.bg), borderWidth: 0, borderRadius: 0, borderSkipped: false }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: {display:false}, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} objet${ctx.raw>1?'s':''}` } } },
+        scales: {
+          x: { grid:{color:gridColor}, border:{display:false}, ticks:{stepSize:1,precision:0} },
+          y: { grid:{display:false}, border:{color:gridColor}, ticks:{color: verbeDist.map(v=>v.fg)} }
+        }
+      }
+    });
+  }
 
   if (!topKws.length) return;
   document.querySelector('.stats-chart-wrap-kw').style.height=Math.max(280,topKws.length*26+40)+'px';
@@ -1784,11 +2322,8 @@ function smAccordion(key, title, content, defaultOpen, editable = false) {
 
 function smListHTML(arr, key) {
   const rows = arr.map((item, i) => `
-    <div class="sm-row" data-key="${key}" data-i="${i}">
-      <div class="sm-row-btns">
-        <button class="sm-btn-order sm-up" data-key="${key}" data-i="${i}"${i === 0 ? ' disabled' : ''}>↑</button>
-        <button class="sm-btn-order sm-down" data-key="${key}" data-i="${i}"${i === arr.length-1 ? ' disabled' : ''}>↓</button>
-      </div>
+    <div class="sm-row" data-key="${key}" data-i="${i}" draggable="true">
+      <span class="sm-drag-handle" title="Déplacer">⠿</span>
       <input type="text" class="sm-item-input" value="${esc(item)}" data-key="${key}" data-i="${i}">
       <button class="sm-btn-delete" data-key="${key}" data-i="${i}" title="Supprimer">🗑</button>
     </div>`).join('');
@@ -1802,11 +2337,8 @@ function smListHTML(arr, key) {
 function smColorListHTML(arr, draft) {
   const rows = arr.map((item, i) => {
     const hex = getColorHex(item) || '#888888';
-    return `<div class="sm-row" data-key="colors" data-i="${i}">
-      <div class="sm-row-btns">
-        <button class="sm-btn-order sm-up" data-key="colors" data-i="${i}"${i === 0 ? ' disabled' : ''}>↑</button>
-        <button class="sm-btn-order sm-down" data-key="colors" data-i="${i}"${i === arr.length-1 ? ' disabled' : ''}>↓</button>
-      </div>
+    return `<div class="sm-row" data-key="colors" data-i="${i}" draggable="true">
+      <span class="sm-drag-handle" title="Déplacer">⠿</span>
       <input type="color" class="sm-color-picker sm-color-swatch" value="${esc(hex)}" data-color-name="${esc(item)}" data-i="${i}">
       <input type="text" class="sm-item-input" value="${esc(item)}" data-key="colors" data-i="${i}">
       <button class="sm-btn-delete" data-key="colors" data-i="${i}" title="Supprimer">🗑</button>
@@ -1825,16 +2357,13 @@ function smVerbesHTML(draft) {
   const blocks = verbes.map((v, i) => {
     const expanded = _smExpandedVerbes.has(i);
     const typos = getTypologies(v);
-    const bg = v.bgColor || v.color || '#111111';
-    const fg = v.textColor || '#ffffff';
+    const bg = v.bgColor || v.color || '#2D2D2D';
+    const fg = v.textColor || '#F5F5F0';
     const typoPanel = expanded ? `
       <div class="sm-typos-panel">
         ${typos.map((t, si) => `
-          <div class="sm-row sm-typo-row" data-ci="${i}" data-si="${si}">
-            <div class="sm-row-btns">
-              <button class="sm-btn-order sm-typo-up" data-ci="${i}" data-si="${si}"${si === 0 ? ' disabled' : ''}>↑</button>
-              <button class="sm-btn-order sm-typo-down" data-ci="${i}" data-si="${si}"${si === typos.length-1 ? ' disabled' : ''}>↓</button>
-            </div>
+          <div class="sm-row sm-typo-row" data-ci="${i}" data-si="${si}" draggable="true">
+            <span class="sm-drag-handle sm-typo-drag-handle" title="Déplacer" data-ci="${i}" data-si="${si}">⠿</span>
             <input type="text" class="sm-item-input sm-typo-input" value="${esc(t)}" data-ci="${i}" data-si="${si}">
             <button class="sm-btn-delete sm-typo-del" data-ci="${i}" data-si="${si}" title="Supprimer">🗑</button>
           </div>`).join('')}
@@ -1866,7 +2395,7 @@ function smVerbesHTML(draft) {
     <div class="sm-add-row">
       <input type="text" id="sm-new-verbe-name" placeholder="Nom du verbe…" style="flex:1;height:28px;padding:3px 8px;font-size:13px;border:1px solid var(--border-light);border-radius:0">
       <span class="sm-color-label">Fond</span>
-      <input type="color" id="sm-new-verbe-bg" value="#111111" class="sm-color-picker">
+      <input type="color" id="sm-new-verbe-bg" value="#2D2D2D" class="sm-color-picker">
       <span class="sm-color-label">Texte</span>
       <input type="color" id="sm-new-verbe-fg" value="#ffffff" class="sm-color-picker">
       <button class="btn btn-ghost btn-sm" id="sm-add-verbe-btn">+ Ajouter</button>
@@ -1928,17 +2457,65 @@ function bindSmModal() {
     });
   });
 
-  // ── Generic simple list bindings (excludes verbes + typos which have their own) ──
-  body.querySelectorAll('.sm-up:not(.sm-typo-up):not(.sm-verbe-up)').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const arr = smGetArray(draft, btn.dataset.key), i = +btn.dataset.i;
-      if (arr && i > 0) { [arr[i-1], arr[i]] = [arr[i], arr[i-1]]; renderSettingsModal(); }
+  // ── Drag & Drop pour listes simples (sm-list rows) ──
+  let _smDragSrc = null, _smDragKey = null, _smDragI = null;
+  body.querySelectorAll('.sm-list .sm-row[draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      _smDragKey = row.dataset.key; _smDragI = +row.dataset.i; _smDragSrc = row;
+      e.dataTransfer.effectAllowed = 'move';
+      requestAnimationFrame(() => row.classList.add('sm-dragging'));
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('sm-dragging');
+      body.querySelectorAll('.sm-row').forEach(r => r.classList.remove('sm-drop-target'));
+    });
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      body.querySelectorAll('.sm-list .sm-row').forEach(r => r.classList.remove('sm-drop-target'));
+      if (row !== _smDragSrc && row.dataset.key === _smDragKey) row.classList.add('sm-drop-target');
+    });
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      row.classList.remove('sm-drop-target');
+      const targetI = +row.dataset.i;
+      if (_smDragI === null || _smDragI === targetI || row.dataset.key !== _smDragKey) return;
+      const arr = smGetArray(draft, _smDragKey);
+      if (!arr) return;
+      const [moved] = arr.splice(_smDragI, 1);
+      arr.splice(targetI, 0, moved);
+      renderSettingsModal();
     });
   });
-  body.querySelectorAll('.sm-down:not(.sm-typo-down):not(.sm-verbe-down)').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const arr = smGetArray(draft, btn.dataset.key), i = +btn.dataset.i;
-      if (arr && i < arr.length-1) { [arr[i], arr[i+1]] = [arr[i+1], arr[i]]; renderSettingsModal(); }
+
+  // ── Drag & Drop pour typos de verbes ──
+  let _smTDragCI = null, _smTDragSI = null, _smTDragSrc = null;
+  body.querySelectorAll('.sm-typo-row[draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      _smTDragCI = +row.dataset.ci; _smTDragSI = +row.dataset.si; _smTDragSrc = row;
+      e.dataTransfer.effectAllowed = 'move';
+      requestAnimationFrame(() => row.classList.add('sm-dragging'));
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('sm-dragging');
+      body.querySelectorAll('.sm-typo-row').forEach(r => r.classList.remove('sm-drop-target'));
+    });
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (row !== _smTDragSrc && +row.dataset.ci === _smTDragCI) {
+        body.querySelectorAll('.sm-typo-row').forEach(r => r.classList.remove('sm-drop-target'));
+        row.classList.add('sm-drop-target');
+      }
+    });
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      row.classList.remove('sm-drop-target');
+      const tSI = +row.dataset.si;
+      if (_smTDragSI === null || _smTDragSI === tSI || +row.dataset.ci !== _smTDragCI) return;
+      const typos = getTypologies(draft.verbes[_smTDragCI]);
+      const [moved] = typos.splice(_smTDragSI, 1);
+      typos.splice(tSI, 0, moved);
+      draft.verbes[_smTDragCI].typologies = typos;
+      renderSettingsModal();
     });
   });
   body.querySelectorAll('.sm-item-input:not(.sm-verbe-name):not(.sm-typo-input)').forEach(inp => {
@@ -2039,32 +2616,15 @@ function bindSmModal() {
     if (!nameInp?.value.trim()) return;
     draft.verbes.push({
       name: nameInp.value.trim(),
-      bgColor: body.querySelector('#sm-new-verbe-bg')?.value || '#111111',
-      color:   body.querySelector('#sm-new-verbe-bg')?.value || '#111111',
-      textColor: body.querySelector('#sm-new-verbe-fg')?.value || '#ffffff',
+      bgColor: body.querySelector('#sm-new-verbe-bg')?.value || '#2D2D2D',
+      color:   body.querySelector('#sm-new-verbe-bg')?.value || '#2D2D2D',
+      textColor: body.querySelector('#sm-new-verbe-fg')?.value || '#F5F5F0',
       typologies: []
     });
     renderSettingsModal();
   });
 
   // ── Typologies ──
-  body.querySelectorAll('.sm-typo-up').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const ci = +btn.dataset.ci, si = +btn.dataset.si; if (si === 0) return;
-      const typos = draft.verbes[ci].typologies || draft.verbes[ci].subcategories;
-      [typos[si-1], typos[si]] = [typos[si], typos[si-1]];
-      renderSettingsModal();
-    });
-  });
-  body.querySelectorAll('.sm-typo-down').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const ci = +btn.dataset.ci, si = +btn.dataset.si;
-      const typos = draft.verbes[ci].typologies || draft.verbes[ci].subcategories;
-      if (si >= typos.length-1) return;
-      [typos[si], typos[si+1]] = [typos[si+1], typos[si]];
-      renderSettingsModal();
-    });
-  });
   body.querySelectorAll('.sm-typo-input').forEach(inp => {
     inp.addEventListener('input', () => {
       const ci = +inp.dataset.ci, si = +inp.dataset.si;
@@ -2267,7 +2827,7 @@ function renderAttrOrderSection() {
   if (!el) return;
   const draft = state.settingsDraft;
   if (!draft.attributeSectionsOrder || !draft.attributeSectionsOrder.length) {
-    draft.attributeSectionsOrder = ['origine', 'matieres', ['motifs','couleurs'], ['etat_traces','taille'], 'usage'];
+    draft.attributeSectionsOrder = ['origine', ['etat_traces','taille'], 'usage', {'group':'Matière & Apparence'}, 'matieres', ['couleurs','motifs']];
   }
   if (!draft.attributeLabels) draft.attributeLabels = {};
   const order = draft.attributeSectionsOrder;
@@ -2661,7 +3221,22 @@ function bindEvents() {
   document.getElementById('viewTimeline').addEventListener('click',()=>setView('timeline'));
   document.getElementById('viewCalendar').addEventListener('click',()=>setView('calendar'));
   document.getElementById('viewCatalogue').addEventListener('click',()=>setView('catalogue'));
+  document.getElementById('viewTrios').addEventListener('click',()=>{ _currentTrio=null; setView('trios'); });
   document.getElementById('viewStats').addEventListener('click',()=>setView('stats'));
+
+  // Trios — generate button
+  document.getElementById('triosGenerateBtn').addEventListener('click',()=>{
+    _currentTrio = _generateTrio();
+    renderTrios();
+  });
+
+  // Timeline — mode buttons
+  document.querySelectorAll('.tl-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.tlMode = btn.dataset.mode;
+      render();
+    });
+  });
 
   // Edit modal — no close on outside click
   document.getElementById('editModalClose').addEventListener('click', closeEdit);
@@ -2675,25 +3250,18 @@ function bindEvents() {
     tab.addEventListener('click', ()=>switchModalTab(tab.dataset.tab));
   });
 
-  // Category change → update subcategory dropdown
+  // Category change → update subcategory dropdown + stylize buttons state
   document.getElementById('fCategory').addEventListener('change',e=>{
     populateSubcategoryDropdown(e.target.value);
     document.getElementById('fSubcategoryCustomField').style.display='none';
+    _updateStylizeButtonsState();
   });
   document.getElementById('fSubcategory').addEventListener('change',e=>{
     document.getElementById('fSubcategoryCustomField').style.display = e.target.value==='Autre' ? '' : 'none';
   });
 
 
-  // Attribute accordion headers are dynamically rendered — bound in renderAllAttributes()
-  // Univers & Atmosphère accordion header
-  document.getElementById('universHeader').addEventListener('click', () => {
-    const body = document.getElementById('universBody');
-    const toggle = document.querySelector('#universHeader .attr-toggle');
-    const open = body.style.display !== 'none';
-    body.style.display = open ? 'none' : '';
-    toggle.textContent = open ? '›' : '▾';
-  });
+  // Univers/Atmosphère header binding is handled inside renderAllAttributes()
 
   // Detail modal
   document.getElementById('detailModalClose').addEventListener('click', closeDetail);

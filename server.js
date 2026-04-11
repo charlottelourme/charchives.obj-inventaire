@@ -4,6 +4,7 @@ const multer  = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const path    = require('path');
 const fs      = require('fs');
+const archiver = require('archiver');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app  = express();
@@ -18,6 +19,37 @@ const SETTINGS_FILE   = path.join(DATA_DIR, 'settings.json');
 [DATA_DIR, UPLOADS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
 if (!fs.existsSync(COLLECTIONS_FILE)) fs.writeFileSync(COLLECTIONS_FILE, '[]');
 if (!fs.existsSync(KEYWORDS_FILE))    fs.writeFileSync(KEYWORDS_FILE, '[]');
+
+// ── Cloudinary (optional) ─────────────────────────────────────────────────────
+let cloudinary = null;
+if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+  const { v2: cld } = require('cloudinary');
+  cld.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:    process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+  cloudinary = cld;
+  console.log('✓ Cloudinary configured — photos will be stored in the cloud');
+}
+
+// Extract Cloudinary public_id from secure_url
+function cldPublicId(url) {
+  const m = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[^.]+)?$/);
+  return m ? m[1] : null;
+}
+
+// Upload a buffer to Cloudinary, returns secure_url
+function cldUploadBuffer(buffer, filename) {
+  return new Promise((resolve, reject) => {
+    const ext = path.extname(filename).toLowerCase();
+    const publicId = `brocante-archive/${path.basename(filename, ext)}`;
+    cloudinary.uploader.upload_stream(
+      { public_id: publicId, resource_type: 'image', overwrite: true },
+      (err, result) => err ? reject(err) : resolve(result.secure_url)
+    ).end(buffer);
+  });
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const readCollections  = () => JSON.parse(fs.readFileSync(COLLECTIONS_FILE, 'utf8'));
@@ -34,10 +66,13 @@ function mergeKeywords(newKws) {
 }
 
 // ── Multer ────────────────────────────────────────────────────────────────────
-const storage = multer.diskStorage({
-  destination: UPLOADS_DIR,
-  filename: (req, file, cb) => cb(null, `${uuidv4()}${path.extname(file.originalname)}`)
-});
+const storage = cloudinary
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination: UPLOADS_DIR,
+      filename: (req, file, cb) => cb(null, `${uuidv4()}${path.extname(file.originalname)}`)
+    });
+
 const upload = multer({
   storage,
   limits: { fileSize: 50 * 1024 * 1024 },
@@ -97,18 +132,53 @@ app.delete('/api/collections/:id', (req, res) => {
   writeCollections(collections);
   const toDelete = [...(removed.photos || [])];
   if (removed.photoEnhanced) toDelete.push(removed.photoEnhanced);
-  toDelete.forEach(f => { const p = path.join(UPLOADS_DIR, f); if (fs.existsSync(p)) fs.unlinkSync(p); });
+  toDelete.forEach(ref => _deletePhotoRef(ref));
   res.json({ ok: true });
 });
 
+// ── Photo ref deletion helper ─────────────────────────────────────────────────
+async function _deletePhotoRef(ref) {
+  if (!ref) return;
+  if (ref.startsWith('http')) {
+    if (cloudinary) {
+      const pid = cldPublicId(ref);
+      if (pid) cloudinary.uploader.destroy(pid).catch(() => {});
+    }
+  } else {
+    const p = path.join(UPLOADS_DIR, ref);
+    if (fs.existsSync(p)) fs.unlinkSync(p);
+  }
+}
+
 // ── Photos ────────────────────────────────────────────────────────────────────
-app.post('/api/upload', upload.array('photos', 20), (req, res) => {
-  res.json({ filenames: req.files.map(f => f.filename) });
+app.post('/api/upload', upload.array('photos', 20), async (req, res) => {
+  try {
+    if (cloudinary) {
+      const urls = await Promise.all(req.files.map(f =>
+        cldUploadBuffer(f.buffer, f.originalname)
+      ));
+      res.json({ filenames: urls });
+    } else {
+      res.json({ filenames: req.files.map(f => f.filename) });
+    }
+  } catch (err) {
+    console.error('Upload error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
+// Legacy DELETE endpoint (backward compat, local files only)
 app.delete('/api/uploads/:filename', (req, res) => {
   const p = path.join(UPLOADS_DIR, req.params.filename);
   if (fs.existsSync(p)) fs.unlinkSync(p);
+  res.json({ ok: true });
+});
+
+// New POST remove-photo — handles both local refs and Cloudinary URLs
+app.post('/api/remove-photo', async (req, res) => {
+  const { ref } = req.body;
+  if (!ref) return res.json({ ok: true });
+  await _deletePhotoRef(ref);
   res.json({ ok: true });
 });
 
@@ -117,13 +187,23 @@ app.post('/api/enhance-photo', async (req, res) => {
   try {
     const { filename } = req.body;
     if (!filename) return res.status(400).json({ error: 'filename requis' });
-    const filePath = path.join(UPLOADS_DIR, filename);
-    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Fichier introuvable' });
 
-    const imageData = fs.readFileSync(filePath);
-    const base64    = imageData.toString('base64');
-    const mimeType  = filename.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+    let imageData, mimeType;
 
+    if (filename.startsWith('http')) {
+      // Cloudinary URL — download it first
+      const response = await fetch(filename);
+      const arrayBuffer = await response.arrayBuffer();
+      imageData = Buffer.from(arrayBuffer);
+      mimeType = 'image/jpeg';
+    } else {
+      const filePath = path.join(UPLOADS_DIR, filename);
+      if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Fichier introuvable' });
+      imageData = fs.readFileSync(filePath);
+      mimeType = filename.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+    }
+
+    const base64 = imageData.toString('base64');
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 
@@ -131,7 +211,7 @@ app.post('/api/enhance-photo', async (req, res) => {
       contents: [{
         role: 'user',
         parts: [
-          { text: 'Retouche cette photo de produit brocante/antiquité : supprime le fond et remplace-le par un fond blanc pur de studio, améliore la luminosité et la netteté pour un rendu professionnel de fiche produit e-commerce. Conserve fidèlement le produit. Retourne uniquement l\'image retouchée.' },
+          { text: 'Retouch the image to look like a professional studio packshot. Pure white background, pure white even lighting, including the object\'s realistic cast shadows. Strictly respect the object\'s properties (exact colors, textures, materials) and its shape. Do not generate a pedestal, stand, or horizon line. The object should appear to float in the center.' },
           { inlineData: { mimeType, data: base64 } }
         ]
       }],
@@ -142,14 +222,88 @@ app.post('/api/enhance-photo', async (req, res) => {
     const imgPart = parts.find(p => p.inlineData);
     if (!imgPart) return res.status(500).json({ error: 'Gemini n\'a pas retourné d\'image. Essayez avec une autre photo.' });
 
-    const ext             = path.extname(filename);
-    const base64Name      = path.basename(filename, ext);
-    const enhancedFilename = `${base64Name}-enhanced${ext}`;
-    fs.writeFileSync(path.join(UPLOADS_DIR, enhancedFilename), Buffer.from(imgPart.inlineData.data, 'base64'));
+    const imgBuffer = Buffer.from(imgPart.inlineData.data, 'base64');
 
-    res.json({ enhancedFilename });
+    if (cloudinary) {
+      const ext = filename.startsWith('http') ? '.jpg' : path.extname(filename);
+      const base = filename.startsWith('http')
+        ? `enhanced-${uuidv4()}`
+        : path.basename(filename, ext) + '-enhanced';
+      const enhancedUrl = await cldUploadBuffer(imgBuffer, `${base}${ext}`);
+      res.json({ enhancedFilename: enhancedUrl });
+    } else {
+      const ext = path.extname(filename);
+      const base = path.basename(filename, ext);
+      const enhancedFilename = `${base}-enhanced${ext}`;
+      fs.writeFileSync(path.join(UPLOADS_DIR, enhancedFilename), imgBuffer);
+      res.json({ enhancedFilename });
+    }
   } catch (err) {
     console.error('Enhance error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Photo stylization (Gemini) ────────────────────────────────────────────────
+app.post('/api/stylize-photo', async (req, res) => {
+  try {
+    const { filename, hexColor } = req.body;
+    if (!filename) return res.status(400).json({ error: 'filename requis' });
+    if (!hexColor) return res.status(400).json({ error: 'hexColor requis' });
+
+    let imageData, mimeType;
+
+    if (filename.startsWith('http')) {
+      const response = await fetch(filename);
+      const arrayBuffer = await response.arrayBuffer();
+      imageData = Buffer.from(arrayBuffer);
+      mimeType = 'image/jpeg';
+    } else {
+      const filePath = path.join(UPLOADS_DIR, filename);
+      if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Fichier introuvable' });
+      imageData = fs.readFileSync(filePath);
+      mimeType = filename.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+    }
+
+    const base64 = imageData.toString('base64');
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+
+    const prompt = `Perform an image-to-image transformation based on the provided staged photo. Retain the exact composition, objects, and layout. Apply a fine, realistic film grain texture across the entire image for a nostalgic, analog feel. Apply a light, soft vignette around the edges. Crucially, this vignette must not be black, but must utilize a subtle tint of ${hexColor}, blending smoothly with the warm lighting of the scene. The overall aesthetic should be soft, matte, warm, and resemble a high-quality analog photo. Do not generate new objects; do not alter the shape of existing objects.`;
+
+    const result = await model.generateContent({
+      contents: [{
+        role: 'user',
+        parts: [
+          { text: prompt },
+          { inlineData: { mimeType, data: base64 } }
+        ]
+      }],
+      generationConfig: { responseModalities: ['image'] }
+    });
+
+    const parts = result.response.candidates?.[0]?.content?.parts || [];
+    const imgPart = parts.find(p => p.inlineData);
+    if (!imgPart) return res.status(500).json({ error: 'Gemini n\'a pas retourné d\'image. Essayez avec une autre photo.' });
+
+    const imgBuffer = Buffer.from(imgPart.inlineData.data, 'base64');
+
+    if (cloudinary) {
+      const ext = filename.startsWith('http') ? '.jpg' : path.extname(filename);
+      const base = filename.startsWith('http')
+        ? `stylized-${uuidv4()}`
+        : path.basename(filename, ext) + '-stylized';
+      const stylizedUrl = await cldUploadBuffer(imgBuffer, `${base}${ext}`);
+      res.json({ stylizedFilename: stylizedUrl });
+    } else {
+      const ext = path.extname(filename);
+      const base = path.basename(filename, ext);
+      const stylizedFilename = `${base}-stylized${ext}`;
+      fs.writeFileSync(path.join(UPLOADS_DIR, stylizedFilename), imgBuffer);
+      res.json({ stylizedFilename });
+    }
+  } catch (err) {
+    console.error('Stylize error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -202,9 +356,7 @@ app.get('/api/export/shopify', (req, res) => {
     return /[,"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
   };
   const csvRow = fields => fields.map(csvCell).join(',');
-
   const emptyBase = new Array(HEADERS.length).fill('');
-
   const rows = [csvRow(HEADERS)];
 
   collections.filter(c => c.itemStatus !== 'Vendu' && c.itemStatus !== 'Brouillon').forEach(c => {
@@ -245,15 +397,21 @@ app.get('/api/export/shopify', (req, res) => {
     base[HEADERS.indexOf('SEO description')]          = c.description || '';
     base[HEADERS.indexOf('Google Shopping / Condition')] = 'used';
 
+    // Resolve photo URL for Shopify (Cloudinary = already full URL; local = build full URL)
+    const resolvePhotoUrl = (ref) => {
+      if (ref && ref.startsWith('http')) return ref;
+      return `${baseUrl}/uploads/${ref}`;
+    };
+
     if (!photos.length) {
       rows.push(csvRow(base));
     } else {
       photos.forEach((photo, idx) => {
         const row = idx === 0 ? [...base] : [...emptyBase];
-        row[HEADERS.indexOf('URL handle')]     = handle;
-        row[HEADERS.indexOf('Product image URL')] = `${baseUrl}/uploads/${photo}`;
-        row[HEADERS.indexOf('Image position')] = idx + 1;
-        row[HEADERS.indexOf('Image alt text')] = idx === 0 ? (c.name || '') : '';
+        row[HEADERS.indexOf('URL handle')]       = handle;
+        row[HEADERS.indexOf('Product image URL')] = resolvePhotoUrl(photo);
+        row[HEADERS.indexOf('Image position')]   = idx + 1;
+        row[HEADERS.indexOf('Image alt text')]   = idx === 0 ? (c.name || '') : '';
         rows.push(csvRow(row));
       });
     }
@@ -262,6 +420,44 @@ app.get('/api/export/shopify', (req, res) => {
   res.setHeader('Content-Disposition', `attachment; filename="shopify-export-${Date.now()}.csv"`);
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
   res.send('\uFEFF' + rows.join('\n'));
+});
+
+// ── Export photos ZIP ─────────────────────────────────────────────────────────
+app.get('/api/export/photos-zip', async (req, res) => {
+  const collections = readCollections();
+  const archive = archiver('zip', { zlib: { level: 6 } });
+
+  res.setHeader('Content-Disposition', `attachment; filename="photos-archive-${Date.now()}.zip"`);
+  res.setHeader('Content-Type', 'application/zip');
+  archive.pipe(res);
+
+  for (const c of collections) {
+    const allPhotos = [...(c.photos || [])];
+    if (c.photoEnhanced) allPhotos.push(c.photoEnhanced);
+
+    for (const ref of allPhotos) {
+      if (!ref) continue;
+      const safeName = (c.name || 'objet').replace(/[^a-zA-Z0-9_\-]/g, '_').slice(0, 40);
+
+      if (ref.startsWith('http')) {
+        try {
+          const response = await fetch(ref);
+          if (response.ok) {
+            const buf = Buffer.from(await response.arrayBuffer());
+            const ext = ref.split('?')[0].split('.').pop() || 'jpg';
+            archive.append(buf, { name: `${safeName}_${uuidv4().slice(0,8)}.${ext}` });
+          }
+        } catch (e) { /* skip */ }
+      } else {
+        const p = path.join(UPLOADS_DIR, ref);
+        if (fs.existsSync(p)) {
+          archive.file(p, { name: `${safeName}_${path.basename(ref)}` });
+        }
+      }
+    }
+  }
+
+  archive.finalize();
 });
 
 app.listen(PORT, () => console.log(`Brocante Archive → http://localhost:${PORT}`));

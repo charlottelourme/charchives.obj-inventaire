@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#2D2D2D">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CHARCHIVES">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
   <title>Brocante Archive</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +34,7 @@
     <button class="view-tab" id="viewCatalogue">Catalogue</button>
     <button class="view-tab" id="viewTimeline">Frise</button>
     <button class="view-tab" id="viewCalendar">Calendrier</button>
+    <button class="view-tab" id="viewTrios">✦ Trios</button>
     <button class="view-tab" id="viewStats">Stats</button>
   </div>
   <div class="header-actions">
@@ -83,14 +90,19 @@
 
   <!-- ── Timeline view ── -->
   <div id="timelineView" style="display:none">
-    <div class="tl-controls">
-      <button class="tl-btn" id="zoomOut">−</button>
-      <span id="zoomLabel">100%</span>
-      <button class="tl-btn" id="zoomIn">+</button>
-      <button class="tl-btn tl-reset" id="zoomReset">Réinitialiser</button>
-      <span class="tl-hint">Molette pour zoomer · Glisser pour déplacer</span>
+    <div class="tl-mode-bar">
+      <button class="tl-mode-btn active" id="tlModeChron" data-mode="chrono">Par date d'acquisition</button>
+      <button class="tl-mode-btn" id="tlModeOrigine" data-mode="origine">Par période</button>
+      <span class="tl-mode-sep"></span>
+      <select id="tlJumpSelect" class="cal-quick-select tl-jump-select">
+        <option value="">Aller à…</option>
+      </select>
     </div>
-    <div class="timeline-wrap" id="timelineWrap">
+    <div class="tl-chrono-scroll" id="tlChronoScroll" style="display:none">
+      <div class="tl-chrono-inner" id="tlChronoItems"></div>
+    </div>
+    <!-- Kept for "Par période" mode -->
+    <div id="timelineWrap" style="display:none">
       <div class="timeline" id="timelineInner">
         <div class="timeline-line"></div>
         <div id="timelineItems" style="display:contents"></div>
@@ -101,23 +113,20 @@
   <!-- ── Calendar view ── -->
   <div id="calendarView" style="display:none">
     <div class="cal-controls">
-      <button class="tl-btn" id="calYearBefore">‹ Année</button>
-      <button class="tl-btn" id="calYearAfter">Année ›</button>
+      <button class="tl-btn" id="calPrevMonth">‹</button>
+      <h2 class="cal-nav-label" id="calMonthLabel">Janvier 2025</h2>
+      <button class="tl-btn" id="calNextMonth">›</button>
+      <span class="cal-controls-sep"></span>
+      <select id="calMonthSelect" class="cal-quick-select"></select>
+      <select id="calYearSelect" class="cal-quick-select"></select>
       <span class="cal-controls-sep"></span>
       <select id="calDateTypeSelect" class="attr-filter-select">
         <option value="createdAt">Date d'ajout</option>
-        <option value="date">Date (ancienne)</option>
         <option value="dateAchat">Date d'achat</option>
       </select>
-      <span class="cal-controls-sep"></span>
-      <span class="tl-hint">Ajouter :</span>
-      <input type="number" id="calManualInput" class="cal-year-input" placeholder="ex. 2027" min="1900" max="2200">
-      <button class="tl-btn" id="calManualAdd">OK</button>
-      <span class="cal-controls-sep"></span>
-      <div id="calCategoryFilters" class="cal-cat-filters"></div>
     </div>
-    <div class="cal-scroll" id="calScroll">
-      <div id="calGrid" class="cal-grid"></div>
+    <div class="cal-day-scroll" id="calScroll">
+      <div id="calGrid" class="cal-day-grid"></div>
     </div>
   </div>
 
@@ -130,6 +139,23 @@
       <button class="btn btn-primary" id="cataloguePrintBtn">Imprimer / PDF</button>
     </div>
     <div id="catalogueContent" class="catalogue-content"></div>
+  </div>
+
+  <!-- ── Trios view ── -->
+  <div id="triosView" style="display:none">
+    <div class="trios-view">
+      <div class="trios-hero">
+        <h2 class="trios-headline">Trios d'objets</h2>
+        <button class="trios-generate-btn" id="triosGenerateBtn">Composer un trio</button>
+      </div>
+      <div id="triosResult" class="trios-result" style="display:none">
+        <div class="trios-link-bar" id="triosLinkBar"></div>
+        <div class="trios-grid" id="triosGrid"></div>
+      </div>
+      <div id="triosEmpty" class="trios-empty" style="display:none">
+        Il faut au moins 3 objets dans votre inventaire pour générer un trio.
+      </div>
+    </div>
   </div>
 
   <!-- ── Stats view ── -->
@@ -162,6 +188,10 @@
           <div class="stats-chart-title">Répartition par statut</div>
           <div class="stats-chart-wrap"><canvas id="chartStatus"></canvas></div>
         </div>
+      </div>
+      <div class="stats-chart-box">
+        <div class="stats-chart-title">Répartition par intention</div>
+        <div class="stats-chart-wrap stats-chart-wrap-intentions"><canvas id="chartIntentions"></canvas></div>
       </div>
       <div class="stats-chart-box">
         <div class="stats-chart-title">Mots-clés les plus utilisés</div>
@@ -236,23 +266,25 @@
         </div>
 
         <!-- 5. Intention + Typologie -->
-        <div class="field-row">
-          <div class="field">
-            <label>Intention</label>
-            <select id="fCategory">
-              <option value="">— Choisir —</option>
-            </select>
+        <div class="form-intent-band">
+          <div class="field-row">
+            <div class="field">
+              <label>Intention</label>
+              <select id="fCategory">
+                <option value="">— Choisir —</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Typologie</label>
+              <select id="fSubcategory">
+                <option value="">— Choisir —</option>
+              </select>
+            </div>
           </div>
-          <div class="field">
-            <label>Typologie</label>
-            <select id="fSubcategory">
-              <option value="">— Choisir —</option>
-            </select>
+          <div class="field" id="fSubcategoryCustomField" style="display:none">
+            <label>Préciser la typologie</label>
+            <input type="text" id="fSubcategoryCustom" placeholder="Votre typologie…">
           </div>
-        </div>
-        <div class="field" id="fSubcategoryCustomField" style="display:none">
-          <label>Préciser la typologie</label>
-          <input type="text" id="fSubcategoryCustom" placeholder="Votre typologie…">
         </div>
 
         <!-- 6. Dépôt vente + Pièce d'artiste -->
@@ -265,23 +297,13 @@
           </div>
           <div class="checkbox-line">
             <label class="checkbox-label">
-              <input type="checkbox" id="fArtiste"> Pièce d'artiste contemporain
+              <input type="checkbox" id="fArtiste"> Création
             </label>
             <input type="text" class="checkbox-name-input" id="fArtisteName" placeholder="Nom de l'artiste…">
           </div>
         </div>
 
-        <!-- 7. Univers & Atmosphère (pliable) -->
-        <div class="attr-section" id="universSection">
-          <div class="attr-section-header" id="universHeader">
-            <span>Atmosphère</span><span class="attr-toggle">›</span>
-          </div>
-          <div class="attr-section-body" id="universBody" style="display:none">
-            <div class="attr-chips" id="universChips"></div>
-          </div>
-        </div>
-
-        <!-- 8. Attributs accordion (rendered dynamically by renderAllAttributes()) -->
+        <!-- Attributs accordion + Atmosphère — tout rendu dynamiquement par renderAllAttributes() -->
         <div class="attrs-accordion" id="attrsAccordion"></div>
 
         <!-- 8. Tags libres -->
@@ -489,10 +511,10 @@
 </div>
 
 <!-- Keyword floating preview -->
-<div id="kwFloatPreview" style="display:none;position:fixed;z-index:500;width:264px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.14);overflow:hidden;pointer-events:none"></div>
+<div id="kwFloatPreview" style="display:none;position:fixed;z-index:500;width:264px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(26,26,26,.14);overflow:hidden;pointer-events:none"></div>
 
 <!-- Timeline floating preview -->
-<div id="timelineFloatPreview" style="display:none;position:fixed;z-index:500;width:220px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.14);overflow:hidden;pointer-events:none"></div>
+<div id="timelineFloatPreview" style="display:none;position:fixed;z-index:500;width:220px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(26,26,26,.14);overflow:hidden;pointer-events:none"></div>
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox" style="display:none">
@@ -509,6 +531,7 @@
 <div class="export-footer">
   <button class="btn btn-ghost btn-sm" id="exportJsonBtn">↓ JSON</button>
   <button class="btn btn-ghost btn-sm" id="exportShopifyBtn">↓ Shopify CSV</button>
+  <a class="btn btn-ghost btn-sm" href="/api/export/photos-zip" download>↓ Photos ZIP</a>
 </div>
 
 <!-- ── Settings Modal (standalone) ── -->
@@ -529,5 +552,12 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+</script>
 </body>
 </html>
