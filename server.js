@@ -205,7 +205,7 @@ app.post('/api/enhance-photo', async (req, res) => {
 
     const base64 = imageData.toString('base64');
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-preview-image-generation' });
 
     const result = await model.generateContent({
       contents: [{
@@ -267,7 +267,7 @@ app.post('/api/stylize-photo', async (req, res) => {
 
     const base64 = imageData.toString('base64');
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-preview-image-generation' });
 
     const prompt = `Perform an image-to-image transformation based on the provided staged photo. Retain the exact composition, objects, and layout. Apply a fine, realistic film grain texture across the entire image for a nostalgic, analog feel. Apply a light, soft vignette around the edges. Crucially, this vignette must not be black, but must utilize a subtle tint of ${hexColor}, blending smoothly with the warm lighting of the scene. The overall aesthetic should be soft, matte, warm, and resemble a high-quality analog photo. Do not generate new objects; do not alter the shape of existing objects.`;
 
