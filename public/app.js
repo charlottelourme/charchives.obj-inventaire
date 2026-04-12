@@ -265,9 +265,10 @@ function buildCategoryFilterBar() {
   bar.querySelectorAll('.sfb-pill').forEach(pill => {
     pill.addEventListener('mouseenter', () => {
       if (!pill.classList.contains('active') && pill.dataset.bg) {
-        pill.style.background = pill.dataset.bg;
-        pill.style.color = pill.dataset.fg;
-        pill.style.borderColor = pill.dataset.bg;
+        // Anticipation douce : fond à 15% du bgColor (pas la teinte pleine — réservée au clic)
+        pill.style.background = pill.dataset.bg + '26';
+        pill.style.color = 'var(--text)';
+        pill.style.borderColor = '';
       }
     });
     pill.addEventListener('mouseleave', () => {
@@ -323,8 +324,22 @@ function buildTypologiesBar() {
   }
   typologies.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
 
-  if (!typologies.length) { bar.style.display = 'none'; return; }
+  if (!typologies.length) { bar.style.display = 'none'; bar.style.background = ''; return; }
   bar.style.display = '';
+
+  // Fond légèrement teinté par le verbe actif (7% opacité) — relie visuellement les deux barres
+  if (state.categoryFilter) {
+    const activeVerbe = getVerbes().find(v => v.name === state.categoryFilter);
+    if (activeVerbe) {
+      const hex = activeVerbe.bgColor || activeVerbe.color || '';
+      if (hex && hex.startsWith('#') && hex.length >= 7) {
+        const r = parseInt(hex.slice(1,3),16);
+        const g = parseInt(hex.slice(3,5),16);
+        const b = parseInt(hex.slice(5,7),16);
+        bar.style.background = `rgba(${r},${g},${b},0.07)`;
+      } else { bar.style.background = ''; }
+    } else { bar.style.background = ''; }
+  } else { bar.style.background = ''; }
 
   const selected = state.attrFilters.subcat;
   bar.innerHTML = '<span class="sfb-label">Objet</span>';
@@ -594,9 +609,10 @@ function cardHTML(c) {
   const metaRow = (verbeLabel || typoLabel) ? `<div class="card-meta-row">${verbeLabel}${typoLabel}</div>` : '';
   const priceBadge = c.price != null && c.price !== '' ? `<span class="card-price">${c.price} €</span>` : '';
   const addedDate = c.createdAt ? `<div class="card-added-date">${formatRelativeDate(c.createdAt)}</div>` : '';
+  const accentStyle = (bgColor && bgColor !== 'transparent') ? ` style="--verbe-accent:${bgColor}"` : '';
 
   return `
-  <div class="card" data-id="${c.id}">
+  <div class="card" data-id="${c.id}"${accentStyle}>
     <div class="card-thumb-area">
       ${statusBadge}
       ${photo

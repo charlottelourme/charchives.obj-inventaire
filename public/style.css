@@ -328,7 +328,7 @@ main { padding: 0; }
 }
 .grid .card {
   border-top: none;
-  border-left: none;
+  border-left: 3px solid var(--verbe-accent, transparent);
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
