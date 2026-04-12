@@ -605,9 +605,6 @@ app.post('/api/analyze-photo', async (req, res) => {
     if (!filename) return res.status(400).json({ error: 'filename requis' });
 
     const { buffer, mimeType } = await loadImageData(filename);
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    // gemini-2.0-flash-lite : quota gratuit plus généreux
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
 
     const prompt = `Tu es un expert en antiquités, brocante et objets vintage. Analyse cette image et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks, sans explication) avec exactement cette structure :
 
@@ -639,47 +636,58 @@ Pour "category", choisis le verbe qui correspond le mieux à la vocation émotio
 - Porter : bijoux, accessoires, sculptures à porter, habits
 
 Pour les couleurs, utilise des noms simples : blanc, noir, gris, beige, crème, ivoire, marron, brun, rouge, rose, orange, jaune, doré, vert, bleu, violet, transparent.
-
 Pour les matières, utilise : bois, métal, fer, cuivre, laiton, argent, or, céramique, faïence, porcelaine, verre, cristal, tissu, cuir, papier, pierre, marbre.
-
 IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`;
 
     // Extraction JSON robuste : gère traces <think>, markdown, virgules parasites
     function extractJson(text) {
       let s = text
-        .replace(/<think>[\s\S]*?<\/think>/gi, '') // remove thinking traces
-        .replace(/^```(?:json)?\s*/i, '')           // remove opening markdown
-        .replace(/\s*```\s*$/i, '')                 // remove closing markdown
+        .replace(/<think>[\s\S]*?<\/think>/gi, '')
+        .replace(/^```(?:json)?\s*/i, '')
+        .replace(/\s*```\s*$/i, '')
         .trim();
       try { return JSON.parse(s); } catch {}
-      // Find first JSON object anywhere in remaining text
       const m = s.match(/\{[\s\S]*\}/);
-      if (m) {
-        const fixed = m[0].replace(/,(\s*[}\]])/g, '$1'); // fix trailing commas
-        return JSON.parse(fixed);
-      }
+      if (m) return JSON.parse(m[0].replace(/,(\s*[}\]])/g, '$1'));
       throw new Error('Aucun JSON trouvé dans la réponse');
+    }
+
+    // Appel direct à l'API Gemini v1 (bypass du SDK qui utilise v1beta)
+    async function callGeminiV1(model) {
+      const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+      const body = {
+        contents: [{
+          role: 'user',
+          parts: [
+            { text: prompt },
+            { inline_data: { mime_type: mimeType, data: buffer.toString('base64') } }
+          ]
+        }],
+        generationConfig: { temperature: 0.2 }
+      };
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!resp.ok) {
+        const err = await resp.text();
+        throw new Error(err);
+      }
+      const json = await resp.json();
+      return json.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
 
     // Retry 3 fois avec délai croissant
     let lastError;
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
-        const result = await model.generateContent({
-          contents: [{
-            role: 'user',
-            parts: [
-              { text: prompt },
-              { inlineData: { mimeType, data: buffer.toString('base64') } }
-            ]
-          }]
-        });
-        const text = result.response.text().trim();
+        const text = await callGeminiV1('gemini-2.0-flash-lite');
         const data = extractJson(text);
         return res.json(data);
       } catch (err) {
         lastError = err;
-        console.warn(`Analyze tentative ${attempt}/3 échouée : ${err.message}`);
+        console.warn(`Analyze tentative ${attempt}/3 échouée : ${err.message?.slice(0, 120)}`);
         if (attempt < 3) await new Promise(r => setTimeout(r, 1000 * attempt));
       }
     }
