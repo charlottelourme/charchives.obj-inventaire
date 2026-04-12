@@ -1754,6 +1754,124 @@ function _getSelectedVerbeTextColor() {
   return verbe ? (verbe.textColor || null) : null;
 }
 
+// ── IA : analyse photo → pré-remplissage automatique de la fiche ──────────────
+async function _analyzeAndFillForm(filename) {
+  // Affiche le bandeau de chargement
+  const banner = document.getElementById('aiAnalyzeBanner');
+  const bannerLabel = document.getElementById('aiAnalyzeLabel');
+  if (banner) { banner.style.display = 'flex'; banner.dataset.state = 'loading'; }
+  if (bannerLabel) bannerLabel.textContent = 'Analyse de l\'objet en cours…';
+
+  try {
+    const data = await api.post('/api/analyze-photo', { filename });
+    if (data.error) throw new Error(data.error);
+
+    // Nom
+    const fName = document.getElementById('fName');
+    if (fName && !fName.value.trim()) fName.value = data.name || '';
+
+    // Description
+    const fDesc = document.getElementById('fDesc');
+    if (fDesc && !fDesc.value.trim()) fDesc.value = data.description || '';
+
+    // Prix
+    const fPrice = document.getElementById('fPrice');
+    if (fPrice && !fPrice.value && data.price) fPrice.value = data.price;
+
+    // Catégorie (Intention)
+    const fCat = document.getElementById('fCategory');
+    if (fCat && !fCat.value && data.category) {
+      const opt = [...fCat.options].find(o => o.value === data.category);
+      if (opt) {
+        fCat.value = data.category;
+        fCat.dispatchEvent(new Event('change'));
+      }
+    }
+
+    // Sous-catégorie
+    setTimeout(() => {
+      const fSub = document.getElementById('fSubcategory');
+      if (fSub && data.subcategory) {
+        const opt = [...fSub.options].find(o =>
+          o.value.toLowerCase() === data.subcategory.toLowerCase()
+        );
+        if (opt) fSub.value = opt.value;
+        else {
+          // Valeur personnalisée
+          const autreOpt = [...fSub.options].find(o => o.value === 'Autre');
+          if (autreOpt) {
+            fSub.value = 'Autre';
+            fSub.dispatchEvent(new Event('change'));
+            const custom = document.getElementById('fSubcategoryCustom');
+            if (custom) custom.value = data.subcategory;
+          }
+        }
+      }
+    }, 150);
+
+    // Attributs
+    if (data.attributes && typeof data.attributes === 'object') {
+      const attrMap = {
+        matieres: 'matieres',
+        couleurs: 'couleurs',
+        etat_traces: 'etat_traces',
+        usage: 'usage',
+        origine: 'origine',
+        taille: 'taille',
+        motifs: 'motifs'
+      };
+      Object.entries(attrMap).forEach(([aiKey, stateKey]) => {
+        const vals = data.attributes[aiKey];
+        if (!vals || !vals.length) return;
+        const def = ATTRIBUTES_DEF[stateKey];
+        if (!def) return;
+        const available = def.options || [];
+        // Match fuzzy sur les options disponibles
+        const matched = vals
+          .map(v => available.find(opt =>
+            opt.toLowerCase() === v.toLowerCase() ||
+            opt.toLowerCase().includes(v.toLowerCase()) ||
+            v.toLowerCase().includes(opt.toLowerCase())
+          ))
+          .filter(Boolean);
+        if (matched.length) {
+          state.editAttributes[stateKey] = matched;
+        }
+      });
+      renderAllAttributes();
+    }
+
+    // Mots-clés
+    if (data.keywords?.length) {
+      const existing = new Set(state.editKeywords || []);
+      data.keywords.forEach(k => existing.add(k));
+      state.editKeywords = [...existing];
+      renderKeywords?.();
+    }
+
+    // Univers / Ambiance
+    if (data.univers?.length) {
+      const existing = new Set(state.editUnivers || []);
+      data.univers.forEach(u => existing.add(u));
+      state.editUnivers = [...existing];
+      renderUniversChips?.();
+    }
+
+    // Bandeau succès
+    if (banner) banner.dataset.state = 'done';
+    if (bannerLabel) bannerLabel.textContent = '✦ Fiche pré-remplie — vérifie et ajuste !';
+    setTimeout(() => {
+      if (banner) banner.style.display = 'none';
+    }, 4000);
+
+  } catch (err) {
+    console.error('Analyze error:', err);
+    if (banner) banner.dataset.state = 'error';
+    if (bannerLabel) bannerLabel.textContent = 'Analyse impossible — remplis manuellement.';
+    setTimeout(() => { if (banner) banner.style.display = 'none'; }, 3000);
+  }
+}
+
 // Enable / disable all .photo-stylize buttons based on fCategory selection
 function _updateStylizeButtonsState() {
   const color = _getSelectedVerbeTextColor();
@@ -1791,6 +1909,7 @@ function renderPhotos() {
         <button class="photo-remove" data-i="${i}" title="Supprimer">✕</button>
       </div>
       <div class="photo-ai-bar">
+        ${i===0 ? `<button class="photo-analyze" data-i="0" title="Analyser l'objet et pré-remplir la fiche">✦ Analyser</button>` : ''}
         <button class="photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Retouche studio AI">✦ Packshot</button>
         <button class="photo-stylize" data-i="${i}" data-filename="${esc(filename)}"
           ${hasIntention ? '' : 'disabled'}
@@ -1991,6 +2110,16 @@ function renderPhotos() {
       }
     });
   });
+
+  // Bouton "Re-analyser" sur la première photo
+  el.querySelectorAll('.photo-analyze').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const i = parseInt(btn.dataset.i);
+      const filename = state.editPhotos[i];
+      _analyzeAndFillForm(filename);
+    });
+  });
 }
 
 async function handlePhotoFiles(files) {
@@ -1998,6 +2127,11 @@ async function handlePhotoFiles(files) {
   const {filenames} = await api.uploadPhotos([...files]);
   state.editPhotos.push(...filenames);
   renderPhotos();
+
+  // Auto-analyse IA si c'est la première photo et que le nom est vide
+  if (state.editPhotos.length > 0 && !document.getElementById('fName')?.value.trim()) {
+    _analyzeAndFillForm(state.editPhotos[0]);
+  }
 }
 
 // ── Private Photos ─────────────────────────────────────────────────────────────

@@ -501,6 +501,70 @@ app.get('/api/export/photos-zip', async (req, res) => {
   archive.finalize();
 });
 
+// ── Analyse photo IA → pré-remplissage fiche ──────────────────────────────────
+app.post('/api/analyze-photo', async (req, res) => {
+  try {
+    const { filename } = req.body;
+    if (!filename) return res.status(400).json({ error: 'filename requis' });
+
+    const { buffer, mimeType } = await loadImageData(filename);
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+    const prompt = `Tu es un expert en antiquités, brocante et objets vintage. Analyse cette image et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks) avec exactement cette structure :
+
+{
+  "name": "nom précis et descriptif de l'objet en français",
+  "description": "description détaillée en français (2-3 phrases) couvrant la matière, la période supposée, l'état, les éléments décoratifs notables",
+  "category": "une valeur parmi : S'entourer|Partager|S'étonner|Cacher|Raconter|Éclairer|Porter",
+  "subcategory": "type précis de l'objet en français (ex: Vase, Lampe, Tableau, Miroir, Boîte, etc.)",
+  "attributes": {
+    "matieres": ["matière1", "matière2"],
+    "couleurs": ["couleur1", "couleur2"],
+    "etat_traces": ["bon état" ou "traces d'usure" ou "restauré" ou "à restaurer"],
+    "usage": ["usage principal"],
+    "origine": ["période ou pays d'origine supposé"],
+    "taille": ["petit" ou "moyen" ou "grand"]
+  },
+  "keywords": ["mot-clé1", "mot-clé2", "mot-clé3", "mot-clé4"],
+  "univers": ["ambiance1", "ambiance2"],
+  "price": prix_suggéré_en_euros_nombre_entier
+}
+
+Pour "category", choisis le verbe qui correspond le mieux à la vocation émotionnelle de l'objet :
+- S'entourer : objets décoratifs du quotidien, créant confort et cocon
+- Partager : objets de convivialité, table, don, échange
+- S'étonner : objets insolites, rares, surprenants, collectibles
+- Cacher : objets mystérieux, intimes, boîtes, coffrets
+- Raconter : objets porteurs d'histoire, portraits, narratifs
+- Éclairer : luminaires, vitraux, transparents, objets lumineux
+- Porter : bijoux, accessoires, sculptures à porter, habits
+
+Pour les couleurs, utilise des noms simples : blanc, noir, gris, beige, crème, ivoire, marron, brun, rouge, rose, orange, jaune, doré, vert, bleu, violet, transparent.
+
+Pour les matières, utilise : bois, métal, fer, cuivre, laiton, argent, or, céramique, faïence, porcelaine, verre, cristal, tissu, cuir, papier, pierre, marbre.`;
+
+    const result = await model.generateContent({
+      contents: [{
+        role: 'user',
+        parts: [
+          { text: prompt },
+          { inlineData: { mimeType, data: buffer.toString('base64') } }
+        ]
+      }]
+    });
+
+    const text = result.response.text().trim();
+    // Clean up possible markdown code blocks
+    const clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+    const data = JSON.parse(clean);
+    res.json(data);
+  } catch (err) {
+    console.error('Analyze error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── Démarrage ─────────────────────────────────────────────────────────────────
 connectMongo()
   .catch(err => console.error('MongoDB non connecté, fallback fichiers JSON :', err.message))

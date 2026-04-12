@@ -3806,4 +3806,63 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 .stats-chart-wrap-intentions {
   height: 260px;
 }
+
+/* ── Banneau analyse IA ── */
+.ai-analyze-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  margin: -28px -28px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: var(--tag-bg);
+  border-bottom: 1px solid var(--border);
+  transition: background .3s;
+}
+.ai-analyze-banner[data-state="done"] {
+  background: #f0f7f0;
+  color: #3a6b3a;
+}
+.ai-analyze-banner[data-state="error"] {
+  background: #fdf0f0;
+  color: #7a3a3a;
+}
+.ai-analyze-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  flex-shrink: 0;
+}
+.ai-analyze-banner[data-state="done"] .ai-analyze-spinner,
+.ai-analyze-banner[data-state="error"] .ai-analyze-spinner {
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Bouton analyser dans photo-ai-bar */
+.photo-analyze {
+  flex: 1;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border-light);
+  font-size: 8.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-2);
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.photo-analyze:hover {
+  background: var(--tag-bg);
+  color: var(--text);
+}
 .stats-kpis { grid-template-columns: repeat(4, 1fr); }
