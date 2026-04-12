@@ -3388,6 +3388,12 @@ async function saveSettingsModal() {
   if (!d.verbes) d.verbes = [];
   const titleInput = document.querySelector('#settingsModalBody .sm-sitetitle-input');
   if (titleInput) d.siteTitle = titleInput.value.trim() || 'ARCHIVE';
+  // Lecture directe des labels Trios depuis le DOM (plus fiable que l'événement input)
+  document.querySelectorAll('#settingsModalBody .sm-trios-input').forEach(inp => {
+    if (!d.triosTabLabels) d.triosTabLabels = {};
+    const val = inp.value.trim();
+    d.triosTabLabels[inp.dataset.triosKey] = val || '';
+  });
   const saveBtn = document.getElementById('settingsModalSave');
   const origText = saveBtn.textContent;
   saveBtn.disabled = true;
