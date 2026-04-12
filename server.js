@@ -606,9 +606,10 @@ app.post('/api/analyze-photo', async (req, res) => {
 
     const { buffer, mimeType } = await loadImageData(filename);
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    // gemini-1.5-flash : modèle stable, pas de traces <think> qui cassent le JSON
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const prompt = `Tu es un expert en antiquités, brocante et objets vintage. Analyse cette image et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks) avec exactement cette structure :
+    const prompt = `Tu es un expert en antiquités, brocante et objets vintage. Analyse cette image et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks, sans explication) avec exactement cette structure :
 
 {
   "name": "nom précis et descriptif de l'objet en français",
@@ -621,7 +622,7 @@ app.post('/api/analyze-photo', async (req, res) => {
     "etat_traces": ["bon état" ou "traces d'usure" ou "restauré" ou "à restaurer"],
     "usage": ["usage principal"],
     "origine": ["période ou pays d'origine supposé"],
-    "taille": ["petit" ou "moyen" ou "grand"]
+    "taille": ["une valeur parmi : Miniature (<5cm)|Très petit (5-15cm)|Petit (15-30cm)|Moyen (30-60cm)|Grand (60-100cm)|Très grand (>100cm)"]
   },
   "keywords": ["mot-clé1", "mot-clé2", "mot-clé3", "mot-clé4"],
   "univers": ["ambiance1", "ambiance2"],
@@ -639,22 +640,50 @@ Pour "category", choisis le verbe qui correspond le mieux à la vocation émotio
 
 Pour les couleurs, utilise des noms simples : blanc, noir, gris, beige, crème, ivoire, marron, brun, rouge, rose, orange, jaune, doré, vert, bleu, violet, transparent.
 
-Pour les matières, utilise : bois, métal, fer, cuivre, laiton, argent, or, céramique, faïence, porcelaine, verre, cristal, tissu, cuir, papier, pierre, marbre.`;
+Pour les matières, utilise : bois, métal, fer, cuivre, laiton, argent, or, céramique, faïence, porcelaine, verre, cristal, tissu, cuir, papier, pierre, marbre.
 
-    const result = await model.generateContent({
-      contents: [{
-        role: 'user',
-        parts: [
-          { text: prompt },
-          { inlineData: { mimeType, data: buffer.toString('base64') } }
-        ]
-      }]
-    });
+IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`;
 
-    const text  = result.response.text().trim();
-    const clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-    const data  = JSON.parse(clean);
-    res.json(data);
+    // Extraction JSON robuste : gère traces <think>, markdown, virgules parasites
+    function extractJson(text) {
+      let s = text
+        .replace(/<think>[\s\S]*?<\/think>/gi, '') // remove thinking traces
+        .replace(/^```(?:json)?\s*/i, '')           // remove opening markdown
+        .replace(/\s*```\s*$/i, '')                 // remove closing markdown
+        .trim();
+      try { return JSON.parse(s); } catch {}
+      // Find first JSON object anywhere in remaining text
+      const m = s.match(/\{[\s\S]*\}/);
+      if (m) {
+        const fixed = m[0].replace(/,(\s*[}\]])/g, '$1'); // fix trailing commas
+        return JSON.parse(fixed);
+      }
+      throw new Error('Aucun JSON trouvé dans la réponse');
+    }
+
+    // Retry 3 fois avec délai croissant
+    let lastError;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const result = await model.generateContent({
+          contents: [{
+            role: 'user',
+            parts: [
+              { text: prompt },
+              { inlineData: { mimeType, data: buffer.toString('base64') } }
+            ]
+          }]
+        });
+        const text = result.response.text().trim();
+        const data = extractJson(text);
+        return res.json(data);
+      } catch (err) {
+        lastError = err;
+        console.warn(`Analyze tentative ${attempt}/3 échouée : ${err.message}`);
+        if (attempt < 3) await new Promise(r => setTimeout(r, 1000 * attempt));
+      }
+    }
+    throw lastError;
   } catch (err) {
     console.error('Analyze error:', err.message);
     res.status(500).json({ error: err.message });
