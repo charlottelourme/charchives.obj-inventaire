@@ -2876,8 +2876,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* ── Mobile responsive ─────────────────────────────────────────── */
 @media (max-width: 520px) {
+  /* ── Header ── */
   header {
-    padding: 0 12px;
+    padding: 0 16px;
     height: auto;
     min-height: 52px;
     flex-wrap: wrap;
@@ -2888,38 +2889,108 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   .header-sep { display: none; }
   .search-wrap { order: 3; width: 100%; }
   .search-bar { max-width: 100%; min-width: 0; }
-  .view-tabs { order: 2; }
-  .view-tab { padding: 4px 8px; font-size: 11px; }
-  .header-actions { order: 1; }
+  .view-tabs { order: 2; overflow-x: auto; flex-shrink: 1; }
+  .view-tab { padding: 4px 10px; font-size: 10px; }
+  .header-actions { order: 1; margin-left: auto; }
   .header-actions .btn-ghost:not(.btn-icon) { display: none; }
 
-  #gridWrapper { padding: 12px; }
-  .toolbar { flex-wrap: wrap; }
+  /* ── Toolbar ── */
+  #gridWrapper { padding: 0; }
+  .toolbar { flex-wrap: wrap; padding: 10px 16px; }
   .toolbar-right { width: 100%; justify-content: flex-end; }
-  .status-filter-bar { display: none; } /* hide on mobile to save space */
 
-  .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  /* ── Barre Verbes : scroll horizontal swipeable ── */
+  .status-filter-bar {
+    display: flex;
+    flex-wrap: nowrap;          /* une seule ligne */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scrollbar-width: none;      /* Firefox */
+    border-bottom: 1px solid var(--border);
+    min-height: 48px;
+    padding: 0 4px;
+    gap: 0;
+  }
+  .status-filter-bar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
-  .modal { max-height: 100vh; max-width: 100%; border-radius: 0; }
+  /* Label fixe à gauche, légèrement plus compact */
+  .sfb-label {
+    min-width: 60px;
+    font-size: 8px;
+    padding: 6px 10px;
+    position: sticky;
+    left: 0;
+    background: var(--bg);
+    z-index: 2;
+    flex-shrink: 0;
+  }
+
+  /* Pills verbes : taille réduite mais lisibles */
+  .sfb-pill-verbe {
+    font-size: 13px;
+    padding: 8px 16px;
+    flex-shrink: 0;
+  }
+  .sfb-pill { flex-shrink: 0; }
+
+  /* Barre sous-catégories : scroll horizontal aussi */
+  #subcategoryFilterBar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 8px 12px;
+  }
+  #subcategoryFilterBar::-webkit-scrollbar { display: none; }
+
+  /* ── Grille : 2 colonnes sur mobile ── */
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    border-left: none;
+    border-right: none;
+  }
+  .grid .card { border-left: none; }
+
+  /* ── Modal : plein écran slide-up ── */
   .modal-overlay { padding: 0; align-items: flex-end; }
-  .modal { border-radius: 16px 16px 0 0; max-height: 95vh; }
+  .modal {
+    border-radius: 20px 20px 0 0;
+    max-height: 96vh;
+    max-width: 100%;
+    width: 100%;
+    box-shadow: 0 -4px 40px rgba(45,45,45,.18);
+  }
+  .modal-body { padding: 20px 16px 32px; }
+  .modal-header { padding: 16px 16px 0; }
+  .modal-footer { padding: 12px 16px; }
 
+  /* ── Champs formulaire ── */
   .field-row { grid-template-columns: 1fr; }
-  .field-row:has(#fSubcategory) { grid-template-columns: 1fr; }
 
+  /* ── Stats ── */
   .stats-kpis { grid-template-columns: repeat(2, 1fr); }
   .stats-charts-row { grid-template-columns: 1fr; }
 
-  #catalogueView { padding: 12px; }
+  /* ── Catalogue ── */
+  #catalogueView { padding: 0 16px 24px; }
   .cat-row-thumb { width: 40px; height: 40px; }
 
+  /* ── FAB mobile ── */
   .fab { display: flex; }
   #newBtn { display: none; }
 }
 
 @media (max-width: 480px) {
-  .view-tabs { overflow-x: auto; white-space: nowrap; }
-  .view-tab { font-size: 10px; padding: 3px 6px; }
+  /* Vue tabs : scroll horizontal */
+  .view-tabs { overflow-x: auto; scrollbar-width: none; }
+  .view-tabs::-webkit-scrollbar { display: none; }
+  .view-tab { font-size: 10px; padding: 3px 8px; white-space: nowrap; flex-shrink: 0; }
+}
+
+/* Tablette : 3 colonnes */
+@media (min-width: 521px) and (max-width: 900px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ── Dark Mode ── */
