@@ -327,6 +327,7 @@ async function init(attempt = 0) {
     buildSubcategoryBar();
     render();
     bindEvents();
+    _syncTriosTabLabels();
 
   } catch (err) {
     const isRetryable = err.type === 'starting' || err.type === 'network' || err.status === 503 || err.status === 502;
@@ -3327,8 +3328,24 @@ const SM_SECTION_DEFAULTS = {
   etat_traces: 'États',
   usage:       'Fonctions & Usages',
   univers:     'Atmosphères',
-  locations:   'Emplacements'
+  locations:   'Emplacements',
+  trios:       'Trios'
 };
+
+// Labels par défaut des onglets Trios
+const TRIOS_TAB_DEFAULTS = ['Hasard Contrôlé', 'Règles d\'Art', 'Éditeur Manuel'];
+const TRIOS_TAB_KEYS     = ['triosTab0', 'triosTab1', 'triosTab2'];
+
+function getTriosTabLabel(idx) {
+  const key = TRIOS_TAB_KEYS[idx];
+  return (state.settings.triosTabLabels?.[key]) || TRIOS_TAB_DEFAULTS[idx];
+}
+
+function _syncTriosTabLabels() {
+  document.querySelectorAll('.trios-tab-btn').forEach((btn, i) => {
+    btn.textContent = getTriosTabLabel(i);
+  });
+}
 
 function smGetCurrentLabel(draft, smKey) {
   const labelKey = SM_LABEL_KEY[smKey] || smKey;
@@ -3382,6 +3399,7 @@ async function saveSettingsModal() {
     renderAllAttributes();
     renderUniversChips();
     render();
+    _syncTriosTabLabels();
     closeSettingsModal();
   } catch(err) {
     try { localStorage.setItem('charlottearchive_settings_draft', JSON.stringify(d)); } catch(_) {}
@@ -3420,6 +3438,21 @@ function smAccordion(key, title, content, defaultOpen, editable = false) {
       <span class="sm-toggle">${isOpen ? '▾' : '›'}</span>
     </div>
     <div class="sm-accordion-body"${isOpen ? '' : ' style="display:none"'}>${content}</div>
+  </div>`;
+}
+
+function smTriosTabsHTML(draft) {
+  const labels = draft.triosTabLabels || {};
+  return `<div class="sm-trios-tabs">
+    <p class="sm-trios-hint">Renomme les 3 onglets de la vue Trios.</p>
+    ${TRIOS_TAB_KEYS.map((key, i) => `
+      <div class="sm-field-row">
+        <label class="sm-trios-tab-label">Onglet ${i+1}</label>
+        <input type="text" class="sm-input sm-trios-input"
+          data-trios-key="${key}"
+          value="${esc(labels[key] || TRIOS_TAB_DEFAULTS[i])}"
+          placeholder="${esc(TRIOS_TAB_DEFAULTS[i])}">
+      </div>`).join('')}
   </div>`;
 }
 
@@ -3524,6 +3557,7 @@ function renderSettingsModal() {
     ${smAccordion('usage', smGetCurrentLabel(draft, 'usage'), smListHTML(opts.usage || [...ATTRIBUTES_DEF.usage.options], 'usage'), false, true)}
     ${smAccordion('univers', smGetCurrentLabel(draft, 'univers'), smListHTML(draft.univers || [], 'univers'), false, true)}
     ${smAccordion('locations', smGetCurrentLabel(draft, 'locations'), smListHTML(draft.locations || [], 'locations'), false, true)}
+    ${smAccordion('trios', 'Onglets Trios', smTriosTabsHTML(draft), false, false)}
   </div>`;
   bindSmModal();
 }
@@ -3557,6 +3591,14 @@ function bindSmModal() {
       const labelKey = SM_LABEL_KEY[smKey] || smKey;
       if (!draft.attributeLabels) draft.attributeLabels = {};
       draft.attributeLabels[labelKey] = inp.value;
+    });
+  });
+
+  // Trios tab label bindings
+  body.querySelectorAll('.sm-trios-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      if (!draft.triosTabLabels) draft.triosTabLabels = {};
+      draft.triosTabLabels[inp.dataset.triosKey] = inp.value;
     });
   });
 
