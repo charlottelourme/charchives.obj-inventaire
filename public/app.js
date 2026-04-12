@@ -218,6 +218,7 @@ function syncAttrLabels() {
 function applyAttributeOptions() {
   const opts = state.settings.attributeOptions || {};
   if (opts.matieres?.length)    ATTRIBUTES_DEF.matieres.options    = opts.matieres;
+  if (opts.origine?.length)     ATTRIBUTES_DEF.origine.options     = opts.origine;
   if (opts.etat_traces?.length) ATTRIBUTES_DEF.etat_traces.options = opts.etat_traces;
   if (opts.usage?.length)       ATTRIBUTES_DEF.usage.options       = opts.usage;
   if (opts.role?.length)        ATTRIBUTES_DEF.role.options        = opts.role;
@@ -3327,6 +3328,7 @@ const SM_SECTION_DEFAULTS = {
   matieres:    'Matières',
   colors:      'Teintes',
   motifs:      'Motifs',
+  origine:     'Identité',
   etat_traces: 'États',
   usage:       'Fonctions & Usages',
   univers:     'Atmosphères',
@@ -3359,10 +3361,15 @@ function openSettingsModal() {
   if (!state.settingsDraft.attributeOptions) {
     state.settingsDraft.attributeOptions = {
       matieres:    [...ATTRIBUTES_DEF.matieres.options],
+      origine:     [...ATTRIBUTES_DEF.origine.options],
       etat_traces: [...ATTRIBUTES_DEF.etat_traces.options],
       usage:       [...ATTRIBUTES_DEF.usage.options],
       role:        [...ATTRIBUTES_DEF.role.options]
     };
+  }
+  // S'assurer que origine est toujours initialisé même sur ancien draft
+  if (!state.settingsDraft.attributeOptions.origine) {
+    state.settingsDraft.attributeOptions.origine = [...ATTRIBUTES_DEF.origine.options];
   }
   if (!state.settingsDraft.attributeLabels) state.settingsDraft.attributeLabels = {};
   _smExpandedVerbes.clear();
@@ -3420,7 +3427,7 @@ function smGetArray(draft, key) {
     case 'univers':   return draft.univers   || (draft.univers = []);
     case 'locations': return draft.locations || (draft.locations = []);
     default:
-      if (['matieres','etat_traces','usage','role'].includes(key)) {
+      if (['matieres','origine','etat_traces','usage','role'].includes(key)) {
         if (!draft.attributeOptions) draft.attributeOptions = {};
         if (!draft.attributeOptions[key]) draft.attributeOptions[key] = [...(ATTRIBUTES_DEF[key]?.options || [])];
         return draft.attributeOptions[key];
@@ -3553,6 +3560,7 @@ function renderSettingsModal() {
     </div>
     ${smAccordion('verbes', smGetCurrentLabel(draft, 'verbes'), smVerbesHTML(draft), true, false)}
     ${smAccordion('matieres', smGetCurrentLabel(draft, 'matieres'), smListHTML(opts.matieres || [...ATTRIBUTES_DEF.matieres.options], 'matieres'), false, true)}
+    ${smAccordion('origine', smGetCurrentLabel(draft, 'origine'), smListHTML(opts.origine || [...ATTRIBUTES_DEF.origine.options], 'origine'), false, true)}
     ${smAccordion('colors', smGetCurrentLabel(draft, 'colors'), smColorListHTML(draft.colors || [], draft), false, true)}
     ${smAccordion('motifs', smGetCurrentLabel(draft, 'motifs'), smListHTML(draft.motifs || [], 'motifs'), false, true)}
     ${smAccordion('etat_traces', smGetCurrentLabel(draft, 'etat_traces'), smListHTML(opts.etat_traces || [...ATTRIBUTES_DEF.etat_traces.options], 'etat_traces'), false, true)}
