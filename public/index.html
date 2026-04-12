@@ -243,11 +243,19 @@
 <!-- ── Floating mobile button ── -->
 <button class="fab" id="fabBtn" title="Ajouter un objet">+</button>
 
-<!-- ── Bottom nav — Frise · Calendrier · Stats ── -->
+<!-- ── Bottom bar — Export (gauche) + Navigation (droite) ── -->
 <nav class="bottom-nav">
-  <button class="view-tab" id="viewTimeline">Frise</button>
-  <button class="view-tab" id="viewCalendar">Calendrier</button>
-  <button class="view-tab" id="viewStats">Stats</button>
+  <div class="bottom-nav-exports">
+    <button class="btn-export" id="exportJsonBtn" title="Télécharger les données JSON">↓ JSON</button>
+    <button class="btn-export" id="exportShopifyBtn" title="Exporter Shopify CSV">↓ Shopify</button>
+    <a class="btn-export" href="/api/export/photos-zip" download title="Télécharger toutes les photos en ZIP">↓ Photos ZIP</a>
+  </div>
+  <div class="bottom-nav-sep"></div>
+  <div class="bottom-nav-views">
+    <button class="view-tab" id="viewTimeline">Frise</button>
+    <button class="view-tab" id="viewCalendar">Calendrier</button>
+    <button class="view-tab" id="viewStats">Stats</button>
+  </div>
 </nav>
 
 <!-- ── Edit / Create Modal ── -->
@@ -635,12 +643,7 @@
   <button class="lb-btn lb-next" id="lbNext">›</button>
 </div>
 
-<!-- Export footer -->
-<div class="export-footer">
-  <button class="btn btn-ghost btn-sm" id="exportJsonBtn">↓ JSON</button>
-  <button class="btn btn-ghost btn-sm" id="exportShopifyBtn">↓ Shopify CSV</button>
-  <a class="btn btn-ghost btn-sm" href="/api/export/photos-zip" download>↓ Photos ZIP</a>
-</div>
+<!-- Export footer fusionné dans le bottom-nav -->
 
 <!-- ── Settings Modal (standalone) ── -->
 <div class="modal-overlay" id="settingsModal" style="display:none">
