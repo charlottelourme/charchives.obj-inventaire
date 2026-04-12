@@ -71,48 +71,58 @@ body.verbe-active select.status-filter {
   border-color: rgba(255,255,255,.2);
   color: var(--page-verbe-text);
 }
-/* Barres de filtres */
+/* Barres de filtres sur fond coloré (verbe-active) */
 body.verbe-active .status-filter-bar {
   background: transparent;
-  border-bottom-color: rgba(255,255,255,.12);
+  border-bottom: none;
 }
-body.verbe-active .sfb-label { color: var(--page-verbe-text); opacity: .45; }
+body.verbe-active .sfb-label { color: var(--page-verbe-text); opacity: .4; }
 body.verbe-active .sfb-pill {
   color: var(--page-verbe-text);
-  opacity: .65;
-  border-right-color: rgba(255,255,255,.12);
+  opacity: .7;
 }
 body.verbe-active .sfb-pill:hover { opacity: 1; background: rgba(255,255,255,.12); }
-body.verbe-active .sfb-pill.active {
-  background: var(--page-verbe-text) !important;
-  color: var(--page-verbe-bg) !important;
+/* Verbe actif sur fond coloré : underline blanc, texte blanc */
+body.verbe-active .sfb-pill-verbe.active {
+  background: none !important;
+  color: var(--page-verbe-text) !important;
+  border-bottom-color: var(--page-verbe-text) !important;
+  opacity: 1;
+}
+/* Pill Toutes actif sur fond coloré */
+body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active {
+  background: rgba(255,255,255,.22) !important;
+  color: var(--page-verbe-text) !important;
   opacity: 1;
 }
 /* Barre sous-catégories */
-body.verbe-active #subcategoryFilterBar {
-  background: transparent;
-  border-bottom-color: rgba(255,255,255,.1);
-}
+body.verbe-active #subcategoryFilterBar { background: transparent; }
 body.verbe-active .sfb-pill-typo {
   background: rgba(255,255,255,.1) !important;
   color: var(--page-verbe-text) !important;
-  border-color: rgba(255,255,255,.2) !important;
+  border-color: rgba(255,255,255,.15) !important;
 }
 body.verbe-active .sfb-pill-typo.active {
-  background: var(--page-verbe-text) !important;
-  color: var(--page-verbe-bg) !important;
+  background: rgba(255,255,255,.3) !important;
+  color: var(--page-verbe-text) !important;
 }
-/* Filtres attributs */
-body.verbe-active .attr-filter-bar {
-  background: transparent;
-  border-bottom-color: rgba(255,255,255,.1);
-}
-body.verbe-active .mf-trigger {
+/* Pills statuts sur fond coloré */
+body.verbe-active .sfb-pill-sm {
   background: rgba(255,255,255,.1);
-  border-color: rgba(255,255,255,.2);
+  color: var(--page-verbe-text);
+  opacity: .75;
+}
+body.verbe-active .sfb-pill-sm:hover { opacity: 1; background: rgba(255,255,255,.18); }
+body.verbe-active .sfb-pill-sm.active { background: rgba(255,255,255,.28); opacity: 1; }
+/* Filtres attributs */
+body.verbe-active #attrFilterBar { background: transparent; }
+body.verbe-active .mf-btn {
+  background: rgba(255,255,255,.1);
+  border: none;
   color: var(--page-verbe-text);
 }
-body.verbe-active .mf-trigger:hover { background: rgba(255,255,255,.18); }
+body.verbe-active .mf-btn:hover { background: rgba(255,255,255,.18); }
+body.verbe-active .mf-btn.mf-active { background: rgba(255,255,255,.28); color: var(--page-verbe-text); }
 body.verbe-active .clear-attr-btn { color: var(--page-verbe-text); opacity: .45; }
 /* Barre de recherche */
 body.verbe-active .search-bar {
@@ -821,147 +831,185 @@ main { padding: 0; }
 }
 
 /* ── Status filter bar ── */
+/* ══ FILTER NAVIGATION — "Galerie d'art" — sans border fatigue ══ */
+
+/* Conteneur de chaque rangée de filtres */
 .status-filter-bar {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 0;
-  margin-bottom: 0;
   flex-wrap: wrap;
-  border-bottom: 1px solid var(--border);
-  padding: 0;
-  min-height: 44px;
+  /* Pas de border-bottom — l'espacement remplace les lignes */
+  border-bottom: none;
+  padding: 6px 12px;
+  min-height: 48px;
+  background: transparent;
 }
 
-/* Label "INTENTION" / "OBJET" */
+/* Label "INTENTION" / "OBJET" — discret, sans bordure droite */
 .sfb-label {
   font-family: 'Inter', sans-serif;
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: .14em;
+  letter-spacing: .16em;
   color: var(--text-3);
-  padding: 8px 16px;
-  border-right: 1px solid var(--border);
+  padding: 6px 14px 6px 4px;
+  border-right: none;
   flex-shrink: 0;
-  align-self: stretch;
   display: flex;
   align-items: center;
-  min-width: 90px;
+  min-width: 80px;
+  opacity: .7;
 }
 
-/* Pill de base — partagé verbes et statuts */
+/* ── Pill de base ── */
 .sfb-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  align-self: stretch;
-  padding: 0 18px;
+  padding: 5px 14px;
   border: none;
-  border-right: 1px solid var(--border);
+  border-right: none;          /* plus de séparateurs verticaux */
   background: none;
   font-family: 'Inter', sans-serif;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 500;
   cursor: pointer;
   color: var(--text-2);
-  transition: background .12s, color .12s;
+  transition: color .15s, background .15s, border-color .15s;
   white-space: nowrap;
-  border-radius: 0;
+  border-radius: 9999px;
+  margin: 2px 1px;
 }
-.sfb-pill:hover { color: var(--text); background: var(--tag-bg); }
-/* État actif : couleur injectée par JS (bgColor du verbe) — fallback anthracite */
-.sfb-pill.active { background: var(--accent); color: #F5F5F0; border-color: var(--accent); }
-/* Hover verbe : légère anticipation de la couleur Héritage via opacité */
-.sfb-pill-verbe:hover { background: var(--tag-bg); color: var(--text); }
+.sfb-pill:hover {
+  background: var(--tag-bg);
+  color: var(--text);
+}
+/* État actif générique (ex : "Toutes") */
+.sfb-pill.active {
+  background: var(--accent);
+  color: #F5F5F0;
+}
 
-/* Verbes (INTENTION) — Spectral majestueux */
+/* ── Verbes (INTENTION) — Spectral, underline colorée ── */
 .sfb-pill-verbe {
   font-family: 'Spectral', Georgia, serif;
   font-size: 15px;
   font-weight: 400;
   letter-spacing: .01em;
-  padding: 10px 20px;
+  padding: 8px 16px;
+  border-radius: 0;
+  /* La couleur active est injectée via JS sur border-bottom-color + color */
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-bottom-color .2s;
+  margin: 0 2px;
+}
+.sfb-pill-verbe:hover {
+  background: none;
+  /* couleur anticipée par JS via mouseenter */
+}
+/* Verbe actif : underline colorée, texte dans la couleur du verbe, pas de fond */
+.sfb-pill-verbe.active {
+  background: none !important;
+  /* border-bottom-color et color injectés via JS inline style */
 }
 
-/* Ligne OBJET : wrapping en pills rondes */
+/* ── Ligne OBJET — pills rondes neutres ── */
 #subcategoryFilterBar {
   flex-wrap: wrap;
-  gap: 6px 4px;
-  padding: 8px 16px;
+  gap: 4px 3px;
+  padding: 4px 12px 8px;
   min-height: auto;
-  border-bottom: 1px solid var(--border-light);
-  background: var(--bg);
+  border-bottom: none;
+  background: transparent;
   border-right: none;
 }
 #subcategoryFilterBar .sfb-label {
   border-right: none;
   min-width: auto;
-  padding: 0;
-  margin-right: 6px;
+  padding: 0 10px 0 4px;
+  margin-right: 2px;
   letter-spacing: .12em;
 }
 
-/* Typologies : pills rondes duotone */
+/* Typologies : chips rondes, fond neutre, actif = sombre */
 .sfb-pill-typo {
-  border: 1px solid transparent;
+  border: none;
   border-radius: 9999px;
-  padding: 4px 13px;
+  padding: 4px 12px;
   font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: .08em;
+  letter-spacing: .07em;
   color: var(--text-2);
-  background: transparent;
-  border-right: none; /* pas de séparateur vertical */
+  background: var(--tag-bg);
+  /* border-left colorée injectée par JS — on garde une largeur */
+  border-left: 3px solid transparent;
   transition: background .15s, color .15s, border-color .15s;
+  margin: 1px;
 }
-/* "Tous" dans la barre typo — même style pill ronde */
+.sfb-pill-typo:hover {
+  background: var(--border);
+  color: var(--text);
+}
+.sfb-pill-typo.active {
+  background: var(--accent);
+  color: #F5F5F0;
+  border-left-color: transparent;
+}
+
+/* "Tous" dans la barre typo */
 #subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo) {
-  border: 1px solid var(--border-light);
+  border: none;
   border-radius: 9999px;
-  padding: 4px 13px;
+  padding: 4px 12px;
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: .08em;
-  border-right: 1px solid var(--border-light);
-  background: transparent;
+  letter-spacing: .07em;
+  background: var(--tag-bg);
   color: var(--text-2);
+  margin: 1px;
+}
+#subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo):hover {
+  background: var(--border);
+  color: var(--text);
 }
 #subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo).active {
   background: var(--accent);
   color: #F5F5F0;
-  border-color: var(--accent);
 }
 
 .sfb-dot { display: none; }
 .sfb-dot-sm { display: none; }
 
-/* Barre statuts (Disponible/Réservé/etc) — petite et discrète */
+/* ── Barre statuts (Disponible/Réservé/etc) ── */
 .status-filter-bar-sm {
   border-bottom: none;
   border-top: none;
-  padding: 5px 16px;
-  gap: 6px;
+  padding: 2px 14px 8px;
+  gap: 4px;
   flex-wrap: wrap;
   min-height: auto;
-  background: var(--bg);
+  background: transparent;
 }
 .sfb-pill-sm {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .07em;
   padding: 3px 11px;
-  border: 1px solid var(--border-light);
+  border: none;
   border-radius: 9999px;
   color: var(--text-3);
-  background: transparent;
-  border-right: 1px solid var(--border-light);
+  background: var(--tag-bg);
+  margin: 1px;
+  transition: background .13s, color .13s;
 }
-.sfb-pill-sm:hover { color: var(--text); border-color: var(--border); }
-.sfb-pill-sm.active { background: var(--accent); color: #F5F5F0; border-color: var(--accent); }
+.sfb-pill-sm:hover { background: var(--border); color: var(--text); }
+.sfb-pill-sm.active { background: var(--accent); color: #F5F5F0; }
 
 /* ── Card status badge ── */
 .card-status-badge {
@@ -3270,34 +3318,35 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   /* ── Barre Verbes : scroll horizontal swipeable ── */
   .status-filter-bar {
     display: flex;
-    flex-wrap: nowrap;          /* une seule ligne */
+    flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
-    scrollbar-width: none;      /* Firefox */
-    border-bottom: 1px solid var(--border);
-    min-height: 48px;
-    padding: 0 4px;
+    scrollbar-width: none;
+    border-bottom: none;
+    min-height: 44px;
+    padding: 4px 8px;
     gap: 0;
   }
-  .status-filter-bar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+  .status-filter-bar::-webkit-scrollbar { display: none; }
 
   /* Label fixe à gauche, légèrement plus compact */
   .sfb-label {
     min-width: 60px;
     font-size: 8px;
-    padding: 6px 10px;
+    padding: 6px 8px;
     position: sticky;
     left: 0;
     background: var(--bg);
     z-index: 2;
     flex-shrink: 0;
+    border-right: none;
   }
 
   /* Pills verbes : taille réduite mais lisibles */
   .sfb-pill-verbe {
     font-size: 13px;
-    padding: 8px 16px;
+    padding: 6px 13px;
     flex-shrink: 0;
   }
   .sfb-pill { flex-shrink: 0; }
@@ -3308,7 +3357,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 8px 12px;
+    padding: 4px 10px 8px;
   }
   #subcategoryFilterBar::-webkit-scrollbar { display: none; }
 
@@ -3610,12 +3659,12 @@ main { padding-bottom: 44px; }
   align-items: center;
 }
 #attrFilterBar {
-  border-bottom: 1px solid var(--border-light);
-  padding: 6px 16px;
-  background: var(--surface);
+  border-bottom: none;
+  padding: 4px 14px 10px;
+  background: transparent;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
@@ -3643,28 +3692,29 @@ main { padding-bottom: 44px; }
 .mf-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .04em;
-  padding: 6px 14px;
-  border: 1px solid var(--border-light);
-  border-radius: 0;
-  background: var(--surface);
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 9999px;
+  background: var(--tag-bg);
   color: var(--text-2);
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color .15s, color .15s;
+  transition: background .15s, color .15s;
 }
-.mf-btn:hover { border-color: var(--border-strong); color: var(--text); }
+.mf-btn:hover { background: var(--border); color: var(--text); }
 .mf-btn.mf-active {
   background: var(--accent);
-  border-color: var(--accent);
+  border: none;
   color: #fff;
-  font-weight: 500;
+  font-weight: 600;
 }
 body.dark-mode .mf-btn.mf-active { color: #1a1917; }
-.mf-btn.mf-open { border-color: var(--border-strong); color: var(--text); }
+.mf-btn.mf-open { background: var(--border); color: var(--text); }
 .mf-count {
   background: rgba(255,255,255,.25);
   border-radius: 10px;

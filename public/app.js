@@ -401,9 +401,9 @@ function buildCategoryFilterBar() {
     btn.dataset.bg = v.bgColor || v.color || '#2D2D2D';
     btn.dataset.fg = v.textColor || '#fff';
     if (isActive) {
-      btn.style.background = v.bgColor || v.color || '#2D2D2D';
-      btn.style.color = v.textColor || '#fff';
-      btn.style.borderColor = v.bgColor || v.color || '#2D2D2D';
+      // Actif : underline colorée + texte dans la couleur du verbe
+      btn.style.borderBottomColor = v.bgColor || v.color || '#2D2D2D';
+      btn.style.color = v.bgColor || v.color || '#2D2D2D';
     }
     btn.textContent = v.name;
     bar.appendChild(btn);
@@ -411,17 +411,15 @@ function buildCategoryFilterBar() {
   bar.querySelectorAll('.sfb-pill').forEach(pill => {
     pill.addEventListener('mouseenter', () => {
       if (!pill.classList.contains('active') && pill.dataset.bg) {
-        // Anticipation douce : fond à 15% du bgColor (pas la teinte pleine — réservée au clic)
-        pill.style.background = pill.dataset.bg + '26';
-        pill.style.color = 'var(--text)';
-        pill.style.borderColor = '';
+        // Hover verbe : couleur du verbe à 70% + underline légère
+        pill.style.color = pill.dataset.bg;
+        pill.style.borderBottomColor = pill.dataset.bg + 'aa';
       }
     });
     pill.addEventListener('mouseleave', () => {
       if (!pill.classList.contains('active')) {
-        pill.style.background = '';
         pill.style.color = '';
-        pill.style.borderColor = '';
+        pill.style.borderBottomColor = '';
       }
     });
     pill.addEventListener('click', () => {
@@ -727,13 +725,19 @@ function applyVerbePageTheme() {
 }
 
 function render() {
-  // Update category filter pills (+ réinitialise les inline styles duotone sur les pills inactives)
+  // Update category filter pills — réinitialise les inline styles sur les pills inactives
   document.querySelectorAll('#categoryFilterBar .sfb-pill').forEach(p => {
     const isActive = p.dataset.cat === state.categoryFilter;
     p.classList.toggle('active', isActive);
-    if (!isActive) {
+    if (isActive && p.classList.contains('sfb-pill-verbe') && p.dataset.bg) {
+      // Actif : underline colorée, texte dans la couleur
+      p.style.borderBottomColor = p.dataset.bg;
+      p.style.color = p.dataset.bg;
+      p.style.background = '';
+    } else if (!isActive) {
       p.style.background = '';
       p.style.color = '';
+      p.style.borderBottomColor = '';
       p.style.borderColor = '';
     }
   });
