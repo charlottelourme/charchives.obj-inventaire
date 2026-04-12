@@ -1578,14 +1578,11 @@ function populateLocationDropdown() {
 function renderUniversChips() {
   const container = document.getElementById('universChips');
   if (!container) return;
-  const allUnivers = [...(state.settings.univers || [])];
-  const allItems = [...allUnivers, ...EMOTION_OPTIONS];
-  const separator = allUnivers.length;
-  container.innerHTML = allItems.map((u, idx) => {
+  // Fusionner custom + EMOTION_OPTIONS sans doublons
+  const merged = [...new Set([...(state.settings.univers || []), ...EMOTION_OPTIONS])];
+  container.innerHTML = merged.map(u => {
     const active = state.editUnivers.includes(u);
-    const isEmotion = idx >= separator;
-    return `${idx === separator ? '<div class="univers-separator"></div>' : ''}
-      <button type="button" class="attr-chip${active?' selected':''}${isEmotion?' chip-emotion':''}" data-univers="${esc(u)}">${esc(u)}</button>`;
+    return `<button type="button" class="attr-chip${active?' selected':''}" data-univers="${esc(u)}">${esc(u)}</button>`;
   }).join('');
   container.querySelectorAll('.attr-chip').forEach(btn => {
     btn.addEventListener('click', () => {
