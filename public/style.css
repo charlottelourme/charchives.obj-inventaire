@@ -28,109 +28,110 @@ body {
   transition: background-color .45s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── Thème verbe actif — toute la page prend la couleur du verbe ── */
+/* ── Thème verbe actif — fond teinté léger (~18% opacité) ── */
 body.verbe-active {
   background-color: var(--page-verbe-bg, var(--bg));
 }
-/* Header : transparent pour laisser transparaître la couleur */
+
+/* Header : verre dépoli blanc — fond clair teinté → header reste neutre */
 body.verbe-active header {
-  background: rgba(0,0,0,.08);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom-color: rgba(255,255,255,.14);
+  background: rgba(250,250,248,.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom-color: var(--border-light);
 }
+/* Titre et boutons header : couleurs normales (fond clair) */
 body.verbe-active header h1,
 body.verbe-active header .btn-ghost,
 body.verbe-active header .btn-icon {
-  color: var(--page-verbe-text);
+  color: var(--text);
 }
+/* View tabs : normaux sur fond teinté clair */
 body.verbe-active .view-tab {
-  color: var(--page-verbe-text);
-  opacity: .55;
-  border-color: rgba(255,255,255,.12);
+  color: var(--text-2);
+  opacity: 1;
+  border-color: transparent;
 }
-body.verbe-active .view-tab:hover { opacity: .85; background: rgba(255,255,255,.1); }
+body.verbe-active .view-tab:hover { background: var(--tag-bg); }
 body.verbe-active .view-tab.active {
   background: var(--page-verbe-text);
-  color: var(--page-verbe-bg);
+  color: #F5F5F0;
   opacity: 1;
+  border-color: var(--page-verbe-text);
 }
-/* Toolbar + filter bars : transparents */
+
+/* Toolbar + grid : transparents */
 body.verbe-active .toolbar,
 body.verbe-active #gridWrapper {
   background: transparent;
 }
+/* Count label : accent coloré du verbe */
 body.verbe-active .count-label {
   color: var(--page-verbe-text);
-  opacity: .5;
+  opacity: .65;
 }
-body.verbe-active .toolbar-slider-sep { background: var(--page-verbe-text); opacity: .2; }
-body.verbe-active .card-size-slider { opacity: .6; }
+body.verbe-active .toolbar-slider-sep { background: var(--border); opacity: .3; }
+body.verbe-active .card-size-slider { opacity: .7; }
+/* Sort select : normal (fond clair) */
 body.verbe-active select.status-filter {
-  background: transparent;
-  border-color: rgba(255,255,255,.2);
-  color: var(--page-verbe-text);
+  background: rgba(255,255,255,.6);
+  border-color: var(--border-light);
+  color: var(--text);
 }
-/* Barres de filtres sur fond coloré (verbe-active) */
-body.verbe-active .status-filter-bar {
-  background: transparent;
-  border-bottom: none;
-}
-body.verbe-active .sfb-label { color: var(--page-verbe-text); opacity: .4; }
-body.verbe-active .sfb-pill {
-  color: var(--page-verbe-text);
-  opacity: .7;
-}
-body.verbe-active .sfb-pill:hover { opacity: 1; background: rgba(255,255,255,.12); }
-/* Verbe actif sur fond coloré : underline blanc, texte blanc */
+
+/* Barres de filtres — restent transparentes, couleurs normales */
+body.verbe-active .status-filter-bar { background: transparent; }
+/* Label "Intention" : accent verbe discret */
+body.verbe-active .sfb-label { color: var(--page-verbe-text); opacity: .5; }
+/* Pills non-actives : normales */
+body.verbe-active .sfb-pill { color: var(--text-2); opacity: 1; }
+body.verbe-active .sfb-pill:hover { background: var(--tag-bg); color: var(--text); }
+
+/* Verbe actif : underline + texte dans la couleur du verbe (identique au mode normal) */
 body.verbe-active .sfb-pill-verbe.active {
   background: none !important;
   color: var(--page-verbe-text) !important;
   border-bottom-color: var(--page-verbe-text) !important;
   opacity: 1;
 }
-/* Pill Toutes actif sur fond coloré */
+/* Pill "Toutes" actif */
 body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active {
-  background: rgba(255,255,255,.22) !important;
-  color: var(--page-verbe-text) !important;
+  background: var(--page-verbe-text) !important;
+  color: #F5F5F0 !important;
   opacity: 1;
 }
-/* Barre sous-catégories */
+
+/* Sous-catégories / typologies : styles normaux */
 body.verbe-active #subcategoryFilterBar { background: transparent; }
 body.verbe-active .sfb-pill-typo {
-  background: rgba(255,255,255,.1) !important;
-  color: var(--page-verbe-text) !important;
-  border-color: rgba(255,255,255,.15) !important;
+  background: var(--tag-bg) !important;
+  color: var(--text-2) !important;
+  border-color: transparent !important;
 }
 body.verbe-active .sfb-pill-typo.active {
-  background: rgba(255,255,255,.3) !important;
-  color: var(--page-verbe-text) !important;
+  background: var(--page-verbe-text) !important;
+  color: #F5F5F0 !important;
 }
-/* Pills statuts sur fond coloré */
-body.verbe-active .sfb-pill-sm {
-  background: rgba(255,255,255,.1);
-  color: var(--page-verbe-text);
-  opacity: .75;
-}
-body.verbe-active .sfb-pill-sm:hover { opacity: 1; background: rgba(255,255,255,.18); }
-body.verbe-active .sfb-pill-sm.active { background: rgba(255,255,255,.28); opacity: 1; }
+
+/* Pills statuts : styles normaux */
+body.verbe-active .sfb-pill-sm { background: var(--tag-bg); color: var(--text-2); opacity: 1; }
+body.verbe-active .sfb-pill-sm:hover { background: var(--border-light); color: var(--text); }
+body.verbe-active .sfb-pill-sm.active { background: var(--page-verbe-text); color: #F5F5F0; }
+
 /* Filtres attributs */
 body.verbe-active #attrFilterBar { background: transparent; }
-body.verbe-active .mf-btn {
-  background: rgba(255,255,255,.1);
-  border: none;
-  color: var(--page-verbe-text);
-}
-body.verbe-active .mf-btn:hover { background: rgba(255,255,255,.18); }
-body.verbe-active .mf-btn.mf-active { background: rgba(255,255,255,.28); color: var(--page-verbe-text); }
-body.verbe-active .clear-attr-btn { color: var(--page-verbe-text); opacity: .45; }
+body.verbe-active .mf-btn { background: var(--tag-bg); border: none; color: var(--text-2); }
+body.verbe-active .mf-btn:hover { background: var(--border-light); color: var(--text); }
+body.verbe-active .mf-btn.mf-active { background: var(--page-verbe-text); color: #F5F5F0; }
+body.verbe-active .clear-attr-btn { color: var(--text-3); opacity: 1; }
+
 /* Barre de recherche */
 body.verbe-active .search-bar {
-  background: rgba(255,255,255,.12);
-  border-color: rgba(255,255,255,.2);
-  color: var(--page-verbe-text);
+  background: rgba(255,255,255,.7);
+  border-color: var(--border-light);
+  color: var(--text);
 }
-body.verbe-active .search-bar::placeholder { color: var(--page-verbe-text); opacity: .4; }
+body.verbe-active .search-bar::placeholder { color: var(--text-3); opacity: 1; }
 
 /* ── Titre verbe inline (remplace le bandeau) ── */
 .verbe-page-title {

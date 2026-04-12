@@ -713,8 +713,10 @@ function applyVerbePageTheme() {
   if (state.view === 'grid' && state.categoryFilter) {
     const verbe = getVerbes().find(v => v.name === state.categoryFilter);
     if (verbe) {
-      document.documentElement.style.setProperty('--page-verbe-bg',   verbe.bgColor   || '#2D2D2D');
-      document.documentElement.style.setProperty('--page-verbe-text', verbe.textColor || '#F5F5F0');
+      // Fond teinté ~18% d'opacité — transparent et élégant, en unité avec le halo des cartes
+      document.documentElement.style.setProperty('--page-verbe-bg',   (verbe.bgColor || '#2D2D2D') + '2E');
+      // --page-verbe-text = couleur saturée du verbe → utilisée comme accent sur fond clair
+      document.documentElement.style.setProperty('--page-verbe-text', verbe.bgColor   || '#2D2D2D');
       document.body.classList.add('verbe-active');
       return;
     }
