@@ -3206,6 +3206,122 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   .grid { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* ── Grouped search dropdown (formulaire objet) ── */
+.gs-wrapper { position: relative; }
+.gs-trigger {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  cursor: text;
+  background: var(--surface);
+  transition: border-color .12s;
+}
+.gs-trigger:focus-within { border-color: var(--border-strong); }
+.gs-placeholder { font-size: 12px; color: var(--text-3); pointer-events: none; }
+.gs-selected-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  background: var(--tag-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 9999px;
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.gs-chip-remove {
+  background: none; border: none; cursor: pointer;
+  padding: 0; color: var(--text-3); font-size: 13px; line-height: 1;
+}
+.gs-chip-remove:hover { color: var(--text); }
+.gs-search-input {
+  flex: 1; min-width: 80px; border: none;
+  background: transparent; font-size: 12px; color: var(--text);
+  padding: 2px 0; outline: none; font-family: 'Inter', sans-serif;
+}
+.gs-dropdown {
+  position: absolute; top: calc(100% + 3px); left: 0; right: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  z-index: 300; max-height: 260px; overflow-y: auto; display: none;
+}
+.gs-dropdown.open { display: block; }
+.gs-family-label {
+  padding: 7px 14px 3px;
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .15em; color: var(--text-3);
+  border-top: 1px solid var(--border-light);
+  font-family: 'Inter', sans-serif;
+}
+.gs-family-label:first-child { border-top: none; }
+.gs-option {
+  padding: 6px 18px; font-size: 12px; cursor: pointer; color: var(--text);
+  font-family: 'Inter', sans-serif; transition: background .08s;
+}
+.gs-option:hover { background: var(--tag-bg); }
+.gs-option.selected { color: var(--accent); font-weight: 600; }
+.gs-empty { padding: 14px 16px; font-size: 12px; color: var(--text-3); text-align: center; }
+
+/* ── Grouped list dans les Paramètres ── */
+.sm-groups { display: flex; flex-direction: column; gap: 10px; }
+.sm-group {
+  border: 1px solid var(--border-light);
+  border-radius: 6px; overflow: hidden;
+}
+.sm-group-header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 10px; background: var(--tag-bg);
+}
+.sm-group-name-input {
+  flex: 1; border: none; background: transparent;
+  font-size: 12px; font-weight: 600; color: var(--text);
+  padding: 2px 4px; outline: none; font-family: 'Inter', sans-serif;
+}
+.sm-group-name-input:focus { background: var(--surface); border-radius: 3px; }
+.sm-group-del-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-3); font-size: 18px; line-height: 1; padding: 0 2px;
+}
+.sm-group-del-btn:hover { color: #e05252; }
+.sm-group-tags {
+  padding: 8px 10px; display: flex; flex-wrap: wrap;
+  gap: 6px; align-items: center;
+}
+.sm-group-tag {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 9999px; font-size: 11px; color: var(--text);
+  font-family: 'Inter', sans-serif;
+}
+.sm-tag-del-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-3); font-size: 13px; line-height: 1; padding: 0;
+}
+.sm-tag-del-btn:hover { color: #e05252; }
+.sm-group-tag-input {
+  border: none; border-bottom: 1px dashed var(--border);
+  background: transparent; font-size: 11px; color: var(--text-2);
+  padding: 2px 4px; width: 90px; outline: none; font-family: 'Inter', sans-serif;
+}
+.sm-group-tag-input:focus { border-bottom-color: var(--border-strong); }
+.sm-add-group-row {
+  display: flex; gap: 6px; align-items: center; margin-top: 6px;
+}
+.sm-new-group-input {
+  flex: 1; height: 28px; padding: 3px 8px;
+  border: 1px dashed var(--border-light); border-radius: 4px;
+  background: transparent; font-size: 12px; color: var(--text); outline: none;
+  font-family: 'Inter', sans-serif;
+}
+.sm-new-group-input:focus { border-color: var(--border); background: var(--surface); }
+
 /* ── Dark Mode ── */
 body.dark-mode {
   --bg: #181818;

@@ -65,6 +65,34 @@ const ATTRIBUTES_DEF = {
   }
 };
 
+// Format groupé par défaut pour Matières
+const MATIERES_GROUPS_DEFAULT = [
+  { famille: 'Céramiques & Verre',  tags: ['porcelaine','faïence','céramique','barbotine','majolique','émaux de Longwy','verre','verre soufflé','cristal','cristal taillé','opaline'] },
+  { famille: 'Bois & Végétal',      tags: ['bois','bois doré',"loupe d'orme",'osier','rotin'] },
+  { famille: 'Métaux',              tags: ['métal','laiton','bronze','étain','argent','vermeil'] },
+  { famille: 'Minéraux & Naturel',  tags: ['marbre','pierre','coquillage'] },
+  { famille: 'Textiles & Papier',   tags: ['textile','cuir','papier'] }
+];
+const MOTIFS_GROUPS_DEFAULT = [
+  { famille: 'Botanique',    tags: ['floral','feuillage','végétal','herbier'] },
+  { famille: 'Figuratif',    tags: ['portrait','scène de genre','paysage','animalier'] },
+  { famille: 'Géométrique',  tags: ['rayures','damier','losange','chevron','treillis'] },
+  { famille: 'Ornements',    tags: ['arabesque','rinceaux','cartouche','médaillon','rocaille'] }
+];
+
+// Détection format groupé vs flat
+function isGrouped(arr) {
+  return Array.isArray(arr) && arr.length > 0 && arr[0] !== null && typeof arr[0] === 'object' && 'famille' in arr[0];
+}
+// Aplatir un tableau groupé en tableau de strings
+function flattenGroups(arr) {
+  return isGrouped(arr) ? arr.flatMap(g => g.tags || []) : (arr || []);
+}
+// Convertir [{famille, tags}] → [{label, items}] pour ATTRIBUTES_DEF.families
+function toAttrFamilies(groups) {
+  return groups.map(g => ({ label: g.famille, items: g.tags || [] }));
+}
+
 const COLOR_MAP = {
   'transparent': 'rgba(200,200,200,0.15)',
   'blanc': '#ffffff', 'écru': '#f5f0e8', 'beige': '#d4bc94',
@@ -217,11 +245,23 @@ function syncAttrLabels() {
 
 function applyAttributeOptions() {
   const opts = state.settings.attributeOptions || {};
-  if (opts.matieres?.length)    ATTRIBUTES_DEF.matieres.options    = opts.matieres;
-  if (opts.origine?.length)     ATTRIBUTES_DEF.origine.options     = opts.origine;
-  if (opts.etat_traces?.length) ATTRIBUTES_DEF.etat_traces.options = opts.etat_traces;
-  if (opts.usage?.length)       ATTRIBUTES_DEF.usage.options       = opts.usage;
-  if (opts.role?.length)        ATTRIBUTES_DEF.role.options        = opts.role;
+  // matieres — supporte flat et groupé
+  if (opts.matieres) {
+    const flat = flattenGroups(opts.matieres);
+    if (flat.length) ATTRIBUTES_DEF.matieres.options = flat;
+    if (isGrouped(opts.matieres)) ATTRIBUTES_DEF.matieres.families = toAttrFamilies(opts.matieres);
+  }
+  // motifs — supporte flat et groupé
+  const motifData = opts.motifs || (state.settings.motifs?.length ? state.settings.motifs : null);
+  if (motifData) {
+    const flat = flattenGroups(motifData);
+    if (flat.length) ATTRIBUTES_DEF.motifs.options = flat;
+    if (isGrouped(motifData)) ATTRIBUTES_DEF.motifs.families = toAttrFamilies(motifData);
+  }
+  if (opts.origine?.length)     ATTRIBUTES_DEF.origine.options     = flattenGroups(opts.origine);
+  if (opts.etat_traces?.length) ATTRIBUTES_DEF.etat_traces.options = flattenGroups(opts.etat_traces);
+  if (opts.usage?.length)       ATTRIBUTES_DEF.usage.options       = flattenGroups(opts.usage);
+  if (opts.role?.length)        ATTRIBUTES_DEF.role.options        = flattenGroups(opts.role);
 }
 
 // ── Cold-start banner ─────────────────────────────────────────────────────────
@@ -1778,6 +1818,95 @@ function renderUniversChips() {
   });
 }
 
+function _renderGroupedSelect(key, def, container) {
+  const current = state.editAttributes[key] || [];
+  const families = def.families || [];
+
+  // Render the wrapper (only once — after first render, update in-place)
+  if (!container.querySelector('.gs-trigger')) {
+    container.innerHTML = `
+      <div class="gs-wrapper" id="gsWrap_${key}">
+        <div class="gs-trigger" id="gsTrigger_${key}">
+          <span class="gs-placeholder">${key === 'matieres' ? 'Sélectionner des matières…' : 'Sélectionner des motifs…'}</span>
+          <input type="text" class="gs-search-input" id="gsSearch_${key}" placeholder="Rechercher…" autocomplete="off">
+        </div>
+        <div class="gs-dropdown" id="gsDropdown_${key}"></div>
+      </div>`;
+    // Bind open/close
+    const trigger = container.querySelector('.gs-trigger');
+    const dropdown = container.querySelector('.gs-dropdown');
+    const searchInp = container.querySelector('.gs-search-input');
+    trigger.addEventListener('click', e => {
+      if (e.target.classList.contains('gs-chip-remove')) return;
+      dropdown.classList.toggle('open');
+      if (dropdown.classList.contains('open')) { searchInp.focus(); _updateGsDropdown(key, def, container, ''); }
+    });
+    searchInp.addEventListener('input', () => _updateGsDropdown(key, def, container, searchInp.value));
+    document.addEventListener('click', e => {
+      if (!container.contains(e.target)) { dropdown.classList.remove('open'); }
+    }, { capture: true });
+  }
+
+  // Update selected chips
+  const trigger = container.querySelector('.gs-trigger');
+  const placeholder = trigger.querySelector('.gs-placeholder');
+  const searchInp = trigger.querySelector('.gs-search-input');
+  // Remove old chips
+  trigger.querySelectorAll('.gs-selected-chip').forEach(c => c.remove());
+  // Re-add chips for selected
+  current.forEach(val => {
+    const chip = document.createElement('span');
+    chip.className = 'gs-selected-chip';
+    chip.innerHTML = `${esc(val)}<button type="button" class="gs-chip-remove" data-key="${key}" data-val="${esc(val)}" title="Retirer">×</button>`;
+    chip.querySelector('.gs-chip-remove').addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = (state.editAttributes[key]||[]).indexOf(val);
+      if (idx >= 0) state.editAttributes[key].splice(idx, 1);
+      _renderGroupedSelect(key, def, container);
+    });
+    trigger.insertBefore(chip, searchInp);
+  });
+  if (placeholder) placeholder.style.display = current.length ? 'none' : '';
+  // Update dropdown if open
+  const dropdown = container.querySelector('.gs-dropdown');
+  if (dropdown?.classList.contains('open')) _updateGsDropdown(key, def, container, searchInp?.value || '');
+}
+
+function _updateGsDropdown(key, def, container, searchTerm) {
+  const dropdown = container.querySelector('.gs-dropdown');
+  if (!dropdown) return;
+  const term = (searchTerm || '').toLowerCase().trim();
+  const current = state.editAttributes[key] || [];
+  const families = def.families || [];
+
+  let html = '';
+  families.forEach(fam => {
+    const items = (fam.items || []).filter(opt => !term || opt.toLowerCase().includes(term));
+    if (!items.length) return;
+    html += `<div class="gs-family-label">${esc(fam.label || 'Autres')}</div>`;
+    items.forEach(opt => {
+      const sel = current.includes(opt);
+      html += `<div class="gs-option${sel ? ' selected' : ''}" data-key="${key}" data-val="${esc(opt)}">${esc(opt)}${sel ? ' ✓' : ''}</div>`;
+    });
+  });
+  if (!html) html = '<div class="gs-empty">Aucun résultat</div>';
+  dropdown.innerHTML = html;
+
+  dropdown.querySelectorAll('.gs-option').forEach(opt => {
+    opt.addEventListener('click', e => {
+      e.stopPropagation();
+      const val = opt.dataset.val;
+      if (!state.editAttributes[key]) state.editAttributes[key] = [];
+      const idx = state.editAttributes[key].indexOf(val);
+      if (idx >= 0) state.editAttributes[key].splice(idx, 1);
+      else state.editAttributes[key].push(val);
+      const searchInp = container.querySelector('.gs-search-input');
+      _renderGroupedSelect(key, def, container);
+      if (searchInp) { searchInp.focus(); _updateGsDropdown(key, def, container, searchInp.value); }
+    });
+  });
+}
+
 function renderAttributeSection(key) {
   const def = ATTRIBUTES_DEF[key];
   if (!def) return;
@@ -1786,6 +1915,12 @@ function renderAttributeSection(key) {
   if (!container) return;
   const current = state.editAttributes[key] || (def.single ? '' : []);
   const options = def.options;
+
+  // Grouped search dropdown pour matieres et motifs
+  if ((key === 'matieres' || key === 'motifs') && def.families?.length) {
+    _renderGroupedSelect(key, def, container);
+    return;
+  }
 
   if (key === 'couleurs') {
     // Visual color swatches — round circles with ring on selected
@@ -1800,17 +1935,6 @@ function renderAttributeSection(key) {
         title="${esc(opt)}"
         style="--swatch-color:${bgColor};background:${bgColor};border-color:${borderColor}"></button>`;
     }).join('');
-  } else if (key === 'matieres' && def.families) {
-    // Grouped by families
-    let html = '';
-    def.families.forEach((fam, fi) => {
-      if (fi > 0) html += '<div class="attr-family-sep"></div>';
-      fam.items.forEach(opt => {
-        const active = Array.isArray(current)&&current.includes(opt);
-        html += `<button type="button" class="attr-chip${active?' selected':''}" data-key="${key}" data-val="${esc(opt)}">${esc(opt)}</button>`;
-      });
-    });
-    container.innerHTML = html;
   } else {
     container.innerHTML = options.map(opt => {
       const active = def.single ? current===opt : (Array.isArray(current)&&current.includes(opt));
@@ -3371,6 +3495,20 @@ function openSettingsModal() {
   if (!state.settingsDraft.attributeOptions.origine) {
     state.settingsDraft.attributeOptions.origine = [...ATTRIBUTES_DEF.origine.options];
   }
+  // Initialiser le format groupé si absent ou flat
+  const ao = state.settingsDraft.attributeOptions;
+  if (!isGrouped(ao.matieres)) {
+    ao.matieres = JSON.parse(JSON.stringify(MATIERES_GROUPS_DEFAULT));
+  }
+  if (!isGrouped(ao.motifs)) {
+    // Migrer draft.motifs (flat) vers groupé si présent
+    const legacyMotifs = state.settingsDraft.motifs;
+    if (legacyMotifs?.length) {
+      ao.motifs = [{ famille: 'Motifs', tags: [...legacyMotifs] }];
+    } else {
+      ao.motifs = JSON.parse(JSON.stringify(MOTIFS_GROUPS_DEFAULT));
+    }
+  }
   if (!state.settingsDraft.attributeLabels) state.settingsDraft.attributeLabels = {};
   _smExpandedVerbes.clear();
   _smExpandedSections.clear();
@@ -3429,7 +3567,12 @@ async function saveSettingsModal() {
 function smGetArray(draft, key) {
   switch(key) {
     case 'colors':    return draft.colors    || (draft.colors = []);
-    case 'motifs':    return draft.motifs    || (draft.motifs = []);
+    case 'motifs': {
+      // motifs maintenant en format groupé dans attributeOptions
+      if (!draft.attributeOptions) draft.attributeOptions = {};
+      if (!draft.attributeOptions.motifs) draft.attributeOptions.motifs = JSON.parse(JSON.stringify(MOTIFS_GROUPS_DEFAULT));
+      return null; // groupé, pas un flat array
+    }
     case 'univers':   return draft.univers   || (draft.univers = []);
     case 'locations': return draft.locations || (draft.locations = []);
     default:
@@ -3468,6 +3611,31 @@ function smTriosTabsHTML(draft) {
           value="${esc(labels[key] || TRIOS_TAB_DEFAULTS[i])}"
           placeholder="${esc(TRIOS_TAB_DEFAULTS[i])}">
       </div>`).join('')}
+  </div>`;
+}
+
+function smGroupedListHTML(groups, key) {
+  const safeGroups = isGrouped(groups) ? groups : [];
+  return `<div class="sm-groups" data-key="${key}">
+    ${safeGroups.map((g, gi) => `
+      <div class="sm-group" data-key="${key}" data-gi="${gi}">
+        <div class="sm-group-header">
+          <input type="text" class="sm-group-name-input" data-key="${key}" data-gi="${gi}"
+            value="${esc(g.famille)}" placeholder="Nom de la famille…">
+          <button class="sm-group-del-btn" data-key="${key}" data-gi="${gi}" title="Supprimer cette famille">×</button>
+        </div>
+        <div class="sm-group-tags" data-key="${key}" data-gi="${gi}">
+          ${(g.tags||[]).map((tag, ti) => `
+            <span class="sm-group-tag">
+              ${esc(tag)}<button type="button" class="sm-tag-del-btn" data-key="${key}" data-gi="${gi}" data-ti="${ti}" title="Supprimer">×</button>
+            </span>`).join('')}
+          <input type="text" class="sm-group-tag-input" data-key="${key}" data-gi="${gi}" placeholder="+ tag…">
+        </div>
+      </div>`).join('')}
+    <div class="sm-add-group-row">
+      <input type="text" class="sm-new-group-input" data-key="${key}" placeholder="Nouvelle famille…">
+      <button class="btn btn-ghost btn-sm sm-add-group-btn" data-key="${key}">+ Famille</button>
+    </div>
   </div>`;
 }
 
@@ -3565,10 +3733,10 @@ function renderSettingsModal() {
       <input type="text" class="sm-sitetitle-input" value="${esc(draft.siteTitle || '')}" placeholder="ARCHIVE">
     </div>
     ${smAccordion('verbes', smGetCurrentLabel(draft, 'verbes'), smVerbesHTML(draft), true, false)}
-    ${smAccordion('matieres', smGetCurrentLabel(draft, 'matieres'), smListHTML(opts.matieres || [...ATTRIBUTES_DEF.matieres.options], 'matieres'), false, true)}
+    ${smAccordion('matieres', smGetCurrentLabel(draft, 'matieres'), smGroupedListHTML(opts.matieres || MATIERES_GROUPS_DEFAULT, 'matieres'), false, true)}
     ${smAccordion('origine', smGetCurrentLabel(draft, 'origine'), smListHTML(opts.origine || [...ATTRIBUTES_DEF.origine.options], 'origine'), false, true)}
     ${smAccordion('colors', smGetCurrentLabel(draft, 'colors'), smColorListHTML(draft.colors || [], draft), false, true)}
-    ${smAccordion('motifs', smGetCurrentLabel(draft, 'motifs'), smListHTML(draft.motifs || [], 'motifs'), false, true)}
+    ${smAccordion('motifs', smGetCurrentLabel(draft, 'motifs'), smGroupedListHTML(opts.motifs || MOTIFS_GROUPS_DEFAULT, 'motifs'), false, true)}
     ${smAccordion('etat_traces', smGetCurrentLabel(draft, 'etat_traces'), smListHTML(opts.etat_traces || [...ATTRIBUTES_DEF.etat_traces.options], 'etat_traces'), false, true)}
     ${smAccordion('usage', smGetCurrentLabel(draft, 'usage'), smListHTML(opts.usage || [...ATTRIBUTES_DEF.usage.options], 'usage'), false, true)}
     ${smAccordion('univers', smGetCurrentLabel(draft, 'univers'), smListHTML(draft.univers || [], 'univers'), false, true)}
@@ -3814,6 +3982,70 @@ function bindSmModal() {
   body.querySelectorAll('.sm-new-typo').forEach(inp => {
     inp.addEventListener('keydown', e => {
       if (e.key === 'Enter') { e.preventDefault(); body.querySelector(`.sm-typo-add-btn[data-ci="${inp.dataset.ci}"]`)?.click(); }
+    });
+  });
+
+  // ── Grouped list bindings (matieres + motifs) ──
+  function getGroupedArr(key) {
+    if (!draft.attributeOptions) draft.attributeOptions = {};
+    if (!draft.attributeOptions[key]) draft.attributeOptions[key] = JSON.parse(JSON.stringify(key === 'motifs' ? MOTIFS_GROUPS_DEFAULT : MATIERES_GROUPS_DEFAULT));
+    return draft.attributeOptions[key];
+  }
+
+  // Rename famille
+  body.querySelectorAll('.sm-group-name-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const arr = getGroupedArr(inp.dataset.key);
+      const gi = +inp.dataset.gi;
+      if (arr[gi]) arr[gi].famille = inp.value;
+    });
+  });
+
+  // Delete tag
+  body.querySelectorAll('.sm-tag-del-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const arr = getGroupedArr(btn.dataset.key);
+      const gi = +btn.dataset.gi, ti = +btn.dataset.ti;
+      if (arr[gi]) { arr[gi].tags.splice(ti, 1); renderSettingsModal(); }
+    });
+  });
+
+  // Add tag (Enter or blur)
+  body.querySelectorAll('.sm-group-tag-input').forEach(inp => {
+    const doAdd = () => {
+      const val = inp.value.trim(); if (!val) return;
+      const arr = getGroupedArr(inp.dataset.key);
+      const gi = +inp.dataset.gi;
+      if (arr[gi] && !arr[gi].tags.includes(val)) { arr[gi].tags.push(val); renderSettingsModal(); }
+      else inp.value = '';
+    };
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doAdd(); } });
+    inp.addEventListener('blur', doAdd);
+  });
+
+  // Delete famille
+  body.querySelectorAll('.sm-group-del-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const arr = getGroupedArr(btn.dataset.key);
+      arr.splice(+btn.dataset.gi, 1);
+      renderSettingsModal();
+    });
+  });
+
+  // Add famille
+  body.querySelectorAll('.sm-add-group-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key;
+      const inp = body.querySelector(`.sm-new-group-input[data-key="${key}"]`);
+      const val = inp?.value.trim(); if (!val) return;
+      const arr = getGroupedArr(key);
+      arr.push({ famille: val, tags: [] });
+      renderSettingsModal();
+    });
+  });
+  body.querySelectorAll('.sm-new-group-input').forEach(inp => {
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); body.querySelector(`.sm-add-group-btn[data-key="${inp.dataset.key}"]`)?.click(); }
     });
   });
 }
