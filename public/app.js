@@ -580,15 +580,32 @@ function renderGrid(items) {
       if (!cards.length) return;
       const bgColor = getVerbeBgColor(cat);
       const txtColor = getVerbeTextColor(cat);
+      // Grand bloc couleur type Image C
       html+=`<div class="category-header" style="background:${bgColor};color:${txtColor}">
-        <span>${esc(cat||'Sans catégorie')}</span>
-        <span class="category-count" style="color:${txtColor};opacity:.7">${cards.length}</span>
+        <span class="cat-hdr-name">${esc(cat||'Sans catégorie')}</span>
+        <span class="cat-hdr-count">${cards.length} objet${cards.length>1?'s':''}</span>
       </div>`;
       html+=cards.map(c=>cardHTML(c)).join('');
     });
     el.innerHTML=html;
   } else {
-    el.innerHTML=items.map(c=>cardHTML(c)).join('');
+    let html = '';
+    // Banner verbe actif — grand bloc coloré si une Intention est filtrée (Image C)
+    if (state.categoryFilter) {
+      const verbe = getVerbes().find(v => v.name === state.categoryFilter);
+      if (verbe) {
+        const typos = getTypologies(verbe);
+        html += `<div class="verbe-active-banner" style="background:${verbe.bgColor};color:${verbe.textColor}">
+          <span class="vab-name">${esc(verbe.name)}</span>
+          <div class="vab-meta">
+            <div class="vab-count">${items.length} objet${items.length!==1?'s':''}</div>
+            ${typos.length ? `<div class="vab-typos">${typos.slice(0,4).join(' · ')}${typos.length>4?' · …':''}</div>` : ''}
+          </div>
+        </div>`;
+      }
+    }
+    html += items.map(c=>cardHTML(c)).join('');
+    el.innerHTML = html;
   }
   bindCardEvents(el);
 }
@@ -611,6 +628,25 @@ function cardHTML(c) {
   const addedDate = c.createdAt ? `<div class="card-added-date">${formatRelativeDate(c.createdAt)}</div>` : '';
   const accentStyle = (bgColor && bgColor !== 'transparent') ? ` style="--verbe-accent:${bgColor}"` : '';
 
+  // Hover overlay : métadonnées sur aplat coloré verbe (Image A)
+  const attrs = c.attributes || {};
+  const hoverItems = [];
+  if (attrs.taille)            hoverItems.push(['Taille',   attrs.taille]);
+  if (attrs.matieres?.length)  hoverItems.push(['Matière',  attrs.matieres.slice(0,2).join(' · ')]);
+  if (attrs.origine?.length)   hoverItems.push(['Origine',  attrs.origine[0]]);
+  if (attrs.etat_traces?.length) hoverItems.push(['État',   attrs.etat_traces.slice(0,2).join(' · ')]);
+
+  const hoverOverlay = (bgColor && bgColor !== 'transparent') ? `
+    <div class="card-hover-overlay" style="background:${bgColor}">
+      <div class="cho-content" style="color:${textColor}">
+        ${hoverItems.length ? hoverItems.map(([label, val]) =>
+          `<div class="cho-row"><span class="cho-label">${esc(label)}</span><span class="cho-val">${esc(val)}</span></div>`
+        ).join('') : ''}
+        ${(hoverItems.length && (c.price != null && c.price !== '')) ? '<hr class="cho-divider">' : ''}
+        ${c.price != null && c.price !== '' ? `<div class="cho-price">${c.price}&nbsp;€</div>` : ''}
+      </div>
+    </div>` : '';
+
   return `
   <div class="card" data-id="${c.id}"${accentStyle}>
     <div class="card-thumb-area">
@@ -624,6 +660,7 @@ function cardHTML(c) {
         <button class="card-next" data-id="${c.id}">›</button>
       </div>` : ''}
       <div class="card-drop-hint">Déposer les photos ici</div>
+      ${hoverOverlay}
     </div>
     <div class="card-body">
       ${metaRow}
