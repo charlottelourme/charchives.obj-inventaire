@@ -1708,47 +1708,65 @@ function switchModalTab(tab) {
 }
 
 async function saveCollection(asDraft = false) {
-  const attrs = { ...state.editAttributes };
-  attrs.tailleReelle = document.getElementById('fTailleReelle').value.trim() || undefined;
-  if (!attrs.tailleReelle) delete attrs.tailleReelle;
+  const saveBtn  = document.getElementById('saveBtn');
+  const draftBtn = document.getElementById('draftBtn');
+  if (saveBtn)  saveBtn.disabled  = true;
+  if (draftBtn) draftBtn.disabled = true;
 
-  const status = asDraft ? 'Brouillon' : document.getElementById('fItemStatus').value;
-
-  const body = {
-    name:        document.getElementById('fName').value.trim()||'Sans titre',
-    category:    document.getElementById('fCategory').value,
-    subcategory: document.getElementById('fSubcategory').value,
-    subcategoryCustom: document.getElementById('fSubcategoryCustom').value.trim(),
-    depotVente:  document.getElementById('fDepotVente').checked,
-    depotVenteName: document.getElementById('fDepotVenteName').value.trim(),
-    artiste:     document.getElementById('fArtiste').checked,
-    artisteName: document.getElementById('fArtisteName').value.trim(),
-    univers:     [...state.editUnivers],
-    attributes:  attrs,
-    price:       document.getElementById('fPrice').value!=='' ? parseFloat(document.getElementById('fPrice').value) : null,
-    itemStatus:  status,
-    keywords:    [...state.editKeywords],
-    description: document.getElementById('fDesc').value.trim(),
-    photos:      [...state.editPhotos],
-    private: {
-      photos:     [...state.editPrivatePhotos],
-      prixAchat:  document.getElementById('fPrixAchat').value!=='' ? parseFloat(document.getElementById('fPrixAchat').value) : null,
-      dateAchat:  state.dpAchatSelectedDate,
-      lieuAchat:  document.getElementById('fLieuAchat').value.trim(),
-      location:   document.getElementById('fLocation').value,
-      notes:      document.getElementById('fNotes').value.trim()
+  try {
+    const attrs = { ...state.editAttributes };
+    const fTailleReelle = document.getElementById('fTailleReelle');
+    if (fTailleReelle) {
+      attrs.tailleReelle = fTailleReelle.value.trim() || undefined;
+      if (!attrs.tailleReelle) delete attrs.tailleReelle;
     }
-  };
-  if (state.editId) {
-    const updated = await api.put(`/api/collections/${state.editId}`, body);
-    const idx = state.collections.findIndex(c=>c.id===state.editId);
-    state.collections[idx] = updated;
-  } else {
-    const created = await api.post('/api/collections', body);
-    state.collections.unshift(created);
+
+    const status = asDraft ? 'Brouillon' : document.getElementById('fItemStatus').value;
+
+    const body = {
+      name:        document.getElementById('fName').value.trim()||'Sans titre',
+      category:    document.getElementById('fCategory').value,
+      subcategory: document.getElementById('fSubcategory').value,
+      subcategoryCustom: (document.getElementById('fSubcategoryCustom')?.value||'').trim(),
+      depotVente:  document.getElementById('fDepotVente').checked,
+      depotVenteName: document.getElementById('fDepotVenteName').value.trim(),
+      artiste:     document.getElementById('fArtiste').checked,
+      artisteName: document.getElementById('fArtisteName').value.trim(),
+      univers:     [...state.editUnivers],
+      attributes:  attrs,
+      price:       document.getElementById('fPrice').value!=='' ? parseFloat(document.getElementById('fPrice').value) : null,
+      itemStatus:  status,
+      keywords:    [...state.editKeywords],
+      description: document.getElementById('fDesc').value.trim(),
+      photos:      [...state.editPhotos],
+      private: {
+        photos:     [...state.editPrivatePhotos],
+        prixAchat:  document.getElementById('fPrixAchat').value!=='' ? parseFloat(document.getElementById('fPrixAchat').value) : null,
+        dateAchat:  state.dpAchatSelectedDate,
+        lieuAchat:  document.getElementById('fLieuAchat').value.trim(),
+        location:   document.getElementById('fLocation').value,
+        notes:      document.getElementById('fNotes').value.trim()
+      }
+    };
+
+    if (state.editId) {
+      const updated = await api.put(`/api/collections/${state.editId}`, body);
+      const idx = state.collections.findIndex(c=>c.id===state.editId);
+      if (idx >= 0) state.collections[idx] = updated;
+    } else {
+      const created = await api.post('/api/collections', body);
+      state.collections.unshift(created);
+    }
+    state.keywords = await api.get('/api/keywords');
+    closeEdit(); render();
+
+  } catch (err) {
+    console.error('Erreur sauvegarde:', err);
+    alert(`Impossible d'enregistrer : ${err.message}`);
+  } finally {
+    if (saveBtn)  saveBtn.disabled  = false;
+    if (draftBtn) draftBtn.disabled = false;
   }
-  state.keywords = await api.get('/api/keywords');
-  closeEdit(); render();
 }
 
 async function deleteCollection() {
