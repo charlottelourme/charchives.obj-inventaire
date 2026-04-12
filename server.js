@@ -333,44 +333,33 @@ app.post('/api/enhance-photo', async (req, res) => {
 
     const publicId = await resolveCloudinaryPublicId(filename);
 
-    // 1. Essaie avec background_removal (nécessite l'add-on gratuit Cloudinary)
-    // 2. Fallback : trim bords + fond blanc + carré centré
+    // 1. Suppression de fond IA (native Cloudinary, consomme des credits)
+    // 2. Fallback automatique : trim bords + fond blanc
+    // Les étapes doivent être chaînées (tableau de tableaux)
     let enhancedFilename;
     try {
       const result = await new Promise((resolve, reject) => {
         cloudinary.uploader.explicit(publicId, {
           type: 'upload',
-          eager: [{
-            effect: 'background_removal',
-            background: 'white',
-            crop: 'pad',
-            width: 1000,
-            height: 1000,
-            gravity: 'center',
-            quality: 'auto',
-            fetch_format: 'auto'
-          }],
+          eager: [[
+            { effect: 'background_removal' },
+            { background: 'white', crop: 'pad', width: 1000, height: 1000, gravity: 'center', quality: 'auto', fetch_format: 'auto' }
+          ]],
           eager_async: false
         }, (err, r) => err ? reject(err) : resolve(r));
       });
       enhancedFilename = result.eager?.[0]?.secure_url;
       if (!enhancedFilename) throw new Error('no eager url');
     } catch (bgErr) {
-      // Fallback sans background_removal
-      console.warn('background_removal non dispo, fallback trim:', bgErr.message);
+      // Fallback : trim intelligent + fond blanc + carré centré
+      console.warn('background_removal échoué, fallback trim:', bgErr.message);
       const result = await new Promise((resolve, reject) => {
         cloudinary.uploader.explicit(publicId, {
           type: 'upload',
-          eager: [{
-            effect: 'trim:10',
-            background: 'white',
-            crop: 'pad',
-            width: 1000,
-            height: 1000,
-            gravity: 'center',
-            quality: 'auto',
-            fetch_format: 'auto'
-          }],
+          eager: [[
+            { effect: 'trim:10' },
+            { background: 'white', crop: 'pad', width: 1000, height: 1000, gravity: 'center', quality: 'auto', fetch_format: 'auto' }
+          ]],
           eager_async: false
         }, (err, r) => err ? reject(err) : resolve(r));
       });
