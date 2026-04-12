@@ -711,6 +711,21 @@ function applySortTo(items) {
   });
 }
 
+function applyVerbePageTheme() {
+  if (state.view === 'grid' && state.categoryFilter) {
+    const verbe = getVerbes().find(v => v.name === state.categoryFilter);
+    if (verbe) {
+      document.documentElement.style.setProperty('--page-verbe-bg',   verbe.bgColor   || '#2D2D2D');
+      document.documentElement.style.setProperty('--page-verbe-text', verbe.textColor || '#F5F5F0');
+      document.body.classList.add('verbe-active');
+      return;
+    }
+  }
+  document.body.classList.remove('verbe-active');
+  document.documentElement.style.removeProperty('--page-verbe-bg');
+  document.documentElement.style.removeProperty('--page-verbe-text');
+}
+
 function render() {
   // Update category filter pills (+ réinitialise les inline styles duotone sur les pills inactives)
   document.querySelectorAll('#categoryFilterBar .sfb-pill').forEach(p => {
@@ -724,6 +739,8 @@ function render() {
   });
   document.querySelectorAll('#statusFilterBar .sfb-pill').forEach(p =>
     p.classList.toggle('active', p.dataset.status === state.statusFilter));
+
+  applyVerbePageTheme();
 
   const filtered = getFiltered();
   state.detailList = filtered;
@@ -787,22 +804,22 @@ function renderGrid(items) {
     });
     el.innerHTML=html;
   } else {
-    // Bandeau verbe actif — hors du .grid pour être vraiment bord-à-bord
-    let banner = '';
+    // Titre verbe — texte inline sur fond de page coloré (pas de bloc background)
+    let titleHTML = '';
     if (state.categoryFilter) {
       const verbe = getVerbes().find(v => v.name === state.categoryFilter);
       if (verbe) {
         const typos = getTypologies(verbe);
-        banner = `<div class="verbe-active-banner" style="background:${verbe.bgColor};color:${verbe.textColor}">
-          <div class="vab-inner">
-            <span class="vab-name">${esc(verbe.name)}</span>
-            ${typos.length ? `<div class="vab-typos">${typos.slice(0,5).join(' · ')}${typos.length>5?' · …':''}</div>` : ''}
+        titleHTML = `<div class="verbe-page-title">
+          <h1 class="vpt-name">${esc(verbe.name)}</h1>
+          <div class="vpt-meta">
+            ${typos.length ? `<p class="vpt-typos">${typos.slice(0,5).join(' · ')}${typos.length>5?' · …':''}</p>` : ''}
+            <span class="vpt-count">${items.length}&nbsp;objet${items.length!==1?'s':''}</span>
           </div>
-          <span class="vab-count-badge">${items.length} objet${items.length!==1?'s':''}</span>
         </div>`;
       }
     }
-    el.innerHTML = banner + `<div class="grid">${items.map(c=>cardHTML(c)).join('')}</div>`;
+    el.innerHTML = titleHTML + `<div class="grid">${items.map(c=>cardHTML(c)).join('')}</div>`;
   }
   bindCardEvents(el);
 }

@@ -25,6 +25,149 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
   min-height: 100vh;
+  transition: background-color .45s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Thème verbe actif — toute la page prend la couleur du verbe ── */
+body.verbe-active {
+  background-color: var(--page-verbe-bg, var(--bg));
+}
+/* Header : transparent pour laisser transparaître la couleur */
+body.verbe-active header {
+  background: rgba(0,0,0,.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom-color: rgba(255,255,255,.14);
+}
+body.verbe-active header h1,
+body.verbe-active header .btn-ghost,
+body.verbe-active header .btn-icon {
+  color: var(--page-verbe-text);
+}
+body.verbe-active .view-tab {
+  color: var(--page-verbe-text);
+  opacity: .55;
+  border-color: rgba(255,255,255,.12);
+}
+body.verbe-active .view-tab:hover { opacity: .85; background: rgba(255,255,255,.1); }
+body.verbe-active .view-tab.active {
+  background: var(--page-verbe-text);
+  color: var(--page-verbe-bg);
+  opacity: 1;
+}
+/* Toolbar + filter bars : transparents */
+body.verbe-active .toolbar,
+body.verbe-active #gridWrapper {
+  background: transparent;
+}
+body.verbe-active .count-label {
+  color: var(--page-verbe-text);
+  opacity: .5;
+}
+body.verbe-active .toolbar-slider-sep { background: var(--page-verbe-text); opacity: .2; }
+body.verbe-active .card-size-slider { opacity: .6; }
+body.verbe-active select.status-filter {
+  background: transparent;
+  border-color: rgba(255,255,255,.2);
+  color: var(--page-verbe-text);
+}
+/* Barres de filtres */
+body.verbe-active .status-filter-bar {
+  background: transparent;
+  border-bottom-color: rgba(255,255,255,.12);
+}
+body.verbe-active .sfb-label { color: var(--page-verbe-text); opacity: .45; }
+body.verbe-active .sfb-pill {
+  color: var(--page-verbe-text);
+  opacity: .65;
+  border-right-color: rgba(255,255,255,.12);
+}
+body.verbe-active .sfb-pill:hover { opacity: 1; background: rgba(255,255,255,.12); }
+body.verbe-active .sfb-pill.active {
+  background: var(--page-verbe-text) !important;
+  color: var(--page-verbe-bg) !important;
+  opacity: 1;
+}
+/* Barre sous-catégories */
+body.verbe-active #subcategoryFilterBar {
+  background: transparent;
+  border-bottom-color: rgba(255,255,255,.1);
+}
+body.verbe-active .sfb-pill-typo {
+  background: rgba(255,255,255,.1) !important;
+  color: var(--page-verbe-text) !important;
+  border-color: rgba(255,255,255,.2) !important;
+}
+body.verbe-active .sfb-pill-typo.active {
+  background: var(--page-verbe-text) !important;
+  color: var(--page-verbe-bg) !important;
+}
+/* Filtres attributs */
+body.verbe-active .attr-filter-bar {
+  background: transparent;
+  border-bottom-color: rgba(255,255,255,.1);
+}
+body.verbe-active .mf-trigger {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.2);
+  color: var(--page-verbe-text);
+}
+body.verbe-active .mf-trigger:hover { background: rgba(255,255,255,.18); }
+body.verbe-active .clear-attr-btn { color: var(--page-verbe-text); opacity: .45; }
+/* Barre de recherche */
+body.verbe-active .search-bar {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.2);
+  color: var(--page-verbe-text);
+}
+body.verbe-active .search-bar::placeholder { color: var(--page-verbe-text); opacity: .4; }
+
+/* ── Titre verbe inline (remplace le bandeau) ── */
+.verbe-page-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 44px 32px 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.vpt-name {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: clamp(42px, 6vw, 78px);
+  font-weight: 300;
+  letter-spacing: -.03em;
+  line-height: .9;
+  color: var(--page-verbe-text, var(--text));
+  margin: 0;
+}
+.vpt-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding-bottom: 4px;
+}
+.vpt-typos {
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  color: var(--page-verbe-text, var(--text));
+  opacity: .45;
+  text-align: right;
+  max-width: 340px;
+  line-height: 1.8;
+  margin: 0;
+}
+.vpt-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .24em;
+  color: var(--page-verbe-text, var(--text));
+  opacity: .35;
 }
 
 /* ── Header ── */
