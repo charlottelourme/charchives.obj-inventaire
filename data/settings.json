@@ -2,12 +2,13 @@
   "siteTitle": "CHARCHIVES . OBJ",
   "attributeLabels": {
     "matieres": "Matières",
-    "origine": "Origine",
+    "origine": "Identité",
     "motifs": "Motifs",
     "couleurs": "Teintes",
-    "etat_traces": "États",
+    "etat_traces": "État",
     "taille": "Taille",
-    "usage": "Fonctions & Usages"
+    "usage": "Fonctions & Usages",
+    "univers": "AMBIANCE"
   },
   "navOrder": [
     "grid",
@@ -17,35 +18,28 @@
     "stats"
   ],
   "attributeSectionsOrder": [
-    {
-      "group": "Identité"
-    },
     "origine",
+    [
+      "etat_traces",
+      "taille"
+    ],
+    "usage",
     {
       "group": "Matière & Apparence"
     },
     "matieres",
     [
-      "motifs",
-      "couleurs"
-    ],
-    {
-      "group": "Vie & Imaginaire"
-    },
-    [
-      "etat_traces",
-      "taille"
-    ],
-    "usage"
+      "couleurs",
+      "motifs"
+    ]
   ],
   "verbes": [
     {
       "name": "S'entourer",
-      "bgColor": "#125603",
-      "textColor": "#C3F380",
+      "bgColor": "#557A64",
+      "textColor": "#D4E1D8",
       "typologies": [
         "Vases",
-        "Céramiques",
         "Coupes & Vide-poche",
         "Sculptures & Figurines",
         "Petits objets",
@@ -55,8 +49,8 @@
     },
     {
       "name": "Partager",
-      "bgColor": "#D13F13",
-      "textColor": "#FCC5C6",
+      "bgColor": "#A04733",
+      "textColor": "#F2E2DF",
       "typologies": [
         "Verres",
         "Thé & Café",
@@ -68,8 +62,8 @@
     },
     {
       "name": "S'étonner",
-      "bgColor": "#7523B4",
-      "textColor": "#FAE170",
+      "bgColor": "#2E4E73",
+      "textColor": "#D9E6F2",
       "typologies": [
         "Curiosités & Fragments",
         "Minéraux & Fossiles",
@@ -80,8 +74,8 @@
     },
     {
       "name": "Cacher",
-      "bgColor": "#0D5072",
-      "textColor": "#7FEEFF",
+      "bgColor": "#4A535C",
+      "textColor": "#E0E6EA",
       "typologies": [
         "Boîtes & coffrets",
         "Bonbonnières & Bocaux",
@@ -91,8 +85,8 @@
     },
     {
       "name": "Raconter",
-      "bgColor": "#630700",
-      "textColor": "#FF97D0",
+      "bgColor": "#7B5A3D",
+      "textColor": "#F0E5D9",
       "typologies": [
         "Beaux arts & Arts graphiques",
         "Livres",
@@ -102,8 +96,8 @@
     },
     {
       "name": "Éclairer",
-      "bgColor": "#FAE170",
-      "textColor": "#D13F13",
+      "bgColor": "#D9A34C",
+      "textColor": "#F2E6C9",
       "typologies": [
         "Bougeoirs & Chandeliers",
         "Lampes",
@@ -112,8 +106,8 @@
     },
     {
       "name": "Porter",
-      "bgColor": "#906713",
-      "textColor": "#FFDB58",
+      "bgColor": "#B58A9A",
+      "textColor": "#F0E1E6",
       "typologies": [
         "Bijoux ",
         "Accessoires",
@@ -241,7 +235,8 @@
   "locations": [
     "Paris",
     "Aligre",
-    "Parents"
+    "Parents",
+    "Nord"
   ],
   "colors": [
     "transparent",
@@ -265,7 +260,6 @@
   "motifs": [
     "fleurs",
     "végétal",
-    "feuillage",
     "animal",
     "oiseau",
     "coquillage",
@@ -280,26 +274,22 @@
   ],
   "univers": [
     "poétique",
+    "léger",
     "mélancolique",
     "mystérieux",
     "précieux",
     "fragile",
     "intime",
-    "désuet",
     "théâtral",
     "romantique",
-    "inquiétant",
     "sacré",
-    "onirique",
-    "mémoriel"
+    "hors du temps"
   ],
   "attributeOptions": {
     "matieres": [
-      "porcelaine",
-      "faïence",
       "céramique",
+      "porcelaine",
       "barbotine",
-      "majolique",
       "émaux de Longwy",
       "verre",
       "verre soufflé",
@@ -308,7 +298,6 @@
       "opaline",
       "bois",
       "bois doré",
-      "loupe d'orme",
       "osier",
       "rotin",
       "métal",
@@ -317,7 +306,6 @@
       "étain",
       "argent",
       "vermeil",
-      "marbre",
       "pierre",
       "coquillage",
       "textile",
@@ -327,26 +315,21 @@
     "etat_traces": [
       "patiné",
       "usé",
-      "fissuré",
       "restauré",
       "fragment",
       "incomplet",
-      "dans son jus",
       "ancien",
       "neuf",
       "rare",
-      "unique",
       "signé"
     ],
     "usage": [
       "décoratif",
-      "décor de table",
-      "rangement",
-      "contenant",
-      "mural",
-      "vitrine",
-      "rituel",
-      "service"
+      "pratique",
+      "symbolique",
+      "poétique",
+      "esthétique",
+      "quotidien"
     ],
     "role": [
       "rituel",
