@@ -2374,6 +2374,200 @@ function _showPhotoToast(msg) {
   toast._timer = setTimeout(() => toast.classList.remove('visible'), 3500);
 }
 
+// ══════════════════════════════════════════════════════════════
+// CANVAS BRUSH EDITOR — Retouche manuelle du détourage IA
+// ══════════════════════════════════════════════════════════════
+const _ce = {
+  overlay:   null, canvas: null, ctx: null,
+  origCanvas: null, // canvas caché avec l'image originale (pour mode Restaurer)
+  mode:      'erase',   // 'erase' | 'restore'
+  brushSize: 24,
+  painting:  false,
+  history:   [],        // snapshots ImageData pour undo
+  _onValidate: null,    // callback(blob)
+  cursor:    null,
+};
+
+function _ceInit() {
+  _ce.overlay   = document.getElementById('canvasEditorOverlay');
+  _ce.canvas    = document.getElementById('ceCanvas');
+  _ce.ctx       = _ce.canvas.getContext('2d');
+  _ce.cursor    = document.getElementById('ceCursor');
+
+  // Toolbar
+  document.getElementById('ceBrushErase').addEventListener('click', () => _ceSetMode('erase'));
+  document.getElementById('ceBrushRestore').addEventListener('click', () => _ceSetMode('restore'));
+  document.getElementById('ceBrushSize').addEventListener('input', e => {
+    _ce.brushSize = +e.target.value;
+    document.getElementById('ceSizeVal').textContent = e.target.value;
+    _ceCursorSize();
+  });
+  document.getElementById('ceUndo').addEventListener('click', _ceUndo);
+
+  // Canvas mouse
+  _ce.canvas.addEventListener('mousedown',  _cePointerDown);
+  _ce.canvas.addEventListener('mousemove',  _cePointerMove);
+  _ce.canvas.addEventListener('mouseup',    _cePointerUp);
+  _ce.canvas.addEventListener('mouseleave', _cePointerUp);
+
+  // Canvas touch (mobile)
+  _ce.canvas.addEventListener('touchstart',  e => { e.preventDefault(); _cePointerDown(_ceTouchToMouse(e)); }, { passive: false });
+  _ce.canvas.addEventListener('touchmove',   e => { e.preventDefault(); _cePointerMove(_ceTouchToMouse(e)); }, { passive: false });
+  _ce.canvas.addEventListener('touchend',    e => { e.preventDefault(); _cePointerUp(); }, { passive: false });
+
+  // Cursor follow (desktop)
+  const stage = document.getElementById('canvasEditorStage');
+  stage.addEventListener('mousemove', e => {
+    _ce.cursor.style.display = 'block';
+    _ce.cursor.style.left = e.clientX + 'px';
+    _ce.cursor.style.top  = e.clientY + 'px';
+  });
+  stage.addEventListener('mouseleave', () => { _ce.cursor.style.display = 'none'; });
+
+  // Close / cancel
+  document.getElementById('canvasEditorClose').addEventListener('click',  _ceClose);
+  document.getElementById('canvasEditorCancel').addEventListener('click', _ceClose);
+  document.getElementById('canvasEditorValidate').addEventListener('click', _ceValidate);
+}
+
+function _ceSetMode(mode) {
+  _ce.mode = mode;
+  document.getElementById('ceBrushErase').classList.toggle('active',   mode === 'erase');
+  document.getElementById('ceBrushRestore').classList.toggle('active', mode === 'restore');
+}
+
+function _ceCursorSize() {
+  const s = _ce.brushSize;
+  _ce.cursor.style.width  = s + 'px';
+  _ce.cursor.style.height = s + 'px';
+}
+
+function _ceTouchToMouse(e) {
+  const t = e.touches[0] || e.changedTouches[0];
+  return { clientX: t.clientX, clientY: t.clientY };
+}
+
+function _ceCanvasXY(e) {
+  const rect = _ce.canvas.getBoundingClientRect();
+  const scaleX = _ce.canvas.width  / rect.width;
+  const scaleY = _ce.canvas.height / rect.height;
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top)  * scaleY,
+  };
+}
+
+function _ceSnapshotForUndo() {
+  if (_ce.history.length >= 20) _ce.history.shift(); // garde 20 étapes max
+  _ce.history.push(_ce.ctx.getImageData(0, 0, _ce.canvas.width, _ce.canvas.height));
+}
+
+function _ceUndo() {
+  if (!_ce.history.length) return;
+  _ce.ctx.putImageData(_ce.history.pop(), 0, 0);
+}
+
+function _cePaint(x, y) {
+  const ctx = _ce.ctx;
+  const r   = _ce.brushSize / 2;
+  ctx.save();
+  if (_ce.mode === 'erase') {
+    // Efface les pixels de l'image détourée
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.fill();
+  } else {
+    // Restaure les pixels de l'image originale
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.drawImage(_ce.origCanvas, 0, 0);
+  }
+  ctx.restore();
+}
+
+function _cePointerDown(e) {
+  _ceSnapshotForUndo();
+  _ce.painting = true;
+  const {x, y} = _ceCanvasXY(e);
+  _cePaint(x, y);
+}
+function _cePointerMove(e) {
+  if (!_ce.painting) return;
+  const {x, y} = _ceCanvasXY(e);
+  _cePaint(x, y);
+}
+function _cePointerUp() { _ce.painting = false; }
+
+async function _ceValidate() {
+  const btn = document.getElementById('canvasEditorValidate');
+  const lbl = document.getElementById('ceValidateLabel');
+  btn.disabled = true;
+  lbl.textContent = 'Envoi…';
+  try {
+    const blob = await new Promise(r => _ce.canvas.toBlob(r, 'image/png'));
+    await _ce._onValidate(blob);
+    _ceClose();
+  } catch(err) {
+    lbl.textContent = 'Erreur — réessaie';
+    btn.disabled = false;
+    setTimeout(() => { lbl.textContent = 'Valider la retouche'; }, 2500);
+  }
+}
+
+function _ceClose() {
+  _ce.overlay.style.display = 'none';
+  _ce.history = [];
+  _ce.cursor.style.display = 'none';
+}
+
+// Ouvre l'éditeur avec originalUrl et enhancedUrl
+// onValidate(blob) est appelé avec le PNG retouché
+function openCanvasEditor(originalUrl, enhancedUrl, onValidate) {
+  if (!_ce.overlay) _ceInit();
+  _ce._onValidate = onValidate;
+  _ce.history = [];
+  _ceSetMode('erase');
+
+  const btnSize   = document.getElementById('ceBrushSize');
+  _ce.brushSize   = +btnSize.value;
+  document.getElementById('ceSizeVal').textContent = btnSize.value;
+  _ceCursorSize();
+  document.getElementById('ceValidateLabel').textContent = 'Valider la retouche';
+  document.getElementById('canvasEditorValidate').disabled = false;
+
+  // Charger les deux images
+  const imgOriginal  = new Image(); imgOriginal.crossOrigin  = 'anonymous';
+  const imgEnhanced  = new Image(); imgEnhanced.crossOrigin  = 'anonymous';
+  let loadedCount = 0;
+  const onLoad = () => {
+    loadedCount++;
+    if (loadedCount < 2) return;
+    const W = imgEnhanced.naturalWidth;
+    const H = imgEnhanced.naturalHeight;
+
+    // Canvas principal = image détourée par IA
+    _ce.canvas.width  = W;
+    _ce.canvas.height = H;
+    _ce.ctx.clearRect(0, 0, W, H);
+    _ce.ctx.drawImage(imgEnhanced, 0, 0);
+
+    // Canvas caché = image originale (pour mode Restaurer)
+    _ce.origCanvas        = document.createElement('canvas');
+    _ce.origCanvas.width  = W;
+    _ce.origCanvas.height = H;
+    _ce.origCanvas.getContext('2d').drawImage(imgOriginal, 0, 0, W, H);
+
+    _ce.overlay.style.display = 'flex';
+  };
+  imgOriginal.onload = imgEnhanced.onload = onLoad;
+  imgOriginal.src    = originalUrl;
+  imgEnhanced.src    = enhancedUrl;
+}
+
 function renderPhotos() {
   const el = document.getElementById('photosList'); if (!el) return;
   const hasIntention = !!_getSelectedVerbeTextColor();
@@ -2450,13 +2644,14 @@ function renderPhotos() {
             </div>
             <div class="photo-compare-sep"></div>
             <div class="photo-compare-side">
-              <img src="${photoUrl(result.enhancedFilename)}" alt="Après">
+              <img src="${photoUrl(result.enhancedFilename)}" alt="Après · Retouche AI" id="cePreviewImg">
               <div class="photo-compare-label">Après · Retouche AI</div>
             </div>
           </div>
           <div class="photo-compare-actions">
             <button class="photo-compare-cancel">Annuler</button>
-            <button class="photo-compare-apply">Appliquer la retouche</button>
+            <button class="photo-compare-refine">✎ Retoucher</button>
+            <button class="photo-compare-apply">Appliquer</button>
           </div>`;
 
         // Insert after the wrap, or append at end
@@ -2470,14 +2665,34 @@ function renderPhotos() {
         wrap.style.opacity = '.35';
         wrap.style.pointerEvents = 'none';
 
-        compareEl.querySelector('.photo-compare-apply').addEventListener('click', () => {
-          // Replace original with enhanced, put it first
-          state.editPhotos.splice(i, 1, result.enhancedFilename);
-          // Move to front
-          const [moved] = state.editPhotos.splice(state.editPhotos.indexOf(result.enhancedFilename), 1);
+        // Helper : applique un filename final dans le state
+        const _applyFilename = (finalFilename) => {
+          state.editPhotos.splice(i, 1, finalFilename);
+          const [moved] = state.editPhotos.splice(state.editPhotos.indexOf(finalFilename), 1);
           state.editPhotos.unshift(moved);
           compareEl.remove();
           renderPhotos();
+        };
+
+        compareEl.querySelector('.photo-compare-apply').addEventListener('click', () => {
+          _applyFilename(result.enhancedFilename);
+        });
+
+        // Bouton Retoucher → ouvre le canvas editor
+        compareEl.querySelector('.photo-compare-refine').addEventListener('click', () => {
+          openCanvasEditor(
+            photoUrl(filename),               // image originale (pour Restaurer)
+            photoUrl(result.enhancedFilename), // image détourée par l'IA
+            async (blob) => {
+              // Upload le PNG retouché vers Cloudinary
+              const file = new File([blob], 'retouche.png', { type: 'image/png' });
+              const { filenames } = await api.uploadPhotos([file]);
+              const refinedFilename = filenames[0];
+              // Supprimer l'ancienne image enhanced de Cloudinary (silencieux)
+              api.post('/api/remove-photo', { ref: result.enhancedFilename }).catch(() => {});
+              _applyFilename(refinedFilename);
+            }
+          );
         });
 
         compareEl.querySelector('.photo-compare-cancel').addEventListener('click', () => {

@@ -2203,6 +2203,196 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   transition: background .12s;
 }
 .photo-compare-cancel:hover { background: var(--hover); }
+.photo-compare-refine {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--text);
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background .12s;
+}
+.photo-compare-refine:hover { background: var(--tag-bg); }
+
+/* ══════════════════════════════════════════════════════════════
+   CANVAS BRUSH EDITOR — Retouche manuelle détourage
+══════════════════════════════════════════════════════════════ */
+.canvas-editor-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(20,20,20,.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.canvas-editor-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  width: 100%;
+  max-width: 860px;
+  max-height: 96vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 80px rgba(0,0,0,.45);
+}
+
+/* Header */
+.canvas-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.canvas-editor-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.canvas-editor-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text-2);
+  padding: 4px 6px;
+  line-height: 1;
+}
+.canvas-editor-close:hover { color: var(--text); }
+
+/* Toolbar */
+.canvas-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.canvas-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  padding: 7px 14px;
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--text-2);
+  transition: background .12s, color .12s, border-color .12s;
+}
+.canvas-tool-btn:hover { background: var(--tag-bg); color: var(--text); }
+.canvas-tool-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.canvas-tool-icon { font-size: 13px; line-height: 1; }
+.canvas-tool-sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+.canvas-size-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--text-2);
+}
+.canvas-size-label input[type=range] {
+  width: 90px;
+  accent-color: var(--text);
+}
+.canvas-tool-undo { margin-left: 4px; }
+
+/* Stage — zone canvas avec fond damier */
+.canvas-editor-stage {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  background:
+    repeating-conic-gradient(#d8d4ce 0% 25%, #f0ede8 0% 50%)
+    0 0 / 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  cursor: none; /* curseur custom */
+}
+.ce-canvas {
+  display: block;
+  max-width: 100%;
+  max-height: calc(96vh - 200px);
+  touch-action: none; /* évite le scroll pendant le dessin sur mobile */
+}
+/* Curseur circulaire custom */
+.canvas-editor-cursor {
+  position: fixed;
+  border: 2px solid rgba(255,255,255,.9);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 410;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.5);
+  transition: width .1s, height .1s;
+  display: none;
+}
+
+/* Footer */
+.canvas-editor-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.canvas-editor-cancel {
+  background: none;
+  border: 1px solid var(--border);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-2);
+  padding: 8px 18px;
+  cursor: pointer;
+}
+.canvas-editor-cancel:hover { background: var(--tag-bg); color: var(--text); }
+.canvas-editor-validate {
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 8px 24px;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.canvas-editor-validate:hover { opacity: .8; }
+.canvas-editor-validate:disabled { opacity: .45; cursor: not-allowed; }
+
+@media (max-width: 520px) {
+  .canvas-editor-overlay { padding: 0; align-items: flex-end; }
+  .canvas-editor-modal { max-height: 98vh; border-radius: 16px 16px 0 0; }
+  .canvas-editor-toolbar { padding: 8px 10px; gap: 4px; }
+  .canvas-tool-btn { padding: 6px 10px; font-size: 10px; }
+  .canvas-size-label input[type=range] { width: 64px; }
+}
 
 /* toast notification */
 .photo-toast {

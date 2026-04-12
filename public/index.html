@@ -561,6 +561,42 @@
 <!-- Timeline floating preview -->
 <div id="timelineFloatPreview" style="display:none;position:fixed;z-index:500;width:220px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(26,26,26,.14);overflow:hidden;pointer-events:none"></div>
 
+<!-- ── Canvas Brush Editor ── -->
+<div class="canvas-editor-overlay" id="canvasEditorOverlay" style="display:none">
+  <div class="canvas-editor-modal">
+    <div class="canvas-editor-header">
+      <span class="canvas-editor-title">Retouche manuelle</span>
+      <button class="canvas-editor-close" id="canvasEditorClose">✕</button>
+    </div>
+    <div class="canvas-editor-toolbar">
+      <button class="canvas-tool-btn active" id="ceBrushErase" title="Gomme — efface le fond résiduel">
+        <span class="canvas-tool-icon">◯</span> Gomme
+      </button>
+      <button class="canvas-tool-btn" id="ceBrushRestore" title="Restaurer — restitue l'image originale">
+        <span class="canvas-tool-icon">●</span> Restaurer
+      </button>
+      <div class="canvas-tool-sep"></div>
+      <label class="canvas-size-label">
+        <span id="ceSizeVal">24</span> px
+        <input type="range" id="ceBrushSize" min="4" max="80" value="24" step="2">
+      </label>
+      <div class="canvas-tool-sep"></div>
+      <button class="canvas-tool-btn canvas-tool-undo" id="ceUndo" title="Annuler">↩ Annuler</button>
+    </div>
+    <div class="canvas-editor-stage" id="canvasEditorStage">
+      <!-- checkerboard bg for transparency -->
+      <canvas id="ceCanvas" class="ce-canvas"></canvas>
+      <div class="canvas-editor-cursor" id="ceCursor"></div>
+    </div>
+    <div class="canvas-editor-footer">
+      <button class="canvas-editor-cancel" id="canvasEditorCancel">Annuler</button>
+      <button class="canvas-editor-validate" id="canvasEditorValidate">
+        <span id="ceValidateLabel">Valider la retouche</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox" style="display:none">
   <button class="lb-btn lb-close" id="lbClose">✕</button>
