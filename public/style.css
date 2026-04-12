@@ -597,31 +597,17 @@ main { padding: 0; }
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
-  padding: 56px 36px 36px;
+  padding: 32px 28px 24px;
   border-bottom: 1.5px solid rgba(255,255,255,.15);
   position: relative;
   overflow: hidden;
 }
-/* Numéro décoratif en fond (Image C style) */
-.verbe-active-banner::before {
-  content: attr(data-count);
-  position: absolute;
-  right: 28px; top: 16px;
-  font-family: 'Spectral', Georgia, serif;
-  font-size: clamp(80px, 14vw, 160px);
-  font-weight: 300;
-  opacity: .07;
-  line-height: 1;
-  letter-spacing: -.04em;
-  pointer-events: none;
-  color: currentColor;
-}
 .vab-name {
   font-family: 'Spectral', Georgia, serif;
-  font-size: clamp(48px, 7vw, 88px);
+  font-size: clamp(28px, 4vw, 52px);
   font-weight: 300;
-  letter-spacing: -.03em;
-  line-height: .88;
+  letter-spacing: -.02em;
+  line-height: .92;
 }
 .vab-meta { text-align: right; flex-shrink: 0; }
 .vab-count {
@@ -665,9 +651,9 @@ main { padding: 0; }
 }
 .cat-hdr-name {
   font-family: 'Spectral', Georgia, serif;
-  font-size: clamp(32px, 5vw, 62px);
+  font-size: clamp(22px, 3vw, 38px);
   font-weight: 300;
-  letter-spacing: -.02em;
+  letter-spacing: -.01em;
   line-height: .92;
 }
 .cat-hdr-count {
@@ -2385,6 +2371,15 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 .canvas-editor-validate:hover { opacity: .8; }
 .canvas-editor-validate:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ── Cropper ── */
+.cropper-stage {
+  cursor: crosshair;
+  user-select: none;
+}
+.cropper-canvas {
+  touch-action: none;
+}
 
 @media (max-width: 520px) {
   .canvas-editor-overlay { padding: 0; align-items: flex-end; }

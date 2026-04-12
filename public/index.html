@@ -561,6 +561,29 @@
 <!-- Timeline floating preview -->
 <div id="timelineFloatPreview" style="display:none;position:fixed;z-index:500;width:220px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(26,26,26,.14);overflow:hidden;pointer-events:none"></div>
 
+<!-- ── Image Cropper ── -->
+<div class="canvas-editor-overlay" id="cropperOverlay" style="display:none">
+  <div class="canvas-editor-modal">
+    <div class="canvas-editor-header">
+      <span class="canvas-editor-title">Recadrer l'image</span>
+      <button class="canvas-editor-close" id="cropperClose">✕</button>
+    </div>
+    <div class="canvas-editor-toolbar">
+      <button class="canvas-tool-btn active" id="cropRatioFree" data-ratio="free">Libre</button>
+      <button class="canvas-tool-btn" id="cropRatioSquare" data-ratio="1">Carré 1:1</button>
+      <button class="canvas-tool-btn" id="cropRatio43" data-ratio="1.333">Paysage 4:3</button>
+      <button class="canvas-tool-btn" id="cropRatio34" data-ratio="0.75">Portrait 3:4</button>
+    </div>
+    <div class="canvas-editor-stage cropper-stage" id="cropperStage">
+      <canvas id="cropperCanvas" class="ce-canvas cropper-canvas"></canvas>
+    </div>
+    <div class="canvas-editor-footer">
+      <button class="canvas-editor-cancel" id="cropperCancel">Annuler</button>
+      <button class="canvas-editor-validate" id="cropperValidate">Recadrer &amp; Utiliser</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Canvas Brush Editor ── -->
 <div class="canvas-editor-overlay" id="canvasEditorOverlay" style="display:none">
   <div class="canvas-editor-modal">
