@@ -747,7 +747,7 @@ function renderGrid(items) {
       const verbe = getVerbes().find(v => v.name === state.categoryFilter);
       if (verbe) {
         const typos = getTypologies(verbe);
-        html += `<div class="verbe-active-banner" style="background:${verbe.bgColor};color:${verbe.textColor}">
+        html += `<div class="verbe-active-banner" style="background:${verbe.bgColor};color:${verbe.textColor}" data-count="${items.length}">
           <span class="vab-name">${esc(verbe.name)}</span>
           <div class="vab-meta">
             <div class="vab-count">${items.length} objet${items.length!==1?'s':''}</div>
@@ -792,16 +792,21 @@ function cardHTML(c) {
   if (attrs.origine?.length)   hoverItems.push(['Origine',  attrs.origine[0]]);
   if (attrs.etat_traces?.length) hoverItems.push(['État',   attrs.etat_traces.slice(0,2).join(' · ')]);
 
-  const hoverOverlay = (bgColor && bgColor !== 'transparent') ? `
-    <div class="card-hover-overlay" style="background:${bgColor}">
-      <div class="cho-content" style="color:${textColor}">
+  // Hover overlay : aplat coloré plein format (90% opacité), image visible en transparence
+  const overlayBg = bgColor && bgColor !== 'transparent'
+    ? bgColor + 'e6'   // hex + alpha e6 = ~90%
+    : 'rgba(45,45,45,0.85)';
+  const overlayText = bgColor && bgColor !== 'transparent' ? textColor : '#fff';
+  const hoverOverlay = `
+    <div class="card-hover-overlay" style="background:${overlayBg}">
+      <div class="cho-content" style="color:${overlayText}">
         ${hoverItems.length ? hoverItems.map(([label, val]) =>
           `<div class="cho-row"><span class="cho-label">${esc(label)}</span><span class="cho-val">${esc(val)}</span></div>`
         ).join('') : ''}
         ${(hoverItems.length && (c.price != null && c.price !== '')) ? '<hr class="cho-divider">' : ''}
         ${c.price != null && c.price !== '' ? `<div class="cho-price">${c.price}&nbsp;€</div>` : ''}
       </div>
-    </div>` : '';
+    </div>`;
 
   return `
   <div class="card" data-id="${c.id}"${accentStyle}>
