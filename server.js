@@ -305,58 +305,113 @@ async function saveGeneratedImage(buffer, baseName, suffix, origFilename) {
   return outName;
 }
 
-// ── Photo enhancement ─────────────────────────────────────────────────────────
+// ── Cloudinary transformation helper ─────────────────────────────────────────
+// Résout le publicId depuis une URL Cloudinary ou upload un fichier local
+async function resolveCloudinaryPublicId(filename) {
+  if (filename.startsWith('https://res.cloudinary.com/')) {
+    const pid = cldPublicId(filename);
+    if (!pid) throw new Error('Impossible d\'extraire le publicId Cloudinary');
+    return pid;
+  }
+  if (!filename.startsWith('http')) {
+    // Fichier local → upload vers Cloudinary d'abord
+    const filePath = path.join(UPLOADS_DIR, filename);
+    if (!fs.existsSync(filePath)) throw new Error('Fichier introuvable');
+    const buf = fs.readFileSync(filePath);
+    const uploadedUrl = await cldUploadBuffer(buf, filename);
+    return cldPublicId(uploadedUrl);
+  }
+  throw new Error('URL non Cloudinary non supportée');
+}
+
+// ── Photo enhancement — packshot fond blanc via Cloudinary ───────────────────
 app.post('/api/enhance-photo', async (req, res) => {
   try {
     const { filename } = req.body;
     if (!filename) return res.status(400).json({ error: 'filename requis' });
-    const { buffer, mimeType } = await loadImageData(filename);
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-preview-image-generation' });
-    const result = await model.generateContent({
-      contents: [{
-        role: 'user',
-        parts: [
-          { text: 'Retouch the image to look like a professional studio packshot. Pure white background, pure white even lighting, including the object\'s realistic cast shadows. Strictly respect the object\'s properties (exact colors, textures, materials) and its shape. Do not generate a pedestal, stand, or horizon line. The object should appear to float in the center.' },
-          { inlineData: { mimeType, data: buffer.toString('base64') } }
-        ]
-      }],
-      generationConfig: { responseModalities: ['image'] }
-    });
-    const imgPart = (result.response.candidates?.[0]?.content?.parts || []).find(p => p.inlineData);
-    if (!imgPart) return res.status(500).json({ error: 'Gemini n\'a pas retourné d\'image.' });
-    const imgBuffer    = Buffer.from(imgPart.inlineData.data, 'base64');
-    const baseName     = filename.startsWith('http') ? `img-${uuidv4().slice(0,8)}` : path.basename(filename, path.extname(filename));
-    const enhancedFilename = await saveGeneratedImage(imgBuffer, baseName, 'enhanced', filename);
+    if (!cloudinary) return res.status(503).json({ error: 'Cloudinary non configuré' });
+
+    const publicId = await resolveCloudinaryPublicId(filename);
+
+    // 1. Essaie avec background_removal (nécessite l'add-on gratuit Cloudinary)
+    // 2. Fallback : trim bords + fond blanc + carré centré
+    let enhancedFilename;
+    try {
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader.explicit(publicId, {
+          type: 'upload',
+          eager: [{
+            effect: 'background_removal',
+            background: 'white',
+            crop: 'pad',
+            width: 1000,
+            height: 1000,
+            gravity: 'center',
+            quality: 'auto',
+            fetch_format: 'auto'
+          }],
+          eager_async: false
+        }, (err, r) => err ? reject(err) : resolve(r));
+      });
+      enhancedFilename = result.eager?.[0]?.secure_url;
+      if (!enhancedFilename) throw new Error('no eager url');
+    } catch (bgErr) {
+      // Fallback sans background_removal
+      console.warn('background_removal non dispo, fallback trim:', bgErr.message);
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader.explicit(publicId, {
+          type: 'upload',
+          eager: [{
+            effect: 'trim:10',
+            background: 'white',
+            crop: 'pad',
+            width: 1000,
+            height: 1000,
+            gravity: 'center',
+            quality: 'auto',
+            fetch_format: 'auto'
+          }],
+          eager_async: false
+        }, (err, r) => err ? reject(err) : resolve(r));
+      });
+      enhancedFilename = result.eager?.[0]?.secure_url;
+      if (!enhancedFilename) throw new Error('Cloudinary n\'a pas retourné d\'URL transformée');
+    }
+
     res.json({ enhancedFilename });
   } catch (err) { console.error('Enhance error:', err.message); res.status(500).json({ error: err.message }); }
 });
 
-// ── Photo stylization ─────────────────────────────────────────────────────────
+// ── Photo stylization — filtre analogique vintage via Cloudinary ──────────────
 app.post('/api/stylize-photo', async (req, res) => {
   try {
     const { filename, hexColor } = req.body;
     if (!filename) return res.status(400).json({ error: 'filename requis' });
     if (!hexColor) return res.status(400).json({ error: 'hexColor requis' });
-    const { buffer, mimeType } = await loadImageData(filename);
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-preview-image-generation' });
-    const prompt = `Perform an image-to-image transformation based on the provided staged photo. Retain the exact composition, objects, and layout. Apply a fine, realistic film grain texture across the entire image for a nostalgic, analog feel. Apply a light, soft vignette around the edges. Crucially, this vignette must not be black, but must utilize a subtle tint of ${hexColor}, blending smoothly with the warm lighting of the scene. The overall aesthetic should be soft, matte, warm, and resemble a high-quality analog photo. Do not generate new objects; do not alter the shape of existing objects.`;
-    const result = await model.generateContent({
-      contents: [{
-        role: 'user',
-        parts: [
-          { text: prompt },
-          { inlineData: { mimeType, data: buffer.toString('base64') } }
-        ]
-      }],
-      generationConfig: { responseModalities: ['image'] }
+    if (!cloudinary) return res.status(503).json({ error: 'Cloudinary non configuré' });
+
+    const publicId = await resolveCloudinaryPublicId(filename);
+    const colorHex = hexColor.replace('#', '');
+
+    // Effet analogique : art fes + grain film + vignette + teinte verbe
+    // Cloudinary eager avec chained transformations : tableau de tableaux
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader.explicit(publicId, {
+        type: 'upload',
+        eager: [[
+          { effect: 'art:fes' },
+          { effect: 'grain:22' },
+          { effect: 'vignette:40' },
+          { color: `rgb:${colorHex}`, effect: 'tint:18' },
+          { quality: 'auto', fetch_format: 'auto' }
+        ]],
+        eager_async: false
+      }, (err, r) => err ? reject(err) : resolve(r));
     });
-    const imgPart = (result.response.candidates?.[0]?.content?.parts || []).find(p => p.inlineData);
-    if (!imgPart) return res.status(500).json({ error: 'Gemini n\'a pas retourné d\'image.' });
-    const imgBuffer     = Buffer.from(imgPart.inlineData.data, 'base64');
-    const baseName      = filename.startsWith('http') ? `img-${uuidv4().slice(0,8)}` : path.basename(filename, path.extname(filename));
-    const stylizedFilename = await saveGeneratedImage(imgBuffer, baseName, 'stylized', filename);
+
+    const stylizedFilename = result.eager?.[0]?.secure_url;
+    if (!stylizedFilename) throw new Error('Cloudinary n\'a pas retourné d\'URL transformée');
+
     res.json({ stylizedFilename });
   } catch (err) { console.error('Stylize error:', err.message); res.status(500).json({ error: err.message }); }
 });
