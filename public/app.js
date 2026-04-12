@@ -2988,11 +2988,32 @@ function renderPhotos() {
         <button class="photo-remove" data-i="${i}" title="Supprimer">✕</button>
       </div>
       <div class="photo-ai-bar">
-        ${i===0 ? `<button class="photo-analyze" data-i="0" title="Analyser l'objet et pré-remplir la fiche">✦ Analyser</button>` : ''}
-        <button class="photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Retouche studio AI">✦ Packshot</button>
-        <button class="photo-stylize" data-i="${i}" data-filename="${esc(filename)}"
-          ${hasIntention ? '' : 'disabled'}
-          title="${hasIntention ? 'Générer une ambiance' : 'Choisissez d\'abord une Intention'}">✦ Ambiance</button>
+        <div class="photo-edit-row">
+          <button class="photo-btn photo-crop" data-i="${i}" title="Recadrer l'image">
+            <span class="photo-btn-icon">⌗</span>
+            <span class="photo-btn-label">Recadrer</span>
+          </button>
+          <button class="photo-btn photo-detour" data-i="${i}" data-filename="${esc(filename)}" title="Détourer manuellement">
+            <span class="photo-btn-icon">✂</span>
+            <span class="photo-btn-label">Détourer</span>
+          </button>
+        </div>
+        <div class="photo-ai-row">
+          ${i===0 ? `<button class="photo-btn photo-analyze" data-i="0" title="Analyser l'objet et pré-remplir la fiche">
+            <span class="photo-btn-icon">✦</span>
+            <span class="photo-btn-label">Analyser</span>
+          </button>` : ''}
+          <button class="photo-btn photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Retouche studio AI">
+            <span class="photo-btn-icon">◎</span>
+            <span class="photo-btn-label">Packshot</span>
+          </button>
+          <button class="photo-btn photo-stylize" data-i="${i}" data-filename="${esc(filename)}"
+            ${hasIntention ? '' : 'disabled'}
+            title="${hasIntention ? 'Générer une mise en scène' : 'Choisissez d\'abord une Intention'}">
+            <span class="photo-btn-icon">✦</span>
+            <span class="photo-btn-label">Ambiance</span>
+          </button>
+        </div>
       </div>
     </div>`).join('');
 
@@ -3212,6 +3233,48 @@ function renderPhotos() {
   });
 
   // Bouton "Re-analyser" sur la première photo
+  // ── Recadrer : ouvre le cropper canvas sur la photo existante ──
+  el.querySelectorAll('.photo-crop').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const i = parseInt(btn.dataset.i);
+      const filename = state.editPhotos[i];
+      openCropper(photoUrl(filename), async (croppedBlob) => {
+        const croppedFile = new File([croppedBlob], `crop_${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const { filenames } = await api.uploadPhotos([croppedFile]);
+        if (filenames?.[0]) {
+          const old = state.editPhotos[i];
+          state.editPhotos.splice(i, 1, filenames[0]);
+          await api.post('/api/remove-photo', { ref: old });
+          renderPhotos();
+        }
+      });
+    });
+  });
+
+  // ── Détourer : ouvre l'éditeur de gomme pour détourage manuel ──
+  el.querySelectorAll('.photo-detour').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const i = parseInt(btn.dataset.i);
+      const filename = state.editPhotos[i];
+      const url = photoUrl(filename);
+      // Titre spécifique pour le mode détourage
+      const labelEl = document.getElementById('ceValidateLabel');
+      if (labelEl) labelEl.textContent = 'Valider le détourage';
+      openCanvasEditor(url, url, async (detourBlob) => {
+        const detourFile = new File([detourBlob], `detour_${Date.now()}.png`, { type: 'image/png' });
+        const { filenames } = await api.uploadPhotos([detourFile]);
+        if (filenames?.[0]) {
+          const old = state.editPhotos[i];
+          state.editPhotos.splice(i, 1, filenames[0]);
+          await api.post('/api/remove-photo', { ref: old });
+          renderPhotos();
+        }
+      });
+    });
+  });
+
   el.querySelectorAll('.photo-analyze').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
