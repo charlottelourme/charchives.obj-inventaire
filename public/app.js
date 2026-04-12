@@ -1613,70 +1613,56 @@ function _populateTriosFilters() {
   fill('trioFiltIntention', 'Intention', iSet);
 }
 
-// Rendu des 3 cartes (modes 1/2 : objets normaux ; mode 3 : drop zones)
+/// Rendu des 3 cartes — utilise cardHTML() (composant universel de la Grille)
 function _renderTriosCards(objects) {
   const grid = document.getElementById('triosGrid');
   if (!grid) return;
 
-  const _cardHTML = c => {
-    const bg = getVerbeBgColor(c.category), fg = getVerbeTextColor(c.category);
-    const sub = (c.subcategory && c.subcategory !== 'Autre' ? c.subcategory : c.subcategoryCustom) || '';
-    const img = c.photos?.[0] ? `<img src="${photoUrl(c.photos[0])}" alt="" class="trios-card-img">` : `<div class="trios-card-no-img">◻</div>`;
-    return `<div class="trios-card" data-id="${c.id}">
-      ${img}
-      <div class="trios-card-body">
-        ${c.category ? `<span class="trios-verbe-pill" style="background:${bg};color:${fg}">${esc(c.category)}</span>` : ''}
-        ${sub ? `<span class="trios-typo-pill">${esc(sub)}</span>` : ''}
-        <div class="trios-card-name">${esc(c.name)}</div>
-        ${c.description ? `<div class="trios-card-desc">${esc(c.description)}</div>` : ''}
+  // Slot vide — même ratio que la carte (aspect-ratio 1:1 image + body)
+  const emptySlotHTML = i => `
+    <div class="trios-slot-wrap trios-drop-zone empty" data-slot="${i}">
+      <div class="trios-empty-slot">
+        <span class="trios-empty-icon">＋</span>
+        <span class="trios-empty-label">Emplacement libre</span>
+        <span class="trios-empty-hint">Glisser un objet</span>
       </div>
     </div>`;
-  };
 
   if (_triosActiveTab === 'manuel') {
     grid.innerHTML = _triosManualSlots.map((obj, i) => {
       if (obj) {
-        const bg = getVerbeBgColor(obj.category), fg = getVerbeTextColor(obj.category);
-        const sub = (obj.subcategory && obj.subcategory !== 'Autre' ? obj.subcategory : obj.subcategoryCustom) || '';
-        const img = obj.photos?.[0] ? `<img src="${photoUrl(obj.photos[0])}" alt="" class="trios-card-img">` : `<div class="trios-card-no-img">◻</div>`;
-        return `<div class="trios-card trios-drop-zone filled" data-slot="${i}" data-id="${obj.id}" style="position:relative">
-          ${img}
-          <div class="trios-card-body">
-            ${obj.category ? `<span class="trios-verbe-pill" style="background:${bg};color:${fg}">${esc(obj.category)}</span>` : ''}
-            ${sub ? `<span class="trios-typo-pill">${esc(sub)}</span>` : ''}
-            <div class="trios-card-name">${esc(obj.name)}</div>
-          </div>
+        // Carte pleine avec bouton retirer superposé
+        return `<div class="trios-slot-wrap filled" data-slot="${i}">
+          ${cardHTML(obj)}
           <button class="trios-slot-remove" data-slot="${i}" title="Retirer">×</button>
         </div>`;
       }
-      return `<div class="trios-drop-zone empty" data-slot="${i}">
-        <div class="trios-drop-hint">
-          <span class="trios-drop-icon">+</span>
-          <span class="trios-drop-label">Glisser un objet</span>
-        </div>
-      </div>`;
+      return emptySlotHTML(i);
     }).join('');
 
-    // Drop zones
-    grid.querySelectorAll('.trios-drop-zone').forEach(zone => {
-      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-      zone.addEventListener('drop', e => {
-        e.preventDefault(); zone.classList.remove('drag-over');
-        if (_triosDragItem) { _triosManualSlots[+zone.dataset.slot] = _triosDragItem; _renderTriosManualState(); }
+    // Drop sur toute la slot-wrap (vide ou remplie)
+    grid.querySelectorAll('.trios-slot-wrap').forEach(wrap => {
+      wrap.addEventListener('dragover', e => { e.preventDefault(); wrap.classList.add('drag-over'); });
+      wrap.addEventListener('dragleave', e => { if (!wrap.contains(e.relatedTarget)) wrap.classList.remove('drag-over'); });
+      wrap.addEventListener('drop', e => {
+        e.preventDefault(); wrap.classList.remove('drag-over');
+        if (_triosDragItem) { _triosManualSlots[+wrap.dataset.slot] = _triosDragItem; _renderTriosManualState(); }
       });
     });
-    // Remove buttons
+    // Boutons retirer
     grid.querySelectorAll('.trios-slot-remove').forEach(btn => {
       btn.addEventListener('click', e => { e.stopPropagation(); _triosManualSlots[+btn.dataset.slot] = null; _renderTriosManualState(); });
     });
-    // Click on filled card → detail
-    grid.querySelectorAll('.trios-card.filled').forEach(card => {
-      card.addEventListener('click', e => { if (!e.target.classList.contains('trios-slot-remove')) openDetail(card.dataset.id); });
+    // Clic sur carte remplie → fiche détail
+    grid.querySelectorAll('.trios-slot-wrap.filled .card').forEach(card => {
+      card.addEventListener('click', e => { if (!e.target.closest('.trios-slot-remove')) openDetail(card.dataset.id); });
     });
   } else {
-    grid.innerHTML = objects.map(_cardHTML).join('');
-    grid.querySelectorAll('.trios-card').forEach(card => card.addEventListener('click', () => openDetail(card.dataset.id)));
+    // Modes Hasard et Règles — cartes identiques à la Grille
+    grid.innerHTML = objects.map(c => cardHTML(c)).join('');
+    grid.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => openDetail(card.dataset.id));
+    });
   }
 }
 
