@@ -762,9 +762,10 @@ function formatRelativeDate(isoStr) {
 // ── Grid ───────────────────────────────────────────────────────────────────────
 function renderGrid(items) {
   const el = document.getElementById('gridView');
-  if (!items.length) { el.innerHTML='<div class="empty-state">Aucun objet.</div>'; return; }
+  if (!items.length) { el.innerHTML='<div class="empty-state grid-empty">Aucun objet.</div>'; return; }
 
   if (state.sortBy==='category') {
+    // Tri par catégorie : chaque groupe a son bandeau bord-à-bord + sa grille
     const groups = new Map();
     getCategoryOrder().forEach(c => groups.set(c,[]));
     groups.set('',[]);
@@ -774,32 +775,34 @@ function renderGrid(items) {
       if (!cards.length) return;
       const bgColor = getVerbeBgColor(cat);
       const txtColor = getVerbeTextColor(cat);
-      // Grand bloc couleur type Image C
-      html+=`<div class="category-header" style="background:${bgColor};color:${txtColor}">
-        <span class="cat-hdr-name">${esc(cat||'Sans catégorie')}</span>
-        <span class="cat-hdr-count">${cards.length} objet${cards.length>1?'s':''}</span>
+      html += `<div class="cat-group">
+        <div class="category-header" style="background:${bgColor};color:${txtColor}">
+          <div class="cat-hdr-inner">
+            <span class="cat-hdr-name">${esc(cat||'Sans catégorie')}</span>
+          </div>
+          <span class="cat-hdr-count">${cards.length} objet${cards.length>1?'s':''}</span>
+        </div>
+        <div class="grid">${cards.map(c=>cardHTML(c)).join('')}</div>
       </div>`;
-      html+=cards.map(c=>cardHTML(c)).join('');
     });
     el.innerHTML=html;
   } else {
-    let html = '';
-    // Banner verbe actif — grand bloc coloré si une Intention est filtrée (Image C)
+    // Bandeau verbe actif — hors du .grid pour être vraiment bord-à-bord
+    let banner = '';
     if (state.categoryFilter) {
       const verbe = getVerbes().find(v => v.name === state.categoryFilter);
       if (verbe) {
         const typos = getTypologies(verbe);
-        html += `<div class="verbe-active-banner" style="background:${verbe.bgColor};color:${verbe.textColor}" data-count="${items.length}">
-          <span class="vab-name">${esc(verbe.name)}</span>
-          <div class="vab-meta">
-            <div class="vab-count">${items.length} objet${items.length!==1?'s':''}</div>
-            ${typos.length ? `<div class="vab-typos">${typos.slice(0,4).join(' · ')}${typos.length>4?' · …':''}</div>` : ''}
+        banner = `<div class="verbe-active-banner" style="background:${verbe.bgColor};color:${verbe.textColor}">
+          <div class="vab-inner">
+            <span class="vab-name">${esc(verbe.name)}</span>
+            ${typos.length ? `<div class="vab-typos">${typos.slice(0,5).join(' · ')}${typos.length>5?' · …':''}</div>` : ''}
           </div>
+          <span class="vab-count-badge">${items.length} objet${items.length!==1?'s':''}</span>
         </div>`;
       }
     }
-    html += items.map(c=>cardHTML(c)).join('');
-    el.innerHTML = html;
+    el.innerHTML = banner + `<div class="grid">${items.map(c=>cardHTML(c)).join('')}</div>`;
   }
   bindCardEvents(el);
 }

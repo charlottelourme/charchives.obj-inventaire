@@ -580,80 +580,93 @@ main { padding: 0; }
 }
 .card.drag-over .card-drop-hint { opacity: 1; }
 
-/* ── Verbe active banner — grand bloc couleur en tête de grille ── */
+/* ── Verbe active banner — bord-à-bord éditorial ── */
 .verbe-active-banner {
-  grid-column: 1 / -1;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 32px 28px 24px;
-  border-bottom: 1.5px solid rgba(255,255,255,.15);
+  align-items: center;
+  justify-content: center;
+  min-height: 30vh;
   position: relative;
   overflow: hidden;
+  /* Pas de padding ni de max-width — vraiment bord-à-bord */
+}
+.vab-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 48px 32px;
+  text-align: center;
+  z-index: 1;
 }
 .vab-name {
   font-family: 'Spectral', Georgia, serif;
-  font-size: clamp(28px, 4vw, 52px);
+  font-size: clamp(52px, 8vw, 110px);
   font-weight: 300;
-  letter-spacing: -.02em;
-  line-height: .92;
-}
-.vab-meta { text-align: right; flex-shrink: 0; }
-.vab-count {
-  font-family: 'Inter', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .25em;
-  opacity: .55;
-  margin-bottom: 6px;
+  letter-spacing: -.03em;
+  line-height: .9;
 }
 .vab-typos {
   font-family: 'Inter', sans-serif;
   font-size: 10px;
-  opacity: .45;
-  letter-spacing: .06em;
-  max-width: 200px;
-  text-align: right;
-  line-height: 1.6;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  opacity: .5;
+  text-align: center;
 }
+/* Compteur — positionné en haut à droite */
+.vab-count-badge {
+  position: absolute;
+  top: 22px;
+  right: 28px;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .24em;
+  opacity: .4;
+}
+/* Anciens sélecteurs — masqués */
+.vab-meta, .vab-count { display: none; }
 
-/* ── Category headers — grands blocs couleurs (tri par catégorie) ── */
+/* ── Category group — bandeau + grille par catégorie ── */
+.cat-group { }
+
+/* ── Category headers — bord-à-bord éditorial (tri par catégorie) ── */
 .category-header {
-  grid-column: 1 / -1;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 44px 32px 24px;
-  margin: 0;
-  border-bottom: 1.5px solid rgba(255,255,255,.15);
+  align-items: center;
+  justify-content: center;
+  min-height: 22vh;
   position: relative;
   overflow: hidden;
 }
-/* Trait de séparation décoratif (Image B) */
-.category-header::after {
-  content: '';
-  position: absolute;
-  left: 32px; right: 32px; bottom: 0;
-  height: 1.5px;
-  background: rgba(255,255,255,.15);
+.cat-hdr-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1;
+  padding: 32px;
 }
 .cat-hdr-name {
   font-family: 'Spectral', Georgia, serif;
-  font-size: clamp(22px, 3vw, 38px);
+  font-size: clamp(42px, 6vw, 80px);
   font-weight: 300;
-  letter-spacing: -.01em;
-  line-height: .92;
+  letter-spacing: -.02em;
+  line-height: .9;
 }
 .cat-hdr-count {
+  position: absolute;
+  top: 18px;
+  right: 24px;
   font-family: 'Inter', sans-serif;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .22em;
-  opacity: .55;
-  padding-bottom: 6px;
+  opacity: .4;
   flex-shrink: 0;
 }
 /* ancien sélecteur rétrocompat */
@@ -1559,9 +1572,8 @@ body.dark-mode .form-intent-band {
   background: var(--surface);
 }
 .empty-state {
-  grid-column: 1 / -1;
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
   color: var(--text-3);
   font-size: 13px;
 }
