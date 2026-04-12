@@ -783,29 +783,31 @@ function cardHTML(c) {
   const metaRow = (verbeLabel || typoLabel) ? `<div class="card-meta-row">${verbeLabel}${typoLabel}</div>` : '';
   const priceBadge = c.price != null && c.price !== '' ? `<span class="card-price">${c.price} €</span>` : '';
   const addedDate = c.createdAt ? `<div class="card-added-date">${formatRelativeDate(c.createdAt)}</div>` : '';
-  const accentStyle = (bgColor && bgColor !== 'transparent') ? ` style="--verbe-accent:${bgColor}"` : '';
+  // Halo coloré pour box-shadow au hover (hex 8 chiffres = couleur + opacité)
+  const haloColor = bgColor && bgColor !== 'transparent' ? bgColor + '55' : 'rgba(45,45,45,0.18)';
+  const accentStyle = ` style="--verbe-accent:${bgColor || 'transparent'};--card-halo:${haloColor}"`;
 
-  // Hover overlay : métadonnées sur aplat coloré verbe (Image A)
+  // Hover overlay — glassmorphism galerie : description centre + technique bas
   const attrs = c.attributes || {};
-  const hoverItems = [];
-  if (attrs.taille)            hoverItems.push(['Taille',   attrs.taille]);
-  if (attrs.matieres?.length)  hoverItems.push(['Matière',  attrs.matieres.slice(0,2).join(' · ')]);
-  if (attrs.origine?.length)   hoverItems.push(['Origine',  attrs.origine[0]]);
-  if (attrs.etat_traces?.length) hoverItems.push(['État',   attrs.etat_traces.slice(0,2).join(' · ')]);
+  const techParts = [];
+  if (attrs.matieres?.length)  techParts.push(attrs.matieres.slice(0,2).join(' · '));
+  if (attrs.origine?.length)   techParts.push(attrs.origine[0]);
+  if (attrs.taille)            techParts.push(attrs.taille);
 
-  // Hover overlay : aplat coloré plein format (90% opacité), image visible en transparence
+  // Overlay : 50% opacité pour laisser l'image transparaître sous le blur
   const overlayBg = bgColor && bgColor !== 'transparent'
-    ? bgColor + 'e6'   // hex + alpha e6 = ~90%
-    : 'rgba(45,45,45,0.85)';
+    ? bgColor + '80'   // hex + alpha 80 = ~50%
+    : 'rgba(30,28,25,0.52)';
   const overlayText = bgColor && bgColor !== 'transparent' ? textColor : '#fff';
+  const descText = c.description ? esc(c.description) : '';
   const hoverOverlay = `
     <div class="card-hover-overlay" style="background:${overlayBg}">
-      <div class="cho-content" style="color:${overlayText}">
-        ${hoverItems.length ? hoverItems.map(([label, val]) =>
-          `<div class="cho-row"><span class="cho-label">${esc(label)}</span><span class="cho-val">${esc(val)}</span></div>`
-        ).join('') : ''}
-        ${(hoverItems.length && (c.price != null && c.price !== '')) ? '<hr class="cho-divider">' : ''}
-        ${c.price != null && c.price !== '' ? `<div class="cho-price">${c.price}&nbsp;€</div>` : ''}
+      <div class="cho-description-wrap" style="color:${overlayText}">
+        <div class="cho-description${descText ? '' : ' cho-empty'}">${descText || '—'}</div>
+      </div>
+      <div style="color:${overlayText}">
+        ${techParts.length ? `<div class="cho-tech">${techParts.map(p => esc(p)).join(' · ')}</div>` : ''}
+        ${c.price != null && c.price !== '' ? `<div class="cho-price" style="color:${overlayText}">${c.price}&nbsp;€</div>` : ''}
       </div>
     </div>`;
 
