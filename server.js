@@ -457,6 +457,37 @@ app.post('/api/stylize-photo', async (req, res) => {
   } catch (err) { console.error('Stylize error:', err.message); res.status(500).json({ error: err.message }); }
 });
 
+// ── Trios sauvegardés ─────────────────────────────────────────────────────────
+app.get('/api/trios', requireDb, async (_, res) => {
+  try {
+    if (db) {
+      const docs = await db.collection('saved_trios').find({}).sort({ createdAt: -1 }).toArray();
+      res.json(docs.map(({ _id, ...t }) => t));
+    } else { res.json([]); }
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/trios', requireDb, async (req, res) => {
+  try {
+    const { objectIds } = req.body;
+    if (!objectIds?.length) return res.status(400).json({ error: 'objectIds requis' });
+    const trio = {
+      id: uuidv4(),
+      objectIds,
+      createdAt: new Date().toISOString()
+    };
+    if (db) await db.collection('saved_trios').insertOne({ ...trio, _id: trio.id });
+    res.json(trio);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/trios/:id', requireDb, async (req, res) => {
+  try {
+    if (db) await db.collection('saved_trios').deleteOne({ _id: req.params.id });
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // ── Keywords ──────────────────────────────────────────────────────────────────
 app.get('/api/keywords', requireDb, async (_, res) => {
   try { res.json(await readKeywords()); }

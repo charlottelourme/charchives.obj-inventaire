@@ -136,7 +136,10 @@ const LB = { photos: [], idx: 0 };
 const TL = { zoom:1, panX:0, panY:0, isDragging:false, hasDragged:false, startX:0, startY:0, startPanX:0, startPanY:0 };
 const _charts = {};
 let _kwShowAll = false;
-let _currentTrio = null; // dernier trio généré
+let _currentTrio     = null;  // dernier trio généré (modes 1 & 2)
+let _triosActiveTab  = 'hasard'; // 'hasard' | 'regles' | 'manuel'
+let _triosManualSlots = [null, null, null]; // objets placés en mode manuel
+let _triosDragItem   = null; // objet en cours de drag
 
 // ── API helpers ────────────────────────────────────────────────────────────────
 // _apiFetch : wrapper commun qui parse la réponse et lance une erreur typée
@@ -1471,40 +1474,212 @@ function _generateTrio() {
   return { objects: shuffled.slice(0, 3), linkTags: [] };
 }
 
-function renderTrios() {
-  const result = document.getElementById('triosResult');
-  const empty  = document.getElementById('triosEmpty');
-  if (state.collections.length < 3) {
-    result.style.display = 'none'; empty.style.display = ''; return;
+// ── Trios helpers ─────────────────────────────────────────────────────────────
+
+// Mode 1 : filtres aléatoires
+function _generateTrioFiltered(matiere, teinte, intention) {
+  const pool = state.collections.filter(c => {
+    if (matiere   && !(c.attributes?.matieres||[]).includes(matiere))   return false;
+    if (teinte    && !(c.attributes?.couleurs||[]).includes(teinte))     return false;
+    if (intention && c.category !== intention)                           return false;
+    return true;
+  });
+  if (pool.length < 3) return null;
+  const objects = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
+  const fp = objects.map(_fingerprint);
+  const common = [...fp[0]].filter(t => fp[1].has(t) && fp[2].has(t));
+  return { objects, linkTags: common.slice(0, 3).map(_tagLabel).filter(Boolean) };
+}
+
+// Mode 2 : règles d'art
+function _generateTrioByRule(rule) {
+  const cols = state.collections;
+  const _buildMap = getter => {
+    const map = {};
+    cols.forEach(c => (getter(c)||[]).forEach(v => { if (!map[v]) map[v]=[]; map[v].push(c); }));
+    return map;
+  };
+  const _pickFromMap = (map, label) => {
+    const keys = Object.keys(map).filter(k => map[k].length >= 3).sort(() => Math.random() - 0.5);
+    if (!keys.length) return null;
+    const key = keys[0];
+    const objects = [...map[key]].sort(() => Math.random() - 0.5).slice(0, 3);
+    return { objects, linkTags: [key], ruleLabel: `${label} — ${key}` };
+  };
+  switch (rule) {
+    case 'monochrome': return _pickFromMap(_buildMap(c => c.attributes?.couleurs), 'Monochrome');
+    case 'epoque':     return _pickFromMap(_buildMap(c => c.attributes?.origine),  'Même Époque');
+    case 'matiere':    return _pickFromMap(_buildMap(c => c.attributes?.matieres), 'Même Matière');
+    case 'clash': {
+      const byVerbe = {};
+      cols.forEach(c => { if (c.category) { if (!byVerbe[c.category]) byVerbe[c.category]=[]; byVerbe[c.category].push(c); } });
+      const cats = Object.keys(byVerbe).sort(() => Math.random() - 0.5);
+      if (cats.length < 3) { // fallback: 3 objets aléatoires
+        const objects = [...cols].sort(() => Math.random() - 0.5).slice(0, 3);
+        return { objects, linkTags: ['contraste'], ruleLabel: 'Clash Visuel' };
+      }
+      const objects = cats.slice(0, 3).map(cat => byVerbe[cat][Math.floor(Math.random()*byVerbe[cat].length)]);
+      return { objects, linkTags: ['contraste', 'dialogue'], ruleLabel: 'Clash Visuel' };
+    }
+    default: return null;
   }
-  if (!_currentTrio) _currentTrio = _generateTrio();
-  if (!_currentTrio) { empty.style.display = ''; return; }
-  const { objects, linkTags } = _currentTrio;
-  // Lien narratif
-  document.getElementById('triosLinkBar').innerHTML = linkTags.length
-    ? `<span class="trios-link-pre">Trio lié par</span>${linkTags.map(t=>`<span class="trios-link-tag">${esc(t)}</span>`).join('<span class="trios-link-amp"> &amp; </span>')}`
-    : `<span class="trios-link-pre">Trio aléatoire</span>`;
-  // Cards
+}
+
+// Peupler les filtres du mode 1
+function _populateTriosFilters() {
+  const mSet = new Set(), tSet = new Set(), iSet = new Set();
+  state.collections.forEach(c => {
+    (c.attributes?.matieres||[]).forEach(m => mSet.add(m));
+    (c.attributes?.couleurs||[]).forEach(t => tSet.add(t));
+    if (c.category) iSet.add(c.category);
+  });
+  const fill = (id, placeholder, set) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = `<option value="">${placeholder}</option>` +
+      [...set].sort().map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  };
+  fill('trioFiltMatiere', 'Matière', mSet);
+  fill('trioFiltTeinte', 'Teinte', tSet);
+  fill('trioFiltIntention', 'Intention', iSet);
+}
+
+// Rendu des 3 cartes (modes 1/2 : objets normaux ; mode 3 : drop zones)
+function _renderTriosCards(objects) {
   const grid = document.getElementById('triosGrid');
-  grid.innerHTML = objects.map(c => {
+  if (!grid) return;
+
+  const _cardHTML = c => {
     const bg = getVerbeBgColor(c.category), fg = getVerbeTextColor(c.category);
-    const sub = (c.subcategory&&c.subcategory!=='Autre'?c.subcategory:c.subcategoryCustom)||'';
-    const img = c.photos?.[0]
-      ? `<img src="${photoUrl(c.photos[0])}" alt="" class="trios-card-img">`
-      : `<div class="trios-card-no-img">◻</div>`;
+    const sub = (c.subcategory && c.subcategory !== 'Autre' ? c.subcategory : c.subcategoryCustom) || '';
+    const img = c.photos?.[0] ? `<img src="${photoUrl(c.photos[0])}" alt="" class="trios-card-img">` : `<div class="trios-card-no-img">◻</div>`;
     return `<div class="trios-card" data-id="${c.id}">
       ${img}
       <div class="trios-card-body">
-        ${c.category?`<span class="trios-verbe-pill" style="background:${bg};color:${fg}">${esc(c.category)}</span>`:''}
-        ${sub?`<span class="trios-typo-pill">${esc(sub)}</span>`:''}
+        ${c.category ? `<span class="trios-verbe-pill" style="background:${bg};color:${fg}">${esc(c.category)}</span>` : ''}
+        ${sub ? `<span class="trios-typo-pill">${esc(sub)}</span>` : ''}
         <div class="trios-card-name">${esc(c.name)}</div>
-        ${c.description?`<div class="trios-card-desc">${esc(c.description)}</div>`:''}
+        ${c.description ? `<div class="trios-card-desc">${esc(c.description)}</div>` : ''}
       </div>
     </div>`;
+  };
+
+  if (_triosActiveTab === 'manuel') {
+    grid.innerHTML = _triosManualSlots.map((obj, i) => {
+      if (obj) {
+        const bg = getVerbeBgColor(obj.category), fg = getVerbeTextColor(obj.category);
+        const sub = (obj.subcategory && obj.subcategory !== 'Autre' ? obj.subcategory : obj.subcategoryCustom) || '';
+        const img = obj.photos?.[0] ? `<img src="${photoUrl(obj.photos[0])}" alt="" class="trios-card-img">` : `<div class="trios-card-no-img">◻</div>`;
+        return `<div class="trios-card trios-drop-zone filled" data-slot="${i}" data-id="${obj.id}" style="position:relative">
+          ${img}
+          <div class="trios-card-body">
+            ${obj.category ? `<span class="trios-verbe-pill" style="background:${bg};color:${fg}">${esc(obj.category)}</span>` : ''}
+            ${sub ? `<span class="trios-typo-pill">${esc(sub)}</span>` : ''}
+            <div class="trios-card-name">${esc(obj.name)}</div>
+          </div>
+          <button class="trios-slot-remove" data-slot="${i}" title="Retirer">×</button>
+        </div>`;
+      }
+      return `<div class="trios-drop-zone empty" data-slot="${i}">
+        <div class="trios-drop-hint">
+          <span class="trios-drop-icon">+</span>
+          <span class="trios-drop-label">Glisser un objet</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Drop zones
+    grid.querySelectorAll('.trios-drop-zone').forEach(zone => {
+      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault(); zone.classList.remove('drag-over');
+        if (_triosDragItem) { _triosManualSlots[+zone.dataset.slot] = _triosDragItem; _renderTriosManualState(); }
+      });
+    });
+    // Remove buttons
+    grid.querySelectorAll('.trios-slot-remove').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); _triosManualSlots[+btn.dataset.slot] = null; _renderTriosManualState(); });
+    });
+    // Click on filled card → detail
+    grid.querySelectorAll('.trios-card.filled').forEach(card => {
+      card.addEventListener('click', e => { if (!e.target.classList.contains('trios-slot-remove')) openDetail(card.dataset.id); });
+    });
+  } else {
+    grid.innerHTML = objects.map(_cardHTML).join('');
+    grid.querySelectorAll('.trios-card').forEach(card => card.addEventListener('click', () => openDetail(card.dataset.id)));
+  }
+}
+
+// Inventaire miniature (mode 3)
+function _renderInventoryStrip() {
+  const strip = document.getElementById('triosInventoryStrip');
+  if (!strip) return;
+  const q = (document.getElementById('triosInvSearch')?.value || '').toLowerCase().trim();
+  const items = state.collections.filter(c =>
+    !q || (c.name||'').toLowerCase().includes(q) || (c.category||'').toLowerCase().includes(q)
+  );
+  strip.innerHTML = items.map(c => {
+    const img = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
+    const inSlot = _triosManualSlots.some(s => s?.id === c.id);
+    return `<div class="trios-inv-item${inSlot?' in-slot':''}" draggable="true" data-id="${c.id}" title="${esc(c.name)}">
+      ${img ? `<img src="${img}" alt="">` : `<div class="trios-inv-placeholder"></div>`}
+      <span class="trios-inv-name">${esc(c.name)}</span>
+    </div>`;
   }).join('');
-  grid.querySelectorAll('.trios-card').forEach(card =>
-    card.addEventListener('click', () => openDetail(card.dataset.id)));
-  result.style.display = ''; empty.style.display = 'none';
+  strip.querySelectorAll('.trios-inv-item').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      _triosDragItem = state.collections.find(c => c.id === item.dataset.id) || null;
+      e.dataTransfer.effectAllowed = 'copy';
+      item.classList.add('dragging');
+    });
+    item.addEventListener('dragend', () => { _triosDragItem = null; item.classList.remove('dragging'); });
+  });
+}
+
+// Lien narratif helper
+function _setTriosLinkBar(trio) {
+  const bar = document.getElementById('triosLinkBar');
+  if (!bar) return;
+  if (trio?.ruleLabel) {
+    bar.innerHTML = `<span class="trios-link-pre">${esc(trio.ruleLabel)}</span>`;
+  } else if (trio?.linkTags?.length) {
+    bar.innerHTML = `<span class="trios-link-pre">Trio lié par</span>${trio.linkTags.map(t=>`<span class="trios-link-tag">${esc(t)}</span>`).join('<span class="trios-link-amp"> &amp; </span>')}`;
+  } else {
+    bar.innerHTML = `<span class="trios-link-pre">Trio aléatoire</span>`;
+  }
+}
+
+// Re-render complet du mode manuel
+function _renderTriosManualState() {
+  document.getElementById('triosResult').style.display = '';
+  _renderTriosCards(null);
+  _renderInventoryStrip();
+  const filled = _triosManualSlots.filter(Boolean);
+  const bar = document.getElementById('triosLinkBar');
+  bar.innerHTML = filled.length === 3
+    ? `<span class="trios-link-pre">Composition manuelle</span>`
+    : `<span class="trios-link-pre" style="color:var(--text-3)">${filled.length}/3 objets placés</span>`;
+}
+
+function renderTrios() {
+  const result  = document.getElementById('triosResult');
+  const empty   = document.getElementById('triosEmpty');
+  if (state.collections.length < 3) {
+    result.style.display = 'none'; empty.style.display = ''; return;
+  }
+  empty.style.display = 'none';
+  _populateTriosFilters();
+
+  if (_triosActiveTab === 'hasard') {
+    if (!_currentTrio) _currentTrio = _generateTrio();
+    if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
+  } else if (_triosActiveTab === 'regles') {
+    if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
+    else result.style.display = 'none';
+  } else {
+    _renderTriosManualState();
+  }
 }
 
 // ── Lightbox ───────────────────────────────────────────────────────────────────
@@ -3654,10 +3829,67 @@ function bindEvents() {
   document.getElementById('viewTrios').addEventListener('click',()=>{ _currentTrio=null; setView('trios'); });
   document.getElementById('viewStats').addEventListener('click',()=>setView('stats'));
 
-  // Trios — generate button
-  document.getElementById('triosGenerateBtn').addEventListener('click',()=>{
-    _currentTrio = _generateTrio();
+  // Trios — tab switching
+  document.querySelectorAll('.trios-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _triosActiveTab = btn.dataset.tab;
+      _currentTrio = null;
+      document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+      document.getElementById('triosPanelHashard').style.display = _triosActiveTab === 'hasard'  ? '' : 'none';
+      document.getElementById('triosPanelRegles').style.display  = _triosActiveTab === 'regles'  ? '' : 'none';
+      document.getElementById('triosPanelManuel').style.display  = _triosActiveTab === 'manuel'  ? '' : 'none';
+      if (_triosActiveTab !== 'manuel') {
+        document.getElementById('triosResult').style.display = 'none';
+        document.getElementById('triosLinkBar').innerHTML = '';
+      }
+      renderTrios();
+    });
+  });
+
+  // Mode 1 — Composer
+  document.getElementById('triosComposeBtn').addEventListener('click', () => {
+    const matiere   = document.getElementById('trioFiltMatiere').value;
+    const teinte    = document.getElementById('trioFiltTeinte').value;
+    const intention = document.getElementById('trioFiltIntention').value;
+    const trio = _generateTrioFiltered(matiere, teinte, intention);
+    if (!trio) {
+      alert('Pas assez d\'objets correspondant à ces critères. Essaie avec moins de filtres.');
+      return;
+    }
+    _currentTrio = trio;
     renderTrios();
+  });
+
+  // Mode 2 — Règles d'Art
+  document.querySelectorAll('.trios-rule-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.trios-rule-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const trio = _generateTrioByRule(pill.dataset.rule);
+      if (!trio) {
+        document.getElementById('triosRuleDesc').textContent = 'Pas assez d\'objets pour cette règle.';
+        document.getElementById('triosResult').style.display = 'none';
+        return;
+      }
+      document.getElementById('triosRuleDesc').textContent = '';
+      _currentTrio = trio;
+      renderTrios();
+    });
+  });
+
+  // Mode 3 — Recherche inventaire
+  document.getElementById('triosInvSearch').addEventListener('input', _renderInventoryStrip);
+
+  // Mode 3 — Sauvegarder composition
+  document.getElementById('triosSaveBtn').addEventListener('click', async () => {
+    const filled = _triosManualSlots.filter(Boolean);
+    if (filled.length < 3) { alert('Place 3 objets pour sauvegarder la composition.'); return; }
+    try {
+      await api.post('/api/trios', { objectIds: filled.map(o => o.id) });
+      const btn = document.getElementById('triosSaveBtn');
+      btn.textContent = '✓ Sauvegardé !';
+      setTimeout(() => { btn.textContent = 'Sauvegarder la composition'; }, 2500);
+    } catch (e) { alert('Erreur lors de la sauvegarde : ' + e.message); }
   });
 
   // Timeline — mode buttons

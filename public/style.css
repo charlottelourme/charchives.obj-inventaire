@@ -3943,6 +3943,209 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   padding: 60px 0;
 }
 
+/* ── Trios — Tabs navigation ── */
+.trios-tabs-nav {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 36px;
+  gap: 0;
+}
+.trios-tab-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  color: var(--text-3);
+  transition: color .2s, border-color .2s;
+}
+.trios-tab-btn:hover { color: var(--text); }
+.trios-tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
+.trios-tab-panel { margin-bottom: 36px; }
+
+/* ── Trios — Mode 1 : Hasard Contrôlé ── */
+.trios-hasard-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.trios-filter-sel {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  min-width: 130px;
+}
+.trios-compose-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 10px 28px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.trios-compose-btn:hover { opacity: .75; }
+
+/* ── Trios — Mode 2 : Règles d'Art ── */
+.trios-rules-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.trios-rule-pill {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .05em;
+  padding: 9px 22px;
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  border-radius: 100px;
+  transition: background .18s, border-color .18s, color .18s;
+  color: var(--text);
+}
+.trios-rule-pill:hover { background: var(--tag-bg); }
+.trios-rule-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.trios-rule-desc {
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--text-3);
+  min-height: 18px;
+}
+
+/* ── Trios — Mode 3 : Éditeur Manuel ── */
+.trios-manual-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.trios-inv-search {
+  flex: 1;
+  min-width: 180px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+.trios-save-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 10px 22px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  transition: opacity .2s;
+  white-space: nowrap;
+}
+.trios-save-btn:hover { opacity: .75; }
+.trios-inventory-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 14px;
+  margin-bottom: 28px;
+  scrollbar-width: thin;
+}
+.trios-inv-item {
+  flex-shrink: 0;
+  width: 80px;
+  cursor: grab;
+  transition: opacity .15s;
+  text-align: center;
+  user-select: none;
+}
+.trios-inv-item:active { cursor: grabbing; }
+.trios-inv-item.dragging { opacity: .35; }
+.trios-inv-item.in-slot { opacity: .35; }
+.trios-inv-item img, .trios-inv-placeholder {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  display: block;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+}
+.trios-inv-name {
+  display: block;
+  font-size: 9px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-2);
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
+/* Drop zones (mode manuel) */
+.trios-drop-zone.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  background: var(--bg-2);
+  border: 2px dashed var(--border);
+  transition: background .15s, border-color .15s;
+}
+.trios-drop-zone.empty.drag-over {
+  background: #f0ede8;
+  border-color: var(--text);
+}
+.trios-drop-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+.trios-drop-icon { font-size: 28px; font-weight: 200; color: var(--text-3); line-height: 1; }
+.trios-drop-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); }
+.trios-slot-remove {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 22px; height: 22px;
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 0;
+}
+
 /* ══════════════════════════════════════════════════════════════
    TIMELINE — Mode bar + vue par période
 ══════════════════════════════════════════════════════════════ */

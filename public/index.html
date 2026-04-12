@@ -144,16 +144,56 @@
   <!-- ── Trios view ── -->
   <div id="triosView" style="display:none">
     <div class="trios-view">
-      <div class="trios-hero">
-        <h2 class="trios-headline">Trios d'objets</h2>
-        <button class="trios-generate-btn" id="triosGenerateBtn">Composer un trio</button>
+      <h2 class="trios-headline">Trios d'objets</h2>
+
+      <!-- Tabs navigation -->
+      <div class="trios-tabs-nav">
+        <button class="trios-tab-btn active" data-tab="hasard">Hasard Contrôlé</button>
+        <button class="trios-tab-btn" data-tab="regles">Règles d'Art</button>
+        <button class="trios-tab-btn" data-tab="manuel">Éditeur Manuel</button>
       </div>
+
+      <!-- Panel : Hasard Contrôlé -->
+      <div class="trios-tab-panel" id="triosPanelHashard">
+        <div class="trios-hasard-controls">
+          <select class="trios-filter-sel" id="trioFiltMatiere"><option value="">Matière</option></select>
+          <select class="trios-filter-sel" id="trioFiltTeinte"><option value="">Teinte</option></select>
+          <select class="trios-filter-sel" id="trioFiltIntention"><option value="">Intention</option></select>
+          <button class="trios-compose-btn" id="triosComposeBtn">Composer</button>
+        </div>
+      </div>
+
+      <!-- Panel : Règles d'Art -->
+      <div class="trios-tab-panel" id="triosPanelRegles" style="display:none">
+        <div class="trios-rules-pills">
+          <button class="trios-rule-pill" data-rule="monochrome">Monochrome</button>
+          <button class="trios-rule-pill" data-rule="epoque">Même Époque</button>
+          <button class="trios-rule-pill" data-rule="matiere">Même Matière</button>
+          <button class="trios-rule-pill" data-rule="clash">Clash Visuel</button>
+        </div>
+        <div class="trios-rule-desc" id="triosRuleDesc"></div>
+      </div>
+
+      <!-- Panel : Éditeur Manuel -->
+      <div class="trios-tab-panel" id="triosPanelManuel" style="display:none">
+        <div class="trios-manual-header">
+          <input type="text" class="trios-inv-search" id="triosInvSearch" placeholder="Chercher un objet…">
+          <button class="trios-save-btn" id="triosSaveBtn">Sauvegarder la composition</button>
+        </div>
+        <div class="trios-inventory-strip" id="triosInventoryStrip"></div>
+      </div>
+
+      <!-- Lien narratif -->
+      <div class="trios-link-bar" id="triosLinkBar"></div>
+
+      <!-- Trio cards (drop zones en mode manuel) -->
       <div id="triosResult" class="trios-result" style="display:none">
-        <div class="trios-link-bar" id="triosLinkBar"></div>
         <div class="trios-grid" id="triosGrid"></div>
       </div>
+
+      <!-- Empty state -->
       <div id="triosEmpty" class="trios-empty" style="display:none">
-        Il faut au moins 3 objets dans votre inventaire pour générer un trio.
+        Il faut au moins 3 objets dans votre inventaire pour composer un trio.
       </div>
     </div>
   </div>
