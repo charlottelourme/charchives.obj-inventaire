@@ -4,18 +4,25 @@ services:
     env: node
     buildCommand: npm install
     startCommand: node server.js
-    disk:
-      name: data
-      mountPath: /data
-      sizeGB: 1
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: GEMINI_API_KEY
+      # ── Base de données ──────────────────────────────────────────────────────
+      # Colle ici la connection string MongoDB Atlas (mongodb+srv://...)
+      - key: MONGODB_URI
         sync: false
+      # ── Cloudinary ───────────────────────────────────────────────────────────
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
       - key: CLOUDINARY_API_KEY
         sync: false
       - key: CLOUDINARY_API_SECRET
+        sync: false
+      # ── IA ───────────────────────────────────────────────────────────────────
+      - key: GEMINI_API_KEY
+        sync: false
+      # ── CORS : domaine Render auto-assigné (laisser vide = accepte tout) ────
+      # Exemple : CORS_ORIGIN=https://charchives.onrender.com
+      - key: CORS_ORIGIN
         sync: false

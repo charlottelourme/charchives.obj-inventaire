@@ -10,6 +10,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const app  = express();
 const PORT = process.env.PORT || 3737;
 
+// ── Répertoires locaux (dev / fallback) ───────────────────────────────────────
 const DATA_DIR         = path.join(__dirname, 'data');
 const UPLOADS_DIR      = path.join(__dirname, 'uploads');
 const COLLECTIONS_FILE = path.join(DATA_DIR, 'collections.json');
@@ -20,22 +21,68 @@ const SETTINGS_FILE    = path.join(DATA_DIR, 'settings.json');
 if (!fs.existsSync(COLLECTIONS_FILE)) fs.writeFileSync(COLLECTIONS_FILE, '[]');
 if (!fs.existsSync(KEYWORDS_FILE))    fs.writeFileSync(KEYWORDS_FILE, '[]');
 
-// ── MongoDB (optional — activé si MONGODB_URI est défini) ─────────────────────
-let db = null;
+// ── Mode production : MongoDB OBLIGATOIRE si MONGODB_URI est défini ───────────
+// En dev local (pas de MONGODB_URI), on tombe sur les fichiers JSON.
+const MONGO_REQUIRED = !!process.env.MONGODB_URI;
 
+let db       = null;
+let dbReady  = !MONGO_REQUIRED; // true immédiatement en mode local, false jusqu'à connexion MongoDB
+
+// ── CORS ──────────────────────────────────────────────────────────────────────
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  // En prod on accepte le même domaine Render ; en dev on accepte tout
+  const allowed = process.env.CORS_ORIGIN || '*';
+  if (allowed === '*' || (origin && allowed.split(',').map(s => s.trim()).includes(origin))) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
+// ── Middlewares communs ───────────────────────────────────────────────────────
+app.use(express.json({ limit: '10mb' }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(UPLOADS_DIR));
+
+// ── Middleware : garde-fou DB ─────────────────────────────────────────────────
+// Utilisé sur toutes les routes /api/* (sauf /health) quand MONGO_REQUIRED.
+// Renvoie 503 + message cold-start si MongoDB n'est pas encore prêt.
+function requireDb(req, res, next) {
+  if (!dbReady) {
+    return res.status(503).json({
+      error:   'starting',
+      message: 'Serveur en cours de démarrage, veuillez patienter…'
+    });
+  }
+  next();
+}
+
+// ── Health check (Render le fait au boot, pas de garde-fou dbReady) ───────────
+app.get('/api/health', (_, res) => {
+  res.json({ ok: true, dbReady, mongoRequired: MONGO_REQUIRED, ts: Date.now() });
+});
+
+// ── MongoDB ───────────────────────────────────────────────────────────────────
 async function connectMongo() {
   if (!process.env.MONGODB_URI) return;
   const { MongoClient } = require('mongodb');
   const client = new MongoClient(process.env.MONGODB_URI);
   await client.connect();
   db = client.db('charchives');
-  console.log('✓ MongoDB connecté');
+  dbReady = true;
+  console.log('✓ MongoDB connecté — dbReady = true');
   await migrateFromJson();
 }
 
-// Migration one-shot : si la collection MongoDB est vide, on importe les JSON locaux
+// Migration one-shot : si MongoDB est vide, importe les JSON locaux
 async function migrateFromJson() {
-  const col = db.collection('collections');
+  const col   = db.collection('collections');
   const count = await col.countDocuments();
   if (count === 0 && fs.existsSync(COLLECTIONS_FILE)) {
     const data = JSON.parse(fs.readFileSync(COLLECTIONS_FILE, 'utf8'));
@@ -57,7 +104,7 @@ async function migrateFromJson() {
   }
 }
 
-// ── Helpers data (MongoDB ou fichiers JSON) ───────────────────────────────────
+// ── Helpers données (MongoDB ou JSON local) ───────────────────────────────────
 async function readCollections() {
   if (db) {
     const docs = await db.collection('collections').find({}).sort({ createdAt: -1 }).toArray();
@@ -106,7 +153,7 @@ async function mergeKeywords(newKws) {
   await writeKeywords([...existing].sort());
 }
 
-// ── Cloudinary (optional) ─────────────────────────────────────────────────────
+// ── Cloudinary ────────────────────────────────────────────────────────────────
 let cloudinary = null;
 if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
   const { v2: cld } = require('cloudinary');
@@ -136,6 +183,8 @@ function cldUploadBuffer(buffer, filename) {
 }
 
 // ── Multer ────────────────────────────────────────────────────────────────────
+// Cloudinary présent → memoryStorage (upload direct en RAM → Cloudinary)
+// Sinon → diskStorage (dev local)
 const storage = cloudinary
   ? multer.memoryStorage()
   : multer.diskStorage({
@@ -149,36 +198,37 @@ const upload = multer({
   fileFilter: (_, file, cb) => file.mimetype.startsWith('image/') ? cb(null, true) : cb(new Error('Non-image'))
 });
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(UPLOADS_DIR));
-
 // ── Collections ───────────────────────────────────────────────────────────────
-app.get('/api/collections', async (_, res) => {
+app.get('/api/collections', requireDb, async (_, res) => {
   try { res.json(await readCollections()); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.post('/api/collections', async (req, res) => {
+app.post('/api/collections', requireDb, async (req, res) => {
   try {
     const b   = req.body;
     const obj = {
-      id: uuidv4(),
-      name: b.name || 'Sans titre',
-      date: b.date || '',
-      category: b.category || '',
-      subcategory: b.subcategory || '',
+      id:                uuidv4(),
+      name:              b.name              || 'Sans titre',
+      date:              b.date              || '',
+      category:          b.category          || '',
+      subcategory:       b.subcategory       || '',
+      subcategories:     Array.isArray(b.subcategories) ? b.subcategories : (b.subcategory ? [b.subcategory] : []),
       subcategoryCustom: b.subcategoryCustom || '',
-      univers: b.univers || [],
-      attributes: b.attributes || {},
-      price: b.price ?? null,
-      itemStatus: b.itemStatus || 'Disponible',
-      keywords: b.keywords || [],
-      description: b.description || '',
-      photos: b.photos || [],
-      photoEnhanced: b.photoEnhanced || null,
-      private: b.private || {},
-      createdAt: new Date().toISOString()
+      univers:           b.univers           || [],
+      attributes:        b.attributes        || {},
+      price:             b.price             ?? null,
+      itemStatus:        b.itemStatus        || 'Disponible',
+      depotVente:        b.depotVente        || false,
+      depotVenteName:    b.depotVenteName    || '',
+      artiste:           b.artiste           || false,
+      artisteName:       b.artisteName       || '',
+      keywords:          b.keywords          || [],
+      description:       b.description       || '',
+      photos:            b.photos            || [],
+      photoEnhanced:     b.photoEnhanced     || null,
+      private:           b.private           || {},
+      createdAt:         new Date().toISOString()
     };
     if (db) {
       await db.collection('collections').insertOne({ ...obj, _id: obj.id });
@@ -192,13 +242,18 @@ app.post('/api/collections', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.put('/api/collections/:id', async (req, res) => {
+app.put('/api/collections/:id', requireDb, async (req, res) => {
   try {
     const id = req.params.id;
+    const b  = req.body;
+    // Normaliser subcategories en PUT aussi
+    if (!b.subcategories && b.subcategory) b.subcategories = [b.subcategory];
+    else if (!b.subcategories) b.subcategories = [];
+
     if (db) {
       const existing = await db.collection('collections').findOne({ _id: id });
       if (!existing) return res.status(404).json({ error: 'Not found' });
-      const updated = { ...existing, ...req.body, id, _id: id };
+      const updated = { ...existing, ...b, id, _id: id };
       await db.collection('collections').replaceOne({ _id: id }, updated);
       const { _id, ...result } = updated;
       if (result.keywords?.length) await mergeKeywords(result.keywords);
@@ -207,7 +262,7 @@ app.put('/api/collections/:id', async (req, res) => {
       const all = JSON.parse(fs.readFileSync(COLLECTIONS_FILE, 'utf8'));
       const idx = all.findIndex(c => c.id === id);
       if (idx === -1) return res.status(404).json({ error: 'Not found' });
-      const updated = { ...all[idx], ...req.body, id };
+      const updated = { ...all[idx], ...b, id };
       all[idx] = updated;
       fs.writeFileSync(COLLECTIONS_FILE, JSON.stringify(all, null, 2));
       if (updated.keywords?.length) await mergeKeywords(updated.keywords);
@@ -216,7 +271,7 @@ app.put('/api/collections/:id', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.delete('/api/collections/:id', async (req, res) => {
+app.delete('/api/collections/:id', requireDb, async (req, res) => {
   try {
     const id = req.params.id;
     let removed;
@@ -254,10 +309,15 @@ async function _deletePhotoRef(ref) {
 }
 
 // ── Photos ────────────────────────────────────────────────────────────────────
+// Upload : Multer intercepte → buffer en RAM → Cloudinary.
+// Si Cloudinary absent (dev) : fichier local dans UPLOADS_DIR.
 app.post('/api/upload', upload.array('photos', 20), async (req, res) => {
   try {
     if (cloudinary) {
-      const urls = await Promise.all(req.files.map(f => cldUploadBuffer(f.buffer, f.originalname)));
+      // Envoi direct vers Cloudinary, on ne garde QUE la secure_url
+      const urls = await Promise.all(
+        req.files.map(f => cldUploadBuffer(f.buffer, f.originalname))
+      );
       res.json({ filenames: urls });
     } else {
       res.json({ filenames: req.files.map(f => f.filename) });
@@ -295,18 +355,17 @@ async function loadImageData(filename) {
 
 async function saveGeneratedImage(buffer, baseName, suffix, origFilename) {
   if (cloudinary) {
-    const ext = origFilename.startsWith('http') ? '.jpg' : path.extname(origFilename);
+    const ext  = origFilename.startsWith('http') ? '.jpg' : path.extname(origFilename);
     const name = origFilename.startsWith('http') ? `${suffix}-${uuidv4()}` : `${baseName}-${suffix}`;
     return await cldUploadBuffer(buffer, `${name}${ext}`);
   }
-  const ext      = path.extname(origFilename);
-  const outName  = `${baseName}-${suffix}${ext}`;
+  const ext     = path.extname(origFilename);
+  const outName = `${baseName}-${suffix}${ext}`;
   fs.writeFileSync(path.join(UPLOADS_DIR, outName), buffer);
   return outName;
 }
 
 // ── Cloudinary transformation helper ─────────────────────────────────────────
-// Résout le publicId depuis une URL Cloudinary ou upload un fichier local
 async function resolveCloudinaryPublicId(filename) {
   if (filename.startsWith('https://res.cloudinary.com/')) {
     const pid = cldPublicId(filename);
@@ -314,28 +373,24 @@ async function resolveCloudinaryPublicId(filename) {
     return pid;
   }
   if (!filename.startsWith('http')) {
-    // Fichier local → upload vers Cloudinary d'abord
     const filePath = path.join(UPLOADS_DIR, filename);
     if (!fs.existsSync(filePath)) throw new Error('Fichier introuvable');
-    const buf = fs.readFileSync(filePath);
+    const buf         = fs.readFileSync(filePath);
     const uploadedUrl = await cldUploadBuffer(buf, filename);
     return cldPublicId(uploadedUrl);
   }
   throw new Error('URL non Cloudinary non supportée');
 }
 
-// ── Photo enhancement — packshot fond blanc via Cloudinary ───────────────────
+// ── Photo enhancement — packshot fond blanc ───────────────────────────────────
 app.post('/api/enhance-photo', async (req, res) => {
   try {
     const { filename } = req.body;
-    if (!filename) return res.status(400).json({ error: 'filename requis' });
-    if (!cloudinary) return res.status(503).json({ error: 'Cloudinary non configuré' });
+    if (!filename)    return res.status(400).json({ error: 'filename requis' });
+    if (!cloudinary)  return res.status(503).json({ error: 'Cloudinary non configuré' });
 
     const publicId = await resolveCloudinaryPublicId(filename);
 
-    // 1. Suppression de fond IA (native Cloudinary, consomme des credits)
-    // 2. Fallback automatique : trim bords + fond blanc
-    // Les étapes doivent être chaînées (tableau de tableaux)
     let enhancedFilename;
     try {
       const result = await new Promise((resolve, reject) => {
@@ -351,7 +406,6 @@ app.post('/api/enhance-photo', async (req, res) => {
       enhancedFilename = result.eager?.[0]?.secure_url;
       if (!enhancedFilename) throw new Error('no eager url');
     } catch (bgErr) {
-      // Fallback : trim intelligent + fond blanc + carré centré
       console.warn('background_removal échoué, fallback trim:', bgErr.message);
       const result = await new Promise((resolve, reject) => {
         cloudinary.uploader.explicit(publicId, {
@@ -371,19 +425,17 @@ app.post('/api/enhance-photo', async (req, res) => {
   } catch (err) { console.error('Enhance error:', err.message); res.status(500).json({ error: err.message }); }
 });
 
-// ── Photo stylization — filtre analogique vintage via Cloudinary ──────────────
+// ── Photo stylization — filtre analogique vintage ─────────────────────────────
 app.post('/api/stylize-photo', async (req, res) => {
   try {
     const { filename, hexColor } = req.body;
-    if (!filename) return res.status(400).json({ error: 'filename requis' });
-    if (!hexColor) return res.status(400).json({ error: 'hexColor requis' });
+    if (!filename)   return res.status(400).json({ error: 'filename requis' });
+    if (!hexColor)   return res.status(400).json({ error: 'hexColor requis' });
     if (!cloudinary) return res.status(503).json({ error: 'Cloudinary non configuré' });
 
-    const publicId = await resolveCloudinaryPublicId(filename);
-    const colorHex = hexColor.replace('#', '');
+    const publicId  = await resolveCloudinaryPublicId(filename);
+    const colorHex  = hexColor.replace('#', '');
 
-    // Effet analogique : art fes + grain film + vignette + teinte verbe
-    // Cloudinary eager avec chained transformations : tableau de tableaux
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.explicit(publicId, {
         type: 'upload',
@@ -406,23 +458,24 @@ app.post('/api/stylize-photo', async (req, res) => {
 });
 
 // ── Keywords ──────────────────────────────────────────────────────────────────
-app.get('/api/keywords', async (_, res) => {
+app.get('/api/keywords', requireDb, async (_, res) => {
   try { res.json(await readKeywords()); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // ── Settings ──────────────────────────────────────────────────────────────────
-app.get('/api/settings', async (_, res) => {
+app.get('/api/settings', requireDb, async (_, res) => {
   try { res.json(await readSettings()); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
-app.put('/api/settings', async (req, res) => {
+
+app.put('/api/settings', requireDb, async (req, res) => {
   try { await writeSettings(req.body); res.json(req.body); }
   catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // ── Export JSON ───────────────────────────────────────────────────────────────
-app.get('/api/export', async (_, res) => {
+app.get('/api/export', requireDb, async (_, res) => {
   const collections = await readCollections();
   const keywords    = await readKeywords();
   res.setHeader('Content-Disposition', `attachment; filename="brocante-archive-${Date.now()}.json"`);
@@ -431,7 +484,7 @@ app.get('/api/export', async (_, res) => {
 });
 
 // ── Export CSV Shopify ────────────────────────────────────────────────────────
-app.get('/api/export/shopify', async (req, res) => {
+app.get('/api/export/shopify', requireDb, async (req, res) => {
   const collections = await readCollections();
   const host        = req.headers.host || `localhost:${PORT}`;
   const baseUrl     = `https://${host}`;
@@ -515,7 +568,7 @@ app.get('/api/export/shopify', async (req, res) => {
 });
 
 // ── Export photos ZIP ─────────────────────────────────────────────────────────
-app.get('/api/export/photos-zip', async (req, res) => {
+app.get('/api/export/photos-zip', requireDb, async (req, res) => {
   const collections = await readCollections();
   const archive = archiver('zip', { zlib: { level: 6 } });
   res.setHeader('Content-Disposition', `attachment; filename="photos-archive-${Date.now()}.zip"`);
@@ -598,10 +651,9 @@ Pour les matières, utilise : bois, métal, fer, cuivre, laiton, argent, or, cé
       }]
     });
 
-    const text = result.response.text().trim();
-    // Clean up possible markdown code blocks
+    const text  = result.response.text().trim();
     const clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-    const data = JSON.parse(clean);
+    const data  = JSON.parse(clean);
     res.json(data);
   } catch (err) {
     console.error('Analyze error:', err.message);
@@ -611,7 +663,20 @@ Pour les matières, utilise : bois, métal, fer, cuivre, laiton, argent, or, cé
 
 // ── Démarrage ─────────────────────────────────────────────────────────────────
 connectMongo()
-  .catch(err => console.error('MongoDB non connecté, fallback fichiers JSON :', err.message))
+  .catch(err => {
+    if (MONGO_REQUIRED) {
+      // MongoDB requis mais non disponible → on démarre quand même le serveur
+      // mais dbReady reste false → les routes /api/* répondent 503
+      console.error(`✗ MongoDB connexion échouée (les routes API retourneront 503) : ${err.message}`);
+    } else {
+      console.warn(`MongoDB non connecté, mode fichiers JSON local : ${err.message}`);
+    }
+  })
   .finally(() => {
-    app.listen(PORT, () => console.log(`Brocante Archive → http://localhost:${PORT}`));
+    app.listen(PORT, () => {
+      console.log(`✓ Serveur démarré → http://localhost:${PORT}`);
+      console.log(`  Mode : ${MONGO_REQUIRED ? 'MongoDB (prod)' : 'JSON local (dev)'}`);
+      console.log(`  Cloudinary : ${cloudinary ? 'activé' : 'inactif (stockage local)'}`);
+      console.log(`  dbReady : ${dbReady}`);
+    });
   });

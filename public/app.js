@@ -139,12 +139,37 @@ let _kwShowAll = false;
 let _currentTrio = null; // dernier trio généré
 
 // ── API helpers ────────────────────────────────────────────────────────────────
+// _apiFetch : wrapper commun qui parse la réponse et lance une erreur typée
+async function _apiFetch(url, opts = {}) {
+  let res;
+  try {
+    res = await fetch(url, opts);
+  } catch (networkErr) {
+    // Erreur réseau pure (serveur down, cold start…)
+    const e = new Error('network');
+    e.type = 'network';
+    throw e;
+  }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const e = new Error(data.message || data.error || `HTTP ${res.status}`);
+    e.status = res.status;
+    e.type   = data.error === 'starting' ? 'starting' : 'http';
+    throw e;
+  }
+  return data;
+}
+
 const api = {
-  get:  url => fetch(url).then(r => r.json()),
-  post: (url, b) => fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(r=>r.json()),
-  put:  (url, b) => fetch(url,{method:'PUT', headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(r=>r.json()),
-  del:  url => fetch(url,{method:'DELETE'}).then(r=>r.json()),
-  uploadPhotos: files => { const fd=new FormData(); files.forEach(f=>fd.append('photos',f)); return fetch('/api/upload',{method:'POST',body:fd}).then(r=>r.json()); }
+  get:  url        => _apiFetch(url),
+  post: (url, b)   => _apiFetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(b) }),
+  put:  (url, b)   => _apiFetch(url, { method:'PUT',  headers:{'Content-Type':'application/json'}, body:JSON.stringify(b) }),
+  del:  url        => _apiFetch(url, { method:'DELETE' }),
+  uploadPhotos: files => {
+    const fd = new FormData();
+    files.forEach(f => fd.append('photos', f));
+    return _apiFetch('/api/upload', { method:'POST', body: fd });
+  }
 };
 
 // ── Photo URL helper — handles both local refs and Cloudinary URLs ─────────────
@@ -195,48 +220,122 @@ function applyAttributeOptions() {
   if (opts.role?.length)        ATTRIBUTES_DEF.role.options        = opts.role;
 }
 
+// ── Cold-start banner ─────────────────────────────────────────────────────────
+function _getOrCreateStartBanner() {
+  let el = document.getElementById('startingBanner');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'startingBanner';
+    el.className = 'starting-banner';
+    document.body.appendChild(el);
+  }
+  return el;
+}
+
+function showStartingBanner(isRetry = false, attempt = 0) {
+  const el = _getOrCreateStartBanner();
+  const dots = '<span class="starting-dots"><span>.</span><span>.</span><span>.</span></span>';
+  if (isRetry) {
+    const remaining = Math.max(0, 12 - attempt);
+    el.innerHTML = `
+      <div class="starting-icon">◎</div>
+      <div class="starting-title">Serveur en cours de démarrage${dots}</div>
+      <div class="starting-sub">Le serveur se réveille, merci de patienter. (${attempt}/12)</div>
+      <div class="starting-bar"><div class="starting-progress" style="width:${Math.min(100,(attempt/12)*100)}%"></div></div>`;
+  } else {
+    el.innerHTML = `
+      <div class="starting-icon">◎</div>
+      <div class="starting-title">Chargement${dots}</div>
+      <div class="starting-sub">Connexion à la base de données…</div>`;
+  }
+  el.style.display = 'flex';
+}
+
+function hideStartingBanner() {
+  const el = document.getElementById('startingBanner');
+  if (el) el.style.display = 'none';
+}
+
+function showFatalBanner(msg) {
+  const el = _getOrCreateStartBanner();
+  el.innerHTML = `
+    <div class="starting-icon" style="color:#D13F13">✕</div>
+    <div class="starting-title" style="color:#D13F13">Connexion impossible</div>
+    <div class="starting-sub">${msg}</div>
+    <button class="starting-retry-btn" onclick="location.reload()">Réessayer</button>`;
+  el.style.display = 'flex';
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────────
-async function init() {
-  [state.collections, state.keywords, state.settings] = await Promise.all([
+const _INIT_MAX_RETRIES = 14;   // ~70 secondes (cold start Render ~30-60s)
+const _INIT_RETRY_DELAY = 5000; // 5 secondes entre chaque tentative
+
+async function _loadAppData() {
+  const [collections, keywords, settings] = await Promise.all([
     api.get('/api/collections'),
     api.get('/api/keywords'),
     api.get('/api/settings')
   ]);
+  return { collections, keywords, settings };
+}
 
-  // Populate color options from settings
-  ATTRIBUTES_DEF.couleurs.options = state.settings.colors || [];
-  ATTRIBUTES_DEF.motifs.options = state.settings.motifs || [];
-  // Appliquer les labels personnalisés
-  syncAttrLabels();
-  applyAttributeOptions();
-  // Merge custom color hexes into COLOR_MAP
-  const _initCustomColors = state.settings.customColorHexes || {};
-  Object.entries(_initCustomColors).forEach(([name, hex]) => { COLOR_MAP[name] = hex; });
+async function init(attempt = 0) {
+  if (attempt === 0) showStartingBanner(false, 0);
 
-  // Apply site title
-  document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'ARCHIVE';
+  try {
+    const { collections, keywords, settings } = await _loadAppData();
 
-  // Apply dark mode from localStorage
-  if (localStorage.getItem('darkMode') === 'true') {
-    state.darkMode = true;
-    document.body.classList.add('dark-mode');
-    document.getElementById('darkModeBtn').textContent = '◐';
+    hideStartingBanner();
+    state.collections = collections;
+    state.keywords    = keywords;
+    state.settings    = settings;
+
+    // Populate color options from settings
+    ATTRIBUTES_DEF.couleurs.options = state.settings.colors || [];
+    ATTRIBUTES_DEF.motifs.options   = state.settings.motifs || [];
+    syncAttrLabels();
+    applyAttributeOptions();
+
+    // Merge custom color hexes into COLOR_MAP
+    const _initCustomColors = state.settings.customColorHexes || {};
+    Object.entries(_initCustomColors).forEach(([name, hex]) => { COLOR_MAP[name] = hex; });
+
+    // Apply site title
+    document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'ARCHIVE';
+
+    // Apply dark mode from localStorage
+    if (localStorage.getItem('darkMode') === 'true') {
+      state.darkMode = true;
+      document.body.classList.add('dark-mode');
+      document.getElementById('darkModeBtn').textContent = '◐';
+    }
+
+    // Calendar years
+    const colYears  = state.collections.filter(c=>c.createdAt).map(c=>parseInt(c.createdAt)).filter(y=>!isNaN(y));
+    const colYears2 = state.collections.filter(c=>c.date).map(c=>parseInt(c.date)).filter(y=>!isNaN(y));
+    const allYears  = [...colYears, ...colYears2];
+    const minY = Math.min(2020, ...(allYears.length ? allYears : [2020]));
+    const maxY = Math.max(new Date().getFullYear(), ...(allYears.length ? allYears : [new Date().getFullYear()]));
+    state.calendarYears = Array.from({ length: maxY - minY + 1 }, (_, i) => minY + i);
+    getCategoryOrder().forEach(c => state.calendarActiveCategories.add(c));
+    state.calendarActiveCategories.add('');
+
+    buildCategoryFilterBar();
+    buildSubcategoryBar();
+    render();
+    bindEvents();
+
+  } catch (err) {
+    const isRetryable = err.type === 'starting' || err.type === 'network' || err.status === 503 || err.status === 502;
+    if (isRetryable && attempt < _INIT_MAX_RETRIES) {
+      console.warn(`Init attempt ${attempt + 1}/${_INIT_MAX_RETRIES} — ${err.message} — retry in ${_INIT_RETRY_DELAY}ms`);
+      showStartingBanner(true, attempt + 1);
+      setTimeout(() => init(attempt + 1), _INIT_RETRY_DELAY);
+    } else {
+      console.error('Init fatal:', err);
+      showFatalBanner('Impossible de joindre le serveur. Vérifiez votre connexion puis rechargez la page.');
+    }
   }
-
-  // Calendar years
-  const colYears = state.collections.filter(c=>c.createdAt).map(c=>parseInt(c.createdAt)).filter(y=>!isNaN(y));
-  const colYears2 = state.collections.filter(c=>c.date).map(c=>parseInt(c.date)).filter(y=>!isNaN(y));
-  const allYears = [...colYears, ...colYears2];
-  const minY = Math.min(2020, ...(allYears.length?allYears:[2020]));
-  const maxY = Math.max(new Date().getFullYear(), ...(allYears.length?allYears:[new Date().getFullYear()]));
-  state.calendarYears = Array.from({length: maxY-minY+1},(_,i)=>minY+i);
-  getCategoryOrder().forEach(c => state.calendarActiveCategories.add(c));
-  state.calendarActiveCategories.add('');
-
-  buildCategoryFilterBar();
-  buildSubcategoryBar();
-  render();
-  bindEvents();
 }
 
 // ── Build dynamic verbes filter bar ───────────────────────────────────────────
