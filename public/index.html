@@ -34,7 +34,7 @@
     <button class="view-tab" id="viewCatalogue">Catalogue</button>
     <button class="view-tab" id="viewTimeline">Frise</button>
     <button class="view-tab" id="viewCalendar">Calendrier</button>
-    <button class="view-tab" id="viewTrios">✦ Trios</button>
+    <button class="view-tab" id="viewTrios">Trios</button>
     <button class="view-tab" id="viewStats">Stats</button>
   </div>
   <div class="header-actions">
@@ -267,6 +267,7 @@
               <option value="Réservé">Réservé</option>
               <option value="Vendu">Vendu</option>
               <option value="Brouillon">Brouillon</option>
+              <option value="Pas à vendre">Pas à vendre</option>
             </select>
           </div>
         </div>
@@ -281,10 +282,8 @@
               </select>
             </div>
             <div class="field">
-              <label>Typologie</label>
-              <select id="fSubcategory">
-                <option value="">— Choisir —</option>
-              </select>
+              <label>Typologie <span class="field-hint">2 max.</span></label>
+              <div id="subcatChipsContainer" class="subcat-chips-wrap"></div>
             </div>
           </div>
           <div class="field" id="fSubcategoryCustomField" style="display:none">

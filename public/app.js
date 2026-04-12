@@ -82,10 +82,11 @@ const EMOTION_OPTIONS = ['poétique','mélancolie','nostalgie','étrange','myst�
   'fragile','précieux','désuet','silencieux','intime','chargé'];
 
 const STATUS_COLORS = {
-  'Disponible': '#22c55e',
-  'Réservé':    '#f59e0b',
-  'Vendu':      '#9ca3af',
-  'Brouillon':  '#d1d5db',
+  'Disponible':   '#22c55e',
+  'Réservé':      '#f59e0b',
+  'Vendu':        '#9ca3af',
+  'Brouillon':    '#d1d5db',
+  'Pas à vendre': '#7c3aed',
 };
 
 const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
@@ -116,6 +117,7 @@ const state = {
   editKeywords: [],
   editAttributes: {},
   editUnivers: [],
+  editSubcategories: [],
   dpYear: new Date().getFullYear(),
   dpSelectedDate: '',
   attrFilters: { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [] },
@@ -293,6 +295,7 @@ function buildCategoryFilterBar() {
 // ── Build attribute filter bar ────────────────────────────────────────────────
 // ── Multi-select filter dropdowns ──────────────────────────────────────────────
 let _openMfId = null; // which dropdown is currently open
+let _mfSearchTerms = {}; // persists search text per filter key
 
 function buildAttrFilterBar() {
   const bar = document.getElementById('attrFilterBar');
@@ -399,18 +402,48 @@ function buildMultiFilter(wrapId, key, label, options) {
   const count = selected.length;
   const btnLabel = count > 0 ? `${label} <span class="mf-count">${count}</span>` : label;
   const isOpen = _openMfId === wrapId;
+  const hasSearch = key === 'matieres' || key === 'origine';
+  const searchTerm = hasSearch ? (_mfSearchTerms[key] || '').toLowerCase() : '';
+
+  // Build panel items
+  let panelItems = '';
+  if (isOpen) {
+    if (options.length === 0) {
+      panelItems = '<div class="mf-empty">Aucune option</div>';
+    } else if (key === 'matieres' && !searchTerm) {
+      // Family-grouped display
+      const families = ATTRIBUTES_DEF.matieres.families || [];
+      families.forEach((fam, fi) => {
+        if (fi > 0) panelItems += '<div class="mf-family-sep"></div>';
+        fam.items.forEach(opt => {
+          panelItems += `<label class="mf-item">
+            <input type="checkbox" value="${esc(opt)}" data-key="${key}" ${selected.includes(opt)?'checked':''}>
+            <span>${esc(opt)}</span>
+          </label>`;
+        });
+      });
+    } else {
+      // Flat list (optionally filtered by search)
+      const filtered = searchTerm ? options.filter(o => o.toLowerCase().includes(searchTerm)) : options;
+      if (filtered.length === 0) {
+        panelItems = '<div class="mf-empty">Aucun résultat</div>';
+      } else {
+        panelItems = filtered.map(opt => `
+          <label class="mf-item">
+            <input type="checkbox" value="${esc(opt)}" data-key="${key}" ${selected.includes(opt)?'checked':''}>
+            <span>${esc(opt)}</span>
+          </label>`).join('');
+      }
+    }
+  }
 
   wrap.innerHTML = `
     <button class="mf-btn${count>0?' mf-active':''}${isOpen?' mf-open':''}" data-wrap="${wrapId}">
       ${btnLabel} <span class="mf-arrow">${isOpen?'▾':'›'}</span>
     </button>
     ${isOpen ? `<div class="mf-panel" data-wrap="${wrapId}">
-      ${options.length === 0 ? '<div class="mf-empty">Aucune option</div>' :
-        options.map(opt => `
-          <label class="mf-item">
-            <input type="checkbox" value="${esc(opt)}" data-key="${key}" ${selected.includes(opt)?'checked':''}>
-            <span>${esc(opt)}</span>
-          </label>`).join('')}
+      ${hasSearch ? `<div class="mf-search-wrap"><input type="search" class="mf-search" placeholder="Rechercher…" value="${esc(searchTerm)}"></div>` : ''}
+      <div class="mf-items-list">${panelItems}</div>
       ${count>0?`<button class="mf-clear" data-key="${key}">Tout effacer</button>`:''}
     </div>` : ''}
   `;
@@ -419,17 +452,31 @@ function buildMultiFilter(wrapId, key, label, options) {
   wrap.querySelector('.mf-btn').addEventListener('click', e => {
     e.stopPropagation();
     _openMfId = isOpen ? null : wrapId;
+    if (!isOpen) delete _mfSearchTerms[key]; // reset search on open
     buildAttrFilterBar();
   });
 
   if (isOpen) {
+    // Search input
+    if (hasSearch) {
+      const searchInput = wrap.querySelector('.mf-search');
+      if (searchInput) {
+        searchInput.addEventListener('click', e => e.stopPropagation());
+        searchInput.addEventListener('input', e => {
+          _mfSearchTerms[key] = e.target.value;
+          buildMultiFilter(wrapId, key, label, options);
+        });
+        // Focus search input
+        setTimeout(() => searchInput.focus(), 0);
+      }
+    }
     // Checkbox changes
     wrap.querySelectorAll('input[type=checkbox]').forEach(cb => {
       cb.addEventListener('change', () => {
         const k = cb.dataset.key;
         if (cb.checked) { if (!state.attrFilters[k].includes(cb.value)) state.attrFilters[k].push(cb.value); }
         else { state.attrFilters[k] = state.attrFilters[k].filter(v=>v!==cb.value); }
-        buildAttrFilterBar();
+        buildMultiFilter(wrapId, key, label, options);
         render();
       });
     });
@@ -476,8 +523,11 @@ function getFiltered() {
     if (activeKws.length && !activeKws.every(kw => (c.keywords||[]).includes(kw))) return false;
     // Attribute filters (multi-select: OR within same filter, must match all active filters)
     const af = state.attrFilters;
-    const sub = c.subcategory==='Autre' ? c.subcategoryCustom : c.subcategory;
-    if (af.subcat.length && !af.subcat.includes(sub)) return false;
+    // subcategories filter: support array or legacy string
+    const subcatList = Array.isArray(c.subcategories) && c.subcategories.length
+      ? c.subcategories
+      : (c.subcategory && c.subcategory !== 'Autre' ? [c.subcategory] : (c.subcategoryCustom ? [c.subcategoryCustom] : []));
+    if (af.subcat.length && !af.subcat.some(s => subcatList.includes(s))) return false;
     if (af.matieres.length && !af.matieres.some(v=>(c.attributes?.matieres||[]).includes(v))) return false;
     if (af.origine.length && !af.origine.some(v=>(c.attributes?.origine||[]).includes(v))) return false;
     if (af.etat_traces.length && !af.etat_traces.some(v=>(c.attributes?.etat_traces||[]).includes(v))) return false;
@@ -619,7 +669,11 @@ function cardHTML(c) {
   const textColor = getVerbeTextColor(c.category);
   const statusColor = STATUS_COLORS[c.itemStatus];
   const statusBadge = statusColor ? `<span class="card-status-badge" style="background:${statusColor}"></span>` : '';
-  const typoText = c.subcategory && c.subcategory !== 'Autre' ? c.subcategory : (c.subcategoryCustom || '');
+  // Support both new subcategories[] array and legacy subcategory string
+  const subcats = Array.isArray(c.subcategories) && c.subcategories.length
+    ? c.subcategories
+    : (c.subcategory && c.subcategory !== 'Autre' ? [c.subcategory] : (c.subcategoryCustom ? [c.subcategoryCustom] : []));
+  const typoText = subcats.join(' · ');
   // Micro-labels dans le body
   const verbeLabel = c.category ? `<span class="card-verbe-label" style="background:${bgColor};color:${textColor}">${esc(c.category)}</span>` : '';
   const typoLabel = typoText ? `<span class="card-typo-label">${esc(typoText)}</span>` : '';
@@ -1355,10 +1409,16 @@ function renderTrios() {
 }
 
 // ── Lightbox ───────────────────────────────────────────────────────────────────
+let _lbPreZoomRect = null; // stored pre-zoom bounding rect of the image
 function showLightbox() { updateLightboxUI(); document.getElementById('lightbox').style.display='flex'; }
 function updateLightboxUI() {
   const {photos,idx}=LB;
-  document.getElementById('lightboxImg').src=photoUrl(photos[idx]);
+  const img = document.getElementById('lightboxImg');
+  img.src=photoUrl(photos[idx]);
+  // Reset zoom on photo change
+  img.classList.remove('lb-zoomed');
+  img.style.cursor='';
+  _lbPreZoomRect = null;
   document.getElementById('lbCounter').textContent=photos.length>1?`${idx+1} / ${photos.length}`:'';
   document.getElementById('lbPrev').style.display=photos.length>1?'flex':'none';
   document.getElementById('lbNext').style.display=photos.length>1?'flex':'none';
@@ -1381,15 +1441,27 @@ const TYPES_OBJETS = ['vase','vide-poche','coupe','bol','assiette','plat','plate
   'carreau','bougeoir','chandelier','cadre','boîte','coffret','figurine',
   'sculpture','panier','flacon','bouteille','lampe','lustre','statuette','pot','jardinière'];
 
-function populateSubcategoryDropdown(catName) {
-  const sel = document.getElementById('fSubcategory');
-  sel.innerHTML = '<option value="">— Choisir —</option>';
+function renderSubcategoryChips(catName) {
+  const container = document.getElementById('subcatChipsContainer');
+  if (!container) return;
   const verbe = getVerbes().find(v => v.name === catName);
-  if (!verbe) return;
-  getTypologies(verbe).forEach(t => {
-    const opt = document.createElement('option');
-    opt.value = t; opt.textContent = t;
-    sel.appendChild(opt);
+  if (!verbe) { container.innerHTML = '<span class="subcat-placeholder">— Choisir une intention d\'abord —</span>'; return; }
+  const typologies = getTypologies(verbe);
+  container.innerHTML = typologies.map(t => {
+    const active = state.editSubcategories.includes(t);
+    return `<button type="button" class="subcat-chip${active ? ' selected' : ''}" data-typo="${esc(t)}">${esc(t)}</button>`;
+  }).join('');
+  container.querySelectorAll('.subcat-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.typo;
+      if (state.editSubcategories.includes(t)) {
+        state.editSubcategories = state.editSubcategories.filter(x => x !== t);
+      } else {
+        if (state.editSubcategories.length >= 2) state.editSubcategories.shift();
+        state.editSubcategories.push(t);
+      }
+      renderSubcategoryChips(catName);
+    });
   });
 }
 
@@ -1522,6 +1594,21 @@ function _buildAttrSectionHTML(key, half = false) {
       <input type="text" class="attr-custom-input" id="customStyleInput" placeholder="Autre style…">
       <button class="btn btn-ghost btn-xs" id="addCustomStyleBtn">+ Ajouter</button>
     </div>`;
+  } else if (key === 'motifs') {
+    extra = `<div class="attr-add-custom">
+      <input type="text" class="attr-custom-input" id="customMotifsInput" placeholder="Autre motif…">
+      <button class="btn btn-ghost btn-xs" id="addCustomMotifsBtn">+ Ajouter</button>
+    </div>`;
+  } else if (key === 'couleurs') {
+    extra = `<div class="attr-add-custom">
+      <input type="text" class="attr-custom-input" id="customCouleursInput" placeholder="Autre teinte…">
+      <button class="btn btn-ghost btn-xs" id="addCustomCouleursBtn">+ Ajouter</button>
+    </div>`;
+  } else if (key === 'usage') {
+    extra = `<div class="attr-add-custom">
+      <input type="text" class="attr-custom-input" id="customUsageInput" placeholder="Autre usage…">
+      <button class="btn btn-ghost btn-xs" id="addCustomUsageBtn">+ Ajouter</button>
+    </div>`;
   } else if (key === 'taille') {
     extra = `<div class="field" style="margin-top:8px">
       <label style="font-size:11px;color:var(--text-3)">Dimensions réelles (optionnel)</label>
@@ -1542,6 +1629,9 @@ function _buildAttrSectionHTML(key, half = false) {
 function renderAllAttributes() {
   const accordion = document.getElementById('attrsAccordion');
   if (!accordion) return;
+  // Prevent Atmosphère section duplication on re-render
+  const existingAtmos = document.getElementById('universSection');
+  if (existingAtmos) existingAtmos.remove();
 
   const order = (state.settings.attributeSectionsOrder && state.settings.attributeSectionsOrder.length)
     ? state.settings.attributeSectionsOrder
@@ -1594,6 +1684,44 @@ function renderAllAttributes() {
     renderAttributeSection('origine');
   });
 
+  // Re-bind custom motifs add button
+  const motifsBtn = document.getElementById('addCustomMotifsBtn');
+  if (motifsBtn) motifsBtn.addEventListener('click', () => {
+    const v = document.getElementById('customMotifsInput').value.trim();
+    if (!v) return;
+    if (!ATTRIBUTES_DEF.motifs.options.includes(v)) ATTRIBUTES_DEF.motifs.options.push(v);
+    if (!state.editAttributes.motifs) state.editAttributes.motifs = [];
+    if (!state.editAttributes.motifs.includes(v)) state.editAttributes.motifs.push(v);
+    document.getElementById('customMotifsInput').value = '';
+    renderAttributeSection('motifs');
+  });
+
+  // Re-bind custom couleurs add button
+  const couleursBtn = document.getElementById('addCustomCouleursBtn');
+  if (couleursBtn) couleursBtn.addEventListener('click', () => {
+    const v = document.getElementById('customCouleursInput').value.trim();
+    if (!v) return;
+    if (!state.settings.colors) state.settings.colors = [];
+    if (!state.settings.colors.includes(v)) state.settings.colors.push(v);
+    if (!ATTRIBUTES_DEF.couleurs.options.includes(v)) ATTRIBUTES_DEF.couleurs.options.push(v);
+    if (!state.editAttributes.couleurs) state.editAttributes.couleurs = [];
+    if (!state.editAttributes.couleurs.includes(v)) state.editAttributes.couleurs.push(v);
+    document.getElementById('customCouleursInput').value = '';
+    renderAttributeSection('couleurs');
+  });
+
+  // Re-bind custom usage add button
+  const usageBtn = document.getElementById('addCustomUsageBtn');
+  if (usageBtn) usageBtn.addEventListener('click', () => {
+    const v = document.getElementById('customUsageInput').value.trim();
+    if (!v) return;
+    if (!ATTRIBUTES_DEF.usage.options.includes(v)) ATTRIBUTES_DEF.usage.options.push(v);
+    if (!state.editAttributes.usage) state.editAttributes.usage = [];
+    if (!state.editAttributes.usage.includes(v)) state.editAttributes.usage.push(v);
+    document.getElementById('customUsageInput').value = '';
+    renderAttributeSection('usage');
+  });
+
   // Set fTailleReelle value
   const trInput = document.getElementById('fTailleReelle');
   if (trInput) {
@@ -1644,6 +1772,7 @@ function openNew() {
   state.editKeywords.length = 0;
   state.editUnivers = [];
   state.editAttributes = {};
+  state.editSubcategories = [];
   state.dpAchatSelectedDate = '';
   state.dpAchatYear = new Date().getFullYear();
   document.getElementById('modalTitle').textContent = 'Nouvel objet';
@@ -1665,7 +1794,7 @@ function openNew() {
   populateCategoryDropdown();
   populateLocationDropdown();
   document.getElementById('fCategory').value = '';
-  populateSubcategoryDropdown('');
+  renderSubcategoryChips('');
   dateAchatDisplayUpdate();
   renderTagChips();
   renderPhotos();
@@ -1713,12 +1842,16 @@ function openEdit(id) {
   document.getElementById('fLieuAchat').value = priv.lieuAchat||'';
   document.getElementById('fNotes').value = priv.notes||'';
 
+  // Subcategories: migrate string→array for backward compat
+  state.editSubcategories = Array.isArray(c.subcategories) && c.subcategories.length
+    ? [...c.subcategories]
+    : (c.subcategory ? [c.subcategory] : []);
+  document.getElementById('fSubcategoryCustom').value = c.subcategoryCustom||'';
+  document.getElementById('fSubcategoryCustomField').style.display = 'none';
+
   populateCategoryDropdown();
   document.getElementById('fCategory').value = c.category||'';
-  populateSubcategoryDropdown(c.category||'');
-  document.getElementById('fSubcategory').value = c.subcategory||'';
-  document.getElementById('fSubcategoryCustom').value = c.subcategoryCustom||'';
-  document.getElementById('fSubcategoryCustomField').style.display = c.subcategory==='Autre' ? '' : 'none';
+  renderSubcategoryChips(c.category||'');
 
   populateLocationDropdown();
   document.getElementById('fLocation').value = priv.location||'';
@@ -1761,9 +1894,10 @@ async function saveCollection(asDraft = false) {
     const status = asDraft ? 'Brouillon' : document.getElementById('fItemStatus').value;
 
     const body = {
-      name:        document.getElementById('fName').value.trim()||'Sans titre',
-      category:    document.getElementById('fCategory').value,
-      subcategory: document.getElementById('fSubcategory').value,
+      name:           document.getElementById('fName').value.trim()||'Sans titre',
+      category:       document.getElementById('fCategory').value,
+      subcategories:  [...state.editSubcategories],
+      subcategory:    state.editSubcategories[0] || '',
       subcategoryCustom: (document.getElementById('fSubcategoryCustom')?.value||'').trim(),
       depotVente:  document.getElementById('fDepotVente').checked,
       depotVenteName: document.getElementById('fDepotVenteName').value.trim(),
@@ -1859,26 +1993,21 @@ async function _analyzeAndFillForm(filename) {
       }
     }
 
-    // Sous-catégorie
-    setTimeout(() => {
-      const fSub = document.getElementById('fSubcategory');
-      if (fSub && data.subcategory) {
-        const opt = [...fSub.options].find(o =>
-          o.value.toLowerCase() === data.subcategory.toLowerCase()
-        );
-        if (opt) fSub.value = opt.value;
-        else {
-          // Valeur personnalisée
-          const autreOpt = [...fSub.options].find(o => o.value === 'Autre');
-          if (autreOpt) {
-            fSub.value = 'Autre';
-            fSub.dispatchEvent(new Event('change'));
-            const custom = document.getElementById('fSubcategoryCustom');
-            if (custom) custom.value = data.subcategory;
+    // Sous-catégorie (chips)
+    if (data.subcategory) {
+      setTimeout(() => {
+        const catName = document.getElementById('fCategory').value;
+        const verbe = getVerbes().find(v => v.name === catName);
+        if (verbe) {
+          const typologies = getTypologies(verbe);
+          const match = typologies.find(t => t.toLowerCase() === data.subcategory.toLowerCase());
+          if (match && !state.editSubcategories.includes(match)) {
+            state.editSubcategories.push(match);
+            renderSubcategoryChips(catName);
           }
         }
-      }
-    }, 150);
+      }, 150);
+    }
 
     // Attributs
     if (data.attributes && typeof data.attributes === 'object') {
@@ -3455,16 +3584,14 @@ function bindEvents() {
     tab.addEventListener('click', ()=>switchModalTab(tab.dataset.tab));
   });
 
-  // Category change → update subcategory dropdown + stylize buttons state
+  // Category change → update subcategory chips + stylize buttons state
   document.getElementById('fCategory').addEventListener('change',e=>{
-    populateSubcategoryDropdown(e.target.value);
+    state.editSubcategories = [];
+    renderSubcategoryChips(e.target.value);
     document.getElementById('fSubcategoryCustomField').style.display='none';
     _updateStylizeButtonsState();
   });
-  document.getElementById('fSubcategory').addEventListener('change',e=>{
-    document.getElementById('fSubcategoryCustomField').style.display = e.target.value==='Autre' ? '' : 'none';
-  });
-
+  // (fSubcategoryCustomField is now shown only via renderSubcategoryChips if needed)
 
   // Univers/Atmosphère header binding is handled inside renderAllAttributes()
 
@@ -3523,7 +3650,36 @@ function bindEvents() {
   document.getElementById('lbClose').addEventListener('click',()=>{ document.getElementById('lightbox').style.display='none'; });
   document.getElementById('lbPrev').addEventListener('click',e=>{ e.stopPropagation(); lbNav(-1); });
   document.getElementById('lbNext').addEventListener('click',e=>{ e.stopPropagation(); lbNav(1); });
-  document.getElementById('lightbox').addEventListener('click',e=>{ if(e.target===e.currentTarget||e.target.id==='lightboxImg') document.getElementById('lightbox').style.display='none'; });
+  // Click overlay → close; click image → toggle zoom
+  document.getElementById('lightbox').addEventListener('click',e=>{
+    if(e.target===e.currentTarget) document.getElementById('lightbox').style.display='none';
+  });
+  document.getElementById('lightboxImg').addEventListener('click',e=>{
+    e.stopPropagation();
+    const img = e.currentTarget;
+    if(img.classList.contains('lb-zoomed')){
+      img.classList.remove('lb-zoomed');
+      img.style.cursor='';
+      _lbPreZoomRect=null;
+    } else {
+      _lbPreZoomRect = img.getBoundingClientRect();
+      const ox = ((e.clientX - _lbPreZoomRect.left) / _lbPreZoomRect.width * 100).toFixed(1)+'%';
+      const oy = ((e.clientY - _lbPreZoomRect.top) / _lbPreZoomRect.height * 100).toFixed(1)+'%';
+      img.style.setProperty('--lb-ox', ox);
+      img.style.setProperty('--lb-oy', oy);
+      img.classList.add('lb-zoomed');
+      img.style.cursor='crosshair';
+    }
+  });
+  // Mousemove → pan when zoomed
+  document.getElementById('lightbox').addEventListener('mousemove',e=>{
+    const img = document.getElementById('lightboxImg');
+    if(!img.classList.contains('lb-zoomed') || !_lbPreZoomRect) return;
+    const ox = ((e.clientX - _lbPreZoomRect.left) / _lbPreZoomRect.width * 100).toFixed(1)+'%';
+    const oy = ((e.clientY - _lbPreZoomRect.top) / _lbPreZoomRect.height * 100).toFixed(1)+'%';
+    img.style.setProperty('--lb-ox', ox);
+    img.style.setProperty('--lb-oy', oy);
+  });
 
   // Catalogue
   document.getElementById('catalogueSelectAll').addEventListener('click',()=>{
