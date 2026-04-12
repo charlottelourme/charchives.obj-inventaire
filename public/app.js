@@ -2166,8 +2166,8 @@ async function _analyzeAndFillForm(filename) {
   } catch (err) {
     console.error('Analyze error:', err);
     if (banner) banner.dataset.state = 'error';
-    if (bannerLabel) bannerLabel.textContent = 'Analyse impossible — remplis manuellement.';
-    setTimeout(() => { if (banner) banner.style.display = 'none'; }, 3000);
+    if (bannerLabel) bannerLabel.textContent = `Erreur : ${err.message}`;
+    setTimeout(() => { if (banner) banner.style.display = 'none'; }, 8000);
   }
 }
 
