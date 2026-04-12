@@ -32,10 +32,7 @@
   <div class="view-tabs">
     <button class="view-tab active" id="viewGrid">Grille</button>
     <button class="view-tab" id="viewCatalogue">Catalogue</button>
-    <button class="view-tab" id="viewTimeline">Frise</button>
-    <button class="view-tab" id="viewCalendar">Calendrier</button>
     <button class="view-tab" id="viewTrios">Trios</button>
-    <button class="view-tab" id="viewStats">Stats</button>
   </div>
   <div class="header-actions">
     <button class="btn btn-ghost btn-icon-only" id="settingsBtn" title="Paramètres">⚙</button>
@@ -245,6 +242,13 @@
 
 <!-- ── Floating mobile button ── -->
 <button class="fab" id="fabBtn" title="Ajouter un objet">+</button>
+
+<!-- ── Bottom nav — Frise · Calendrier · Stats ── -->
+<nav class="bottom-nav">
+  <button class="view-tab" id="viewTimeline">Frise</button>
+  <button class="view-tab" id="viewCalendar">Calendrier</button>
+  <button class="view-tab" id="viewStats">Stats</button>
+</nav>
 
 <!-- ── Edit / Create Modal ── -->
 <div class="modal-overlay" id="editModal" style="display:none">
