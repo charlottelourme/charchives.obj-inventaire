@@ -36,8 +36,8 @@
   "verbes": [
     {
       "name": "S'entourer",
-      "bgColor": "#557A64",
-      "textColor": "#D4E1D8",
+      "bgColor": "#2E6B4A",
+      "textColor": "#C8EAD8",
       "typologies": [
         "Vases",
         "Coupes & Vide-poche",
@@ -49,8 +49,8 @@
     },
     {
       "name": "Partager",
-      "bgColor": "#A04733",
-      "textColor": "#F2E2DF",
+      "bgColor": "#BE4828",
+      "textColor": "#FAD8CC",
       "typologies": [
         "Verres",
         "Thé & Café",
@@ -62,8 +62,8 @@
     },
     {
       "name": "S'étonner",
-      "bgColor": "#2E4E73",
-      "textColor": "#D9E6F2",
+      "bgColor": "#1E3E6C",
+      "textColor": "#C8DCED",
       "typologies": [
         "Curiosités & Fragments",
         "Minéraux & Fossiles",
@@ -74,8 +74,8 @@
     },
     {
       "name": "Cacher",
-      "bgColor": "#4A535C",
-      "textColor": "#E0E6EA",
+      "bgColor": "#36444F",
+      "textColor": "#D4E0E8",
       "typologies": [
         "Boîtes & coffrets",
         "Bonbonnières & Bocaux",
@@ -85,8 +85,8 @@
     },
     {
       "name": "Raconter",
-      "bgColor": "#7B5A3D",
-      "textColor": "#F0E5D9",
+      "bgColor": "#8C4E2A",
+      "textColor": "#F4DEC8",
       "typologies": [
         "Beaux arts & Arts graphiques",
         "Livres",
@@ -96,8 +96,8 @@
     },
     {
       "name": "Éclairer",
-      "bgColor": "#D9A34C",
-      "textColor": "#F2E6C9",
+      "bgColor": "#CC8A18",
+      "textColor": "#FBE8B4",
       "typologies": [
         "Bougeoirs & Chandeliers",
         "Lampes",
@@ -106,8 +106,8 @@
     },
     {
       "name": "Porter",
-      "bgColor": "#B58A9A",
-      "textColor": "#F0E1E6",
+      "bgColor": "#A83468",
+      "textColor": "#FAD4E4",
       "typologies": [
         "Bijoux ",
         "Accessoires",
