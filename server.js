@@ -509,7 +509,7 @@ app.post('/api/analyze-photo', async (req, res) => {
 
     const { buffer, mimeType } = await loadImageData(filename);
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
 
     const prompt = `Tu es un expert en antiquités, brocante et objets vintage. Analyse cette image et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks) avec exactement cette structure :
 
