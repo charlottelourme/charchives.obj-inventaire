@@ -5406,6 +5406,27 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 /* photo-analyze — hérité de .photo-btn, ajout flex pour la rangée */
 .photo-analyze { flex: 1; }
 
+/* ── ARE.NA : Fragment textarea ── */
+.fragment-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  resize: vertical;
+  box-sizing: border-box;
+}
+.fragment-textarea:focus {
+  outline: none;
+  border-color: var(--text);
+}
+
 /* ── ARE.NA : Type toggle bar ── */
 .type-toggle-bar {
   display: flex;
