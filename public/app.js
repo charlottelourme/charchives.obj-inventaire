@@ -1041,7 +1041,7 @@ function setView(v, _silent = false) {
   if (v === 'derive') {
     state.categoryFilter    = '';
     state.attrFilters       = { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [], motifs: [], usage: [], role: [] };
-    state.statusFilter      = 'all';
+    state.statusFilter      = '';
     state.searchQuery       = '';
     state.activeKeywordFilters = new Set();
     state.detailList        = [];
