@@ -86,24 +86,33 @@
     <div id="gridView"></div>
   </div>
 
-  <!-- ── Constellation view — Graphe de connexions ── -->
-  <div id="constellationView" style="display:none">
-    <div class="con-toolbar">
-      <span class="con-toolbar-title">Constellation</span>
-      <div class="con-aff-pills">
-        <button class="con-aff-btn active" data-aff="intention">Intention</button>
-        <button class="con-aff-btn" data-aff="matiere">Matière</button>
-        <button class="con-aff-btn" data-aff="epoque">Époque</button>
+  <!-- ── La Dérive — Galerie + Constellation ── -->
+  <div id="deriveView" style="display:none">
+    <!-- Segmented control -->
+    <div class="derive-header">
+      <div class="derive-segmented" id="deriveSegmented">
+        <div class="derive-seg-thumb" id="deriveSegThumb"></div>
+        <button class="derive-seg-btn active" data-mode="nuee">Nuée</button>
+        <button class="derive-seg-btn" data-mode="reseau">Réseau</button>
       </div>
-      <span class="con-hint">Glissez les nœuds · Cliquez pour la fiche</span>
     </div>
-    <div id="conCanvas" class="con-canvas"></div>
-  </div>
-
-  <!-- ── Gallery view — Cabinet de Curiosités ── -->
-  <div id="galleryView" style="display:none">
-    <div id="galleryScroll" class="gallery-scroll">
-      <div id="galleryGrid" class="gallery-grid"></div>
+    <!-- Pane Nuée — Galerie Masonry -->
+    <div class="derive-pane" id="deriveNueePane">
+      <div id="galleryScroll" class="gallery-scroll">
+        <div id="galleryGrid" class="gallery-grid"></div>
+      </div>
+    </div>
+    <!-- Pane Réseau — Constellation D3 -->
+    <div class="derive-pane derive-pane-hidden" id="deriveReseauPane">
+      <div class="con-toolbar">
+        <div class="con-aff-pills">
+          <button class="con-aff-btn active" data-aff="intention">Intention</button>
+          <button class="con-aff-btn" data-aff="matiere">Matière</button>
+          <button class="con-aff-btn" data-aff="epoque">Époque</button>
+        </div>
+        <span class="con-hint">Glissez les nœuds · Cliquez pour la fiche</span>
+      </div>
+      <div id="conCanvas" class="con-canvas"></div>
     </div>
   </div>
 
