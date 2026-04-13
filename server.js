@@ -870,10 +870,12 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
         if (err.skip) { console.log(`Analyze → ${p.name} ignoré (clé absente)`); continue; }
         const msg = err.message || '';
         // Toujours passer au suivant : quota épuisé, modèle introuvable (404), ou indisponible
-        const isSkippable = msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')
+        const isSkippable = msg.includes('429') || msg.includes('400')
+                         || msg.includes('404') || msg.includes('RESOURCE_EXHAUSTED')
                          || msg.includes('quota') || msg.includes('Rate limit')
-                         || msg.includes('rate_limit') || msg.includes('404')
-                         || msg.includes('No endpoints') || msg.includes('not found');
+                         || msg.includes('rate_limit') || msg.includes('No endpoints')
+                         || msg.includes('not found') || msg.includes('not a valid model')
+                         || msg.includes('model_not_found') || msg.includes('unavailable');
         console.warn(`Analyze ${p.name} échoué (${isSkippable ? 'skip→suivant' : 'erreur fatale'}) : ${msg.slice(0, 160)}`);
         lastError = err;
         if (!isSkippable) break;  // Erreur inattendue → on abandonne
