@@ -2554,14 +2554,15 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 .idx-overlay.idx-overlay-open { opacity: 1; }
 
-/* Carte centrale — reprend le style Fiche Objet */
+/* Carte centrale — reprend le style Fiche Objet : angles carrés, bordure */
 .idx-overlay-inner {
   background: var(--bg);
-  border-radius: 20px;
-  box-shadow: 0 32px 80px rgba(45,40,35,.14), 0 4px 20px rgba(45,40,35,.07);
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 64px rgba(45,40,35,.13), 0 4px 16px rgba(45,40,35,.06);
   width: 100%;
-  max-width: 680px;
-  max-height: 80vh;
+  max-width: 720px;
+  max-height: 82vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
