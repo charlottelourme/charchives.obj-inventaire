@@ -4866,6 +4866,7 @@ function bindEvents() {
   // View tabs
   document.getElementById('viewGrid').addEventListener('click',()=>setView('grid'));
   document.getElementById('viewGallery').addEventListener('click',()=>setView('gallery'));
+  document.getElementById('viewConstellation').addEventListener('click',()=>setView('constellation'));
   document.getElementById('viewCalendar').addEventListener('click',()=>setView('calendar'));
   document.getElementById('viewCatalogue').addEventListener('click',()=>setView('catalogue'));
   document.getElementById('viewTrios').addEventListener('click',()=>{ _currentTrio=null; setView('trios'); });
