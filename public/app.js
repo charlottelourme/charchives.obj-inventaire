@@ -986,8 +986,7 @@ function render() {
   if (state.view==='grid') {
     if (state.gravityMode && state.categoryFilter) renderGravity(filtered);
     else { exitGravityMode(); renderGrid(filtered); }
-  } else if (false) {} // placeholder
-  else if (state.view==='derive') {
+  } else if (state.view==='derive') {
     if (state.deriveMode==='nuee')    renderGallery(filtered);
     else                              renderConstellation(filtered);
   }
