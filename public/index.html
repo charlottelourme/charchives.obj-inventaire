@@ -300,24 +300,33 @@
       <!-- ── Tab PUBLIC ── -->
       <div class="tab-pane active" id="tabPublic">
 
-        <!-- 0. Type toggle: Objet / Fragment -->
+        <!-- 0. Type toggle: Photo / Texte -->
         <div class="type-toggle-bar" id="typeToggleBar">
-          <button class="type-toggle-btn active" data-type="item" id="btnTypeItem">Objet</button>
-          <button class="type-toggle-btn" data-type="fragment" id="btnTypeFragment">Fragment</button>
+          <button class="type-toggle-btn active" data-type="item" id="btnTypeItem">📷 Photo</button>
+          <button class="type-toggle-btn" data-type="fragment" id="btnTypeFragment">✦ Texte</button>
         </div>
 
         <!-- Fragment zone (hidden for items) -->
         <div id="fragmentZone" style="display:none">
-          <div class="field">
-            <label>Texte / Citation</label>
-            <textarea id="fFragmentText" class="fragment-textarea" placeholder="Entrez votre fragment, citation, pensée…" rows="6"></textarea>
-          </div>
-          <div class="field field-row field-row-compact">
-            <div>
-              <label>Couleur de fond</label>
-              <input type="color" id="fFragmentBg" value="#F5F5F0">
+          <!-- Preview + texte côte à côte -->
+          <div class="fragment-editor">
+            <div class="fragment-editor-left">
+              <div id="fragmentPreview" class="fragment-preview">
+                <span class="fragment-preview-text" id="fragmentPreviewText">…</span>
+              </div>
             </div>
-            <div id="fragmentPreview" class="fragment-preview"></div>
+            <div class="fragment-editor-right">
+              <div class="field">
+                <label>Texte / Citation</label>
+                <textarea id="fFragmentText" class="fragment-textarea" placeholder="Entrez votre texte, citation, pensée…" rows="5"></textarea>
+              </div>
+              <div class="field">
+                <label>Couleur de fond <span class="field-hint">palette des verbes + perso</span></label>
+                <div class="frag-bg-palette" id="fragmentBgPicker"></div>
+                <!-- input color caché pour le sélecteur natif -->
+                <input type="color" id="fFragmentBgNative" style="display:none" tabindex="-1">
+              </div>
+            </div>
           </div>
         </div>
 
