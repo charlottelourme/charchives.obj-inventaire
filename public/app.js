@@ -5308,13 +5308,19 @@ function bindEvents() {
   });
 
   // View tabs
-  document.getElementById('viewGrid').addEventListener('click',()=>setView('grid'));
-  document.getElementById('viewGallery').addEventListener('click',()=>setView('gallery'));
-  document.getElementById('viewConstellation').addEventListener('click',()=>setView('constellation'));
-  document.getElementById('viewCalendar').addEventListener('click',()=>setView('calendar'));
-  document.getElementById('viewCatalogue').addEventListener('click',()=>setView('catalogue'));
-  document.getElementById('viewTrios').addEventListener('click',()=>{ _currentTrio=null; setView('trios'); });
-  document.getElementById('viewStats').addEventListener('click',()=>setView('stats'));
+  document.getElementById('viewInventaire').addEventListener('click', () => setView('grid'));
+  document.getElementById('viewDerive').addEventListener('click', () => setView('derive'));
+  document.getElementById('viewAtelier').addEventListener('click', () => { _currentTrio = null; setView('trios'); });
+  document.getElementById('viewCalendar').addEventListener('click', () => setView('calendar'));
+  document.getElementById('viewCatalogue').addEventListener('click', () => setView('catalogue'));
+  document.getElementById('viewStats').addEventListener('click', () => setView('stats'));
+
+  // Derive segmented control
+  document.querySelectorAll('.derive-seg-btn').forEach(btn => {
+    btn.addEventListener('click', () => _applyDeriveMode(btn.dataset.mode));
+  });
+  // Init thumb position once fonts are loaded (needs layout)
+  requestAnimationFrame(() => requestAnimationFrame(_updateDeriveThumb));
 
   // Trios — tab switching
   document.querySelectorAll('.trios-tab-btn').forEach(btn => {
