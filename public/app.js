@@ -5426,6 +5426,94 @@ function bindEvents() {
 
   // Search
   setupSearch();
+
+  // Are.na — type toggle
+  document.getElementById('btnTypeItem')?.addEventListener('click', () => _setFormType('item'));
+  document.getElementById('btnTypeFragment')?.addEventListener('click', () => _setFormType('fragment'));
+}
+
+// ── ARE.NA : Fragment form toggle ────────────────────────────────────────────
+function _setFormType(type) {
+  state._formType = type;
+  document.querySelectorAll('.type-toggle-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+  const isFragment = type === 'fragment';
+  const photosZone = document.getElementById('photosZone');
+  const fragZone   = document.getElementById('fragmentZone');
+  const nameField  = document.getElementById('fName')?.closest('.field');
+  if (photosZone) photosZone.style.display = isFragment ? 'none' : '';
+  if (fragZone)   fragZone.style.display   = isFragment ? ''     : 'none';
+  // For fragments, name is optional
+  if (nameField) nameField.style.opacity = isFragment ? '0.5' : '';
+}
+
+// ── ARE.NA : Exposition chips in form ────────────────────────────────────────
+function renderExpoChipsPicker() {
+  const container = document.getElementById('expoChipsPicker');
+  if (!container) return;
+  container.innerHTML = '';
+  state.expositions.forEach(e => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'expo-chip' + (state.editExpositions.includes(e.id) ? ' selected' : '');
+    btn.textContent = e.title;
+    btn.dataset.id = e.id;
+    btn.addEventListener('click', () => {
+      const i = state.editExpositions.indexOf(e.id);
+      if (i >= 0) state.editExpositions.splice(i, 1);
+      else state.editExpositions.push(e.id);
+      renderExpoChipsPicker();
+    });
+    container.appendChild(btn);
+  });
+  // "+" button to create a new exposition inline
+  const addBtn = document.createElement('button');
+  addBtn.type = 'button';
+  addBtn.className = 'expo-chip expo-chip-add';
+  addBtn.textContent = '+ Nouvelle…';
+  addBtn.addEventListener('click', async () => {
+    const title = prompt('Nom de l\'exposition / collection :');
+    if (!title?.trim()) return;
+    const expo = await api.post('/api/expositions', { title: title.trim() });
+    state.expositions.push(expo);
+    state.editExpositions.push(expo.id);
+    renderExpoChipsPicker();
+  });
+  container.appendChild(addBtn);
+}
+
+// ── ARE.NA : Breadcrumb ───────────────────────────────────────────────────────
+function pushBreadcrumb(label, backAction) {
+  // Remove duplicate tails
+  if (state.breadcrumb.length > 0 && state.breadcrumb[state.breadcrumb.length-1].label === label) return;
+  state.breadcrumb.push({ label, backAction });
+  if (state.breadcrumb.length > 6) state.breadcrumb.shift();
+  renderBreadcrumbBar();
+}
+
+function renderBreadcrumbBar() {
+  const bar = document.getElementById('breadcrumbBar');
+  if (!bar) return;
+  if (state.breadcrumb.length <= 1) {
+    bar.style.display = 'none';
+    return;
+  }
+  bar.style.display = 'flex';
+  bar.innerHTML = state.breadcrumb.map((item, i) => {
+    const isCurrent = i === state.breadcrumb.length - 1;
+    const cls = 'bc-item' + (isCurrent ? ' bc-current' : '');
+    return (i > 0 ? `<span class="bc-sep">›</span>` : '') +
+      `<span class="${cls}" data-bc-idx="${i}">${esc(item.label)}</span>`;
+  }).join('');
+  bar.querySelectorAll('.bc-item:not(.bc-current)').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.bcIdx);
+      // Trim breadcrumb to that point and invoke back action
+      const item = state.breadcrumb[idx];
+      state.breadcrumb = state.breadcrumb.slice(0, idx + 1);
+      renderBreadcrumbBar();
+      if (item.backAction) item.backAction();
+    });
+  });
 }
 
 init();
