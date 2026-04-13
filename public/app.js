@@ -669,6 +669,7 @@ function getFiltered() {
   return applySortTo(state.collections.filter(c => {
     if (state.categoryFilter && c.category !== state.categoryFilter) return false;
     if (state.statusFilter  && c.itemStatus !== state.statusFilter)  return false;
+    if (state.activeExpoFilter && !(c.expositions||[]).includes(state.activeExpoFilter)) return false;
     if (activeKws.length && !activeKws.every(kw => (c.keywords||[]).includes(kw))) return false;
     // Attribute filters (multi-select: OR within same filter, must match all active filters)
     const af = state.attrFilters;
