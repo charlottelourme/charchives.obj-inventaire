@@ -1830,6 +1830,38 @@ function renderUniversChips() {
   });
 }
 
+function _renderFamilyChips(key, def, container) {
+  const current = state.editAttributes[key] || [];
+  const families = def.families || [];
+  let html = '';
+  families.forEach((fam, fi) => {
+    if (fi > 0) html += '<div class="attr-family-sep"></div>';
+    if (fam.label) html += `<div class="attr-family-label">${esc(fam.label)}</div>`;
+    html += (fam.items || []).map(opt => {
+      const active = current.includes(opt);
+      return `<button type="button" class="attr-chip${active ? ' selected' : ''}" data-key="${esc(key)}" data-val="${esc(opt)}">${esc(opt)}</button>`;
+    }).join('');
+  });
+  // Show any custom values not in any family
+  const allFamilyItems = new Set(families.flatMap(f => f.items || []));
+  const customVals = current.filter(v => !allFamilyItems.has(v));
+  if (customVals.length) {
+    html += '<div class="attr-family-sep"></div>';
+    html += customVals.map(opt => `<button type="button" class="attr-chip selected" data-key="${esc(key)}" data-val="${esc(opt)}">${esc(opt)}</button>`).join('');
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.attr-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.val;
+      if (!state.editAttributes[key]) state.editAttributes[key] = [];
+      const idx = state.editAttributes[key].indexOf(val);
+      if (idx >= 0) state.editAttributes[key].splice(idx, 1);
+      else state.editAttributes[key].push(val);
+      _renderFamilyChips(key, def, container);
+    });
+  });
+}
+
 function _renderGroupedSelect(key, def, container) {
   const current = state.editAttributes[key] || [];
   const families = def.families || [];
@@ -1928,8 +1960,13 @@ function renderAttributeSection(key) {
   const current = state.editAttributes[key] || (def.single ? '' : []);
   const options = def.options;
 
-  // Grouped search dropdown pour matieres et motifs
-  if ((key === 'matieres' || key === 'motifs') && def.families?.length) {
+  // Matieres: inline grouped chips (more discoverable)
+  if (key === 'matieres' && def.families?.length) {
+    _renderFamilyChips(key, def, container);
+    return;
+  }
+  // Motifs: grouped search dropdown
+  if (key === 'motifs' && def.families?.length) {
     _renderGroupedSelect(key, def, container);
     return;
   }
@@ -2051,7 +2088,7 @@ function renderAllAttributes() {
 
   const order = (state.settings.attributeSectionsOrder && state.settings.attributeSectionsOrder.length)
     ? state.settings.attributeSectionsOrder
-    : ['origine', ['etat_traces','taille'], 'usage', {'group':'Matière & Apparence'}, 'matieres', ['couleurs','motifs']];
+    : ['matieres', 'origine', ['etat_traces','taille'], ['usage', 'motifs'], 'couleurs'];
 
   accordion.innerHTML = order.map(entry => {
     // Group-marker: {"group": "NOM"}
@@ -3427,6 +3464,60 @@ function showKwPreview(kw,mouseEvent) {
 }
 function hideKwPreview() { document.getElementById('kwFloatPreview').style.display='none'; }
 
+// ── Stats helpers ──────────────────────────────────────────────────────────────
+function _hexToRgb(hex) {
+  const h = (hex||'#2D2D2D').replace('#','');
+  const n = parseInt(h.length === 3 ? h.split('').map(x=>x+x).join('') : h, 16);
+  return [(n>>16)&255, (n>>8)&255, n&255];
+}
+
+function _renderStatsBubbles(verbeDist) {
+  const el = document.getElementById('statsBubbles');
+  if (!el) return;
+  if (!verbeDist.length) { el.innerHTML = '<span style="color:var(--text-3);font-size:13px">Aucune intention assignée</span>'; return; }
+  const maxCount = Math.max(...verbeDist.map(v => v.count));
+  const minSize = 72; const maxSize = 200;
+  el.innerHTML = verbeDist.map(v => {
+    const size = Math.round(minSize + (v.count / maxCount) * (maxSize - minSize));
+    const [r,g,b] = _hexToRgb(v.bg);
+    // Couleur texte : si la bulle est claire, texte foncé ; sinon blanc
+    const luma = 0.299*r + 0.587*g + 0.114*b;
+    const textColor = luma > 160 ? `rgba(${r},${g},${b},1)` : `rgba(255,255,255,.9)`;
+    const nameColor = luma > 160 ? `rgba(${r},${g},${b},.65)` : `rgba(255,255,255,.55)`;
+    return `<div class="stats-bubble" style="width:${size}px;height:${size}px;background:radial-gradient(circle at 32% 32%, rgba(${r},${g},${b},.28) 0%, rgba(${r},${g},${b},.75) 100%);border:1px solid rgba(${r},${g},${b},.22);" title="${v.name} — ${v.count} objet${v.count>1?'s':''}">
+      <span class="stats-bubble-count" style="color:${textColor}">${v.count}</span>
+      <span class="stats-bubble-name" style="color:${nameColor}">${v.name}</span>
+    </div>`;
+  }).join('');
+}
+
+function _renderStatusBars(statusFreq, total) {
+  const el = document.getElementById('statsStatusBars');
+  if (!el) return;
+  const statuses = [
+    { key: 'Disponible', color: '#22c55e' },
+    { key: 'Réservé',    color: '#f59e0b' },
+    { key: 'Vendu',      color: '#9ca3af' },
+    { key: 'Brouillon',  color: '#c4bfb8' }
+  ];
+  const withData = statuses.filter(s => (statusFreq[s.key]||0) > 0);
+  if (!withData.length) { el.innerHTML = ''; return; }
+  el.innerHTML = withData.map(s => {
+    const count = statusFreq[s.key] || 0;
+    const pct = total ? Math.round(count / total * 100) : 0;
+    const [r,g,b] = _hexToRgb(s.color);
+    return `<div class="stats-grad-bar-row">
+      <div class="stats-grad-bar-meta">
+        <span class="stats-grad-bar-name">${s.key}</span>
+        <span class="stats-grad-bar-count">${count}<span class="stats-grad-bar-pct">${pct}%</span></span>
+      </div>
+      <div class="stats-grad-bar-track">
+        <div class="stats-grad-bar-fill" style="width:${pct}%;background:linear-gradient(to right, rgba(${r},${g},${b},1) 0%, rgba(${r},${g},${b},.08) 100%);"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function renderStats() {
   Object.entries(_charts).forEach(([k,c])=>{ try{c.destroy();}catch(e){} delete _charts[k]; });
   const cols=state.collections;
@@ -3441,73 +3532,56 @@ function renderStats() {
   const allKws=Object.entries(kwFreq).sort((a,b)=>b[1]-a[1]);
   const topKws=_kwShowAll?allKws:allKws.slice(0,30);
 
+  // KPIs
   document.getElementById('kpiTotal').textContent=total||'—';
   document.getElementById('kpiDisponible').textContent=disponibleCount||'—';
   document.getElementById('kpiCat').textContent=topCatEntry?topCatEntry[0]:'—';
   document.getElementById('kpiValeur').textContent=valeurDispo?valeurDispo.toFixed(0)+' €':'—';
 
-  if (!total) return;
-  Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
-  Chart.defaults.font.size=12; Chart.defaults.color='#6b6760';
-  const gridColor='#e5e3df';
-
-  const cats=Object.entries(catFreq).sort((a,b)=>b[1]-a[1]);
-  _charts.cat=new Chart(document.getElementById('chartCat'),{
-    type:'doughnut',
-    data:{
-      labels:cats.map(([k])=>k),
-      datasets:[{data:cats.map(([,v])=>v),backgroundColor:cats.map(([k])=>getCategoryColor(k)),borderWidth:2,borderColor:'#ffffff',hoverOffset:6}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:10,padding:10,font:{size:11}}},tooltip:{callbacks:{label:ctx=>{const pct=total?Math.round(ctx.raw/total*100):0;return ` ${ctx.raw} (${pct}%)`;}}}}}
-  });
-
-  const statuses=['Disponible','Réservé','Vendu','Brouillon'];
-  const statusBg=['#22c55e','#f59e0b','#9ca3af','#d1d5db'];
-  _charts.status=new Chart(document.getElementById('chartStatus'),{
-    type:'bar',
-    data:{labels:statuses,datasets:[{data:statuses.map(s=>statusFreq[s]||0),backgroundColor:statusBg,borderRadius:4,borderSkipped:false}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw} objet${ctx.raw>1?'s':''}`}}},scales:{x:{grid:{display:false},border:{color:gridColor}},y:{grid:{color:gridColor},border:{display:false},ticks:{stepSize:1,precision:0}}}}
-  });
-
-  // ── Graphe : Répartition par intention (verbes) — barres horizontales duotone ──
+  // Intentions — bulles
   const verbeDist = getVerbes().map(v => ({
     name: v.name,
     count: cols.filter(c => c.category === v.name).length,
-    bg: v.bgColor || v.color || '#2D2D2D',
-    fg: v.textColor || '#F5F5F0'
+    bg: v.bgColor || v.color || '#2D2D2D'
   })).filter(v => v.count > 0).sort((a,b) => b.count - a.count);
-  if (verbeDist.length) {
-    const intentWrap = document.querySelector('.stats-chart-wrap-intentions');
-    if (intentWrap) intentWrap.style.height = Math.max(120, verbeDist.length * 42 + 30) + 'px';
-    _charts.intentions = new Chart(document.getElementById('chartIntentions'), {
-      type: 'bar',
-      data: {
-        labels: verbeDist.map(v => v.name),
-        datasets: [{ data: verbeDist.map(v => v.count), backgroundColor: verbeDist.map(v => v.bg), borderWidth: 0, borderRadius: 0, borderSkipped: false }]
-      },
-      options: {
-        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-        plugins: { legend: {display:false}, tooltip: { callbacks: { label: ctx => ` ${ctx.raw} objet${ctx.raw>1?'s':''}` } } },
-        scales: {
-          x: { grid:{color:gridColor}, border:{display:false}, ticks:{stepSize:1,precision:0} },
-          y: { grid:{display:false}, border:{color:gridColor}, ticks:{color: verbeDist.map(v=>v.fg)} }
-        }
-      }
-    });
-  }
+  _renderStatsBubbles(verbeDist);
 
-  if (!topKws.length) return;
+  // Statuts — barres dégradé
+  _renderStatusBars(statusFreq, total);
+
+  if (!total || !topKws.length) return;
+
+  // Mots-clés — Chart.js horizontal bar (épuré)
+  Chart.defaults.font.family="'Inter',-apple-system,BlinkMacSystemFont,sans-serif";
+  Chart.defaults.font.size=11; Chart.defaults.color='#a8a49e';
+  const gridColor='#edeae5';
+
   document.querySelector('.stats-chart-wrap-kw').style.height=Math.max(280,topKws.length*26+40)+'px';
   const kwCanvas=document.getElementById('chartKw');
   kwCanvas.onmouseleave=hideKwPreview;
   _charts.kw=new Chart(kwCanvas,{
     type:'bar',
-    data:{labels:topKws.map(([k])=>k),datasets:[{data:topKws.map(([,v])=>v),backgroundColor:topKws.map((_,i)=>{const t=topKws.length>1?i/(topKws.length-1):0;return `hsl(215,48%,${Math.round(38+t*34)}%)` ;}),borderRadius:0,borderSkipped:false}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    data:{
+      labels:topKws.map(([k])=>k),
+      datasets:[{
+        data:topKws.map(([,v])=>v),
+        backgroundColor:topKws.map((_,i)=>{
+          const t=topKws.length>1?i/(topKws.length-1):0;
+          return `rgba(45,45,45,${Math.round((1-t*.62)*100)/100})`;
+        }),
+        borderRadius:0, borderSkipped:false
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
       onClick:(event,elements)=>{if(!elements.length)return;const kw=topKws[elements[0].index][0];hideKwPreview();state.activeKeywordFilters.add(kw);renderSearchActiveTags();setView('grid');},
       onHover:(event,elements)=>{const canvas=event.native?.target;if(!canvas)return;if(elements.length){canvas.style.cursor='pointer';showKwPreview(topKws[elements[0].index][0],event.native);}else{canvas.style.cursor='default';hideKwPreview();}},
       plugins:{legend:{display:false},tooltip:{enabled:false}},
-      scales:{x:{grid:{color:gridColor},border:{display:false},ticks:{stepSize:1,precision:0}},y:{grid:{display:false},border:{color:gridColor}}}}
+      scales:{
+        x:{grid:{color:gridColor},border:{display:false},ticks:{stepSize:1,precision:0,color:'#c4c0b8'}},
+        y:{grid:{display:false},border:{display:false},ticks:{color:'#6b6762'}}
+      }
+    }
   });
   const kwBtn=document.getElementById('kwShowAllBtn');
   if(allKws.length>30){kwBtn.style.display='';kwBtn.textContent=_kwShowAll?'− Réduire':`+ ${allKws.length-30} de plus`;kwBtn.onclick=()=>{_kwShowAll=!_kwShowAll;renderStats();};}

@@ -198,43 +198,48 @@
   <!-- ── Stats view ── -->
   <div id="statsView" style="display:none">
     <div class="stats-scroll">
-      <div class="stats-kpis">
-        <div class="kpi-card">
-          <div class="kpi-value" id="kpiTotal">—</div>
-          <div class="kpi-label">Objets au total</div>
+
+      <!-- KPIs typographiques -->
+      <section class="stats-section stats-section-kpis">
+        <div class="stats-kpi-grid">
+          <div class="stats-kpi-item">
+            <div class="stats-kpi-number" id="kpiTotal">—</div>
+            <div class="stats-kpi-label">Objets au total</div>
+          </div>
+          <div class="stats-kpi-item">
+            <div class="stats-kpi-number" id="kpiDisponible">—</div>
+            <div class="stats-kpi-label">Disponibles</div>
+          </div>
+          <div class="stats-kpi-item">
+            <div class="stats-kpi-number stats-kpi-number-text" id="kpiCat">—</div>
+            <div class="stats-kpi-label">Catégorie dominante</div>
+          </div>
+          <div class="stats-kpi-item">
+            <div class="stats-kpi-number" id="kpiValeur">—</div>
+            <div class="stats-kpi-label">Valeur disponible</div>
+          </div>
         </div>
-        <div class="kpi-card">
-          <div class="kpi-value" id="kpiDisponible">—</div>
-          <div class="kpi-label">Disponibles</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-value" id="kpiCat">—</div>
-          <div class="kpi-label">Catégorie dominante</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-value" id="kpiValeur">—</div>
-          <div class="kpi-label">Valeur disponible</div>
-        </div>
-      </div>
-      <div class="stats-charts-row">
-        <div class="stats-chart-box">
-          <div class="stats-chart-title">Objets par catégorie</div>
-          <div class="stats-chart-wrap"><canvas id="chartCat"></canvas></div>
-        </div>
-        <div class="stats-chart-box">
-          <div class="stats-chart-title">Répartition par statut</div>
-          <div class="stats-chart-wrap"><canvas id="chartStatus"></canvas></div>
-        </div>
-      </div>
-      <div class="stats-chart-box">
-        <div class="stats-chart-title">Répartition par intention</div>
-        <div class="stats-chart-wrap stats-chart-wrap-intentions"><canvas id="chartIntentions"></canvas></div>
-      </div>
-      <div class="stats-chart-box">
-        <div class="stats-chart-title">Mots-clés les plus utilisés</div>
+      </section>
+
+      <!-- Intentions — bulles duotone -->
+      <section class="stats-section">
+        <div class="stats-section-label">Intentions</div>
+        <div id="statsBubbles" class="stats-bubbles"></div>
+      </section>
+
+      <!-- Statuts — barres dégradé -->
+      <section class="stats-section">
+        <div class="stats-section-label">Statuts</div>
+        <div id="statsStatusBars" class="stats-gradient-bars"></div>
+      </section>
+
+      <!-- Mots-clés -->
+      <section class="stats-section">
+        <div class="stats-section-label">Mots-clés</div>
         <div class="stats-chart-wrap stats-chart-wrap-kw"><canvas id="chartKw"></canvas></div>
         <button id="kwShowAllBtn" class="btn btn-ghost" style="display:none;margin-top:10px;width:100%;font-size:12px"></button>
-      </div>
+      </section>
+
     </div>
   </div>
 
@@ -284,13 +289,7 @@
       <!-- ── Tab PUBLIC ── -->
       <div class="tab-pane active" id="tabPublic">
 
-        <!-- 1. Nom -->
-        <div class="field">
-          <label>Nom de l'objet</label>
-          <input type="text" id="fName" placeholder="Titre de la fiche…">
-        </div>
-
-        <!-- 2. Photos -->
+        <!-- 1. Photos -->
         <div class="field">
           <label>Photos</label>
           <div class="photos-drop-zone" id="photosDropZone">
@@ -300,10 +299,30 @@
           <div class="photos-grid" id="photosList"></div>
         </div>
 
-        <!-- 3. Description -->
+        <!-- 2. Nom -->
         <div class="field">
-          <label>Description</label>
-          <textarea id="fDesc" placeholder="Description, notes, contexte…" rows="3"></textarea>
+          <label>Nom de l'objet</label>
+          <input type="text" id="fName" placeholder="Titre de la fiche…">
+        </div>
+
+        <!-- 3. Intention + Typologie -->
+        <div class="form-intent-band">
+          <div class="field-row">
+            <div class="field">
+              <label>Intention</label>
+              <select id="fCategory">
+                <option value="">— Choisir —</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Typologie <span class="field-hint">2 max.</span></label>
+              <div id="subcatChipsContainer" class="subcat-chips-wrap"></div>
+            </div>
+          </div>
+          <div class="field" id="fSubcategoryCustomField" style="display:none">
+            <label>Préciser la typologie</label>
+            <input type="text" id="fSubcategoryCustom" placeholder="Votre typologie…">
+          </div>
         </div>
 
         <!-- 4. Prix + Statut (compact) -->
@@ -324,27 +343,25 @@
           </div>
         </div>
 
-        <!-- 5. Intention + Typologie -->
-        <div class="form-intent-band">
-          <div class="field-row">
-            <div class="field">
-              <label>Intention</label>
-              <select id="fCategory">
-                <option value="">— Choisir —</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Typologie <span class="field-hint">2 max.</span></label>
-              <div id="subcatChipsContainer" class="subcat-chips-wrap"></div>
-            </div>
-          </div>
-          <div class="field" id="fSubcategoryCustomField" style="display:none">
-            <label>Préciser la typologie</label>
-            <input type="text" id="fSubcategoryCustom" placeholder="Votre typologie…">
+        <!-- 5. Description -->
+        <div class="field">
+          <label>Description</label>
+          <textarea id="fDesc" placeholder="Description, notes, contexte…" rows="3"></textarea>
+        </div>
+
+        <!-- Attributs accordion + Atmosphère — tout rendu dynamiquement par renderAllAttributes() -->
+        <div class="attrs-accordion" id="attrsAccordion"></div>
+
+        <!-- 7. Tags libres -->
+        <div class="field">
+          <label>Tags libres <span class="field-hint">pour la recherche</span></label>
+          <div class="tags-input-wrap" id="keywordsWrap">
+            <input class="tags-input" id="keywordsInput" placeholder="Taper et Entrée pour ajouter…">
+            <div class="tags-suggestions" id="keywordsSuggestions"></div>
           </div>
         </div>
 
-        <!-- 6. Dépôt vente + Pièce d'artiste -->
+        <!-- 8. Dépôt vente + Pièce d'artiste -->
         <div class="checkbox-rows">
           <div class="checkbox-line">
             <label class="checkbox-label">
@@ -357,18 +374,6 @@
               <input type="checkbox" id="fArtiste"> Création
             </label>
             <input type="text" class="checkbox-name-input" id="fArtisteName" placeholder="Nom de l'artiste…">
-          </div>
-        </div>
-
-        <!-- Attributs accordion + Atmosphère — tout rendu dynamiquement par renderAllAttributes() -->
-        <div class="attrs-accordion" id="attrsAccordion"></div>
-
-        <!-- 8. Tags libres -->
-        <div class="field">
-          <label>Tags libres <span class="field-hint">pour la recherche</span></label>
-          <div class="tags-input-wrap" id="keywordsWrap">
-            <input class="tags-input" id="keywordsInput" placeholder="Taper et Entrée pour ajouter…">
-            <div class="tags-suggestions" id="keywordsSuggestions"></div>
           </div>
         </div>
 
