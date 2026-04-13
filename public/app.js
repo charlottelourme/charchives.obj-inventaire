@@ -3750,7 +3750,7 @@ function renderPhotos() {
       wrap.querySelector(".photo-thumb-wrap").appendChild(skeleton);
       btn.disabled = true;
       // also disable enhance on same thumb
-      wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = true);
+      /* détourage désactivé pendant ambiance */
 
       try {
         const result = await api.post('/api/stylize-photo', { filename, hexColor });
