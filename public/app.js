@@ -5101,7 +5101,7 @@ function renderSearchDropdown() {
     label: 'Catégorie',
     items: cats.slice(0,5).map(n=>({
       text: n, badge: null, color: getCategoryColor(n),
-      action: ()=>{ state.categoryFilter=n; state.attrFilters.subcat=[]; input.value=''; buildCategoryFilterBar(); buildSubcategoryBar(); buildAttrFilterBar(); render(); }
+      action: ()=>{ state.categoryFilter=n; state.attrFilters.subcat=[]; input.value=''; buildCategoryFilterBar(); buildSubcategoryBar(); buildAttrFilterBar(); pushBreadcrumb(n, ()=>{ state.categoryFilter=n; buildCategoryFilterBar(); render(); }); render(); }
     }))
   });
 
