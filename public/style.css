@@ -2443,16 +2443,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   .gallery-grid {
     columns: 2;
     column-gap: 10px;
-    padding: 12px 12px 80px;
-    padding: 7px 7px 90px;
+    padding: 10px 10px 80px;
   }
 }
 @media (max-width: 400px) {
-  .gallery-grid {
-    grid-template-columns: 1fr;
-    grid-auto-rows: 220px;
-  }
-  .gallery-item.g-span-2, .gallery-item.g-span-3 { grid-row: span 1; }
+  .gallery-grid { columns: 1; }
 }
 
 /* ── Stats view ── */
