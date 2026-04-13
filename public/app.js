@@ -3093,7 +3093,7 @@ async function _analyzeAndFillForm(filename) {
 
     // Bandeau succès
     if (banner) banner.dataset.state = 'done';
-    if (bannerLabel) bannerLabel.textContent = '✦ Fiche pré-remplie — vérifie et ajuste !';
+    if (bannerLabel) bannerLabel.textContent = 'Fiche pré-remplie — vérifie et ajuste !';
     setTimeout(() => {
       if (banner) banner.style.display = 'none';
     }, 4000);
