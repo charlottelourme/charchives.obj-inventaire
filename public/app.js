@@ -165,6 +165,7 @@ const state = {
   activeExpoFilter: null,
   _formType: 'item',
   editFragmentBg: '#1a1a1a',
+  deriveMode: 'nuee',   // 'nuee' | 'reseau'
 };
 
 const LB = { photos: [], idx: 0 };
