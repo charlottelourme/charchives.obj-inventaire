@@ -147,6 +147,21 @@ async function writeSettings(data) {
   fs.writeFileSync(SETTINGS_FILE, JSON.stringify(data, null, 2));
 }
 
+// ── Expositions helpers ───────────────────────────────────────────────────────
+const EXPOSITIONS_FILE = path.join(__dirname, 'data', 'expositions.json');
+
+async function readExpositions() {
+  if (db) {
+    const docs = await db.collection('expositions').find({}).sort({ createdAt: -1 }).toArray();
+    return docs.map(({ _id, ...r }) => r);
+  }
+  return fs.existsSync(EXPOSITIONS_FILE) ? JSON.parse(fs.readFileSync(EXPOSITIONS_FILE, 'utf8')) : [];
+}
+
+async function writeExpositionsFile(data) {
+  fs.writeFileSync(EXPOSITIONS_FILE, JSON.stringify(data, null, 2));
+}
+
 async function mergeKeywords(newKws) {
   const existing = new Set(await readKeywords());
   newKws.forEach(k => existing.add(k));
@@ -228,6 +243,10 @@ app.post('/api/collections', requireDb, async (req, res) => {
       photos:            b.photos            || [],
       photoEnhanced:     b.photoEnhanced     || null,
       private:           b.private           || {},
+      type:              b.type              || 'item',
+      textContent:       b.textContent       || '',
+      backgroundColor:   b.backgroundColor   || '',
+      expositions:       Array.isArray(b.expositions) ? b.expositions : [],
       createdAt:         new Date().toISOString()
     };
     if (db) {
@@ -488,6 +507,66 @@ app.delete('/api/trios/:id', requireDb, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// ── Expositions ───────────────────────────────────────────────────────────────
+app.get('/api/expositions', requireDb, async (_, res) => {
+  try { res.json(await readExpositions()); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/expositions', requireDb, async (req, res) => {
+  try {
+    const expo = {
+      id:          uuidv4(),
+      title:       (req.body.title || 'Sans titre').trim(),
+      description: (req.body.description || '').trim(),
+      createdAt:   new Date().toISOString()
+    };
+    if (db) {
+      await db.collection('expositions').insertOne({ ...expo, _id: expo.id });
+    } else {
+      const all = await readExpositions();
+      all.unshift(expo);
+      writeExpositionsFile(all);
+    }
+    res.json(expo);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.put('/api/expositions/:id', requireDb, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const patch = { title: req.body.title, description: req.body.description };
+    if (db) {
+      const existing = await db.collection('expositions').findOne({ _id: id });
+      if (!existing) return res.status(404).json({ error: 'Not found' });
+      const updated = { ...existing, ...patch };
+      await db.collection('expositions').replaceOne({ _id: id }, updated);
+      const { _id, ...result } = updated;
+      res.json(result);
+    } else {
+      const all = await readExpositions();
+      const idx = all.findIndex(e => e.id === id);
+      if (idx === -1) return res.status(404).json({ error: 'Not found' });
+      all[idx] = { ...all[idx], ...patch };
+      writeExpositionsFile(all);
+      res.json(all[idx]);
+    }
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/expositions/:id', requireDb, async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (db) {
+      await db.collection('expositions').deleteOne({ _id: id });
+    } else {
+      const all = await readExpositions();
+      writeExpositionsFile(all.filter(e => e.id !== id));
+    }
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // ── Keywords ──────────────────────────────────────────────────────────────────
 app.get('/api/keywords', requireDb, async (_, res) => {
   try { res.json(await readKeywords()); }
@@ -683,46 +762,113 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
       throw new Error('Aucun JSON trouvé dans la réponse');
     }
 
-    // Appel direct à l'API Gemini v1 (bypass du SDK qui utilise v1beta)
-    async function callGeminiV1(model) {
-      const url = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    // ── Helper : appel format OpenAI-compatible (OpenRouter, OpenAI…) ──────────
+    async function callOpenAICompat({ baseUrl, apiKey, model, skipIfNoKey = true }) {
+      if (skipIfNoKey && !apiKey) throw Object.assign(new Error('no_key'), { skip: true });
+      const b64 = buffer.toString('base64');
       const body = {
-        contents: [{
+        model,
+        messages: [{
           role: 'user',
-          parts: [
-            { text: prompt },
-            { inline_data: { mime_type: mimeType, data: buffer.toString('base64') } }
+          content: [
+            { type: 'text', text: prompt },
+            { type: 'image_url', image_url: { url: `data:${mimeType};base64,${b64}`, detail: 'low' } }
           ]
         }],
-        generationConfig: { temperature: 0.2 }
+        max_tokens: 1024,
+        temperature: 0.2
       };
-      const resp = await fetch(url, {
+      const resp = await fetch(`${baseUrl}/chat/completions`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+          // OpenRouter exige un header HTTP-Referer pour identifier l'app
+          ...(baseUrl.includes('openrouter') ? { 'HTTP-Referer': 'https://charchives.app', 'X-Title': 'Charchives' } : {})
+        },
         body: JSON.stringify(body)
       });
-      if (!resp.ok) {
-        const err = await resp.text();
-        throw new Error(err);
-      }
+      if (!resp.ok) { throw new Error(await resp.text()); }
+      const json = await resp.json();
+      return json.choices?.[0]?.message?.content || '';
+    }
+
+    // ── Provider Gemini ────────────────────────────────────────────────────────
+    async function callGemini(model) {
+      if (!process.env.GEMINI_API_KEY) throw Object.assign(new Error('no_key'), { skip: true });
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+      const body = {
+        contents: [{ role: 'user', parts: [
+          { text: prompt },
+          { inline_data: { mime_type: mimeType, data: buffer.toString('base64') } }
+        ]}],
+        generationConfig: { temperature: 0.2 }
+      };
+      const resp = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!resp.ok) { throw new Error(await resp.text()); }
       const json = await resp.json();
       return json.candidates?.[0]?.content?.parts?.[0]?.text || '';
     }
 
-    // Retry 3 fois avec délai croissant
+    // ── Cascade providers — gratuits en priorité ───────────────────────────────
+    // OpenRouter : inscription gratuite → clé → modèles vision gratuits
+    //   https://openrouter.ai/keys
+    // Gemini : nouveau projet AI Studio → nouvelle clé → quota free remis à zéro
+    //   https://aistudio.google.com/app/apikey
+    const PROVIDERS = [
+      // 1. OpenRouter — gratuit, modèles vision open-source
+      {
+        name: 'openrouter/llama-3.2-vision',
+        call: () => callOpenAICompat({
+          baseUrl: 'https://openrouter.ai/api/v1',
+          apiKey:  process.env.OPENROUTER_API_KEY,
+          model:   'meta-llama/llama-3.2-11b-vision-instruct:free'
+        })
+      },
+      // 2. OpenRouter fallback — Qwen VL gratuit
+      {
+        name: 'openrouter/qwen-vl',
+        call: () => callOpenAICompat({
+          baseUrl: 'https://openrouter.ai/api/v1',
+          apiKey:  process.env.OPENROUTER_API_KEY,
+          model:   'qwen/qwen2.5-vl-72b-instruct:free'
+        })
+      },
+      // 3. Gemini 2.0 Flash
+      { name: 'gemini/2.0-flash',    call: () => callGemini('gemini-2.0-flash') },
+      // 4. Gemini 1.5 Flash
+      { name: 'gemini/1.5-flash',    call: () => callGemini('gemini-1.5-flash') },
+      // 5. OpenAI GPT-4o-mini (payant, ~$0.001/image)
+      {
+        name: 'openai/gpt-4o-mini',
+        call: () => callOpenAICompat({
+          baseUrl: 'https://api.openai.com/v1',
+          apiKey:  process.env.OPENAI_API_KEY,
+          model:   'gpt-4o-mini'
+        })
+      },
+    ];
+
     let lastError;
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (const p of PROVIDERS) {
       try {
-        const text = await callGeminiV1('gemini-2.0-flash-lite');
+        console.log(`Analyze → essai : ${p.name}`);
+        const text = await p.call();
         const data = extractJson(text);
+        console.log(`Analyze → succès avec ${p.name}`);
         return res.json(data);
       } catch (err) {
+        if (err.skip) { console.log(`Analyze → ${p.name} ignoré (clé absente)`); continue; }
+        const msg = err.message || '';
+        const isQuota = msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')
+                     || msg.includes('quota') || msg.includes('Rate limit') || msg.includes('rate_limit');
+        console.warn(`Analyze ${p.name} échoué (${isQuota ? 'quota' : 'erreur'}) : ${msg.slice(0, 160)}`);
         lastError = err;
-        console.warn(`Analyze tentative ${attempt}/3 échouée : ${err.message?.slice(0, 120)}`);
-        if (attempt < 3) await new Promise(r => setTimeout(r, 1000 * attempt));
+        if (!isQuota) break;
+        await new Promise(r => setTimeout(r, 500));
       }
     }
-    throw lastError;
+    throw lastError || new Error('Aucun provider IA disponible — ajoute OPENROUTER_API_KEY ou GEMINI_API_KEY dans .env');
   } catch (err) {
     console.error('Analyze error:', err.message);
     res.status(500).json({ error: err.message });
