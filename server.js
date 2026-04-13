@@ -816,31 +816,31 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
     // Gemini : nouveau projet AI Studio → nouvelle clé → quota free remis à zéro
     //   https://aistudio.google.com/app/apikey
     const PROVIDERS = [
-      // 1. OpenRouter — Gemini 2.0 Flash Experimental (gratuit, vision excellente)
+      // 1. OpenRouter — Qwen VL 72B (vision, gratuit)
       {
-        name: 'openrouter/gemini-2.0-flash-exp',
+        name: 'openrouter/qwen-vl-72b',
         call: () => callOpenAICompat({
           baseUrl: 'https://openrouter.ai/api/v1',
           apiKey:  process.env.OPENROUTER_API_KEY,
-          model:   'google/gemini-2.0-flash-exp:free'
+          model:   'qwen/qwen2.5-vl-72b-instruct:free'
         })
       },
-      // 2. OpenRouter — Qwen VL 2.5 gratuit (très bon sur objets)
+      // 2. OpenRouter — Qwen VL 7B (gratuit, fallback)
       {
-        name: 'openrouter/qwen-vl-2.5',
+        name: 'openrouter/qwen-vl-7b',
         call: () => callOpenAICompat({
           baseUrl: 'https://openrouter.ai/api/v1',
           apiKey:  process.env.OPENROUTER_API_KEY,
-          model:   'qwen/qwen2.5-vl-3b-instruct:free'
+          model:   'qwen/qwen2.5-vl-7b-instruct:free'
         })
       },
-      // 3. OpenRouter — Mistral Small Vision gratuit
+      // 3. OpenRouter — Llama 3.2 Vision 11B (gratuit)
       {
-        name: 'openrouter/mistral-small-vision',
+        name: 'openrouter/llama-3.2-vision',
         call: () => callOpenAICompat({
           baseUrl: 'https://openrouter.ai/api/v1',
           apiKey:  process.env.OPENROUTER_API_KEY,
-          model:   'mistralai/mistral-small-3.1-24b-instruct:free'
+          model:   'meta-llama/llama-3.2-11b-vision-instruct:free'
         })
       },
       // 4. Gemini 2.0 Flash (clé Google directe)
@@ -869,12 +869,15 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
       } catch (err) {
         if (err.skip) { console.log(`Analyze → ${p.name} ignoré (clé absente)`); continue; }
         const msg = err.message || '';
-        const isQuota = msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')
-                     || msg.includes('quota') || msg.includes('Rate limit') || msg.includes('rate_limit');
-        console.warn(`Analyze ${p.name} échoué (${isQuota ? 'quota' : 'erreur'}) : ${msg.slice(0, 160)}`);
+        // Toujours passer au suivant : quota épuisé, modèle introuvable (404), ou indisponible
+        const isSkippable = msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED')
+                         || msg.includes('quota') || msg.includes('Rate limit')
+                         || msg.includes('rate_limit') || msg.includes('404')
+                         || msg.includes('No endpoints') || msg.includes('not found');
+        console.warn(`Analyze ${p.name} échoué (${isSkippable ? 'skip→suivant' : 'erreur fatale'}) : ${msg.slice(0, 160)}`);
         lastError = err;
-        if (!isQuota) break;
-        await new Promise(r => setTimeout(r, 500));
+        if (!isSkippable) break;  // Erreur inattendue → on abandonne
+        await new Promise(r => setTimeout(r, 300));
       }
     }
     throw lastError || new Error('Aucun provider IA disponible — ajoute OPENROUTER_API_KEY ou GEMINI_API_KEY dans .env');
