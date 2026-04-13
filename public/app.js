@@ -642,14 +642,15 @@ document.addEventListener('click', e => {
 
 // ── View switching ─────────────────────────────────────────────────────────────
 function setView(v) {
+  if (v === 'timeline') v = 'calendar'; // frise fusionnée dans calendrier
   state.view = v;
-  const views = {grid:'gridWrapper',timeline:'timelineView',calendar:'calendarView',catalogue:'catalogueView',trios:'triosView',stats:'statsView'};
+  const views = {grid:'gridWrapper',calendar:'calendarView',catalogue:'catalogueView',trios:'triosView',stats:'statsView'};
   Object.entries(views).forEach(([k,id]) => {
     const el = document.getElementById(id);
     if (el) el.style.display = k===v ? '' : 'none';
   });
   document.querySelectorAll('.view-tab').forEach(btn => btn.classList.remove('active'));
-  const tabs = {grid:'viewGrid',timeline:'viewTimeline',calendar:'viewCalendar',catalogue:'viewCatalogue',trios:'viewTrios',stats:'viewStats'};
+  const tabs = {grid:'viewGrid',calendar:'viewCalendar',catalogue:'viewCatalogue',trios:'viewTrios',stats:'viewStats'};
   const tabEl = document.getElementById(tabs[v]);
   if (tabEl) tabEl.classList.add('active');
   render();
