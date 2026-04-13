@@ -2562,8 +2562,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   gap: 6px;
 }
 .idx-typo-btn {
-  padding: 4px 11px;
-  border-radius: 3px;
+  padding: 5px 14px;
+  border-radius: 99px;
   border: 1.5px solid transparent;
   background: none;
   font-family: 'Inter', sans-serif;
