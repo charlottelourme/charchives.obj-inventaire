@@ -1320,9 +1320,9 @@ function _onGalleryScroll() {
       const itemMid = el.offsetTop + el.offsetHeight / 2;
       const dist    = itemMid - vpMid;
       // Large items (span 3) = slow (depth illusion), small = slightly faster
-      const speed   = span === 3 ? 0.018 : span === 2 ? 0.032 : 0.048;
-      const offset  = dist * speed; // subtle: ±8–15px max in practice
-      img.style.transform = `scale(1.14) translateY(${offset}px)`;
+      const speed   = span === 3 ? 0.012 : span === 2 ? 0.020 : 0.030;
+      const offset  = dist * speed; // subtle drift: ±4–10px max
+      img.style.transform = `translateY(${offset}px)`;
     });
   });
 }
