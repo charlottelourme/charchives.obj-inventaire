@@ -938,27 +938,25 @@ main { padding: 0; }
   color: #F5F5F0;
 }
 
-/* ── Verbes (INTENTION) — Spectral, underline colorée ── */
+/* ── Verbes (INTENTION) — pilules rondes colorées ── */
 .sfb-pill-verbe {
-  font-family: 'Spectral', Georgia, serif;
-  font-size: 15px;
-  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
   letter-spacing: .01em;
-  padding: 8px 16px;
-  border-radius: 0;
-  /* La couleur active est injectée via JS sur border-bottom-color + color */
-  border-bottom: 2px solid transparent;
-  transition: color .15s, border-bottom-color .2s;
-  margin: 0 2px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  transition: background .15s, color .15s, border-color .15s;
+  margin: 2px 1px;
 }
 .sfb-pill-verbe:hover {
-  background: none;
-  /* couleur anticipée par JS via mouseenter */
+  background: var(--tag-bg);
+  color: var(--text);
 }
-/* Verbe actif : underline colorée, texte dans la couleur du verbe, pas de fond */
+/* Verbe actif : fond coloré + texte contrasté (couleurs injectées via JS) */
 .sfb-pill-verbe.active {
-  background: none !important;
-  /* border-bottom-color et color injectés via JS inline style */
+  /* background, color et border-color injectés via JS */
 }
 
 /* ── Ligne OBJET — pills rondes neutres ── */
