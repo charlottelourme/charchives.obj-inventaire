@@ -2445,6 +2445,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   align-items: center;
   gap: 4px;
   padding: 2px 0;
+  width: 100%;
+}
+/* Ligne recherche en dessous des pills (mode verbe actif) */
+.idx-search-row {
+  width: 100%;
+  padding: 4px 20px 6px;
 }
 
 /* ── Recherche inline dans la barre ── */
