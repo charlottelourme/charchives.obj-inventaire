@@ -3097,16 +3097,7 @@ async function _analyzeAndFillForm(filename) {
   }
 }
 
-// Enable / disable all .photo-stylize buttons based on fCategory selection
-function _updateStylizeButtonsState() {
-  const color = _getSelectedVerbeTextColor();
-  document.querySelectorAll('.photo-stylize').forEach(btn => {
-    btn.disabled = !color;
-    btn.title = color
-      ? `Générer une ambiance · teinte ${color}`
-      : 'Choisissez d\'abord une Intention';
-  });
-}
+function _updateStylizeButtonsState() { /* no-op — ambiance toujours disponible */ }
 
 // ── Photos ─────────────────────────────────────────────────────────────────────
 function _showPhotoToast(msg) {
