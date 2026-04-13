@@ -1000,15 +1000,15 @@ function render() {
     const isActive = p.dataset.cat === state.categoryFilter;
     p.classList.toggle('active', isActive);
     if (isActive && p.classList.contains('sfb-pill-verbe') && p.dataset.bg) {
-      // Actif : underline colorée, texte dans la couleur
-      p.style.borderBottomColor = p.dataset.bg;
-      p.style.color = p.dataset.bg;
-      p.style.background = '';
+      // Actif : pilule pleine avec la couleur du verbe
+      p.style.background = p.dataset.bg;
+      p.style.color = p.dataset.fg || '#fff';
+      p.style.borderColor = p.dataset.bg;
     } else if (!isActive) {
       p.style.background = '';
       p.style.color = '';
-      p.style.borderBottomColor = '';
       p.style.borderColor = '';
+      p.style.borderBottomColor = '';
     }
   });
   document.querySelectorAll('#statusFilterBar .sfb-pill').forEach(p =>
