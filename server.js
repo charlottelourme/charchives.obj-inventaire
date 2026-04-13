@@ -401,7 +401,7 @@ async function resolveCloudinaryPublicId(filename) {
   throw new Error('URL non Cloudinary non supportée');
 }
 
-// ── Photo enhancement — packshot fond blanc ───────────────────────────────────
+// ── Détourage auto — fond transparent PNG ─────────────────────────────────────
 app.post('/api/enhance-photo', async (req, res) => {
   try {
     const { filename } = req.body;
@@ -412,12 +412,13 @@ app.post('/api/enhance-photo', async (req, res) => {
 
     let enhancedFilename;
     try {
+      // Suppression du fond → PNG transparent
       const result = await new Promise((resolve, reject) => {
         cloudinary.uploader.explicit(publicId, {
           type: 'upload',
           eager: [[
             { effect: 'background_removal' },
-            { background: 'white', crop: 'pad', width: 1000, height: 1000, gravity: 'center', quality: 'auto', fetch_format: 'auto' }
+            { fetch_format: 'png', quality: 'auto' }
           ]],
           eager_async: false
         }, (err, r) => err ? reject(err) : resolve(r));
@@ -425,13 +426,13 @@ app.post('/api/enhance-photo', async (req, res) => {
       enhancedFilename = result.eager?.[0]?.secure_url;
       if (!enhancedFilename) throw new Error('no eager url');
     } catch (bgErr) {
-      console.warn('background_removal échoué, fallback trim:', bgErr.message);
+      console.warn('background_removal échoué, fallback trim transparent:', bgErr.message);
       const result = await new Promise((resolve, reject) => {
         cloudinary.uploader.explicit(publicId, {
           type: 'upload',
           eager: [[
             { effect: 'trim:10' },
-            { background: 'white', crop: 'pad', width: 1000, height: 1000, gravity: 'center', quality: 'auto', fetch_format: 'auto' }
+            { fetch_format: 'png', quality: 'auto' }
           ]],
           eager_async: false
         }, (err, r) => err ? reject(err) : resolve(r));
