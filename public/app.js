@@ -829,13 +829,15 @@ function render() {
   document.getElementById('countLabel').textContent =
     `${filtered.length} objet${filtered.length!==1?'s':''}`;
 
-  if (state.view==='grid')            renderGrid(filtered);
-  else if (state.view==='gallery')    renderGallery(filtered);
-  else if (state.view==='constellation') renderConstellation(filtered);
+  if (state.view==='grid')    renderGrid(filtered);
+  else if (state.view==='derive') {
+    if (state.deriveMode==='nuee')    renderGallery(filtered);
+    else                              renderConstellation(filtered);
+  }
+  else if (state.view==='trios')      renderTrios();
   else if (state.view==='calendar')   renderCalendar(filtered);
-  else if (state.view==='catalogue') renderCatalogue(filtered);
-  else if (state.view==='trios')    renderTrios();
-  else if (state.view==='stats')    renderStats();
+  else if (state.view==='catalogue')  renderCatalogue(filtered);
+  else if (state.view==='stats')      renderStats();
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
