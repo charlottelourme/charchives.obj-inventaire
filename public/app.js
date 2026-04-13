@@ -1830,25 +1830,51 @@ function openDetail(id) {
     c.artiste    ? `<span class="portrait-meta-tag">Création${c.artisteName?' · '+esc(c.artisteName):''}</span>` : ''
   ].filter(Boolean).join('');
 
-  body.innerHTML = `
-    <div class="portrait-split">
-      <div class="portrait-photo-col">
-        <div class="portrait-main-wrap">${mainPhotoHTML}</div>
-        ${thumbsHTML}
-      </div>
-      <div class="portrait-info-col">
-        ${(verbePill||typoPill) ? `<div class="portrait-pills-row">${verbePill}${typoPill}</div>` : ''}
-        <h2 class="portrait-title">${esc(c.name)}</h2>
-        ${metaHTML ? `<div class="portrait-meta">${metaHTML}</div>` : ''}
-        <div class="portrait-sep"></div>
-        ${c.description ? `<p class="portrait-desc">${esc(c.description).replace(/\n/g,'<br>')}</p><div class="portrait-sep"></div>` : ''}
-        <div class="portrait-attrs">
-          ${attrRowsHTML}
-          ${universHTML}
-          ${kwHTML}
+  // ── "Apparaît dans" expositions ──
+  const itemExpos = (c.expositions||[]).map(eid => state.expositions.find(e=>e.id===eid)).filter(Boolean);
+  const expoChipsHTML = itemExpos.length
+    ? `<div class="detail-expo-row">${itemExpos.map(e=>`<button class="detail-expo-chip" data-expo-id="${e.id}">${esc(e.title)}</button>`).join('')}</div>`
+    : '';
+
+  // Fragment modal variant
+  if (c.type === 'fragment') {
+    const bg  = c.backgroundColor || '#1a1a1a';
+    const lum = _luminance(bg);
+    const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+    body.innerHTML = `
+      <div class="portrait-split">
+        <div class="portrait-photo-col" style="background:${bg};border-radius:4px;display:flex;align-items:center;justify-content:center;min-height:200px;padding:32px">
+          <p style="font-family:'Spectral',Georgia,serif;font-style:italic;font-size:18px;line-height:1.6;color:${fg};text-align:center">${esc(c.textContent||'')}</p>
         </div>
-      </div>
-    </div>`;
+        <div class="portrait-info-col">
+          ${(verbePill||typoPill) ? `<div class="portrait-pills-row">${verbePill}${typoPill}</div>` : ''}
+          <h2 class="portrait-title">${esc(c.name||'Fragment')}</h2>
+          ${metaHTML ? `<div class="portrait-meta">${metaHTML}</div>` : ''}
+          ${expoChipsHTML}
+        </div>
+      </div>`;
+  } else {
+    body.innerHTML = `
+      <div class="portrait-split">
+        <div class="portrait-photo-col">
+          <div class="portrait-main-wrap">${mainPhotoHTML}</div>
+          ${thumbsHTML}
+        </div>
+        <div class="portrait-info-col">
+          ${(verbePill||typoPill) ? `<div class="portrait-pills-row">${verbePill}${typoPill}</div>` : ''}
+          <h2 class="portrait-title">${esc(c.name)}</h2>
+          ${metaHTML ? `<div class="portrait-meta">${metaHTML}</div>` : ''}
+          <div class="portrait-sep"></div>
+          ${c.description ? `<p class="portrait-desc">${esc(c.description).replace(/\n/g,'<br>')}</p><div class="portrait-sep"></div>` : ''}
+          <div class="portrait-attrs">
+            ${attrRowsHTML}
+            ${universHTML}
+            ${kwHTML}
+          </div>
+          ${expoChipsHTML}
+        </div>
+      </div>`;
+  }
 
   // Lightbox
   body.querySelectorAll('.portrait-main-img').forEach(img => {
