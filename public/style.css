@@ -2433,15 +2433,16 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .gallery-grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 150px;
+    columns: 3;
+    column-gap: 20px;
+    padding: 24px 24px 100px;
   }
 }
 @media (max-width: 600px) {
   .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 140px;
-    gap: 7px;
+    columns: 2;
+    column-gap: 12px;
+    padding: 16px 16px 80px;
     padding: 7px 7px 90px;
   }
 }
