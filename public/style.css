@@ -2625,70 +2625,67 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-groups {
   overflow-y: auto;
   flex: 1;
-  padding: 20px 28px 32px;
+  padding: 20px 24px 32px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
+.idx-groups::-webkit-scrollbar { width: 5px; }
+.idx-groups::-webkit-scrollbar-thumb { background: var(--border); }
+.idx-groups::-webkit-scrollbar-track { background: transparent; }
 
 /* Grille alphabétique — 2 colonnes */
 .idx-alpha-grid {
   columns: 2;
-  column-gap: 32px;
+  column-gap: 28px;
 }
 .idx-alpha-section {
   break-inside: avoid;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 /* Lettrine éditoriale */
 .idx-alpha-letter {
   font-family: 'Spectral', Georgia, serif;
   font-style: italic;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 300;
   color: var(--text-3);
   line-height: 1;
-  margin-bottom: 6px;
-  padding-bottom: 6px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
 }
 
-/* Items liste propre */
-.idx-alpha-items { display: flex; flex-direction: column; gap: 0; }
-.idx-alpha-btn {
+/* Pills typologies — cohérentes avec l'app, angles carrés */
+.idx-alpha-pills {
   display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.idx-alpha-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 9px;
-  padding: 7px 6px;
+  padding: 5px 11px;
+  border: 1.5px solid var(--pill-col, var(--border));
+  border-radius: 0;
   background: none;
-  border: none;
-  cursor: pointer;
-  border-radius: 6px;
-  text-align: left;
-  width: 100%;
-  transition: background .1s, padding-left .12s;
-}
-.idx-alpha-btn:hover { background: var(--surface); padding-left: 10px; }
-.idx-alpha-btn.active { background: var(--surface); }
-.idx-alpha-btn.active .idx-alpha-name { font-weight: 600; color: var(--text); }
-.idx-alpha-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.idx-alpha-name {
   font-family: 'Inter', sans-serif;
-  font-size: 12.5px;
-  font-weight: 400;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--text);
-  flex: 1;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  white-space: nowrap;
   line-height: 1.3;
 }
-.idx-alpha-verbe {
-  font-family: 'Spectral', Georgia, serif;
-  font-style: italic;
-  font-size: 10px;
-  opacity: .75;
-  white-space: nowrap;
-  margin-left: auto;
+.idx-alpha-pill:hover {
+  background: var(--pill-col, var(--border));
+  color: var(--pill-fg, var(--bg));
+}
+.idx-alpha-pill.active {
+  background: var(--pill-col, var(--text));
+  color: var(--pill-fg, var(--bg));
+  border-color: var(--pill-col, var(--text));
 }
 .idx-empty {
   color: var(--text-3);
@@ -2700,7 +2697,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 @media (max-width: 600px) {
   .idx-overlay { padding: 16px; align-items: flex-end; }
-  .idx-overlay-inner { max-height: 90vh; border-radius: 16px 16px 0 0; }
+  .idx-overlay-inner { max-height: 90vh; border-radius: 0 0 0 0; }
   .idx-alpha-grid { columns: 1; }
 }
 
