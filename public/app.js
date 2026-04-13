@@ -5470,8 +5470,100 @@ function _setFormType(type) {
   const nameField  = document.getElementById('fName')?.closest('.field');
   if (photosZone) photosZone.style.display = isFragment ? 'none' : '';
   if (fragZone)   fragZone.style.display   = isFragment ? ''     : 'none';
-  // For fragments, name is optional
   if (nameField) nameField.style.opacity = isFragment ? '0.5' : '';
+  if (isFragment) {
+    renderFragmentBgPicker();
+    _updateFragmentPreview();
+  }
+}
+
+// ── ARE.NA : Fragment background palette ────────────────────────────────────
+function renderFragmentBgPicker() {
+  const container = document.getElementById('fragmentBgPicker');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const selected = state.editFragmentBg || '#1a1a1a';
+
+  // 1. Couleurs des verbes
+  getVerbes().forEach(v => {
+    const hex = v.bgColor || v.color || '#1a1a1a';
+    _addFragBgSwatch(container, hex, hex === selected, v.name);
+  });
+
+  // 2. Couleurs custom (settings.customColorHexes)
+  const customHexes = state.settings.customColorHexes || {};
+  Object.entries(customHexes).forEach(([name, hex]) => {
+    _addFragBgSwatch(container, hex, hex === selected, name);
+  });
+
+  // 3. Couleurs neutres toujours présentes (blanc, noir, écru)
+  const basics = [
+    { hex: '#F5F5F0', label: 'Écru' },
+    { hex: '#FFFFFF', label: 'Blanc' },
+    { hex: '#1a1a1a', label: 'Noir' },
+  ];
+  basics.forEach(({ hex, label }) => {
+    if (!getVerbes().some(v => (v.bgColor||v.color) === hex))
+      _addFragBgSwatch(container, hex, hex.toUpperCase() === selected.toUpperCase(), label);
+  });
+
+  // 4. Bouton "+" pour couleur custom
+  const addBtn = document.createElement('button');
+  addBtn.type = 'button';
+  addBtn.className = 'frag-bg-swatch-add';
+  addBtn.title = 'Couleur personnalisée';
+  addBtn.textContent = '+';
+  addBtn.addEventListener('click', () => {
+    const native = document.getElementById('fFragmentBgNative');
+    if (!native) return;
+    native.value = state.editFragmentBg || '#1a1a1a';
+    native.click();
+  });
+  container.appendChild(addBtn);
+
+  // Listener on native picker
+  const native = document.getElementById('fFragmentBgNative');
+  if (native) {
+    native.oninput = e => {
+      state.editFragmentBg = e.target.value;
+      renderFragmentBgPicker();
+      _updateFragmentPreview();
+    };
+  }
+}
+
+function _addFragBgSwatch(container, hex, isSelected, label) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'frag-bg-swatch' + (isSelected ? ' selected' : '');
+  btn.style.background = hex;
+  btn.title = label || hex;
+  // White swatches: add a subtle border
+  if (hex === '#FFFFFF' || hex === '#F5F5F0' || hex === '#ffffff') {
+    btn.style.outline = '1px solid var(--border-light)';
+  }
+  btn.addEventListener('click', () => {
+    state.editFragmentBg = hex;
+    renderFragmentBgPicker();
+    _updateFragmentPreview();
+  });
+  container.appendChild(btn);
+}
+
+function _updateFragmentPreview() {
+  const preview = document.getElementById('fragmentPreview');
+  const previewText = document.getElementById('fragmentPreviewText');
+  const textarea = document.getElementById('fFragmentText');
+  if (!preview) return;
+  const bg = state.editFragmentBg || '#1a1a1a';
+  const lum = _luminance(bg);
+  const fg = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+  preview.style.background = bg;
+  if (previewText) {
+    previewText.style.color = fg;
+    previewText.textContent = textarea?.value || '…';
+  }
 }
 
 // ── ARE.NA : Exposition chips in form ────────────────────────────────────────
