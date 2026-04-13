@@ -2342,18 +2342,21 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 160px;
-  gap: 10px;
-  padding: 10px 10px 90px;
+  grid-auto-rows: 200px;
+  gap: 20px;
+  padding: 20px 20px 100px;
   background: var(--bg);
 }
 
-/* Item base — intégré directement dans la grille, sans carte blanche */
+/* Item base — fond page, pas de carte blanche */
 .gallery-item {
   overflow: hidden;
   cursor: pointer;
   position: relative;
   background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* Default state transition */
   transition: opacity .28s ease, filter .28s ease, transform .28s ease, box-shadow .28s ease;
 }
