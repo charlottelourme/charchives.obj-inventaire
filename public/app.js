@@ -773,6 +773,15 @@ function render() {
 function esc(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+// Returns perceived luminance 0–1 for a hex color string
+function _luminance(hex) {
+  const h = hex.replace('#','');
+  if (h.length < 6) return 0.5;
+  const r = parseInt(h.slice(0,2),16)/255;
+  const g = parseInt(h.slice(2,4),16)/255;
+  const b = parseInt(h.slice(4,6),16)/255;
+  return 0.2126*r + 0.7152*g + 0.0722*b;
+}
 function formatDate(d) {
   if (!d) return '';
   const [y,m]=d.split('-');
