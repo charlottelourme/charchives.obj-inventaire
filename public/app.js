@@ -1081,8 +1081,9 @@ function setView(v, _silent = false) {
     _applyDeriveMode(state.deriveMode, true);
   }
 
-  // Breadcrumb push
+  // Breadcrumb — navigation explicite : on repart à zéro sur la vue
   if (!_silent && VIEW_LABELS[v]) {
+    state.breadcrumb = [];
     pushBreadcrumb(VIEW_LABELS[v], () => setView(v, true));
   }
   render();
