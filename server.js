@@ -816,29 +816,38 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
     // Gemini : nouveau projet AI Studio → nouvelle clé → quota free remis à zéro
     //   https://aistudio.google.com/app/apikey
     const PROVIDERS = [
-      // 1. OpenRouter — gratuit, modèles vision open-source
+      // 1. OpenRouter — Gemini 2.0 Flash Experimental (gratuit, vision excellente)
       {
-        name: 'openrouter/llama-3.2-vision',
+        name: 'openrouter/gemini-2.0-flash-exp',
         call: () => callOpenAICompat({
           baseUrl: 'https://openrouter.ai/api/v1',
           apiKey:  process.env.OPENROUTER_API_KEY,
-          model:   'meta-llama/llama-3.2-11b-vision-instruct:free'
+          model:   'google/gemini-2.0-flash-exp:free'
         })
       },
-      // 2. OpenRouter fallback — Qwen VL gratuit
+      // 2. OpenRouter — Qwen VL 2.5 gratuit (très bon sur objets)
       {
-        name: 'openrouter/qwen-vl',
+        name: 'openrouter/qwen-vl-2.5',
         call: () => callOpenAICompat({
           baseUrl: 'https://openrouter.ai/api/v1',
           apiKey:  process.env.OPENROUTER_API_KEY,
-          model:   'qwen/qwen2.5-vl-72b-instruct:free'
+          model:   'qwen/qwen2.5-vl-3b-instruct:free'
         })
       },
-      // 3. Gemini 2.0 Flash
+      // 3. OpenRouter — Mistral Small Vision gratuit
+      {
+        name: 'openrouter/mistral-small-vision',
+        call: () => callOpenAICompat({
+          baseUrl: 'https://openrouter.ai/api/v1',
+          apiKey:  process.env.OPENROUTER_API_KEY,
+          model:   'mistralai/mistral-small-3.1-24b-instruct:free'
+        })
+      },
+      // 4. Gemini 2.0 Flash (clé Google directe)
       { name: 'gemini/2.0-flash',    call: () => callGemini('gemini-2.0-flash') },
-      // 4. Gemini 1.5 Flash
+      // 5. Gemini 1.5 Flash (clé Google directe)
       { name: 'gemini/1.5-flash',    call: () => callGemini('gemini-1.5-flash') },
-      // 5. OpenAI GPT-4o-mini (payant, ~$0.001/image)
+      // 6. OpenAI GPT-4o-mini (payant, ~$0.001/image)
       {
         name: 'openai/gpt-4o-mini',
         call: () => callOpenAICompat({
