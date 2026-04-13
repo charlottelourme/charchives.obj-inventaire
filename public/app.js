@@ -162,6 +162,8 @@ const state = {
   expositions: [],
   editExpositions: [],
   breadcrumb: [],      // [{label, action}]
+  activeExpoFilter: null,
+  _formType: 'item',
 };
 
 const LB = { photos: [], idx: 0 };
