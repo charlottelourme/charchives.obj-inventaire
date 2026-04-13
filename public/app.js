@@ -3804,7 +3804,7 @@ function renderPhotos() {
             <div class="photo-compare-sep"></div>
             <div class="photo-compare-side">
               <img src="${photoUrl(result.stylizedFilename)}" alt="Après">
-              <div class="photo-compare-label">✦ Ambiance AI</div>
+              <div class="photo-compare-label">Ambiance AI</div>
             </div>
           </div>
           <div class="photo-compare-actions">
