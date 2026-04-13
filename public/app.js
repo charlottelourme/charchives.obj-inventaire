@@ -437,14 +437,8 @@ function buildCategoryFilterBar() {
     });
     pill.addEventListener('click', () => {
       const cat = pill.dataset.cat;
-      // Re-clic sur le verbe actif → retour grille sans filtre
-      if (cat && cat === state.categoryFilter) {
-        state.categoryFilter = '';
-        state.gravityMode = false;
-      } else {
-        state.categoryFilter = cat;
-        state.gravityMode = cat !== ''; // Mode Gravité dès qu'un verbe est sélectionné
-      }
+      state.categoryFilter = cat;
+      state.gravityMode = false; // toujours grille dans l'inventaire
       state.attrFilters.subcat = [];
       buildIndexTrigger();
       buildAttrFilterBar();
