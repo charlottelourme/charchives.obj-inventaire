@@ -664,7 +664,7 @@ document.addEventListener('click', e => {
 // ── View switching ─────────────────────────────────────────────────────────────
 const VIEW_LABELS = {
   grid: "L'Inventaire", derive: 'La Dérive',
-  trios: "L'Atelier",   calendar: 'Calendrier',
+  trios: 'Triptyque',   calendar: 'Calendrier',
   catalogue: 'Catalogue', stats: 'Stats'
 };
 
