@@ -1269,7 +1269,7 @@ function _drawConGraph(canvas, nodes, links) {
 
   // ── D3 force simulation ──
   _conSim = d3.forceSimulation(nodes)
-    .force('link',    d3.forceLink(links).id(d => d.id).distance(140).strength(0.45))
+    .force('link',    d3.forceLink(links).id(d => d.id).distance(180).strength(0.45))
     .force('charge',  d3.forceManyBody().strength(-280).distanceMax(400))
     .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.08))
     .force('collide', d3.forceCollide(R + 12).strength(0.8))
