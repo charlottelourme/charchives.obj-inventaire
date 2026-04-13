@@ -1134,9 +1134,10 @@ function getFiltered() {
     if (af.etat_traces.length && !af.etat_traces.some(v=>(c.attributes?.etat_traces||[]).includes(v))) return false;
     if (af.couleurs.length && !af.couleurs.some(v=>(c.attributes?.couleurs||[]).includes(v))) return false;
     if (!q) return true;
-    // Smart search : expansion sémantique via thésaurus
-    const expandedTerms = _smartSearchExpand(q);
-    const searchStr = [
+
+    // ── PASSE A : recherche textuelle littérale ─────────────────────────────
+    // Concatène tous les champs texte et cherche q dedans (simple includes)
+    const textStr = [
       c.name, c.description, c.category, c.subcategory, c.subcategoryCustom,
       ...(Array.isArray(c.subcategories) ? c.subcategories : []),
       ...(c.keywords||[]),
@@ -1144,7 +1145,27 @@ function getFiltered() {
       ...(Object.values(c.attributes||{}).flat()),
       c.itemStatus
     ].filter(Boolean).join(' ').toLowerCase();
-    return expandedTerms.some(term => searchStr.includes(term));
+
+    if (textStr.includes(q)) return true;
+
+    // ── PASSE B : correspondance thésaurus → égalité stricte sur la typologie ─
+    // "tasse" → ["Thé & Café"] → vérifie si l'objet appartient à cette typologie
+    const mappedTypos = _thesaurusLookup(q);
+    if (mappedTypos.length) {
+      const objTypos = [
+        c.subcategory,
+        c.subcategoryCustom,
+        ...(Array.isArray(c.subcategories) ? c.subcategories : [])
+      ].filter(Boolean);
+      // Comparaison insensible à la casse ET à la catégorie verbe (category)
+      const qLower = (s) => s.toLowerCase().trim();
+      if (mappedTypos.some(mapped =>
+        objTypos.some(t => qLower(t) === qLower(mapped)) ||
+        qLower(c.category||'') === qLower(mapped)
+      )) return true;
+    }
+
+    return false;
   }));
 }
 
