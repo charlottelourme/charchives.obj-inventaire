@@ -319,12 +319,13 @@ const _INIT_MAX_RETRIES = 14;   // ~70 secondes (cold start Render ~30-60s)
 const _INIT_RETRY_DELAY = 5000; // 5 secondes entre chaque tentative
 
 async function _loadAppData() {
-  const [collections, keywords, settings] = await Promise.all([
+  const [collections, keywords, settings, expositions] = await Promise.all([
     api.get('/api/collections'),
     api.get('/api/keywords'),
-    api.get('/api/settings')
+    api.get('/api/settings'),
+    api.get('/api/expositions').catch(()=>[])
   ]);
-  return { collections, keywords, settings };
+  return { collections, keywords, settings, expositions };
 }
 
 async function init(attempt = 0) {
