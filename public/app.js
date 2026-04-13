@@ -742,14 +742,14 @@ function _buildIndexGroups() {
   Object.entries(byLetter).sort(([a],[b]) => a.localeCompare(b,'fr')).forEach(([letter, items]) => {
     html += `<div class="idx-alpha-section">
       <div class="idx-alpha-letter">${letter}</div>
-      <div class="idx-alpha-items">
+      <div class="idx-alpha-pills">
         ${items.map(({ t, color, verbeName }) => {
           const isActive = selected.includes(t);
-          return `<button class="idx-alpha-btn${isActive ? ' active' : ''}" data-typo="${esc(t)}">
-            <span class="idx-alpha-dot" style="background:${color}${isActive ? '' : '90'}"></span>
-            <span class="idx-alpha-name">${esc(t)}</span>
-            <span class="idx-alpha-verbe" style="color:${color}">${esc(verbeName)}</span>
-          </button>`;
+          // textColor pour la fg : blanc si couleur sombre, texte sinon
+          const fg = '#fff';
+          return `<button class="idx-alpha-pill${isActive ? ' active' : ''}" data-typo="${esc(t)}"
+            title="${esc(verbeName)}"
+            style="--pill-col:${color};--pill-fg:${fg}">${esc(t)}</button>`;
         }).join('')}
       </div>
     </div>`;
@@ -757,7 +757,7 @@ function _buildIndexGroups() {
   html += '</div>';
   groups.innerHTML = html;
 
-  groups.querySelectorAll('.idx-alpha-btn').forEach(btn => {
+  groups.querySelectorAll('.idx-alpha-pill').forEach(btn => {
     btn.addEventListener('click', () => {
       const t = btn.dataset.typo;
       const idx = state.attrFilters.subcat.indexOf(t);
