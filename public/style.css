@@ -2353,6 +2353,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  line-height: 0;   /* supprime l'espace sous les images inline */
+  font-size: 0;
   /* Default state transition */
   transition: opacity .28s ease, filter .28s ease, transform .28s ease;
 }
