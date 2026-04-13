@@ -3625,7 +3625,6 @@ function renderPhotos() {
           <button class="photo-btn photo-stylize" data-i="${i}" data-filename="${esc(filename)}"
             ${hasIntention ? '' : 'disabled'}
             title="${hasIntention ? 'Générer une mise en scène' : 'Choisissez d\'abord une Intention'}">
-            <span class="photo-btn-icon">✦</span>
             <span class="photo-btn-label">Ambiance</span>
           </button>
         </div>
