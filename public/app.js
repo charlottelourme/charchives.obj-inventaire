@@ -1350,15 +1350,14 @@ function renderGallery(filtered) {
   grid.innerHTML = '';
 
   items.forEach(c => {
-    const span = _gallerySpan(c.id);
+    const size = _gallerySize(c.id);
     const item = document.createElement('div');
-    item.className = `gallery-item g-span-${span}`;
+    item.className = `gallery-item ${size}`;
     item.dataset.id = c.id;
     item.dataset.cat = c.category || '';
 
     const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
     if (src) {
-      // img starts at scale(1.14) via CSS; JS parallax modifies translateY in addition
       item.innerHTML = `<img src="${src}" alt="${esc(c.name||'')}" draggable="false">`;
     } else {
       const bg = getVerbeBgColor(c.category);
@@ -1366,7 +1365,7 @@ function renderGallery(filtered) {
     }
 
     grid.appendChild(item);
-    _galleryItems.push({ el: item, id: c.id, span, category: c.category || '' });
+    _galleryItems.push({ el: item, id: c.id, size, category: c.category || '' });
   });
 
   _bindGalleryEvents();
