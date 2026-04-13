@@ -839,6 +839,18 @@ function renderGrid(items) {
 }
 
 function cardHTML(c) {
+  // ── Fragment card ──
+  if (c.type === 'fragment') {
+    const bg  = c.backgroundColor || '#1a1a1a';
+    const lum = _luminance(bg);
+    const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+    const verbeLabel = c.category ? `<span class="card-verbe-label" style="background:${getVerbeBgColor(c.category)};color:${getVerbeTextColor(c.category)}">${esc(c.category)}</span>` : '';
+    return `<div class="card card-fragment" data-id="${c.id}" style="background:${bg};color:${fg}">
+      <div class="card-top-badges"><span>${verbeLabel}</span></div>
+      <div class="frag-text">${esc(c.textContent||'')}</div>
+    </div>`;
+  }
+
   const photos = c.photos||[];
   const idx = Math.min(state.cardPhotoIdx.get(c.id)||0, Math.max(0,photos.length-1));
   const photo = photos[idx];
