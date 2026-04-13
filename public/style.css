@@ -607,6 +607,18 @@ main { padding: 0; }
   position: relative;
   overflow: hidden;
 }
+/* Image détourée (PNG transparent) — fond identique à l'arrière-plan, pas de recadrage */
+.card-thumb-area--detoured {
+  background: var(--bg);
+}
+.card-thumb-area--detoured .card-thumb {
+  object-fit: contain;
+  padding: 10%;
+  transform-origin: center;
+}
+.card-thumb-area--detoured:hover .card-thumb {
+  transform: scale(1.04);
+}
 .card-thumb {
   width: 100%;
   aspect-ratio: 1/1;
