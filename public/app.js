@@ -5971,7 +5971,16 @@ function bindEvents() {
 
   // Status filter
   document.querySelectorAll('#statusFilterBar .sfb-pill').forEach(pill=>{
-    pill.addEventListener('click',()=>{ state.statusFilter=pill.dataset.status; render(); });
+    pill.addEventListener('click',()=>{
+      if (pill.dataset.bookmark) {
+        state.bookmarkFilter = !state.bookmarkFilter;
+        if (state.bookmarkFilter) state.statusFilter = ''; // exclusif
+      } else {
+        state.statusFilter = pill.dataset.status;
+        state.bookmarkFilter = false; // désactive "mis de côté"
+      }
+      render();
+    });
   });
 
   // Attribute filters are now handled by buildMultiFilter() (multi-select dropdowns)
