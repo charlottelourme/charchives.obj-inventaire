@@ -946,160 +946,152 @@ function updateCardThumb(el,id,photos,idx) {
 }
 
 // ── Calendar ───────────────────────────────────────────────────────────────────
-function _calNavLabel() {
-  return `${MONTHS_FULL[state.calMonth]} ${state.calYear}`;
-}
+// ── Mini calendar state ─────────────────────────────────────────────────────
+let _calMiniYear = new Date().getFullYear();
+let _calMiniData = {}; // { 'YYYY-MM': count }
 
-function _syncCalendarSelects() {
-  const ms = document.getElementById('calMonthSelect');
-  const ys = document.getElementById('calYearSelect');
-  if (ms) ms.value = String(state.calMonth);
-  if (ys) ys.value = String(state.calYear);
-}
+// ── Calendrier : frise horizontale ────────────────────────────────────────────
+function renderCalendar(filtered) {
+  const track = document.getElementById('calHorizTrack');
+  if (!track) return;
 
-function renderCalendar() {
-  // Update nav label
-  const label = document.getElementById('calMonthLabel');
-  if (label) label.textContent = _calNavLabel();
-  _syncCalendarSelects();
+  const items = filtered || state.collections;
 
-  // Disable prev if at min month
-  const prevBtn = document.getElementById('calPrevMonth');
-  if (prevBtn) {
-    const atMin = state.calYear === CAL_MIN_YEAR && state.calMonth === CAL_MIN_MONTH;
-    prevBtn.disabled = atMin;
-    prevBtn.style.opacity = atMin ? '.3' : '';
-  }
-
-  // Build day → collections map
-  const byDay = {};
-  state.collections.forEach(c => {
-    let raw = '';
-    if (state.calDateType === 'dateAchat') raw = c.private?.dateAchat || '';
-    else raw = c.createdAt || '';
-    if (!raw || raw.length < 10) return;
-    const day = raw.slice(0, 10); // YYYY-MM-DD
-    const [y, m] = day.split('-');
-    if (parseInt(y) !== state.calYear || parseInt(m) - 1 !== state.calMonth) return;
-    if (!byDay[day]) byDay[day] = [];
-    byDay[day].push(c);
+  // Group by YYYY-MM
+  const byMonth = {};
+  items.forEach(c => {
+    const raw = state.calDateType === 'dateAchat'
+      ? (c.private?.dateAchat || '')
+      : (c.createdAt || c.date || '');
+    if (!raw || raw.length < 7) return;
+    const key = raw.slice(0, 7);
+    if (!byMonth[key]) byMonth[key] = [];
+    byMonth[key].push(c);
   });
 
-  const grid = document.getElementById('calGrid');
+  // Update mini-calendar data
+  _calMiniData = {};
+  Object.entries(byMonth).forEach(([k, v]) => { _calMiniData[k] = v.length; });
+  const popup = document.getElementById('calMiniPopup');
+  if (popup && popup.style.display !== 'none') renderCalMiniPopup();
 
-  // First day of month (0=Sun … 6=Sat), adjust to Mon-based (0=Mon … 6=Sun)
-  const firstDay = new Date(state.calYear, state.calMonth, 1).getDay();
-  const startOffset = (firstDay === 0) ? 6 : firstDay - 1;
-  const daysInMonth = new Date(state.calYear, state.calMonth + 1, 0).getDate();
-  const today = new Date();
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const monthKeys = Object.keys(byMonth).sort();
+  if (!monthKeys.length) {
+    track.innerHTML = `<div class="cal-h-empty">Aucun objet avec une date valide.<br>Renseignez une date d'ajout ou d'acquisition dans les fiches.</div>`;
+    return;
+  }
 
-  let html = '';
-  // Day headers
-  DAYS_SHORT.forEach(d => { html += `<div class="cal-day-header">${d}</div>`; });
+  // Generate all months from first to last (including empty months)
+  let [fy, fm] = monthKeys[0].split('-').map(Number);
+  const [ly, lm] = monthKeys[monthKeys.length - 1].split('-').map(Number);
+  const allMonths = [];
+  while (fy < ly || (fy === ly && fm <= lm)) {
+    allMonths.push(`${fy}-${String(fm).padStart(2, '0')}`);
+    fm++;
+    if (fm > 12) { fm = 1; fy++; }
+  }
 
-  // Leading empty cells
-  for (let i = 0; i < startOffset; i++) html += `<div class="cal-day-cell other-month"></div>`;
+  track.innerHTML = allMonths.map(key => {
+    const [y, m] = key.split('-');
+    const monthLabel = `${MONTHS[parseInt(m) - 1]} ${y}`;
+    const monthItems = byMonth[key] || [];
 
-  // Day cells
-  for (let d = 1; d <= daysInMonth; d++) {
-    const mm = String(state.calMonth + 1).padStart(2, '0');
-    const dd = String(d).padStart(2, '0');
-    const key = `${state.calYear}-${mm}-${dd}`;
-    const items = byDay[key] || [];
-    const isToday = key === todayStr;
-
-    html += `<div class="cal-day-cell${isToday ? ' today' : ''}">
-      <span class="cal-day-num">${d}</span>`;
-
-    if (items.length > 0) {
-      const first = items[0];
-      const extra = items.length - 1;
-      html += `<div class="cal-day-entry" data-id="${first.id}">`;
-      html += `<div class="cal-day-thumb-wrap">`;
-      if (first.photos?.[0]) {
-        html += `<img class="cal-day-thumb" src="${photoUrl(first.photos[0])}" alt="">`;
-      } else {
-        html += `<div class="cal-day-placeholder">◻</div>`;
+    const thumbsHTML = monthItems.map(c => {
+      const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
+      if (src) {
+        return `<img class="cal-h-thumb" src="${src}" alt="${esc(c.name || '')}" data-id="${c.id}" title="${esc(c.name || '')}">`;
       }
-      if (extra > 0) html += `<span class="cal-day-more">+${extra}</span>`;
-      html += `</div>`;
-      if (first.name) html += `<div class="cal-day-title">${esc(first.name)}</div>`;
-      html += `</div>`;
-    }
+      return `<div class="cal-h-placeholder" data-id="${c.id}" title="${esc(c.name || '')}">◻</div>`;
+    }).join('');
 
-    html += `</div>`;
-  }
+    return `<div class="cal-h-col" id="cal-h-col-${key}">
+      <div class="cal-h-col-items">${thumbsHTML}</div>
+      <div class="cal-h-col-label">${monthLabel}</div>
+    </div>`;
+  }).join('');
 
-  // Trailing empty cells to complete last row
-  const totalCells = startOffset + daysInMonth;
-  const remainder = totalCells % 7;
-  if (remainder !== 0) {
-    for (let i = 0; i < (7 - remainder); i++) html += `<div class="cal-day-cell other-month"></div>`;
-  }
+  track.querySelectorAll('[data-id]').forEach(el => {
+    el.addEventListener('click', () => openDetail(el.dataset.id));
+  });
+}
 
-  grid.innerHTML = html;
+function renderCalMiniPopup() {
+  const yearLabel = document.getElementById('calMiniYearLabel');
+  if (yearLabel) yearLabel.textContent = _calMiniYear;
 
-  grid.querySelectorAll('.cal-day-entry').forEach(entry => {
-    entry.addEventListener('click', () => openDetail(entry.dataset.id));
+  const allYears = [...new Set(Object.keys(_calMiniData).map(k => parseInt(k.slice(0, 4))))].sort((a, b) => a - b);
+  const minYear = allYears[0] ?? _calMiniYear;
+  const maxYear = allYears[allYears.length - 1] ?? _calMiniYear;
+  const prevBtn = document.getElementById('calMiniPrevYear');
+  const nextBtn = document.getElementById('calMiniNextYear');
+  if (prevBtn) prevBtn.disabled = _calMiniYear <= minYear;
+  if (nextBtn) nextBtn.disabled = _calMiniYear >= maxYear;
+
+  const now = new Date();
+  const currentKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+  const monthsEl = document.getElementById('calMiniMonths');
+  if (!monthsEl) return;
+  monthsEl.innerHTML = MONTHS.map((name, i) => {
+    const key = `${_calMiniYear}-${String(i + 1).padStart(2, '0')}`;
+    const count = _calMiniData[key] || 0;
+    const hasItems = count > 0;
+    const isCurrent = key === currentKey;
+    return `<button class="cal-mini-month-btn${hasItems ? ' has-items' : ''}${isCurrent ? ' current-month' : ''}" data-key="${key}">
+      ${name}${hasItems ? `<span class="cal-mini-month-count">${count}</span>` : ''}
+    </button>`;
+  }).join('');
+
+  monthsEl.querySelectorAll('.cal-mini-month-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const col = document.getElementById(`cal-h-col-${btn.dataset.key}`);
+      if (col) {
+        const scroll = document.getElementById('calHorizScroll');
+        if (scroll) scroll.scrollTo({ left: col.offsetLeft - 56, behavior: 'smooth' });
+        else col.scrollIntoView({ behavior: 'smooth', inline: 'start' });
+      }
+      document.getElementById('calMiniPopup').style.display = 'none';
+      document.getElementById('calJumpBtn')?.classList.remove('active');
+    });
   });
 }
 
 function bindCalendarEvents() {
-  // Init to current month/year (at least jan 2025)
-  const now = new Date();
-  state.calYear = Math.max(now.getFullYear(), CAL_MIN_YEAR);
-  state.calMonth = (now.getFullYear() >= CAL_MIN_YEAR) ? now.getMonth() : CAL_MIN_MONTH;
+  const sel = document.getElementById('calDateTypeSelect');
+  if (sel) sel.addEventListener('change', e => { state.calDateType = e.target.value; render(); });
 
-  // Populate month select
-  const ms = document.getElementById('calMonthSelect');
-  if (ms) {
-    MONTHS_FULL.forEach((m, i) => {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = m;
-      ms.appendChild(opt);
+  const jumpBtn = document.getElementById('calJumpBtn');
+  if (jumpBtn) {
+    jumpBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const popup = document.getElementById('calMiniPopup');
+      if (!popup) return;
+      const isVisible = popup.style.display !== 'none';
+      popup.style.display = isVisible ? 'none' : '';
+      jumpBtn.classList.toggle('active', !isVisible);
+      if (!isVisible) {
+        const dataYears = Object.keys(_calMiniData).map(k => parseInt(k.slice(0, 4)));
+        _calMiniYear = dataYears.length ? Math.min(...dataYears) : new Date().getFullYear();
+        renderCalMiniPopup();
+      }
     });
   }
 
-  // Populate year select (2025 → current + 1)
-  const ys = document.getElementById('calYearSelect');
-  if (ys) {
-    const maxYear = Math.max(now.getFullYear(), CAL_MIN_YEAR) + 1;
-    for (let y = CAL_MIN_YEAR; y <= maxYear; y++) {
-      const opt = document.createElement('option');
-      opt.value = y;
-      opt.textContent = y;
-      ys.appendChild(opt);
-    }
-  }
+  document.getElementById('calMiniPrevYear')?.addEventListener('click', e => {
+    e.stopPropagation(); _calMiniYear--; renderCalMiniPopup();
+  });
+  document.getElementById('calMiniNextYear')?.addEventListener('click', e => {
+    e.stopPropagation(); _calMiniYear++; renderCalMiniPopup();
+  });
 
-  document.getElementById('calPrevMonth').addEventListener('click', () => {
-    if (state.calYear === CAL_MIN_YEAR && state.calMonth === CAL_MIN_MONTH) return;
-    state.calMonth--;
-    if (state.calMonth < 0) { state.calMonth = 11; state.calYear--; }
-    renderCalendar();
-  });
-  document.getElementById('calNextMonth').addEventListener('click', () => {
-    state.calMonth++;
-    if (state.calMonth > 11) { state.calMonth = 0; state.calYear++; }
-    renderCalendar();
-  });
-  if (ms) ms.addEventListener('change', () => {
-    state.calMonth = parseInt(ms.value);
-    renderCalendar();
-  });
-  if (ys) ys.addEventListener('change', () => {
-    state.calYear = parseInt(ys.value);
-    // enforce min boundary
-    if (state.calYear === CAL_MIN_YEAR && state.calMonth < CAL_MIN_MONTH) {
-      state.calMonth = CAL_MIN_MONTH;
+  // Close popup on outside click
+  document.addEventListener('click', e => {
+    const popup = document.getElementById('calMiniPopup');
+    const btn = document.getElementById('calJumpBtn');
+    if (popup && popup.style.display !== 'none' && !popup.contains(e.target) && e.target !== btn) {
+      popup.style.display = 'none';
+      btn?.classList.remove('active');
     }
-    renderCalendar();
-  });
-  document.getElementById('calDateTypeSelect').addEventListener('change', e => {
-    state.calDateType = e.target.value;
-    renderCalendar();
   });
 }
 
