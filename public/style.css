@@ -3815,30 +3815,49 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
 
 /* ── Mobile responsive ─────────────────────────────────────────── */
 @media (max-width: 520px) {
-  /* ── Header ── */
+  /* ══════════════════════════════════════
+     HEADER
+  ══════════════════════════════════════ */
   header {
-    padding: 0 16px;
+    padding: 0 14px;
     height: auto;
     min-height: 52px;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     padding-top: 8px;
     padding-bottom: 8px;
   }
   .header-sep { display: none; }
   .search-wrap { order: 3; width: 100%; }
   .search-bar { max-width: 100%; min-width: 0; }
-  .view-tabs { order: 2; overflow-x: auto; flex-shrink: 1; }
-  .view-tab { padding: 4px 10px; font-size: 10px; }
+  .view-tabs {
+    order: 2;
+    overflow-x: auto;
+    flex-shrink: 1;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .view-tabs::-webkit-scrollbar { display: none; }
+  .view-tab {
+    padding: 6px 12px;
+    font-size: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+  }
   .header-actions { order: 1; margin-left: auto; }
   .header-actions .btn-ghost:not(.btn-icon) { display: none; }
 
-  /* ── Toolbar ── */
+  /* ══════════════════════════════════════
+     TOOLBAR ET FILTRES
+  ══════════════════════════════════════ */
   #gridWrapper { padding: 0; }
-  .toolbar { flex-wrap: wrap; padding: 10px 16px; }
+  .toolbar { flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
   .toolbar-right { width: 100%; justify-content: flex-end; }
 
-  /* ── Barre Verbes : scroll horizontal swipeable ── */
+  /* Barre statuts/verbes : scroll horizontal swipeable */
   .status-filter-bar {
     display: flex;
     flex-wrap: nowrap;
@@ -3852,10 +3871,8 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     gap: 0;
   }
   .status-filter-bar::-webkit-scrollbar { display: none; }
-
-  /* Label fixe à gauche, légèrement plus compact */
   .sfb-label {
-    min-width: 60px;
+    min-width: 56px;
     font-size: 8px;
     padding: 6px 8px;
     position: sticky;
@@ -3865,16 +3882,10 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     flex-shrink: 0;
     border-right: none;
   }
+  .sfb-pill-verbe { font-size: 13px; padding: 6px 13px; flex-shrink: 0; }
+  .sfb-pill { flex-shrink: 0; min-height: 36px; display: inline-flex; align-items: center; }
 
-  /* Pills verbes : taille réduite mais lisibles */
-  .sfb-pill-verbe {
-    font-size: 13px;
-    padding: 6px 13px;
-    flex-shrink: 0;
-  }
-  .sfb-pill { flex-shrink: 0; }
-
-  /* Barre sous-catégories : scroll horizontal aussi */
+  /* Barre sous-catégories */
   #subcategoryFilterBar {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -3884,62 +3895,153 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
   #subcategoryFilterBar::-webkit-scrollbar { display: none; }
 
-  /* ── Grille : 2 colonnes sur mobile ── */
+  /* ══════════════════════════════════════
+     GRILLE : 2 colonnes compactes
+  ══════════════════════════════════════ */
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    padding: 16px;
+    gap: 12px;
+    padding: 12px;
   }
   .grid .card { border: none; }
+  .card-body { padding: 10px 12px 14px; }
+  .card-name { font-size: 13px; line-height: 1.35; }
+  .card-desc { display: none; } /* masqué sur mobile, visible en détail */
 
-  /* ── Modal : plein écran slide-up ── */
+  /* ══════════════════════════════════════
+     MODALES : PLEIN ÉCRAN NATIF
+  ══════════════════════════════════════ */
+
+  /* Edit modal — plein écran complet (comme une app native) */
+  #editModal.modal-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+  #editModal .modal {
+    border-radius: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    max-width: 100%;
+    width: 100%;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+  }
+  #editModal .modal-header {
+    padding: 14px 16px 0;
+    flex-shrink: 0;
+  }
+  #editModal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 16px 0;
+  }
+  #editModal .modal-footer {
+    flex-shrink: 0;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+
+  /* Detail modal — plein écran complet */
+  #detailModal.modal-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+  #detailModal .modal {
+    border-radius: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    max-width: 100%;
+    width: 100%;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+  }
+  #detailModal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #detailModal .modal-header { padding: 14px 16px 0; flex-shrink: 0; }
+
+  /* Autres modales (paramètres, etc.) */
   .modal-overlay { padding: 0; align-items: flex-end; }
   .modal {
     border-radius: 20px 20px 0 0;
-    max-height: 96vh;
+    max-height: 96dvh;
     max-width: 100%;
     width: 100%;
     box-shadow: 0 -4px 40px rgba(45,45,45,.18);
   }
   .modal-body { padding: 20px 16px 32px; }
   .modal-header { padding: 16px 16px 0; }
-  .modal-footer { padding: 12px 16px; }
+  .modal-footer { padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); }
 
-  /* ── Formulaire mobile ── */
-  /* Prevent iOS zoom on input focus */
+  /* ══════════════════════════════════════
+     FORMULAIRE MOBILE
+  ══════════════════════════════════════ */
+  /* Prevent iOS auto-zoom on focus */
   input, select, textarea { font-size: 16px !important; }
-  .attr-chip { min-height: 36px; padding: 5px 12px; font-size: 13px; }
-  .color-swatch { width: 30px !important; height: 30px !important; }
+  .attr-chip { min-height: 40px; padding: 6px 14px; font-size: 13px; }
+  .color-swatch { width: 32px !important; height: 32px !important; }
   .attr-pair { grid-template-columns: 1fr; }
-  .field-row-compact { grid-template-columns: 1fr 1fr; } /* keep 2 cols for price/status */
-  .photos-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .field-row-compact { grid-template-columns: 1fr 1fr; }
+  .photos-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
   .photos-drop-zone { padding: 20px 12px; }
   .checkbox-rows { gap: 10px; }
   .checkbox-line { gap: 8px; }
   .gs-trigger { min-height: 44px; }
-  .gs-option { padding: 10px 16px; }
+  .gs-option { padding: 12px 16px; min-height: 44px; }
   .modal-tabs { gap: 0; }
-  .modal-tab { flex: 1; text-align: center; }
+  .modal-tab { flex: 1; text-align: center; min-height: 44px; }
   .form-intent-band { padding: 12px 12px 8px; }
   .subcat-chips-wrap { flex-wrap: wrap; gap: 6px; }
-
-  /* ── Champs formulaire ── */
   .field-row { grid-template-columns: 1fr; }
+  /* Save / draft boutons pleine largeur */
+  #editModal .modal-footer { flex-direction: column-reverse; gap: 8px; }
+  #editModal .modal-footer .btn { width: 100%; min-height: 48px; font-size: 14px; }
 
-  /* ── Stats ── */
-  .stats-kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  .stats-scroll { padding: 32px 24px 80px; gap: 48px; }
-
-  /* ── Catalogue ── */
-  #catalogueView { padding: 0 16px 24px; }
-  .cat-row-thumb { width: 40px; height: 40px; }
-
-  /* ── FAB mobile ── */
-  .fab { display: flex; bottom: 60px; } /* au-dessus du bottom nav */
+  /* ══════════════════════════════════════
+     NAVIGATION BAS + FAB
+  ══════════════════════════════════════ */
+  .fab {
+    display: flex;
+    bottom: calc(56px + env(safe-area-inset-bottom) + 8px);
+    right: 18px;
+    width: 52px;
+    height: 52px;
+  }
   #newBtn { display: none; }
-  /* Bottom nav plus compact sur mobile */
-  .bottom-nav { padding: 0 16px; justify-content: center; }
-  body { padding-bottom: 44px; }
+  .bottom-nav {
+    padding: 0 12px;
+    padding-bottom: env(safe-area-inset-bottom);
+    justify-content: space-around;
+    height: auto;
+    min-height: 48px;
+  }
+  .bottom-nav-views { gap: 0; }
+  .bottom-nav .view-tab {
+    min-height: 44px;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+  .bottom-nav-sep { display: none; }
+  .bottom-nav-exports { gap: 4px; }
+  .btn-export { min-height: 36px; font-size: 10px; padding: 4px 8px; }
+  body { padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
+
+  /* Breadcrumb juste au-dessus du nav */
+  .breadcrumb-bar {
+    bottom: calc(48px + env(safe-area-inset-bottom));
+  }
+
+  /* ══════════════════════════════════════
+     STATS + CATALOGUE
+  ══════════════════════════════════════ */
+  .stats-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-scroll { padding: 24px 16px 80px; gap: 40px; }
+  #catalogueView { padding: 0 14px 24px; }
+  .cat-row-thumb { width: 40px; height: 40px; }
 }
 
 @media (max-width: 480px) {
