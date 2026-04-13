@@ -164,6 +164,7 @@ const state = {
   breadcrumb: [],      // [{label, action}]
   activeExpoFilter: null,
   _formType: 'item',
+  editFragmentBg: '#1a1a1a',
 };
 
 const LB = { photos: [], idx: 0 };
