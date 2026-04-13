@@ -474,89 +474,240 @@ function buildAttrFilterBar() {
   buildMultiFilter('filterCouleursWrap', 'couleurs', 'Couleur', state.settings.colors||[]);
 }
 
-function buildSubcategoryBar() { buildTypologiesBar(); } // alias rétrocompat
+function buildSubcategoryBar() { buildIndexTrigger(); } // alias rétrocompat
 
-function buildTypologiesBar() {
-  const bar = document.getElementById('subcategoryFilterBar'); if (!bar) return;
+// ══ INDEX "DIGGER" — remplace la barre de pills typologies ══════════════════
+function buildIndexTrigger() {
+  const bar = document.getElementById('subcategoryFilterBar');
+  if (!bar) return;
+  bar.style.background = '';
 
-  // Si un verbe est sélectionné : afficher uniquement ses typologies
-  // Sinon : afficher TOUTES les typologies (entrée indépendante)
-  let typologies;
-  if (state.categoryFilter) {
-    const verbe = getVerbes().find(v => v.name === state.categoryFilter);
-    typologies = verbe ? getTypologies(verbe).map(t => ({ name: t, color: verbe.bgColor || verbe.color, textColor: verbe.textColor || '#F5F5F0' })) : [];
-  } else {
-    typologies = getAllTypologies().map(t => ({ name: t.name, color: t.color, textColor: t.textColor }));
-  }
-  typologies.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
-
-  if (!typologies.length) { bar.style.display = 'none'; bar.style.background = ''; return; }
+  const activeTypos = state.attrFilters.subcat;
   bar.style.display = '';
 
-  // Fond légèrement teinté par le verbe actif (7% opacité) — relie visuellement les deux barres
-  if (state.categoryFilter) {
-    const activeVerbe = getVerbes().find(v => v.name === state.categoryFilter);
-    if (activeVerbe) {
-      const hex = activeVerbe.bgColor || activeVerbe.color || '';
-      if (hex && hex.startsWith('#') && hex.length >= 7) {
-        const r = parseInt(hex.slice(1,3),16);
-        const g = parseInt(hex.slice(3,5),16);
-        const b = parseInt(hex.slice(5,7),16);
-        bar.style.background = `rgba(${r},${g},${b},0.07)`;
-      } else { bar.style.background = ''; }
-    } else { bar.style.background = ''; }
-  } else { bar.style.background = ''; }
+  // Chips des typologies actives
+  const chipsHtml = activeTypos.map(t => {
+    const vParent = getVerbes().find(v => getTypologies(v).includes(t));
+    const col = vParent ? (vParent.bgColor || vParent.color || '#2D2D2D') : '#2D2D2D';
+    return `<button class="idx-active-chip" data-typo="${esc(t)}" style="border-color:${col};color:${col}">${esc(t)} ×</button>`;
+  }).join('');
 
-  const selected = state.attrFilters.subcat;
-  bar.innerHTML = '<span class="sfb-label">Objet</span>';
-  const allPill = document.createElement('button');
-  allPill.className = 'sfb-pill' + (selected.length === 0 ? ' active' : '');
-  allPill.textContent = 'Tous';
-  allPill.addEventListener('click', () => { state.attrFilters.subcat = []; buildTypologiesBar(); render(); });
-  bar.appendChild(allPill);
+  bar.innerHTML = `
+    <button class="idx-trigger-btn" id="idxTriggerBtn">
+      <span class="idx-trigger-text">Typologies</span>
+      ${activeTypos.length === 0
+        ? `<em class="idx-trigger-hint">parcourir l'index →</em>`
+        : `<span class="idx-trigger-count">${activeTypos.length} sélectionnée${activeTypos.length > 1 ? 's' : ''}</span>`}
+    </button>
+    ${chipsHtml ? `<div class="idx-active-chips">${chipsHtml}</div>` : ''}
+  `;
 
-  typologies.forEach(({ name: sub, color, textColor: fg }) => {
-    // Retrouver le textColor du verbe parent si pas passé
-    const verbeObj = getVerbes().find(v => (v.bgColor || v.color) === color || (v.typologies||v.subcategories||[]).includes(sub));
-    const verbeTextColor = fg || verbeObj?.textColor || '#F5F5F0';
-    const isActive = selected.includes(sub);
-    const btn = document.createElement('button');
-    btn.className = 'sfb-pill sfb-pill-typo' + (isActive ? ' active' : '');
-    btn.dataset.color = color;
-    btn.dataset.textColor = verbeTextColor;
-    // État par défaut : fond transparent, texte anthracite, bordure colorée
-    if (isActive) {
-      btn.style.background = color;
-      btn.style.color = verbeTextColor;
-      btn.style.borderColor = color;
-    } else {
-      btn.style.borderColor = color;
-      btn.style.color = '';
-      btn.style.background = '';
-    }
-    btn.textContent = sub;
-    btn.addEventListener('mouseenter', () => {
-      if (!btn.classList.contains('active')) {
-        btn.style.background = color;
-        btn.style.color = verbeTextColor;
-        btn.style.borderColor = color;
-      }
+  document.getElementById('idxTriggerBtn')?.addEventListener('click', openIndexOverlay);
+  bar.querySelectorAll('.idx-active-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      state.attrFilters.subcat = state.attrFilters.subcat.filter(x => x !== chip.dataset.typo);
+      buildIndexTrigger(); render();
     });
-    btn.addEventListener('mouseleave', () => {
-      if (!btn.classList.contains('active')) {
-        btn.style.background = '';
-        btn.style.color = '';
-        btn.style.borderColor = color;
-      }
-    });
-    btn.addEventListener('click', () => {
-      const idx = state.attrFilters.subcat.indexOf(sub);
-      if (idx>=0) state.attrFilters.subcat.splice(idx,1);
-      else state.attrFilters.subcat.push(sub);
-      buildTypologiesBar(); render();
-    });
-    bar.appendChild(btn);
   });
+}
+
+// ── Index Overlay ─────────────────────────────────────────────────────────────
+function openIndexOverlay() {
+  const overlay = document.getElementById('indexOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => overlay.classList.add('idx-overlay-open'));
+  const inp = document.getElementById('idxSearchInput');
+  if (inp) { inp.value = ''; inp.addEventListener('input', _buildIndexGroups); inp.focus(); }
+  document.getElementById('idxCloseBtn')?.addEventListener('click', closeIndexOverlay);
+  // Close on backdrop click
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeIndexOverlay(); });
+  _buildIndexGroups();
+}
+
+function closeIndexOverlay() {
+  const overlay = document.getElementById('indexOverlay');
+  if (!overlay) return;
+  overlay.classList.remove('idx-overlay-open');
+  setTimeout(() => { overlay.style.display = 'none'; }, 280);
+}
+
+function _buildIndexGroups() {
+  const q = (document.getElementById('idxSearchInput')?.value || '').toLowerCase().trim();
+  const groups = document.getElementById('idxGroups');
+  if (!groups) return;
+  const selected = state.attrFilters.subcat;
+
+  let html = '';
+  let anyResult = false;
+  getVerbes().forEach(verbe => {
+    let typos = getTypologies(verbe);
+    if (q) typos = typos.filter(t => t.toLowerCase().includes(q));
+    if (!typos.length) return;
+    anyResult = true;
+    const color = verbe.bgColor || verbe.color || '#2D2D2D';
+    const fg = verbe.textColor || '#fff';
+    html += `<div class="idx-group">
+      <div class="idx-group-hdr">
+        <span class="idx-group-verbe" style="color:${color}">${esc(verbe.name)}</span>
+        <span class="idx-group-count">${typos.length}</span>
+      </div>
+      <div class="idx-group-items">
+        ${typos.sort((a,b) => a.localeCompare(b,'fr')).map(t => {
+          const isActive = selected.includes(t);
+          return `<button class="idx-typo-btn${isActive ? ' active' : ''}" data-typo="${esc(t)}"
+            style="${isActive ? `background:${color};color:${fg};border-color:${color}` : `border-color:${color}35`}">${esc(t)}</button>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+
+  groups.innerHTML = anyResult ? html : '<p class="idx-empty">Aucune typologie trouvée.</p>';
+
+  groups.querySelectorAll('.idx-typo-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.typo;
+      const idx = state.attrFilters.subcat.indexOf(t);
+      if (idx >= 0) state.attrFilters.subcat.splice(idx, 1);
+      else state.attrFilters.subcat.push(t);
+      buildIndexTrigger();
+      render();
+      closeIndexOverlay();
+    });
+  });
+}
+
+// ══ MODE GRAVITÉ — canvas D3 orbital ═════════════════════════════════════════
+let _gravSim = null;
+
+function exitGravityMode() {
+  if (_gravSim) { _gravSim.stop(); _gravSim = null; }
+  const pane = document.getElementById('gravityPane');
+  const grid = document.getElementById('gridView');
+  const footer = document.getElementById('gridExportFooter');
+  if (pane) { pane.classList.remove('gravity-active'); pane.innerHTML = ''; }
+  if (grid) grid.classList.remove('gravity-hidden');
+  if (footer) footer.classList.remove('gravity-hidden');
+}
+
+function renderGravity(items) {
+  if (!window.d3) { exitGravityMode(); renderGrid(items); return; }
+  if (_gravSim) { _gravSim.stop(); _gravSim = null; }
+
+  const pane = document.getElementById('gravityPane');
+  const grid = document.getElementById('gridView');
+  const footer = document.getElementById('gridExportFooter');
+  if (!pane) return;
+
+  grid.classList.add('gravity-hidden');
+  if (footer) footer.classList.add('gravity-hidden');
+  pane.innerHTML = '';
+  // Déclencher le reflow pour l'animation
+  pane.classList.remove('gravity-active');
+  requestAnimationFrame(() => pane.classList.add('gravity-active'));
+
+  const W = pane.clientWidth  || 900;
+  const H = pane.clientHeight || 640;
+  const cx = W / 2, cy = H / 2;
+  const R = 38;
+  const orbitR = Math.min(W, H) * 0.30;
+
+  const verbe = getVerbes().find(v => v.name === state.categoryFilter);
+  const bgColor = verbe ? (verbe.bgColor || verbe.color || '#2D2D2D') : '#2D2D2D';
+
+  const svg = d3.select(pane).append('svg')
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet')
+    .style('width', '100%').style('height', '100%');
+
+  // Defs : clipPaths photo
+  const defs = svg.append('defs');
+  items.forEach(item => {
+    defs.append('clipPath').attr('id', `grav-clip-${item.id}`)
+      .append('circle').attr('r', R);
+  });
+
+  // Aura centrale
+  svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 80)
+    .attr('fill', bgColor).attr('fill-opacity', 0.07);
+
+  // Label verbe central — Spectral italic
+  svg.append('text')
+    .attr('class', 'grav-verb-label')
+    .attr('x', cx).attr('y', cy)
+    .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+    .attr('fill', bgColor)
+    .text(state.categoryFilter);
+
+  // Sous-label : nombre d'objets
+  svg.append('text')
+    .attr('class', 'grav-verb-count')
+    .attr('x', cx).attr('y', cy + 34)
+    .attr('text-anchor', 'middle')
+    .attr('fill', bgColor)
+    .text(`${items.length} objet${items.length !== 1 ? 's' : ''}`);
+
+  // Nodes data
+  const nodes = items.map(item => ({
+    id: item.id, name: item.name,
+    photo: item.photos?.[0] ? photoUrl(item.photos[0]) : null,
+    x: cx + (Math.random() - 0.5) * 160,
+    y: cy + (Math.random() - 0.5) * 160,
+  }));
+
+  // Fils du centre
+  const linksG = svg.append('g');
+  const lineEls = linksG.selectAll('line').data(nodes).join('line')
+    .attr('stroke', bgColor).attr('stroke-opacity', 0.10)
+    .attr('stroke-width', 1).attr('stroke-dasharray', '2 6');
+
+  // Groupes de nœuds
+  const nodesG = svg.append('g');
+  const nodeEls = nodesG.selectAll('g.grav-node').data(nodes).join('g')
+    .attr('class', 'grav-node').style('cursor', 'pointer');
+
+  nodeEls.each(function(d) {
+    const g = d3.select(this);
+    g.append('circle').attr('r', R)
+      .attr('fill', 'var(--bg)').attr('stroke', bgColor)
+      .attr('stroke-width', 2).attr('stroke-opacity', 0.65);
+    if (d.photo) {
+      g.append('image')
+        .attr('href', d.photo).attr('x', -R).attr('y', -R)
+        .attr('width', R * 2).attr('height', R * 2)
+        .attr('clip-path', `url(#grav-clip-${d.id})`)
+        .attr('preserveAspectRatio', 'xMidYMid slice');
+    }
+    g.append('circle').attr('r', R).attr('fill', 'none')
+      .attr('stroke', bgColor).attr('stroke-width', 1.5).attr('stroke-opacity', 0.4);
+    g.append('text').attr('class', 'grav-node-label')
+      .attr('y', R + 14).attr('text-anchor', 'middle')
+      .text(d.name.length > 18 ? d.name.slice(0, 16) + '…' : d.name);
+  });
+
+  // Drag + click
+  const drag = d3.drag()
+    .on('start', (ev, d) => { if (!ev.active) _gravSim.alphaTarget(0.2).restart(); d.fx = d.x; d.fy = d.y; })
+    .on('drag',  (ev, d) => { d.fx = ev.x; d.fy = ev.y; })
+    .on('end',   (ev, d) => { if (!ev.active) _gravSim.alphaTarget(0); d.fx = null; d.fy = null; });
+  nodeEls.call(drag).on('click', (ev, d) => { ev.stopPropagation(); openDetail(d.id); });
+
+  // Simulation orbitale
+  _gravSim = d3.forceSimulation(nodes)
+    .force('radial',  d3.forceRadial(orbitR, cx, cy).strength(0.55))
+    .force('collide', d3.forceCollide(R + 16).strength(0.9))
+    .force('charge',  d3.forceManyBody().strength(-50))
+    .alphaDecay(0.016)
+    .velocityDecay(0.38)
+    .on('tick', () => {
+      const pad = R + 6;
+      nodes.forEach(n => {
+        n.x = Math.max(pad, Math.min(W - pad, n.x));
+        n.y = Math.max(pad, Math.min(H - pad, n.y));
+      });
+      lineEls.attr('x1', cx).attr('y1', cy).attr('x2', d => d.x).attr('y2', d => d.y);
+      nodeEls.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
 }
 
 function buildMultiFilter(wrapId, key, label, options) {
