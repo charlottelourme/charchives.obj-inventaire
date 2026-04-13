@@ -650,7 +650,12 @@ document.addEventListener('click', e => {
 });
 
 // ── View switching ─────────────────────────────────────────────────────────────
-function setView(v) {
+const VIEW_LABELS = {
+  grid: 'Grille', gallery: 'Galerie', constellation: 'Constellation',
+  calendar: 'Calendrier', catalogue: 'Catalogue', trios: 'Trios', stats: 'Stats'
+};
+
+function setView(v, _silent = false) {
   if (v === 'timeline') v = 'calendar'; // frise fusionnée dans calendrier
   state.view = v;
   const views = {grid:'gridWrapper',gallery:'galleryView',constellation:'constellationView',calendar:'calendarView',catalogue:'catalogueView',trios:'triosView',stats:'statsView'};
@@ -662,6 +667,11 @@ function setView(v) {
   const tabs = {grid:'viewGrid',gallery:'viewGallery',constellation:'viewConstellation',calendar:'viewCalendar',catalogue:'viewCatalogue',trios:'viewTrios',stats:'viewStats'};
   const tabEl = document.getElementById(tabs[v]);
   if (tabEl) tabEl.classList.add('active');
+  // Breadcrumb: push the view name (unless called silently from a back-action)
+  if (!_silent && VIEW_LABELS[v]) {
+    const label = VIEW_LABELS[v];
+    pushBreadcrumb(label, () => setView(v, true));
+  }
   render();
 }
 
