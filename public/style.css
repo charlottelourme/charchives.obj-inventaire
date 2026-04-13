@@ -5258,8 +5258,61 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   border: none;
   align-items: start;
 }
+/* ── Trios mobile : pyramide (1 grande + 2 petites) ── */
 @media (max-width: 700px) {
-  .trios-grid { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
+  #triosView {
+    overflow-y: auto;
+    height: calc(100vh - 52px - 44px); /* header + bottom-nav */
+    -webkit-overflow-scrolling: touch;
+  }
+  .trios-view {
+    padding: 12px 12px 80px;
+  }
+  .trios-headline {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+  .trios-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto;
+    gap: 8px;
+    padding: 0;
+  }
+  /* 1ère carte : pleine largeur */
+  .trios-grid .trios-slot-wrap:nth-child(1) {
+    grid-column: 1 / -1;
+  }
+  /* 2ème et 3ème : côte à côte */
+  .trios-grid .trios-slot-wrap:nth-child(2),
+  .trios-grid .trios-slot-wrap:nth-child(3) {
+    grid-column: span 1;
+  }
+  /* Cartes plus compactes */
+  .trios-grid .card {
+    font-size: 11px;
+  }
+  .trios-grid .card-body {
+    padding: 8px 10px 10px;
+  }
+  .trios-grid .card-name {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .trios-grid .card-desc { display: none; }
+  /* Slots vides plus petits */
+  .trios-grid .trios-empty-slot { aspect-ratio: 3/2; }
+  .trios-grid .trios-slot-wrap:nth-child(1) .trios-empty-slot { aspect-ratio: 16/7; }
+  /* Lien narratif compact */
+  .trios-link-bar { margin-bottom: 16px; font-size: 15px; }
+  /* Tabs compacts */
+  .trios-tabs-nav { gap: 0; }
+  .trios-tab-btn { padding: 8px 10px; font-size: 9px; }
+  .trios-hasard-controls { flex-wrap: wrap; gap: 6px; }
+  .trios-filter-sel { flex: 1 1 calc(50% - 6px); font-size: 12px; min-height: 36px; }
+  .trios-compose-btn { width: 100%; min-height: 44px; }
 }
 
 /* ── Trios — Slot wrapper (mode manuel + mode auto) ── */
