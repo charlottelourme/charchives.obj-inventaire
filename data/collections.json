@@ -1,5 +1,42 @@
 [
   {
+    "id": "ac05462b-dc60-49a0-9185-b7616f1c263f",
+    "name": "Pain punk, Pièce de forme Marylène Millerioux",
+    "date": "",
+    "category": "S'entourer",
+    "subcategory": "Sculptures & Figurines",
+    "subcategoryCustom": "",
+    "univers": [],
+    "attributes": {
+      "origine": [
+        "Contemporain"
+      ],
+      "etat_traces": [
+        "neuf"
+      ],
+      "matieres": [
+        "céramique"
+      ]
+    },
+    "price": 195,
+    "itemStatus": "Disponible",
+    "keywords": [],
+    "description": "",
+    "photos": [
+      "2a574a3c-d4ca-4d6d-bf6b-aa3aeae46828.png"
+    ],
+    "photoEnhanced": null,
+    "private": {
+      "photos": [],
+      "prixAchat": null,
+      "dateAchat": "",
+      "lieuAchat": "",
+      "location": "",
+      "notes": ""
+    },
+    "createdAt": "2026-04-11T06:10:57.089Z"
+  },
+  {
     "id": "2708b4b7-9b77-422b-9501-bddba19b1591",
     "name": "Grande céramique - Jean-Pierre Viot",
     "date": "",
@@ -7,9 +44,35 @@
     "subcategory": "",
     "subcategoryCustom": "",
     "univers": [],
-    "attributes": {},
+    "attributes": {
+      "matieres": [
+        "céramique"
+      ],
+      "couleurs": [
+        "brun",
+        "beige",
+        "violet",
+        "jaune",
+        "rose",
+        "argenté"
+      ],
+      "motifs": [
+        "géométrique"
+      ],
+      "usage": [
+        "décoratif",
+        "esthétique"
+      ],
+      "taille": "Grand (60-100cm)",
+      "etat_traces": [
+        "neuf"
+      ],
+      "origine": [
+        "Contemporain"
+      ]
+    },
     "price": null,
-    "itemStatus": "Brouillon",
+    "itemStatus": "Disponible",
     "keywords": [],
     "description": "",
     "photos": [
@@ -24,46 +87,65 @@
       "location": "",
       "notes": ""
     },
-    "createdAt": "2026-04-10T20:09:10.424Z"
+    "createdAt": "2026-04-10T20:09:10.424Z",
+    "depotVente": false,
+    "depotVenteName": "",
+    "artiste": false,
+    "artisteName": ""
   },
   {
     "id": "3e5e1bc3-4573-4402-8403-403dc7fe0ecb",
     "name": "Objet test",
     "date": "2026-02",
-    "category": "Autour de la table",
-    "subcategory": "Couverts & argenterie",
+    "category": "Raconter",
+    "subcategory": "Revues & Cartes postales",
     "subcategoryCustom": "",
     "univers": [
-      "Intérieurs anciens"
+      "Intérieurs anciens",
+      "précieux",
+      "silencieux"
     ],
     "attributes": {
       "matieres": [
-        "étain"
+        "céramique",
+        "argent"
       ],
       "origine": [
-        "Art nouveau"
+        "Contemporain",
+        "rocaille",
+        "Belle Époque",
+        "Années 70"
       ],
       "motifs": [
-        "animal"
+        "animal",
+        "main",
+        "coquillage"
       ],
       "usage": [
-        "offrande"
+        "offrande",
+        "décoratif",
+        "esthétique",
+        "pratique",
+        "symbolique"
       ],
       "couleurs": [
-        "beige"
+        "beige",
+        "noir"
       ],
       "etat_traces": [
         "numéroté",
-        "signé"
+        "signé",
+        "neuf",
+        "ancien"
       ],
       "emotion": [
         "nostalgie",
         "mystérieux"
       ],
-      "taille": "Moyen (30-60cm)"
+      "taille": "Grand (60-100cm)"
     },
     "price": 10,
-    "itemStatus": "Réservé",
+    "itemStatus": "Disponible",
     "keywords": [],
     "description": "Non pas besoin krystina",
     "photos": [
@@ -72,12 +154,17 @@
     ],
     "photoEnhanced": null,
     "private": {
+      "photos": [],
       "prixAchat": 1.5,
       "dateAchat": "12/05/2025",
       "lieuAchat": "Marseille",
-      "location": "Stock Maison",
+      "location": "",
       "notes": "jhgfdhg"
     },
-    "createdAt": "2026-04-09T13:41:17.166Z"
+    "createdAt": "2026-04-09T13:41:17.166Z",
+    "depotVente": true,
+    "depotVenteName": "",
+    "artiste": false,
+    "artisteName": ""
   }
 ]
