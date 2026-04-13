@@ -2357,6 +2357,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   transition: opacity .28s ease, filter .28s ease, transform .28s ease;
 }
 
+/* Image détourée (PNG transparent) — fond identique à l'arrière-plan */
+.gallery-item.g-detoured {
+  background: var(--bg);
+  padding: 10% 8%;
+}
+
 /* Tailles variées — largeur en % dans la colonne pour l'irrégularité */
 .g-sz-xs  { width: 72%;  margin-left: auto; }
 .g-sz-sm  { width: 88%; }
