@@ -4860,7 +4860,29 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   min-height: 540px;
 }
 @media (max-width: 700px) {
-  .portrait-split { grid-template-columns: 1fr; }
+  .portrait-split {
+    grid-template-columns: 1fr;
+    min-height: unset;
+  }
+  .portrait-photo-col {
+    position: static;    /* pas de sticky sur mobile */
+    max-height: 42vw;    /* ratio compact : ~40% de l'écran */
+    min-height: 180px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .portrait-main-wrap { padding: 14px; }
+  .portrait-info-col {
+    padding: 20px 20px 32px;
+    max-height: unset;
+    overflow-y: visible;
+  }
+  .portrait-title { font-size: 22px; }
+  .portrait-attrs { margin-top: 8px; }
+  .portrait-thumbs {
+    max-height: 52px;
+  }
+  .portrait-thumb { width: 52px; height: 52px; }
 }
 /* ── Colonne photo ── */
 .portrait-photo-col {
