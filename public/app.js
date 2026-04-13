@@ -1358,7 +1358,10 @@ function renderCalendar(filtered) {
 
   const monthKeys = Object.keys(byMonth).sort();
   if (!monthKeys.length) {
-    track.innerHTML = `<div class="cal-h-empty">Aucun objet avec une date valide.<br>Renseignez une date d'ajout ou d'acquisition dans les fiches.</div>`;
+    const hint = state.calDateType === 'dateAchat'
+      ? 'Renseignez une <strong>date d\'acquisition</strong> (onglet Privé) dans les fiches pour les faire apparaître ici.'
+      : 'Renseignez une <strong>date d\'ajout</strong> dans les fiches pour les faire apparaître ici.';
+    track.innerHTML = `<div class="cal-h-empty">Aucun objet avec une date valide.<br>${hint}</div>`;
     return;
   }
 
