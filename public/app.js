@@ -2673,6 +2673,11 @@ function openNew() {
   renderPhotos();
   renderPrivatePhotos();
   renderAllAttributes(); // includes renderUniversChips() + universSection consolidation
+  // Are.na
+  state.editExpositions = [];
+  state._formType = 'item';
+  _setFormType('item');
+  renderExpoChipsPicker();
   switchModalTab('public');
   document.getElementById('editModal').style.display = 'flex';
   setTimeout(()=>document.getElementById('fName').focus(),50);
