@@ -1232,8 +1232,10 @@ function render() {
       p.style.borderBottomColor = '';
     }
   });
-  document.querySelectorAll('#statusFilterBar .sfb-pill').forEach(p =>
-    p.classList.toggle('active', p.dataset.status === state.statusFilter));
+  document.querySelectorAll('#statusFilterBar .sfb-pill').forEach(p => {
+    if (p.dataset.bookmark) p.classList.toggle('active', state.bookmarkFilter);
+    else p.classList.toggle('active', p.dataset.status === state.statusFilter);
+  });
 
   applyVerbePageTheme();
 
