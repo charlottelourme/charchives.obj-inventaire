@@ -1249,8 +1249,14 @@ main { padding: 0; }
   cursor: pointer;
   color: var(--text-2);
   font-size: 18px;
-  padding: 4px;
+  padding: 10px;         /* min 44×44px tap target */
+  margin: -6px -6px -6px 0;
   line-height: 1;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .modal-close:hover { color: var(--text); }
 
