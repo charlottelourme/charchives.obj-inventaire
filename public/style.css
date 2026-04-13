@@ -2320,17 +2320,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   background: var(--bg);
 }
 
-/* Item base */
+/* Item base — intégré directement dans la grille, sans carte blanche */
 .gallery-item {
   overflow: hidden;
   cursor: pointer;
   position: relative;
-  background: var(--surface);
-  border-radius: 3px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--bg);
   /* Default state transition */
   transition: opacity .28s ease, filter .28s ease, transform .28s ease, box-shadow .28s ease;
 }
