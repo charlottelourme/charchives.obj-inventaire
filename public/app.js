@@ -1373,25 +1373,7 @@ function renderGallery(filtered) {
 }
 
 function _bindGalleryEvents() {
-  const grid = document.getElementById('galleryGrid');
-
-  _galleryItems.forEach(({ el, id, category }) => {
-    el.addEventListener('mouseenter', () => {
-      grid.classList.add('g-has-hover');
-      el.classList.add('g-hovered');
-      if (category) {
-        _galleryItems.forEach(o => {
-          if (o.el !== el && o.category === category) o.el.classList.add('g-resonant');
-        });
-      }
-    });
-
-    el.addEventListener('mouseleave', () => {
-      grid.classList.remove('g-has-hover');
-      el.classList.remove('g-hovered');
-      _galleryItems.forEach(o => o.el.classList.remove('g-resonant'));
-    });
-
+  _galleryItems.forEach(({ el, id }) => {
     el.addEventListener('click', () => openDetail(id));
   });
 }
