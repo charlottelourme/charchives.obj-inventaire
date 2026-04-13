@@ -451,6 +451,29 @@ main { padding: 0; }
   border-radius: 2px;
   outline: none;
   cursor: pointer;
+  /* Crucial on mobile: let the slider capture horizontal drags */
+  touch-action: pan-x;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 5;
+  position: relative;
+}
+/* Bigger thumb on touch screens */
+@media (hover: none) {
+  .card-size-slider::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--text);
+  }
+  .card-size-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--text);
+  }
+  /* Wrapper must not steal horizontal touch */
+  .toolbar-slider-sep { touch-action: none; }
+  .card-size-slider { min-width: 80px; }
 }
 .card-size-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
