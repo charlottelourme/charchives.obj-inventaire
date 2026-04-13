@@ -168,6 +168,7 @@ const state = {
   deriveMode: 'nuee',   // 'nuee' | 'reseau'
   galleryShuffled: false,
   _shuffleOrder: null,  // tableau d'ids mélangés
+  gravityMode: false,   // true quand un verbe est actif → canvas orbital
 };
 
 const LB = { photos: [], idx: 0 };
