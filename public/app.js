@@ -300,6 +300,10 @@ let _currentTrio     = null;  // dernier trio généré (modes 1 & 2)
 let _triosActiveTab  = 'hasard'; // 'hasard' | 'regles' | 'manuel'
 let _triosManualSlots = [null, null, null]; // objets placés en mode manuel
 let _triosDragItem   = null; // objet en cours de drag
+// Compositions sauvegardées — localStorage
+let _savedTrios = JSON.parse(localStorage.getItem('charchives_saved_trios') || '[]');
+// Panier constellation
+let _conPanier = []; // IDs des objets mis de côté dans la constellation
 
 // ── API helpers ────────────────────────────────────────────────────────────────
 // _apiFetch : wrapper commun qui parse la réponse et lance une erreur typée
