@@ -1622,20 +1622,20 @@ function _drawConGraph(canvas, nodes, links) {
 
   nodeEl.call(drag);
 
-  // ── D3 force simulation ──
+  // ── D3 force simulation — centré sur le SVG virtuel ──
   _conSim = d3.forceSimulation(nodes)
-    .force('link',    d3.forceLink(links).id(d => d.id).distance(180).strength(0.45))
-    .force('charge',  d3.forceManyBody().strength(-280).distanceMax(400))
-    .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.08))
-    .force('collide', d3.forceCollide(R + 12).strength(0.8))
+    .force('link',    d3.forceLink(links).id(d => d.id).distance(200).strength(0.45))
+    .force('charge',  d3.forceManyBody().strength(-320).distanceMax(500))
+    .force('center',  d3.forceCenter(SVG_W / 2, SVG_H / 2).strength(0.08))
+    .force('collide', d3.forceCollide(R + 14).strength(0.85))
     .alphaDecay(0.022)
     .velocityDecay(0.35)
     .on('tick', () => {
-      // Clamp nodes to SVG bounds
-      const pad = R + 2;
+      // Garde les noeuds dans le SVG virtuel (pas le viewport)
+      const pad = R + 4;
       nodes.forEach(n => {
-        n.x = Math.max(pad, Math.min(W - pad, n.x));
-        n.y = Math.max(pad, Math.min(H - pad, n.y));
+        n.x = Math.max(pad, Math.min(SVG_W - pad, n.x));
+        n.y = Math.max(pad, Math.min(SVG_H - pad, n.y));
       });
       linkEl
         .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
