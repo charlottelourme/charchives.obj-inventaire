@@ -5369,6 +5369,15 @@ function bindEvents() {
   document.querySelectorAll('.derive-seg-btn').forEach(btn => {
     btn.addEventListener('click', () => _applyDeriveMode(btn.dataset.mode));
   });
+  // Bouton mélanger
+  document.getElementById('deriveShuffleBtn')?.addEventListener('click', () => {
+    state.galleryShuffled = !state.galleryShuffled;
+    if (state.galleryShuffled) {
+      // Générer un nouvel ordre aléatoire à chaque activation
+      state._shuffleOrder = null;
+    }
+    render();
+  });
   // Init thumb position once fonts are loaded (needs layout)
   requestAnimationFrame(() => requestAnimationFrame(_updateDeriveThumb));
 
