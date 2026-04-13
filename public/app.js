@@ -1402,6 +1402,9 @@ function cardHTML(c) {
       return `<div class="card-thumb-area${isDetoured ? ' card-thumb-area--detoured' : ''}">`;
     })()}
       ${statusBadge}
+      <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des mis de côté' : 'Mettre de côté'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">
+        ${c.bookmarked ? '♥' : '♡'}
+      </button>
       ${photo
         ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="">`
         : `<div class="card-thumb-placeholder">◻</div>`}
