@@ -644,7 +644,7 @@ document.addEventListener('click', e => {
 function setView(v) {
   if (v === 'timeline') v = 'calendar'; // frise fusionnée dans calendrier
   state.view = v;
-  const views = {grid:'gridWrapper',gallery:'galleryView',calendar:'calendarView',catalogue:'catalogueView',trios:'triosView',stats:'statsView'};
+  const views = {grid:'gridWrapper',gallery:'galleryView',constellation:'constellationView',calendar:'calendarView',catalogue:'catalogueView',trios:'triosView',stats:'statsView'};
   Object.entries(views).forEach(([k,id]) => {
     const el = document.getElementById(id);
     if (el) el.style.display = k===v ? '' : 'none';
