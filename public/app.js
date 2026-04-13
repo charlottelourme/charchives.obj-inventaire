@@ -149,7 +149,7 @@ const state = {
   dpYear: new Date().getFullYear(),
   dpSelectedDate: '',
   attrFilters: { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [] },
-  calDateType: 'createdAt',
+  calDateType: 'dateAchat',
   calYear: 2025,
   calMonth: 0,
   dpAchatYear: new Date().getFullYear(),
