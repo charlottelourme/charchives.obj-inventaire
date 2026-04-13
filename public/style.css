@@ -2277,20 +2277,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* ══ GALERIE INFINIE — Cabinet de Curiosités ══════════════════════════════ */
 
-#galleryView {
-  position: fixed;
-  inset: 0;
-  top: 52px; /* below header */
-  z-index: 1;
-  background: var(--bg);
-}
-
 .gallery-scroll {
   width: 100%;
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 .gallery-scroll::-webkit-scrollbar { display: none; }
 
