@@ -498,7 +498,15 @@ function buildIndexTrigger() {
       style="${isActive ? `background:${color};color:${fg};border-color:${color}` : `border:1.5px solid ${color}40`}">${esc(t)}</button>`;
   }).join('');
 
-  bar.innerHTML = `
+  bar.innerHTML = state.categoryFilter ? `
+    <div class="idx-pills-row">${pillsHtml}</div>
+    <div class="idx-search-row">
+      <div class="idx-inline-wrap">
+        <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher une typologie…" autocomplete="off" spellcheck="false">
+        <div class="idx-inline-drop" id="idxInlineDrop" style="display:none"></div>
+      </div>
+    </div>
+  ` : `
     <button class="idx-trigger-btn" id="idxTriggerBtn">
       <span class="idx-trigger-text">Objets</span>
       <em class="idx-trigger-hint">parcourir les typologies</em>
@@ -507,7 +515,7 @@ function buildIndexTrigger() {
       <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher…" autocomplete="off" spellcheck="false">
       <div class="idx-inline-drop" id="idxInlineDrop" style="display:none"></div>
     </div>
-    <div class="idx-pills-row">${pillsHtml}</div>
+  `;
   `;
 
   document.getElementById('idxTriggerBtn')?.addEventListener('click', openIndexOverlay);
