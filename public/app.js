@@ -258,17 +258,37 @@ const SEARCH_THESAURUS = {
   'mystère':'Usages oubliés','inconnu':'Usages oubliés','antique':'Usages oubliés',
 };
 
-// Smart search — expande une requête via le thésaurus
+// ── Thésaurus : retourne la liste des typologies mappées pour un terme ──────────
+// Retourne un tableau de noms de typologies (casse d'origine conservée pour
+// les comparaisons strictes).  Utilisé par getFiltered() ET _buildIndexGroups().
+function _thesaurusLookup(q) {
+  if (!q || q.length < 2) return [];
+  const cats = new Set();
+
+  // 1. Correspondance exacte : "tasse" → "Thé & Café"
+  if (SEARCH_THESAURUS[q]) cats.add(SEARCH_THESAURUS[q]);
+
+  // 2. Préfixe : l'alias commence par q (min 3 chars pour éviter le bruit)
+  //    ex: q="bou" → "bougeoir","bougie","bouteille"…
+  if (q.length >= 3) {
+    Object.entries(SEARCH_THESAURUS).forEach(([alias, target]) => {
+      if (alias.startsWith(q)) cats.add(target);
+    });
+  }
+
+  // 3. q commence par l'alias (alias plus court que q)
+  //    ex: q="tasses" → alias="tasse" → "Thé & Café"
+  Object.entries(SEARCH_THESAURUS).forEach(([alias, target]) => {
+    if (alias.length >= 3 && q.startsWith(alias)) cats.add(target);
+  });
+
+  return [...cats];
+}
+
+// Rétrocompat pour l'index overlay (ne change pas son comportement)
 function _smartSearchExpand(q) {
   if (!q) return [q];
-  const terms = new Set([q]);
-  const direct = SEARCH_THESAURUS[q];
-  if (direct) terms.add(direct.toLowerCase());
-  // Correspondances partielles (q contenu dans une clé du thésaurus)
-  Object.entries(SEARCH_THESAURUS).forEach(([alias, target]) => {
-    if (alias.includes(q) || q.includes(alias)) terms.add(target.toLowerCase());
-  });
-  return [...terms];
+  return [q, ..._thesaurusLookup(q).map(t => t.toLowerCase())];
 }
 
 const LB = { photos: [], idx: 0 };
