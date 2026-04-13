@@ -2349,7 +2349,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* Item base — s'adapte à la hauteur de l'image */
 .gallery-item {
   break-inside: avoid;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
   cursor: pointer;
   position: relative;
   line-height: 0;   /* supprime l'espace sous les images inline */
