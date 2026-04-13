@@ -1358,6 +1358,9 @@ function renderGallery(filtered) {
 
     const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
     if (src) {
+      // Si c'est un PNG (image détourée), on pose un fond --bg explicite
+      const isPng = c.photos[0].toLowerCase().endsWith('.png') || c.photos[0].includes('detour');
+      if (isPng) item.classList.add('g-detoured');
       item.innerHTML = `<img src="${src}" alt="${esc(c.name||'')}" draggable="false">`;
     } else {
       const bg = getVerbeBgColor(c.category);
