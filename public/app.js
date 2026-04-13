@@ -713,33 +713,52 @@ function _buildIndexGroups() {
   if (!groups) return;
   const selected = state.attrFilters.subcat;
 
-  let html = '';
-  let anyResult = false;
+  // Collecter toutes les typologies avec leurs métadonnées verbe
+  let allTypos = [];
   getVerbes().forEach(verbe => {
-    let typos = getTypologies(verbe);
-    if (q) typos = typos.filter(t => t.toLowerCase().includes(q));
-    if (!typos.length) return;
-    anyResult = true;
     const color = verbe.bgColor || verbe.color || '#2D2D2D';
-    const fg = verbe.textColor || '#fff';
-    html += `<div class="idx-group">
-      <div class="idx-group-hdr">
-        <span class="idx-group-verbe" style="color:${color}">${esc(verbe.name)}</span>
-        <span class="idx-group-count">${typos.length}</span>
-      </div>
-      <div class="idx-group-items">
-        ${typos.sort((a,b) => a.localeCompare(b,'fr')).map(t => {
+    getTypologies(verbe).forEach(t => {
+      if (!q || t.toLowerCase().includes(q) || verbe.name.toLowerCase().includes(q)
+             || _smartSearchExpand(q).some(term => t.toLowerCase().includes(term))) {
+        allTypos.push({ t, color, verbeName: verbe.name });
+      }
+    });
+  });
+
+  if (!allTypos.length) {
+    groups.innerHTML = '<p class="idx-empty">Aucune typologie trouvée.</p>';
+    return;
+  }
+
+  // Trier alphabétiquement et grouper par première lettre
+  allTypos.sort((a, b) => a.t.localeCompare(b.t, 'fr'));
+  const byLetter = {};
+  allTypos.forEach(item => {
+    const letter = item.t[0].toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if (!byLetter[letter]) byLetter[letter] = [];
+    byLetter[letter].push(item);
+  });
+
+  let html = '<div class="idx-alpha-grid">';
+  Object.entries(byLetter).sort(([a],[b]) => a.localeCompare(b,'fr')).forEach(([letter, items]) => {
+    html += `<div class="idx-alpha-section">
+      <div class="idx-alpha-letter">${letter}</div>
+      <div class="idx-alpha-items">
+        ${items.map(({ t, color, verbeName }) => {
           const isActive = selected.includes(t);
-          return `<button class="idx-typo-btn${isActive ? ' active' : ''}" data-typo="${esc(t)}"
-            style="${isActive ? `background:${color};color:${fg};border-color:${color}` : `border-color:${color}35`}">${esc(t)}</button>`;
+          return `<button class="idx-alpha-btn${isActive ? ' active' : ''}" data-typo="${esc(t)}">
+            <span class="idx-alpha-dot" style="background:${color}${isActive ? '' : '90'}"></span>
+            <span class="idx-alpha-name">${esc(t)}</span>
+            <span class="idx-alpha-verbe" style="color:${color}">${esc(verbeName)}</span>
+          </button>`;
         }).join('')}
       </div>
     </div>`;
   });
+  html += '</div>';
+  groups.innerHTML = html;
 
-  groups.innerHTML = anyResult ? html : '<p class="idx-empty">Aucune typologie trouvée.</p>';
-
-  groups.querySelectorAll('.idx-typo-btn').forEach(btn => {
+  groups.querySelectorAll('.idx-alpha-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const t = btn.dataset.typo;
       const idx = state.attrFilters.subcat.indexOf(t);
