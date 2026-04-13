@@ -2709,6 +2709,113 @@ function renderTrios() {
   } else {
     _renderTriosManualState();
   }
+  _renderSavedTrios();
+}
+
+// ══ MARQUE-PAGES — "Mettre de côté" ══════════════════════════════════════════
+async function toggleBookmark(id) {
+  const col = state.collections.find(c => c.id === id);
+  if (!col) return;
+  col.bookmarked = !col.bookmarked;
+  try {
+    await api.put(`/api/collections/${id}`, { ...col });
+  } catch(e) {
+    col.bookmarked = !col.bookmarked; // rollback
+    console.error('toggleBookmark error', e);
+  }
+  render();
+}
+
+// ══ TRIOS — Compositions sauvegardées (localStorage) ═══════════════════════
+function _persistSavedTrios() {
+  localStorage.setItem('charchives_saved_trios', JSON.stringify(_savedTrios));
+}
+
+function _renderSavedTrios() {
+  const section = document.getElementById('triosSavedSection');
+  const list    = document.getElementById('triosSavedList');
+  const count   = document.getElementById('triosSavedCount');
+  if (!section || !list) return;
+  if (!_savedTrios.length) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  if (count) count.textContent = `${_savedTrios.length} composition${_savedTrios.length > 1 ? 's' : ''}`;
+
+  list.innerHTML = _savedTrios.map(trio => {
+    const objects = trio.objectIds.map(id => state.collections.find(c => c.id === id)).filter(Boolean);
+    const thumbs = objects.map(obj => {
+      const photo = obj.photos?.[0];
+      const bg = getVerbeBgColor(obj.category) || '#ccc';
+      return `<div class="ts-thumb" style="--ts-col:${bg}">
+        ${photo ? `<img src="${photoUrl(photo)}" alt="">` : `<div class="ts-thumb-placeholder"></div>`}
+      </div>`;
+    }).join('');
+    const label = new Date(trio.savedAt).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+    return `<div class="ts-item" data-trio-id="${esc(trio.id)}">
+      <div class="ts-thumbs">${thumbs}</div>
+      <div class="ts-meta">
+        <span class="ts-date">${label}</span>
+        <div class="ts-actions">
+          <button class="ts-restore-btn" data-trio-id="${esc(trio.id)}" title="Restaurer dans l'éditeur">Ouvrir</button>
+          <button class="ts-delete-btn" data-trio-id="${esc(trio.id)}" title="Supprimer">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.ts-restore-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const trio = _savedTrios.find(t => t.id === btn.dataset.trioId);
+      if (!trio) return;
+      const objects = trio.objectIds.map(id => state.collections.find(c => c.id === id)).filter(Boolean);
+      _triosManualSlots = [objects[0]||null, objects[1]||null, objects[2]||null];
+      // Basculer sur l'onglet Manuel
+      _triosActiveTab = 'manuel';
+      document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'manuel'));
+      document.querySelectorAll('.trios-tab-panel').forEach(p => p.style.display = p.id === 'triosPanelManuel' ? '' : 'none');
+      _renderTriosManualState();
+    });
+  });
+  list.querySelectorAll('.ts-delete-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _savedTrios = _savedTrios.filter(t => t.id !== btn.dataset.trioId);
+      _persistSavedTrios();
+      _renderSavedTrios();
+    });
+  });
+}
+
+// ══ CONSTELLATION — Panier de sélection ══════════════════════════════════════
+function _toggleConPanier(id) {
+  const idx = _conPanier.indexOf(id);
+  if (idx >= 0) _conPanier.splice(idx, 1);
+  else _conPanier.push(id);
+  _renderConPanier();
+}
+
+function _renderConPanier() {
+  const panel = document.getElementById('conPanier');
+  const items = document.getElementById('conPanierItems');
+  if (!panel || !items) return;
+  if (!_conPanier.length) { panel.style.display = 'none'; return; }
+  panel.style.display = '';
+  items.innerHTML = _conPanier.map(id => {
+    const obj = state.collections.find(c => c.id === id);
+    if (!obj) return '';
+    const photo = obj.photos?.[0];
+    const bg    = getVerbeBgColor(obj.category) || '#ccc';
+    return `<div class="cp-item" data-id="${esc(id)}" title="${esc(obj.name)}">
+      <div class="cp-thumb" style="border-color:${bg}">
+        ${photo ? `<img src="${photoUrl(photo)}" alt="">` : `<div class="cp-placeholder" style="background:${bg}20"></div>`}
+      </div>
+      <button class="cp-remove" data-id="${esc(id)}">✕</button>
+    </div>`;
+  }).filter(Boolean).join('');
+  items.querySelectorAll('.cp-remove').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); _toggleConPanier(btn.dataset.id); });
+  });
+  items.querySelectorAll('.cp-item').forEach(item => {
+    item.addEventListener('click', () => openDetail(item.dataset.id));
+  });
 }
 
 // ── Lightbox ───────────────────────────────────────────────────────────────────
