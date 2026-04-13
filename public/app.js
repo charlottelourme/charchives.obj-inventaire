@@ -6065,16 +6065,26 @@ function bindEvents() {
   // Mode 3 — Recherche inventaire
   document.getElementById('triosInvSearch').addEventListener('input', _renderInventoryStrip);
 
-  // Mode 3 — Sauvegarder composition
-  document.getElementById('triosSaveBtn').addEventListener('click', async () => {
+  // Mode 3 — Sauvegarder composition (localStorage)
+  document.getElementById('triosSaveBtn').addEventListener('click', () => {
     const filled = _triosManualSlots.filter(Boolean);
     if (filled.length < 3) { alert('Place 3 objets pour sauvegarder la composition.'); return; }
-    try {
-      await api.post('/api/trios', { objectIds: filled.map(o => o.id) });
-      const btn = document.getElementById('triosSaveBtn');
-      btn.textContent = '✓ Sauvegardé !';
-      setTimeout(() => { btn.textContent = 'Sauvegarder la composition'; }, 2500);
-    } catch (e) { alert('Erreur lors de la sauvegarde : ' + e.message); }
+    _savedTrios.unshift({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+      savedAt: new Date().toISOString(),
+      objectIds: filled.map(o => o.id)
+    });
+    _persistSavedTrios();
+    const btn = document.getElementById('triosSaveBtn');
+    btn.textContent = '✓ Sauvegardée !';
+    setTimeout(() => { btn.textContent = 'Sauvegarder la composition'; }, 2200);
+    _renderSavedTrios();
+  });
+
+  // Panier constellation — vider
+  document.getElementById('conPanierClear')?.addEventListener('click', () => {
+    _conPanier = [];
+    _renderConPanier();
   });
 
   // Timeline — mode buttons
