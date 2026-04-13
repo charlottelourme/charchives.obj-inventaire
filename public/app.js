@@ -5682,6 +5682,19 @@ function renderSearchDropdown() {
     });
   });
 }
+// ── Cmd+K / Ctrl+K — ouvre la barre de recherche principale ────────────────
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    const input = document.getElementById('searchInput');
+    if (!input) return;
+    // Si on est dans une autre vue, revenir à l'inventaire
+    if (state.view !== 'grid') setView('grid');
+    // Focus + sélectionner le texte existant
+    setTimeout(() => { input.focus(); input.select(); }, 50);
+  }
+});
+
 function renderSearchActiveTags() {
   const container=document.getElementById('searchActiveTags');
   container.innerHTML=[...state.activeKeywordFilters].map(kw=>`<span class="search-filter-tag">${esc(kw)}<button data-kw="${esc(kw)}">✕</button></span>`).join('');
