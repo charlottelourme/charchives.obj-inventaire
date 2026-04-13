@@ -1176,12 +1176,12 @@ function _drawConGraph(canvas, nodes, links) {
     const bg  = getVerbeBgColor(d.category) || '#9ca3af';
     const src = d.photos[0] ? photoUrl(d.photos[0]) : null;
 
-    // Background circle (verbe color, low opacity)
+    // Background circle — fond neutre pour clipper la photo
     g.append('circle')
       .attr('class', 'con-node-bg')
       .attr('r', R)
-      .attr('fill', bg)
-      .attr('fill-opacity', src ? 0.15 : 0.28);
+      .attr('fill', 'var(--bg)')
+      .attr('fill-opacity', 1);
 
     if (src) {
       // Photo node
@@ -1193,13 +1193,13 @@ function _drawConGraph(canvas, nodes, links) {
         .attr('preserveAspectRatio', 'xMidYMid slice');
     }
 
-    // Border ring (verbe color)
+    // Contour coloré (code couleur famille de verbes) — plus marqué
     g.append('circle')
       .attr('r', R)
       .attr('fill', 'none')
       .attr('stroke', bg)
-      .attr('stroke-width', 1.5)
-      .attr('stroke-opacity', 0.55);
+      .attr('stroke-width', 2.5)
+      .attr('stroke-opacity', 0.85);
 
     // Name label (hidden by default, shown on neighbor hover)
     g.append('text')
