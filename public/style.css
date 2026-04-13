@@ -5405,3 +5405,167 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 
 /* photo-analyze — hérité de .photo-btn, ajout flex pour la rangée */
 .photo-analyze { flex: 1; }
+
+/* ── ARE.NA : Type toggle bar ── */
+.type-toggle-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.type-toggle-btn {
+  flex: 1;
+  padding: 9px 0;
+  border: 1.5px solid var(--border);
+  background: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--text-2);
+  border-radius: 2px;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.type-toggle-btn.active {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+/* ── ARE.NA : Fragment card ── */
+.card-fragment {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.card-fragment .frag-text {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  color: inherit;
+  word-break: break-word;
+  max-height: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+.card-fragment .card-top-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+/* ── ARE.NA : Exposition chips picker ── */
+.expo-chips-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 32px;
+}
+.expo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  color: var(--text-2);
+  transition: background .1s, color .1s, border-color .1s;
+  white-space: nowrap;
+}
+.expo-chip.selected {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+.expo-chip-add {
+  border-style: dashed;
+  color: var(--text-3);
+}
+.expo-chip-add:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* ── ARE.NA : "Apparaît dans" chips in detail modal ── */
+.detail-expo-row {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.detail-expo-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  color: var(--text-2);
+  transition: background .1s, color .1s;
+}
+.detail-expo-chip:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+/* ── ARE.NA : Breadcrumb bar ── */
+.breadcrumb-bar {
+  position: fixed;
+  bottom: 52px; /* just above bottom-nav */
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 34px;
+  background: var(--bg);
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.breadcrumb-bar::-webkit-scrollbar { display: none; }
+.breadcrumb-bar.visible { display: flex; }
+.bc-item {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 2px 4px;
+  border-radius: 2px;
+  transition: color .1s;
+}
+.bc-item:hover { color: var(--text); }
+.bc-item.bc-current { color: var(--text); font-weight: 600; cursor: default; }
+.bc-sep {
+  font-size: 10px;
+  color: var(--text-3);
+  padding: 0 2px;
+  user-select: none;
+}
