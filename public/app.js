@@ -472,7 +472,7 @@ function buildAttrFilterBar() {
 
 function buildSubcategoryBar() { buildIndexTrigger(); } // alias rétrocompat
 
-// ══ INDEX "DIGGER" — remplace la barre de pills typologies ══════════════════
+// ══ INDEX "DIGGER" — barre typologies avec pills inline ══════════════════════
 function buildIndexTrigger() {
   const bar = document.getElementById('subcategoryFilterBar');
   if (!bar) return;
@@ -481,25 +481,35 @@ function buildIndexTrigger() {
   const activeTypos = state.attrFilters.subcat;
   bar.style.display = '';
 
-  // Chips des typologies actives
-  const chipsHtml = activeTypos.map(t => {
-    const vParent = getVerbes().find(v => getTypologies(v).includes(t));
-    const col = vParent ? (vParent.bgColor || vParent.color || '#2D2D2D') : '#2D2D2D';
-    return `<button class="idx-active-chip" data-typo="${esc(t)}" style="border-color:${col};color:${col}">${esc(t)} ×</button>`;
+  // Typologies à afficher : celles du verbe actif, ou toutes
+  let typologies = [];
+  if (state.categoryFilter) {
+    const verbe = getVerbes().find(v => v.name === state.categoryFilter);
+    if (verbe) typologies = getTypologies(verbe).map(t => ({
+      name: t, color: verbe.bgColor || verbe.color || '#2D2D2D', fg: verbe.textColor || '#fff'
+    }));
+  } else {
+    typologies = getAllTypologies().map(t => ({ name: t.name, color: t.color, fg: t.textColor || '#fff' }));
+  }
+  typologies.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+
+  // Pills de typologies
+  const pillsHtml = typologies.map(({ name: t, color, fg }) => {
+    const isActive = activeTypos.includes(t);
+    return `<button class="sfb-pill sfb-pill-typo${isActive ? ' active' : ''}" data-typo="${esc(t)}"
+      style="${isActive ? `background:${color};color:${fg};border-color:${color}` : `border:1.5px solid ${color}40`}">${esc(t)}</button>`;
   }).join('');
 
   bar.innerHTML = `
     <button class="idx-trigger-btn" id="idxTriggerBtn">
       <span class="idx-trigger-text">Objets</span>
-      ${activeTypos.length === 0
-        ? `<em class="idx-trigger-hint">parcourir les typologies</em>`
-        : `<span class="idx-trigger-count">${activeTypos.length} sélectionnée${activeTypos.length > 1 ? 's' : ''}</span>`}
+      <em class="idx-trigger-hint">parcourir les typologies</em>
     </button>
     <div class="idx-inline-wrap">
-      <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher une typologie…" autocomplete="off" spellcheck="false">
+      <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher…" autocomplete="off" spellcheck="false">
       <div class="idx-inline-drop" id="idxInlineDrop" style="display:none"></div>
     </div>
-    ${chipsHtml ? `<div class="idx-active-chips">${chipsHtml}</div>` : ''}
+    <div class="idx-pills-row">${pillsHtml}</div>
   `;
 
   document.getElementById('idxTriggerBtn')?.addEventListener('click', openIndexOverlay);
