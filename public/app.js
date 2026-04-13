@@ -650,7 +650,7 @@ function setView(v) {
     if (el) el.style.display = k===v ? '' : 'none';
   });
   document.querySelectorAll('.view-tab').forEach(btn => btn.classList.remove('active'));
-  const tabs = {grid:'viewGrid',calendar:'viewCalendar',catalogue:'viewCatalogue',trios:'viewTrios',stats:'viewStats'};
+  const tabs = {grid:'viewGrid',gallery:'viewGallery',calendar:'viewCalendar',catalogue:'viewCatalogue',trios:'viewTrios',stats:'viewStats'};
   const tabEl = document.getElementById(tabs[v]);
   if (tabEl) tabEl.classList.add('active');
   render();
