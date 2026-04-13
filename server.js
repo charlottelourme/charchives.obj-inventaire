@@ -816,7 +816,25 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
     // Gemini : nouveau projet AI Studio → nouvelle clé → quota free remis à zéro
     //   https://aistudio.google.com/app/apikey
     const PROVIDERS = [
-      // 1. OpenRouter — Gemini 2.0 Flash (stable, ~$0.0001/image)
+      // 1. Groq — GRATUIT, vision Llama, 14400 req/jour, zéro carte bancaire
+      {
+        name: 'groq/llama-3.2-11b-vision',
+        call: () => callOpenAICompat({
+          baseUrl: 'https://api.groq.com/openai/v1',
+          apiKey:  process.env.GROQ_API_KEY,
+          model:   'llama-3.2-11b-vision-preview'
+        })
+      },
+      // 2. Groq fallback — modèle vision plus grand
+      {
+        name: 'groq/llama-3.2-90b-vision',
+        call: () => callOpenAICompat({
+          baseUrl: 'https://api.groq.com/openai/v1',
+          apiKey:  process.env.GROQ_API_KEY,
+          model:   'llama-3.2-90b-vision-preview'
+        })
+      },
+      // 3. OpenRouter — Gemini 2.0 Flash
       {
         name: 'openrouter/gemini-2.0-flash',
         call: () => callOpenAICompat({
@@ -825,16 +843,7 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
           model:   'google/gemini-2.0-flash-001'
         })
       },
-      // 2. OpenRouter — Gemini 1.5 Flash (stable, très cheap)
-      {
-        name: 'openrouter/gemini-1.5-flash',
-        call: () => callOpenAICompat({
-          baseUrl: 'https://openrouter.ai/api/v1',
-          apiKey:  process.env.OPENROUTER_API_KEY,
-          model:   'google/gemini-flash-1.5'
-        })
-      },
-      // 3. OpenRouter — Llama 3.2 Vision 11B (~$0.00018/image)
+      // 4. OpenRouter — Llama Vision
       {
         name: 'openrouter/llama-3.2-vision',
         call: () => callOpenAICompat({
@@ -843,16 +852,7 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
           model:   'meta-llama/llama-3.2-11b-vision-instruct'
         })
       },
-      // 4. OpenRouter — Qwen VL 72B (~$0.0004/image)
-      {
-        name: 'openrouter/qwen-vl-72b',
-        call: () => callOpenAICompat({
-          baseUrl: 'https://openrouter.ai/api/v1',
-          apiKey:  process.env.OPENROUTER_API_KEY,
-          model:   'qwen/qwen2.5-vl-72b-instruct'
-        })
-      },
-      // 5. OpenAI GPT-4o-mini en dernier recours
+      // 5. OpenAI dernier recours
       {
         name: 'openai/gpt-4o-mini',
         call: () => callOpenAICompat({
