@@ -1684,7 +1684,7 @@ function _drawConGraph(canvas, nodes, links) {
         .classed('con-node-focus',    nd => nd.id === d.id)
         .classed('con-node-neighbor', nd => neighbors.has(nd.id));
 
-      // Show neighbor labels
+      // Show neighbor labels + bouton panier du node survolé
       nodeEl.selectAll('text.con-label')
         .classed('con-label-show', function() {
           const nd = d3.select(this.parentNode).datum();
@@ -1694,6 +1694,12 @@ function _drawConGraph(canvas, nodes, links) {
           const nd = d3.select(this.parentNode).datum();
           return (neighbors.has(nd.id) || nd.id === d.id) ? 1 : 0;
         });
+      // Afficher le bouton "+" uniquement sur le nœud survolé
+      nodeEl.selectAll('g.con-add-btn')
+        .style('opacity', function() {
+          const nd = d3.select(this.parentNode).datum();
+          return nd.id === d.id ? 1 : 0;
+        });
     })
     .on('mouseleave', function() {
       linksG.classed('con-has-hover', false);
@@ -1701,6 +1707,7 @@ function _drawConGraph(canvas, nodes, links) {
       nodesG.classed('con-has-hover', false);
       nodeEl.classed('con-node-focus', false).classed('con-node-neighbor', false);
       nodeEl.selectAll('text.con-label').classed('con-label-show', false).attr('opacity', 0);
+      nodeEl.selectAll('g.con-add-btn').style('opacity', 0);
     })
     .on('click', (event, d) => openDetail(d.id));
 
