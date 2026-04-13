@@ -495,11 +495,18 @@ main { padding: 0; }
   cursor: pointer;
   position: relative;
 }
-.card:hover {
-  box-shadow: 0 12px 56px 10px var(--card-halo, rgba(45,45,45,0.18)), 0 2px 12px rgba(0,0,0,0.06);
-  transform: translateY(-6px);
+@media (hover: hover) {
+  .card:hover {
+    box-shadow: 0 12px 56px 10px var(--card-halo, rgba(45,45,45,0.18)), 0 2px 12px rgba(0,0,0,0.06);
+    transform: translateY(-6px);
+  }
 }
 .card.drag-over { background: #f5f5f0; }
+
+/* Tap feedback on touch devices */
+@media (hover: none) {
+  .card:active { opacity: .82; transform: scale(.98); }
+}
 
 /* ── Card hover overlay — glassmorphism galerie ── */
 .card-hover-overlay {
