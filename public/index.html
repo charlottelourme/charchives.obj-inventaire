@@ -85,45 +85,31 @@
     <div id="gridView"></div>
   </div>
 
-  <!-- ── Timeline view ── -->
-  <div id="timelineView" style="display:none">
-    <div class="tl-mode-bar">
-      <button class="tl-mode-btn active" id="tlModeChron" data-mode="chrono">Par date d'acquisition</button>
-      <button class="tl-mode-btn" id="tlModeOrigine" data-mode="origine">Par période</button>
-      <span class="tl-mode-sep"></span>
-      <select id="tlJumpSelect" class="cal-quick-select tl-jump-select">
-        <option value="">Aller à…</option>
-      </select>
-    </div>
-    <div class="tl-chrono-scroll" id="tlChronoScroll" style="display:none">
-      <div class="tl-chrono-inner" id="tlChronoItems"></div>
-    </div>
-    <!-- Kept for "Par période" mode -->
-    <div id="timelineWrap" style="display:none">
-      <div class="timeline" id="timelineInner">
-        <div class="timeline-line"></div>
-        <div id="timelineItems" style="display:contents"></div>
-      </div>
-    </div>
-  </div>
+  <!-- ── Timeline view (merged into calendar) ── -->
+  <div id="timelineView" style="display:none"></div>
 
-  <!-- ── Calendar view ── -->
+  <!-- ── Calendar view — horizontal timeline ── -->
   <div id="calendarView" style="display:none">
-    <div class="cal-controls">
-      <button class="tl-btn" id="calPrevMonth">‹</button>
-      <h2 class="cal-nav-label" id="calMonthLabel">Janvier 2025</h2>
-      <button class="tl-btn" id="calNextMonth">›</button>
-      <span class="cal-controls-sep"></span>
-      <select id="calMonthSelect" class="cal-quick-select"></select>
-      <select id="calYearSelect" class="cal-quick-select"></select>
-      <span class="cal-controls-sep"></span>
-      <select id="calDateTypeSelect" class="attr-filter-select">
-        <option value="createdAt">Date d'ajout</option>
-        <option value="dateAchat">Date d'achat</option>
+    <div class="cal-h-toolbar">
+      <span class="cal-h-toolbar-title">Frise temporelle</span>
+      <select id="calDateTypeSelect" class="cal-h-date-sel">
+        <option value="createdAt">Par date d'ajout</option>
+        <option value="dateAchat">Par date d'acquisition</option>
       </select>
+      <button class="cal-jump-btn" id="calJumpBtn">⊞ Naviguer</button>
     </div>
-    <div class="cal-day-scroll" id="calScroll">
-      <div id="calGrid" class="cal-day-grid"></div>
+    <!-- Mini calendar popup -->
+    <div id="calMiniPopup" class="cal-mini-popup" style="display:none">
+      <div class="cal-mini-head">
+        <button id="calMiniPrevYear" class="cal-mini-nav-btn">‹</button>
+        <span id="calMiniYearLabel" class="cal-mini-year-label">2025</span>
+        <button id="calMiniNextYear" class="cal-mini-nav-btn">›</button>
+      </div>
+      <div id="calMiniMonths" class="cal-mini-months"></div>
+    </div>
+    <!-- Horizontal scroll timeline -->
+    <div id="calHorizScroll" class="cal-h-scroll">
+      <div id="calHorizTrack" class="cal-h-track"></div>
     </div>
   </div>
 
