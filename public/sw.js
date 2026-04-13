@@ -1,5 +1,5 @@
 // CHARCHIVES — Minimal Service Worker for PWA installability
-const CACHE_NAME = 'charchives-v9';
+const CACHE_NAME = 'charchives-v10';
 const PRECACHE = ['/', '/style.css', '/app.js'];
 
 self.addEventListener('install', e => {
