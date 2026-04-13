@@ -132,6 +132,7 @@ const state = {
   sortBy: 'chrono-desc',
   categoryFilter: '',
   statusFilter: '',
+  bookmarkFilter: false,
   activeKeywordFilters: new Set(),
   detailList: [],
   detailCurrentId: null,
