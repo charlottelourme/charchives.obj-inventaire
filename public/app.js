@@ -158,6 +158,10 @@ const state = {
   tlMode: 'chrono',     // 'chrono' | 'origine'
   // settings edit
   settingsDraft: null,
+  // Are.na
+  expositions: [],
+  editExpositions: [],
+  breadcrumb: [],      // [{label, action}]
 };
 
 const LB = { photos: [], idx: 0 };
