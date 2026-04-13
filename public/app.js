@@ -662,28 +662,71 @@ document.addEventListener('click', e => {
 
 // ── View switching ─────────────────────────────────────────────────────────────
 const VIEW_LABELS = {
-  grid: 'Grille', gallery: 'Galerie', constellation: 'Constellation',
-  calendar: 'Calendrier', catalogue: 'Catalogue', trios: 'Trios', stats: 'Stats'
+  grid: "L'Inventaire", derive: 'La Dérive',
+  trios: "L'Atelier",   calendar: 'Calendrier',
+  catalogue: 'Catalogue', stats: 'Stats'
 };
 
 function setView(v, _silent = false) {
-  if (v === 'timeline') v = 'calendar'; // frise fusionnée dans calendrier
+  if (v === 'timeline')       v = 'calendar';   // frise fusionnée
+  if (v === 'gallery')        { v = 'derive'; state.deriveMode = 'nuee'; }
+  if (v === 'constellation')  { v = 'derive'; state.deriveMode = 'reseau'; }
   state.view = v;
-  const views = {grid:'gridWrapper',gallery:'galleryView',constellation:'constellationView',calendar:'calendarView',catalogue:'catalogueView',trios:'triosView',stats:'statsView'};
-  Object.entries(views).forEach(([k,id]) => {
+
+  const views = {
+    grid: 'gridWrapper', derive: 'deriveView',
+    trios: 'triosView',  calendar: 'calendarView',
+    catalogue: 'catalogueView', stats: 'statsView'
+  };
+  Object.entries(views).forEach(([k, id]) => {
     const el = document.getElementById(id);
-    if (el) el.style.display = k===v ? '' : 'none';
+    if (el) el.style.display = k === v ? '' : 'none';
   });
+
   document.querySelectorAll('.view-tab').forEach(btn => btn.classList.remove('active'));
-  const tabs = {grid:'viewGrid',gallery:'viewGallery',constellation:'viewConstellation',calendar:'viewCalendar',catalogue:'viewCatalogue',trios:'viewTrios',stats:'viewStats'};
+  const tabs = {
+    grid: 'viewInventaire', derive: 'viewDerive',
+    trios: 'viewAtelier',   calendar: 'viewCalendar',
+    catalogue: 'viewCatalogue', stats: 'viewStats'
+  };
   const tabEl = document.getElementById(tabs[v]);
   if (tabEl) tabEl.classList.add('active');
-  // Breadcrumb: push the view name (unless called silently from a back-action)
+
+  // If entering derive, set the correct sub-pane
+  if (v === 'derive') _applyDeriveMode(state.deriveMode, true);
+
+  // Breadcrumb push
   if (!_silent && VIEW_LABELS[v]) {
-    const label = VIEW_LABELS[v];
-    pushBreadcrumb(label, () => setView(v, true));
+    pushBreadcrumb(VIEW_LABELS[v], () => setView(v, true));
   }
   render();
+}
+
+// ── La Dérive : sub-mode Nuée / Réseau ──────────────────────────────────────
+function _applyDeriveMode(mode, skipRender = false) {
+  state.deriveMode = mode;
+  // Toggle panes with fade
+  const nuee   = document.getElementById('deriveNueePane');
+  const reseau = document.getElementById('deriveReseauPane');
+  if (nuee)   nuee.classList.toggle('derive-pane-hidden',   mode !== 'nuee');
+  if (reseau) reseau.classList.toggle('derive-pane-hidden', mode !== 'reseau');
+  // Active button
+  document.querySelectorAll('.derive-seg-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.mode === mode));
+  // Animate thumb
+  _updateDeriveThumb();
+  if (!skipRender) render();
+}
+
+function _updateDeriveThumb() {
+  const seg    = document.getElementById('deriveSegmented');
+  const thumb  = document.getElementById('deriveSegThumb');
+  const active = seg?.querySelector('.derive-seg-btn.active');
+  if (!seg || !thumb || !active) return;
+  const segRect = seg.getBoundingClientRect();
+  const btnRect = active.getBoundingClientRect();
+  thumb.style.width     = btnRect.width + 'px';
+  thumb.style.transform = `translateX(${btnRect.left - segRect.left - 3}px)`;
 }
 
 // ── Filters & sort ─────────────────────────────────────────────────────────────
