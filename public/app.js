@@ -2875,15 +2875,6 @@ function openEdit(id) {
   renderAllAttributes(); // includes renderUniversChips() + universSection consolidation
   // Are.na
   state.editExpositions = [...(c.expositions||[])];
-  state.editFragmentBg = c.backgroundColor || '#1a1a1a';
-  const formType = c.type || 'item';
-  state._formType = formType;
-  _setFormType(formType);
-  if (formType === 'fragment') {
-    const ta = document.getElementById('fFragmentText');
-    if (ta) ta.value = c.textContent||'';
-    // palette + preview rendered by _setFormType → renderFragmentBgPicker
-  }
   renderExpoChipsPicker();
   switchModalTab('public');
   document.getElementById('editModal').style.display = 'flex';
