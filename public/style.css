@@ -96,18 +96,8 @@ body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active {
   opacity: 1;
 }
 
-/* Sous-catégories / typologies : styles normaux */
+/* Sous-catégories / typologies : fond transparent */
 body.verbe-active #subcategoryFilterBar { background: transparent; }
-body.verbe-active .sfb-pill-typo {
-  background: transparent !important;
-  color: var(--text-2) !important;
-  border-color: var(--border-light) !important;
-}
-body.verbe-active .sfb-pill-typo.active {
-  background: var(--page-verbe-text) !important;
-  color: #F5F5F0 !important;
-  border-color: var(--page-verbe-text) !important;
-}
 
 /* Pills statuts : styles normaux */
 body.verbe-active .sfb-pill-sm { background: transparent; color: var(--text-2); border-color: var(--border-light); opacity: 1; }
