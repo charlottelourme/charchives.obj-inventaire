@@ -2783,8 +2783,13 @@ async function saveCollection(asDraft = false) {
 
     const status = asDraft ? 'Brouillon' : document.getElementById('fItemStatus').value;
 
+    const isFragment = (state._formType === 'fragment');
     const body = {
-      name:           document.getElementById('fName').value.trim()||'Sans titre',
+      type:            isFragment ? 'fragment' : 'item',
+      textContent:     isFragment ? (document.getElementById('fFragmentText')?.value||'') : '',
+      backgroundColor: isFragment ? (document.getElementById('fFragmentBg')?.value||'') : '',
+      expositions:     [...(state.editExpositions||[])],
+      name:           document.getElementById('fName').value.trim()||(isFragment?'Fragment':'Sans titre'),
       category:       document.getElementById('fCategory').value,
       subcategories:  [...state.editSubcategories],
       subcategory:    state.editSubcategories[0] || '',
