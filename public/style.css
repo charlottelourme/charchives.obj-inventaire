@@ -2388,31 +2388,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   will-change: transform;
 }
 
-/* ── Hover : Résonance — "Table lumineuse" ── */
-
-/* When any item is hovered, dim and blur everything */
-.gallery-grid.g-has-hover .gallery-item {
-  opacity: .12;
-  filter: blur(1.5px);
-}
-
-/* Hovered item: front, lift, shadow */
-.gallery-grid.g-has-hover .gallery-item.g-hovered {
-  opacity: 1 !important;
-  filter: none !important;
-  transform: scale(1.01); /* réduit pour éviter débordement colonnes */
-  z-index: 20;
-  box-shadow: 0 12px 40px rgba(0,0,0,.18), 0 3px 10px rgba(0,0,0,.10);
-}
-
-/* Resonant items (same verbe/intention): keep visible */
-.gallery-grid.g-has-hover .gallery-item.g-resonant {
-  opacity: .75 !important;
-  filter: none !important;
-}
-.gallery-grid.g-has-hover .gallery-item.g-resonant img {
-  transform: none;
-}
+/* ── Hover : effet table lumineuse supprimé ── */
 
 /* ── Empty state ── */
 .gallery-empty {
