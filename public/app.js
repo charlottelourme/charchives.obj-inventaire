@@ -1131,7 +1131,7 @@ function _drawConGraph(canvas, nodes, links) {
 
   const W = canvas.clientWidth  || 800;
   const H = canvas.clientHeight || 600;
-  const R = 26; // node radius
+  const R = 42; // node radius
 
   const svg = d3.select(canvas).append('svg')
     .attr('viewBox', `0 0 ${W} ${H}`)
