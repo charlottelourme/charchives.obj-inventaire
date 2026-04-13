@@ -1624,6 +1624,34 @@ function _drawConGraph(canvas, nodes, links) {
       .attr('stroke-width', 2.5)
       .attr('stroke-opacity', 0.85);
 
+    // ── Bouton "mettre de côté" — top-right du cercle ──
+    const inPanier = _conPanier.includes(d.id);
+    const addG = g.append('g')
+      .attr('class', 'con-add-btn')
+      .attr('transform', `translate(${Math.round(R * 0.65)},${Math.round(-R * 0.65)})`)
+      .style('opacity', 0)
+      .style('cursor', 'pointer');
+    addG.append('circle')
+      .attr('r', 11)
+      .attr('fill', inPanier ? bg : 'var(--bg)')
+      .attr('stroke', bg)
+      .attr('stroke-width', 1.5);
+    addG.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'central')
+      .attr('font-size', '13')
+      .attr('font-weight', '600')
+      .attr('fill', inPanier ? 'white' : bg)
+      .text(inPanier ? '✓' : '+');
+    addG.on('click', (event) => {
+      event.stopPropagation();
+      _toggleConPanier(d.id);
+      // Met à jour le bouton en place sans re-simuler
+      const isNow = _conPanier.includes(d.id);
+      addG.select('circle').attr('fill', isNow ? bg : 'var(--bg)');
+      addG.select('text').attr('fill', isNow ? 'white' : bg).text(isNow ? '✓' : '+');
+    });
+
     // Name label (hidden by default, shown on neighbor hover)
     g.append('text')
       .attr('class', 'con-label')
