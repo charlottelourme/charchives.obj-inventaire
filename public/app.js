@@ -1299,6 +1299,15 @@ function _gallerySpan(id) {
   return n < 5 ? 1 : n < 8 ? 2 : 3; // 50% small, 30% medium, 20% large
 }
 
+function _shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function renderGallery(filtered) {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
@@ -1307,7 +1316,23 @@ function renderGallery(filtered) {
   _galleryItems = [];
   if (_galleryRafId) { cancelAnimationFrame(_galleryRafId); _galleryRafId = null; }
 
-  const items = filtered || state.collections;
+  let items = filtered || state.collections;
+
+  // Shuffle si actif — réordonner selon l'ordre mémorisé ou en créer un nouveau
+  if (state.galleryShuffled) {
+    if (state._shuffleOrder && state._shuffleOrder.length) {
+      // Réappliquer l'ordre mémorisé (filtre peut réduire le tableau)
+      const idxMap = new Map(state._shuffleOrder.map((id, i) => [id, i]));
+      items = [...items].sort((a, b) => (idxMap.get(a.id) ?? 9999) - (idxMap.get(b.id) ?? 9999));
+    } else {
+      items = _shuffleArray(items);
+      state._shuffleOrder = items.map(c => c.id);
+    }
+  }
+
+  // Mettre à jour le bouton shuffle
+  const shuffleBtn = document.getElementById('deriveShuffleBtn');
+  if (shuffleBtn) shuffleBtn.classList.toggle('active', state.galleryShuffled);
   if (!items.length) {
     grid.innerHTML = '<div class="gallery-empty">Aucun objet à afficher.</div>';
     return;
