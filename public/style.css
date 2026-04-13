@@ -85,11 +85,8 @@ body.verbe-active .sfb-label { color: var(--page-verbe-text); opacity: .5; }
 body.verbe-active .sfb-pill { color: var(--text-2); opacity: 1; }
 body.verbe-active .sfb-pill:hover { background: var(--tag-bg); color: var(--text); }
 
-/* Verbe actif : underline + texte dans la couleur du verbe (identique au mode normal) */
+/* Verbe actif : pilule colorée (couleurs injectées via JS inline) */
 body.verbe-active .sfb-pill-verbe.active {
-  background: none !important;
-  color: var(--page-verbe-text) !important;
-  border-bottom-color: var(--page-verbe-text) !important;
   opacity: 1;
 }
 /* Pill "Toutes" actif */
