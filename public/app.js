@@ -2811,11 +2811,6 @@ function openNew() {
   renderAllAttributes(); // includes renderUniversChips() + universSection consolidation
   // Are.na
   state.editExpositions = [];
-  state.editFragmentBg = '#1a1a1a';
-  state._formType = 'item';
-  _setFormType('item');
-  const ta = document.getElementById('fFragmentText');
-  if (ta) ta.value = '';
   renderExpoChipsPicker();
   switchModalTab('public');
   document.getElementById('editModal').style.display = 'flex';
