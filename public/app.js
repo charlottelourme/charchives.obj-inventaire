@@ -947,6 +947,117 @@ function updateCardThumb(el,id,photos,idx) {
 }
 
 // ── Calendar ───────────────────────────────────────────────────────────────────
+// ══ GALERIE INFINIE — Cabinet de Curiosités ══════════════════════════════════
+
+let _galleryItems = [];   // [{el, id, span, category}]
+let _galleryScrollEl = null;
+let _galleryRafId = null;
+
+// Deterministic span 1/2/3 from object id
+function _gallerySpan(id) {
+  const h = [...(id || 'x')].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 0);
+  const n = Math.abs(h) % 10;
+  return n < 5 ? 1 : n < 8 ? 2 : 3; // 50% small, 30% medium, 20% large
+}
+
+function renderGallery(filtered) {
+  const grid = document.getElementById('galleryGrid');
+  if (!grid) return;
+
+  // Stop previous parallax loop
+  _galleryItems = [];
+  if (_galleryRafId) { cancelAnimationFrame(_galleryRafId); _galleryRafId = null; }
+
+  const items = filtered || state.collections;
+  if (!items.length) {
+    grid.innerHTML = '<div class="gallery-empty">Aucun objet à afficher.</div>';
+    return;
+  }
+
+  grid.classList.remove('g-has-hover');
+  grid.innerHTML = '';
+
+  items.forEach(c => {
+    const span = _gallerySpan(c.id);
+    const item = document.createElement('div');
+    item.className = `gallery-item g-span-${span}`;
+    item.dataset.id = c.id;
+    item.dataset.cat = c.category || '';
+
+    const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
+    if (src) {
+      // img starts at scale(1.14) via CSS; JS parallax modifies translateY in addition
+      item.innerHTML = `<img src="${src}" alt="${esc(c.name||'')}" draggable="false">`;
+    } else {
+      const bg = getVerbeBgColor(c.category);
+      item.innerHTML = `<div class="gallery-ph" style="background:${bg}18">◻</div>`;
+    }
+
+    grid.appendChild(item);
+    _galleryItems.push({ el: item, id: c.id, span, category: c.category || '' });
+  });
+
+  _bindGalleryEvents();
+  _initGalleryParallax();
+}
+
+function _bindGalleryEvents() {
+  const grid = document.getElementById('galleryGrid');
+
+  _galleryItems.forEach(({ el, id, category }) => {
+    el.addEventListener('mouseenter', () => {
+      grid.classList.add('g-has-hover');
+      el.classList.add('g-hovered');
+      if (category) {
+        _galleryItems.forEach(o => {
+          if (o.el !== el && o.category === category) o.el.classList.add('g-resonant');
+        });
+      }
+    });
+
+    el.addEventListener('mouseleave', () => {
+      grid.classList.remove('g-has-hover');
+      el.classList.remove('g-hovered');
+      _galleryItems.forEach(o => o.el.classList.remove('g-resonant'));
+    });
+
+    el.addEventListener('click', () => openDetail(id));
+  });
+}
+
+function _initGalleryParallax() {
+  _galleryScrollEl = document.getElementById('galleryScroll');
+  if (!_galleryScrollEl) return;
+  // Remove any previous listener then re-attach
+  _galleryScrollEl.removeEventListener('scroll', _onGalleryScroll);
+  _galleryScrollEl.addEventListener('scroll', _onGalleryScroll, { passive: true });
+  // Run once to position images at load
+  _onGalleryScroll();
+}
+
+function _onGalleryScroll() {
+  if (_galleryRafId) return;
+  _galleryRafId = requestAnimationFrame(() => {
+    _galleryRafId = null;
+    if (!_galleryScrollEl) return;
+    const scrollTop  = _galleryScrollEl.scrollTop;
+    const vpH        = _galleryScrollEl.clientHeight;
+    const vpMid      = scrollTop + vpH / 2;
+
+    _galleryItems.forEach(({ el, span }) => {
+      const img = el.firstElementChild;
+      if (!img) return;
+      // Distance of item center from viewport center (in px)
+      const itemMid = el.offsetTop + el.offsetHeight / 2;
+      const dist    = itemMid - vpMid;
+      // Large items (span 3) = slow (depth illusion), small = slightly faster
+      const speed   = span === 3 ? 0.018 : span === 2 ? 0.032 : 0.048;
+      const offset  = dist * speed; // subtle: ±8–15px max in practice
+      img.style.transform = `scale(1.14) translateY(${offset}px)`;
+    });
+  });
+}
+
 // ── Mini calendar state ─────────────────────────────────────────────────────
 let _calMiniYear = new Date().getFullYear();
 let _calMiniData = {}; // { 'YYYY-MM': count }
