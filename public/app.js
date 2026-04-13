@@ -5287,9 +5287,11 @@ function bindEvents() {
   document.getElementById('settingsModalSave').addEventListener('click', saveSettingsModal);
   document.getElementById('settingsModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeSettingsModal(); });
 
-  // Export buttons (footer)
+  // Export buttons (bottom-nav + static footer)
   document.getElementById('exportJsonBtn').addEventListener('click', ()=>{ window.location.href='/api/export'; });
   document.getElementById('exportShopifyBtn').addEventListener('click', ()=>{ window.location.href='/api/export/shopify'; });
+  document.getElementById('exportJsonBtnFooter')?.addEventListener('click', ()=>{ window.location.href='/api/export'; });
+  document.getElementById('exportShopifyBtnFooter')?.addEventListener('click', ()=>{ window.location.href='/api/export/shopify'; });
 
   // Sort & size
   document.getElementById('sortSelect').addEventListener('change',e=>{ state.sortBy=e.target.value; render(); });
