@@ -437,24 +437,21 @@ function buildCategoryFilterBar() {
     });
     pill.addEventListener('click', () => {
       const cat = pill.dataset.cat;
-      state.categoryFilter = cat;
-      state.attrFilters.subcat = [];
-      buildTypologiesBar();
-      buildAttrFilterBar();
-      // Breadcrumb: push category name (or "Tous" for the "all" pill)
-      const bcLabel = cat || 'Tous';
-      pushBreadcrumb(bcLabel, () => {
+      // Re-clic sur le verbe actif → retour grille sans filtre
+      if (cat && cat === state.categoryFilter) {
+        state.categoryFilter = '';
+        state.gravityMode = false;
+      } else {
         state.categoryFilter = cat;
-        state.attrFilters.subcat = [];
-        buildCategoryFilterBar();
-        buildSubcategoryBar();
-        buildAttrFilterBar();
-        render();
-      });
+        state.gravityMode = cat !== ''; // Mode Gravité dès qu'un verbe est sélectionné
+      }
+      state.attrFilters.subcat = [];
+      buildIndexTrigger();
+      buildAttrFilterBar();
       render();
     });
   });
-  buildTypologiesBar();
+  buildIndexTrigger();
   buildAttrFilterBar();
 }
 
