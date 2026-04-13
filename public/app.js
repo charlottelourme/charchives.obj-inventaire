@@ -171,6 +171,106 @@ const state = {
   gravityMode: false,   // true quand un verbe est actif → canvas orbital
 };
 
+// ══ THÉSAURUS SÉMANTIQUE — dictionnaire de synonymes / alias ════════════════
+// Clé = terme tapé par l'utilisateur (minuscules)
+// Valeur = nom exact de la typologie ou de la catégorie à rechercher
+const SEARCH_THESAURUS = {
+  // ── Thé & Café ──
+  'tasse':'Thé & Café','mug':'Thé & Café','théière':'Thé & Café','thé':'Thé & Café',
+  'cafetière':'Thé & Café','café':'Thé & Café','expresso':'Thé & Café','bol':'Thé & Café',
+  // ── Assiettes & Plats ──
+  'assiette':'Assiettes & Plats','plat':'Assiettes & Plats','faïence':'Assiettes & Plats',
+  'service':'Assiettes & Plats',
+  // ── Couverts ──
+  'couvert':'Couverts','fourchette':'Couverts','couteau':'Couverts',
+  'cuillère':'Couverts','cuiller':'Couverts','argenterie':'Couverts',
+  // ── Verres ──
+  'verre':'Verres','carafe':'Verres','flûte':'Verres','gobelet':'Verres',
+  // ── Plateaux ──
+  'plateau':'Plateaux',
+  // ── Autour de la table ──
+  'nappe':'Autour de la table','serviette':'Autour de la table','set':'Autour de la table',
+  // ── Bougeoirs & Chandeliers ──
+  'bougeoir':'Bougeoirs & Chandeliers','chandelier':'Bougeoirs & Chandeliers',
+  'candélabre':'Bougeoirs & Chandeliers','chandelle':'Bougeoirs & Chandeliers',
+  // ── Bougies ──
+  'bougie':'Bougies','cierge':'Bougies',
+  // ── Lampes ──
+  'lampe':'Lampes','luminaire':'Lampes','abat-jour':'Lampes','lumière':'Lampes',
+  // ── Vases ──
+  'vase':'Vases','soliflore':'Vases','potiche':'Vases',
+  // ── Sculptures & Figurines ──
+  'sculpture':'Sculptures & Figurines','figurine':'Sculptures & Figurines',
+  'statuette':'Sculptures & Figurines','statue':'Sculptures & Figurines',
+  // ── Objets muraux ──
+  'tableau':'Objets muraux','miroir':'Objets muraux','affiche':'Objets muraux',
+  'gravure':'Objets muraux','estampe':'Objets muraux',
+  // ── Tapisseries & Coussins ──
+  'tapisserie':'Tapisseries & Coussins','coussin':'Tapisseries & Coussins',
+  'tissu':'Tapisseries & Coussins','broderie':'Tapisseries & Coussins',
+  'textile':'Tapisseries & Coussins',
+  // ── Boîtes & Coffrets ──
+  'boîte':'Boîtes & coffrets','boite':'Boîtes & coffrets','coffret':'Boîtes & coffrets',
+  'étui':'Boîtes & coffrets','cassette':'Boîtes & coffrets',
+  // ── Bonbonnières & Bocaux ──
+  'bocal':'Bonbonnières & Bocaux','bonbonnière':'Bonbonnières & Bocaux',
+  'pot':'Bonbonnières & Bocaux','jarre':'Bonbonnières & Bocaux',
+  // ── Flacons ──
+  'flacon':'Flacons','bouteille':'Flacons','fiole':'Flacons','parfum':'Flacons',
+  // ── Rangements ──
+  'rangement':'Rangements','panier':'Rangements','corbeille':'Rangements',
+  // ── Bijoux ──
+  'bijou':'Bijoux','collier':'Bijoux','bracelet':'Bijoux','bague':'Bijoux',
+  'anneau':'Bijoux','pendentif':'Bijoux','boucle':'Bijoux','médaille':'Bijoux',
+  // ── Foulards ──
+  'foulard':'Foulards','écharpe':'Foulards','châle':'Foulards','soie':'Foulards',
+  // ── Accessoires ──
+  'accessoire':'Accessoires','sac':'Accessoires','pochette':'Accessoires','ceinture':'Accessoires',
+  // ── Livres ──
+  'livre':'Livres','roman':'Livres','ouvrage':'Livres','encyclopédie':'Livres',
+  // ── Revues & Cartes postales ──
+  'revue':'Revues & Cartes postales','magazine':'Revues & Cartes postales',
+  'carte postale':'Revues & Cartes postales','carte':'Revues & Cartes postales',
+  // ── Cadres ──
+  'cadre':'Cadres','encadrement':'Cadres',
+  // ── Beaux arts & Arts graphiques ──
+  'peinture':'Beaux arts & Arts graphiques','dessin':'Beaux arts & Arts graphiques',
+  'lithographie':'Beaux arts & Arts graphiques','sérigraphie':'Beaux arts & Arts graphiques',
+  'art':'Beaux arts & Arts graphiques',
+  // ── Minéraux & Fossiles ──
+  'fossile':'Minéraux & Fossiles','minéral':'Minéraux & Fossiles','mineral':'Minéraux & Fossiles',
+  'cristal':'Minéraux & Fossiles','pierre':'Minéraux & Fossiles','roche':'Minéraux & Fossiles',
+  'caillou':'Minéraux & Fossiles','coquillage':'Minéraux & Fossiles','géode':'Minéraux & Fossiles',
+  // ── Objets scientifiques ──
+  'instrument':'Objets scientifiques','loupe':'Objets scientifiques','compas':'Objets scientifiques',
+  'mesure':'Objets scientifiques','scientifique':'Objets scientifiques',
+  // ── Outils anciens ──
+  'outil':'Outils anciens','clé':'Outils anciens','clef':'Outils anciens',
+  'serrure':'Outils anciens','ancien':'Outils anciens',
+  // ── Curiosités & Fragments ──
+  'curiosité':'Curiosités & Fragments','fragment':'Curiosités & Fragments',
+  'bizarre':'Curiosités & Fragments','rare':'Curiosités & Fragments','étrange':'Curiosités & Fragments',
+  // ── Coupes & Vide-poche ──
+  'coupe':'Coupes & Vide-poche','vide-poche':'Coupes & Vide-poche','coupelle':'Coupes & Vide-poche',
+  // ── Petits objets ──
+  'miniature':'Petits objets','petit objet':'Petits objets',
+  // ── Usages oubliés ──
+  'mystère':'Usages oubliés','inconnu':'Usages oubliés','antique':'Usages oubliés',
+};
+
+// Smart search — expande une requête via le thésaurus
+function _smartSearchExpand(q) {
+  if (!q) return [q];
+  const terms = new Set([q]);
+  const direct = SEARCH_THESAURUS[q];
+  if (direct) terms.add(direct.toLowerCase());
+  // Correspondances partielles (q contenu dans une clé du thésaurus)
+  Object.entries(SEARCH_THESAURUS).forEach(([alias, target]) => {
+    if (alias.includes(q) || q.includes(alias)) terms.add(target.toLowerCase());
+  });
+  return [...terms];
+}
+
 const LB = { photos: [], idx: 0 };
 const TL = { zoom:1, panX:0, panY:0, isDragging:false, hasDragged:false, startX:0, startY:0, startPanX:0, startPanY:0 };
 const _charts = {};
