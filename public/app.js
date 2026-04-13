@@ -166,6 +166,8 @@ const state = {
   _formType: 'item',
   editFragmentBg: '#1a1a1a',
   deriveMode: 'nuee',   // 'nuee' | 'reseau'
+  galleryShuffled: false,
+  _shuffleOrder: null,  // tableau d'ids mélangés
 };
 
 const LB = { photos: [], idx: 0 };
