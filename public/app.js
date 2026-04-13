@@ -1393,6 +1393,8 @@ function _bindGalleryEvents() {
 }
 
 function _initGalleryParallax() {
+  // Parallax désactivé en mode colonnes masonry — translateY crée des marges visibles
+  return;
   _galleryScrollEl = document.getElementById('galleryScroll');
   if (!_galleryScrollEl) return;
   // Remove any previous listener then re-attach
