@@ -5293,7 +5293,25 @@ function bindEvents() {
 
   // Sort & size
   document.getElementById('sortSelect').addEventListener('change',e=>{ state.sortBy=e.target.value; render(); });
-  document.getElementById('cardSizeSlider').addEventListener('input',e=>{ document.documentElement.style.setProperty('--card-min',e.target.value+'px'); });
+  (() => {
+    const slider = document.getElementById('cardSizeSlider');
+    if (!slider) return;
+    const apply = v => document.documentElement.style.setProperty('--card-min', v + 'px');
+    slider.addEventListener('input', e => apply(e.target.value));
+    // Mobile touch fix: stop parent from intercepting horizontal swipe
+    slider.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
+    slider.addEventListener('touchmove',  e => {
+      e.stopPropagation();
+      // Manually update value from touch position
+      const rect  = slider.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (e.touches[0].clientX - rect.left) / rect.width));
+      const min   = parseFloat(slider.min) || 140;
+      const max   = parseFloat(slider.max) || 480;
+      const val   = Math.round(min + ratio * (max - min));
+      slider.value = val;
+      apply(val);
+    }, { passive: true });
+  })();
 
   // Status filter
   document.querySelectorAll('#statusFilterBar .sfb-pill').forEach(pill=>{
