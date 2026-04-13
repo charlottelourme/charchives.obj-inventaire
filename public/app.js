@@ -1481,11 +1481,16 @@ function _drawConGraph(canvas, nodes, links) {
 
   const W = canvas.clientWidth  || 800;
   const H = canvas.clientHeight || 600;
-  const R = 42; // node radius
+  const R = 52; // node radius (agrandi)
+
+  // SVG virtuel plus grand que le canvas → scroll possible
+  const SVG_W = Math.max(W * 1.8, 1400);
+  const SVG_H = Math.max(H * 1.8, 1100);
 
   const svg = d3.select(canvas).append('svg')
-    .attr('viewBox', `0 0 ${W} ${H}`)
-    .attr('preserveAspectRatio', 'xMidYMid meet');
+    .attr('width', SVG_W)
+    .attr('height', SVG_H)
+    .style('display', 'block');
 
   // ── Defs: circular clipPaths for photo nodes ──
   const defs = svg.append('defs');
