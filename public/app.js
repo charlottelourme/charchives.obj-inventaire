@@ -948,6 +948,244 @@ function updateCardThumb(el,id,photos,idx) {
 }
 
 // ── Calendar ───────────────────────────────────────────────────────────────────
+// ══ CONSTELLATION — Graphe de connexions D3 ══════════════════════════════════
+
+let _conSim         = null;   // d3 simulation instance
+let _conAffinityType = 'intention'; // 'intention' | 'matiere' | 'epoque'
+
+// ── Graph data builder ────────────────────────────────────────────────────────
+function _buildConGraph(items, affinityType) {
+  // Deep-copy so D3 can mutate positions
+  const nodes = items.map(c => ({
+    id: c.id, name: c.name || '—', category: c.category || '',
+    photos: c.photos || [], attributes: c.attributes || {}
+  }));
+
+  const links = [];
+  const seen  = new Set();
+
+  for (let i = 0; i < items.length; i++) {
+    for (let j = i + 1; j < items.length; j++) {
+      const a = items[i], b = items[j];
+      let strength = 0;
+
+      if (affinityType === 'intention') {
+        if (a.category && a.category === b.category) strength = 1;
+      } else if (affinityType === 'matiere') {
+        const mA = a.attributes?.matieres || [];
+        const mB = b.attributes?.matieres || [];
+        strength = mA.filter(m => mB.includes(m)).length;
+      } else { // epoque
+        const oA = (a.attributes?.origine || [])[0];
+        const oB = (b.attributes?.origine || [])[0];
+        if (oA && oA === oB) strength = 1;
+      }
+
+      if (strength > 0) {
+        const key = `${a.id}__${b.id}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          links.push({ source: a.id, target: b.id, strength });
+        }
+      }
+    }
+  }
+
+  return { nodes, links };
+}
+
+// ── Main render ───────────────────────────────────────────────────────────────
+function renderConstellation(filtered) {
+  const canvas = document.getElementById('conCanvas');
+  if (!canvas) return;
+
+  // Stop & clear previous simulation
+  if (_conSim) { _conSim.stop(); _conSim = null; }
+  canvas.innerHTML = '';
+
+  const items = filtered || state.collections;
+  if (!items.length) {
+    canvas.innerHTML = '<div class="con-empty">Aucun objet à afficher.</div>';
+    return;
+  }
+
+  const { nodes, links } = _buildConGraph(items, _conAffinityType);
+  _drawConGraph(canvas, nodes, links);
+
+  // Affinity pill bindings
+  document.querySelectorAll('.con-aff-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.aff === _conAffinityType);
+    btn.onclick = () => {
+      _conAffinityType = btn.dataset.aff;
+      renderConstellation(state.detailList.length ? state.detailList : state.collections);
+    };
+  });
+}
+
+// ── D3 drawing ────────────────────────────────────────────────────────────────
+function _drawConGraph(canvas, nodes, links) {
+  if (!window.d3) { canvas.innerHTML = '<div class="con-empty">D3.js non chargé.</div>'; return; }
+
+  const W = canvas.clientWidth  || 800;
+  const H = canvas.clientHeight || 600;
+  const R = 26; // node radius
+
+  const svg = d3.select(canvas).append('svg')
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet');
+
+  // ── Defs: circular clipPaths for photo nodes ──
+  const defs = svg.append('defs');
+  nodes.forEach(n => {
+    defs.append('clipPath')
+      .attr('id', `con-clip-${n.id}`)
+      .append('circle')
+      .attr('r', R);
+  });
+
+  // ── Link color: based on affinity type ──
+  function linkColor(d) {
+    const src = nodes.find(n => n.id === (d.source.id || d.source));
+    if (!src) return '#888';
+    if (_conAffinityType === 'intention') return getVerbeBgColor(src.category) || '#888';
+    return 'var(--text-3)';
+  }
+
+  // ── Links group ──
+  const linksG = svg.append('g').attr('class', 'con-links-group');
+  const linkEl = linksG.selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('class', 'con-link')
+    .attr('stroke', linkColor)
+    .attr('stroke-width', d => Math.max(1, Math.sqrt(d.strength) * 1.5))
+    .attr('stroke-opacity', 0.18);
+
+  // ── Nodes group ──
+  const nodesG = svg.append('g').attr('class', 'con-nodes-group');
+  const nodeEl = nodesG.selectAll('g.con-node')
+    .data(nodes)
+    .join('g')
+    .attr('class', 'con-node');
+
+  nodeEl.each(function(d) {
+    const g   = d3.select(this);
+    const bg  = getVerbeBgColor(d.category) || '#9ca3af';
+    const src = d.photos[0] ? photoUrl(d.photos[0]) : null;
+
+    // Background circle (verbe color, low opacity)
+    g.append('circle')
+      .attr('class', 'con-node-bg')
+      .attr('r', R)
+      .attr('fill', bg)
+      .attr('fill-opacity', src ? 0.15 : 0.28);
+
+    if (src) {
+      // Photo node
+      g.append('image')
+        .attr('href', src)
+        .attr('x', -R).attr('y', -R)
+        .attr('width', R * 2).attr('height', R * 2)
+        .attr('clip-path', `url(#con-clip-${d.id})`)
+        .attr('preserveAspectRatio', 'xMidYMid slice');
+    }
+
+    // Border ring (verbe color)
+    g.append('circle')
+      .attr('r', R)
+      .attr('fill', 'none')
+      .attr('stroke', bg)
+      .attr('stroke-width', 1.5)
+      .attr('stroke-opacity', 0.55);
+
+    // Name label (hidden by default, shown on neighbor hover)
+    g.append('text')
+      .attr('class', 'con-label')
+      .attr('y', R + 13)
+      .text(d.name.length > 18 ? d.name.slice(0, 16) + '…' : d.name);
+  });
+
+  // ── Hover interactions ──
+  nodeEl
+    .on('mouseenter', function(event, d) {
+      // Find connected node IDs
+      const neighbors = new Set();
+      const connLinks = new Set();
+      links.forEach((l, i) => {
+        const sid = l.source.id ?? l.source;
+        const tid = l.target.id ?? l.target;
+        if (sid === d.id || tid === d.id) {
+          neighbors.add(sid === d.id ? tid : sid);
+          connLinks.add(i);
+        }
+      });
+
+      linksG.classed('con-has-hover', true);
+      linkEl
+        .classed('con-link-lit', (l, i) => connLinks.has(i))
+        .attr('stroke-opacity', (l, i) => connLinks.has(i) ? 0.72 : 0.04);
+
+      nodesG.classed('con-has-hover', true);
+      nodeEl
+        .classed('con-node-focus',    nd => nd.id === d.id)
+        .classed('con-node-neighbor', nd => neighbors.has(nd.id));
+
+      // Show neighbor labels
+      nodeEl.selectAll('text.con-label')
+        .classed('con-label-show', function() {
+          const nd = d3.select(this.parentNode).datum();
+          return neighbors.has(nd.id) || nd.id === d.id;
+        })
+        .attr('opacity', function() {
+          const nd = d3.select(this.parentNode).datum();
+          return (neighbors.has(nd.id) || nd.id === d.id) ? 1 : 0;
+        });
+    })
+    .on('mouseleave', function() {
+      linksG.classed('con-has-hover', false);
+      linkEl.classed('con-link-lit', false).attr('stroke-opacity', 0.18);
+      nodesG.classed('con-has-hover', false);
+      nodeEl.classed('con-node-focus', false).classed('con-node-neighbor', false);
+      nodeEl.selectAll('text.con-label').classed('con-label-show', false).attr('opacity', 0);
+    })
+    .on('click', (event, d) => openDetail(d.id));
+
+  // ── Drag behaviour ──
+  const drag = d3.drag()
+    .on('start', (event, d) => {
+      if (!event.active) _conSim.alphaTarget(0.25).restart();
+      d.fx = d.x; d.fy = d.y;
+    })
+    .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+    .on('end',  (event, d) => {
+      if (!event.active) _conSim.alphaTarget(0);
+      d.fx = null; d.fy = null;
+    });
+
+  nodeEl.call(drag);
+
+  // ── D3 force simulation ──
+  _conSim = d3.forceSimulation(nodes)
+    .force('link',    d3.forceLink(links).id(d => d.id).distance(140).strength(0.45))
+    .force('charge',  d3.forceManyBody().strength(-280).distanceMax(400))
+    .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.08))
+    .force('collide', d3.forceCollide(R + 12).strength(0.8))
+    .alphaDecay(0.022)
+    .velocityDecay(0.35)
+    .on('tick', () => {
+      // Clamp nodes to SVG bounds
+      const pad = R + 2;
+      nodes.forEach(n => {
+        n.x = Math.max(pad, Math.min(W - pad, n.x));
+        n.y = Math.max(pad, Math.min(H - pad, n.y));
+      });
+      linkEl
+        .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+      nodeEl.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+}
+
 // ══ GALERIE INFINIE — Cabinet de Curiosités ══════════════════════════════════
 
 let _galleryItems = [];   // [{el, id, span, category}]
