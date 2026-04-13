@@ -6530,31 +6530,31 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 
 .card-bookmark-btn {
   position: absolute;
-  top: 8px; right: 8px;
-  z-index: 4;
+  top: 7px; right: 7px;
+  z-index: 6;
   width: 26px; height: 26px;
   border-radius: 50%;
-  border: none;
-  background: rgba(255,255,255,.82);
+  border: 1px solid rgba(255,255,255,.5);
+  background: rgba(255,255,255,.75);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   font-size: 14px;
-  line-height: 26px;
-  text-align: center;
   cursor: pointer;
   color: var(--text-3);
-  opacity: 0;
+  /* Légèrement visible au repos, bien visible au survol de la carte */
+  opacity: 0.35;
   transition: opacity .18s, color .15s, background .15s;
   display: flex; align-items: center; justify-content: center;
   padding: 0;
 }
 .card:hover .card-bookmark-btn { opacity: 1; }
 .card-bookmark-btn.bookmarked {
-  opacity: 1;
+  opacity: 1 !important;
   color: #8b5cf6;
-  background: rgba(255,255,255,.92);
+  background: rgba(255,255,255,.95);
+  border-color: #8b5cf660;
 }
-.card-bookmark-btn:hover { color: #8b5cf6; background: rgba(255,255,255,.95); }
+.card-bookmark-btn:hover { color: #8b5cf6; background: rgba(255,255,255,.98); }
 
 /* Pill "Mis de côté" dans la status bar */
 .sfb-pill-bookmark.active { background: #8b5cf620; border-color: #8b5cf6 !important; color: #8b5cf6; }
