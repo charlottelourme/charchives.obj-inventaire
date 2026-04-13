@@ -131,7 +131,7 @@ const state = {
   view: 'grid',
   sortBy: 'chrono-desc',
   categoryFilter: '',
-  statusFilter: 'Disponible',
+  statusFilter: '',
   activeKeywordFilters: new Set(),
   detailList: [],
   detailCurrentId: null,
