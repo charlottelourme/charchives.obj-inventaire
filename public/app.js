@@ -432,10 +432,21 @@ function buildCategoryFilterBar() {
       }
     });
     pill.addEventListener('click', () => {
-      state.categoryFilter = pill.dataset.cat;
+      const cat = pill.dataset.cat;
+      state.categoryFilter = cat;
       state.attrFilters.subcat = [];
       buildTypologiesBar();
       buildAttrFilterBar();
+      // Breadcrumb: push category name (or "Tous" for the "all" pill)
+      const bcLabel = cat || 'Tous';
+      pushBreadcrumb(bcLabel, () => {
+        state.categoryFilter = cat;
+        state.attrFilters.subcat = [];
+        buildCategoryFilterBar();
+        buildSubcategoryBar();
+        buildAttrFilterBar();
+        render();
+      });
       render();
     });
   });
