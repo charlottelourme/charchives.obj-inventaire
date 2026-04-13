@@ -1295,11 +1295,16 @@ let _galleryItems = [];   // [{el, id, span, category}]
 let _galleryScrollEl = null;
 let _galleryRafId = null;
 
-// Deterministic span 1/2/3 from object id
-function _gallerySpan(id) {
+// Taille déterministe depuis l'id — 6 niveaux pour max d'irrégularité
+function _gallerySize(id) {
   const h = [...(id || 'x')].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 0);
-  const n = Math.abs(h) % 10;
-  return n < 5 ? 1 : n < 8 ? 2 : 3; // 50% small, 30% medium, 20% large
+  const n = Math.abs(h) % 12;
+  if (n < 2) return 'g-sz-xs';   // très petit  — 17%
+  if (n < 5) return 'g-sz-sm';   // petit       — 25%
+  if (n < 8) return 'g-sz-md';   // moyen       — 25%
+  if (n < 10) return 'g-sz-ml';  // moyen-large — 17%
+  if (n < 11) return 'g-sz-lg';  // grand       — 8%
+  return 'g-sz-xl';               // très grand  — 8%
 }
 
 function _shuffleArray(arr) {
