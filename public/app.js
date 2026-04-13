@@ -3745,11 +3745,8 @@ function renderPhotos() {
     btn.addEventListener('click', async e => {
       e.stopPropagation();
 
-      const hexColor = _getSelectedVerbeTextColor();
-      if (!hexColor) {
-        _showPhotoToast('Choisissez d\'abord une Intention pour générer l\'ambiance.');
-        return;
-      }
+      // Couleur du verbe sélectionné, ou neutre chaud par défaut
+      const hexColor = _getSelectedVerbeTextColor() || '#8B7355';
 
       const i = parseInt(btn.dataset.i);
       const filename = state.editPhotos[i];
