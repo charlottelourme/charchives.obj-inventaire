@@ -332,12 +332,13 @@ async function init(attempt = 0) {
   if (attempt === 0) showStartingBanner(false, 0);
 
   try {
-    const { collections, keywords, settings } = await _loadAppData();
+    const { collections, keywords, settings, expositions } = await _loadAppData();
 
     hideStartingBanner();
     state.collections = collections;
     state.keywords    = keywords;
     state.settings    = settings;
+    state.expositions = expositions || [];
 
     // Populate color options from settings
     ATTRIBUTES_DEF.couleurs.options = state.settings.colors || [];
