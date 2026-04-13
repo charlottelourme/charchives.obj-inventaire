@@ -2908,13 +2908,12 @@ async function saveCollection(asDraft = false) {
 
     const status = asDraft ? 'Brouillon' : document.getElementById('fItemStatus').value;
 
-    const isFragment = (state._formType === 'fragment');
     const body = {
-      type:            isFragment ? 'fragment' : 'item',
-      textContent:     isFragment ? (document.getElementById('fFragmentText')?.value||'') : '',
-      backgroundColor: isFragment ? (state.editFragmentBg || '#1a1a1a') : '',
+      type:            'item',
+      textContent:     '',
+      backgroundColor: '',
       expositions:     [...(state.editExpositions||[])],
-      name:           document.getElementById('fName').value.trim()||(isFragment?'Fragment':'Sans titre'),
+      name:           document.getElementById('fName').value.trim()||'Sans titre',
       category:       document.getElementById('fCategory').value,
       subcategories:  [...state.editSubcategories],
       subcategory:    state.editSubcategories[0] || '',
