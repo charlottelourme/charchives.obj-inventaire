@@ -4291,6 +4291,7 @@ function _renderStatusBars(statusFreq, total) {
 }
 
 function renderStats() {
+  if (_statsBubbleSim) { _statsBubbleSim.stop(); _statsBubbleSim = null; }
   Object.entries(_charts).forEach(([k,c])=>{ try{c.destroy();}catch(e){} delete _charts[k]; });
   const cols=state.collections;
   const total=cols.length;
