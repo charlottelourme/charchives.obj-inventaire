@@ -1080,14 +1080,17 @@ function getFiltered() {
     if (af.etat_traces.length && !af.etat_traces.some(v=>(c.attributes?.etat_traces||[]).includes(v))) return false;
     if (af.couleurs.length && !af.couleurs.some(v=>(c.attributes?.couleurs||[]).includes(v))) return false;
     if (!q) return true;
+    // Smart search : expansion sémantique via thésaurus
+    const expandedTerms = _smartSearchExpand(q);
     const searchStr = [
       c.name, c.description, c.category, c.subcategory, c.subcategoryCustom,
+      ...(Array.isArray(c.subcategories) ? c.subcategories : []),
       ...(c.keywords||[]),
       ...(c.univers||[]),
       ...(Object.values(c.attributes||{}).flat()),
       c.itemStatus
     ].filter(Boolean).join(' ').toLowerCase();
-    return searchStr.includes(q);
+    return expandedTerms.some(term => searchStr.includes(term));
   }));
 }
 
