@@ -983,7 +983,10 @@ function render() {
   document.getElementById('countLabel').textContent =
     `${filtered.length} objet${filtered.length!==1?'s':''}`;
 
-  if (state.view==='grid')    renderGrid(filtered);
+  if (state.view==='grid') {
+    if (state.gravityMode && state.categoryFilter) renderGravity(filtered);
+    else { exitGravityMode(); renderGrid(filtered); }
+  } else if (false) {} // placeholder
   else if (state.view==='derive') {
     if (state.deriveMode==='nuee')    renderGallery(filtered);
     else                              renderConstellation(filtered);
