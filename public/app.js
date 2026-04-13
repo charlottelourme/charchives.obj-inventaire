@@ -551,9 +551,30 @@ function buildIndexTrigger() {
     inp.addEventListener('keydown', e => { if (e.key === 'Escape') { inp.value = ''; drop.style.display = 'none'; } });
   }
 
-  bar.querySelectorAll('.idx-active-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      state.attrFilters.subcat = state.attrFilters.subcat.filter(x => x !== chip.dataset.typo);
+  // Pills inline — toggle sélection
+  bar.querySelectorAll('.sfb-pill-typo').forEach(pill => {
+    const t = pill.dataset.typo;
+    const vParent = getVerbes().find(v => getTypologies(v).includes(t));
+    const col = vParent ? (vParent.bgColor || vParent.color || '#2D2D2D') : '#2D2D2D';
+    const fg  = vParent?.textColor || '#fff';
+    pill.addEventListener('mouseenter', () => {
+      if (!pill.classList.contains('active')) {
+        pill.style.background = col + '22';
+        pill.style.color = col;
+        pill.style.borderColor = col + '55';
+      }
+    });
+    pill.addEventListener('mouseleave', () => {
+      if (!pill.classList.contains('active')) {
+        pill.style.background = '';
+        pill.style.color = '';
+        pill.style.borderColor = col + '40';
+      }
+    });
+    pill.addEventListener('click', () => {
+      const idx = state.attrFilters.subcat.indexOf(t);
+      if (idx >= 0) state.attrFilters.subcat.splice(idx, 1);
+      else state.attrFilters.subcat.push(t);
       buildIndexTrigger(); render();
     });
   });
