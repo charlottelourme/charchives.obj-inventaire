@@ -3597,25 +3597,18 @@ function renderPhotos() {
       <div class="photo-ai-bar">
         <div class="photo-edit-row">
           <button class="photo-btn photo-crop" data-i="${i}" title="Recadrer l'image">
-            <span class="photo-btn-icon">⌗</span>
             <span class="photo-btn-label">Recadrer</span>
           </button>
-          <button class="photo-btn photo-detour" data-i="${i}" data-filename="${esc(filename)}" title="Détourer manuellement">
-            <span class="photo-btn-icon">✂</span>
-            <span class="photo-btn-label">Détourer</span>
+          <button class="photo-btn photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Supprimer le fond — PNG transparent">
+            <span class="photo-btn-label">Détourage auto</span>
           </button>
         </div>
         <div class="photo-ai-row">
           ${i===0 ? `<button class="photo-btn photo-analyze" data-i="0" title="Analyser l'objet et pré-remplir la fiche">
             <span class="photo-btn-label">Analyser</span>
           </button>` : ''}
-          <button class="photo-btn photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Retouche studio AI">
-            <span class="photo-btn-icon">◎</span>
-            <span class="photo-btn-label">Packshot</span>
-          </button>
           <button class="photo-btn photo-stylize" data-i="${i}" data-filename="${esc(filename)}"
-            ${hasIntention ? '' : 'disabled'}
-            title="${hasIntention ? 'Générer une mise en scène' : 'Choisissez d\'abord une Intention'}">
+            title="Générer une mise en scène colorée">
             <span class="photo-btn-label">Ambiance</span>
           </button>
         </div>
