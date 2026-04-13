@@ -2739,6 +2739,18 @@ function openEdit(id) {
   renderPhotos();
   renderPrivatePhotos();
   renderAllAttributes(); // includes renderUniversChips() + universSection consolidation
+  // Are.na
+  state.editExpositions = [...(c.expositions||[])];
+  const formType = c.type || 'item';
+  state._formType = formType;
+  _setFormType(formType);
+  if (formType === 'fragment') {
+    const ta = document.getElementById('fFragmentText');
+    const bg = document.getElementById('fFragmentBg');
+    if (ta) ta.value = c.textContent||'';
+    if (bg) bg.value = c.backgroundColor||'#1a1a1a';
+  }
+  renderExpoChipsPicker();
   switchModalTab('public');
   document.getElementById('editModal').style.display = 'flex';
 }
