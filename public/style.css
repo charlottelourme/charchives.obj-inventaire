@@ -2438,6 +2438,15 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   font-variant-numeric: tabular-nums;
 }
 
+/* ── Pills typologies inline dans la barre ── */
+.idx-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+}
+
 /* ── Recherche inline dans la barre ── */
 .idx-inline-wrap {
   position: relative;
