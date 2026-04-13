@@ -817,22 +817,22 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
     // Gemini : nouveau projet AI Studio → nouvelle clé → quota free remis à zéro
     //   https://aistudio.google.com/app/apikey
     const PROVIDERS = [
-      // 1. Groq — GRATUIT, vision Llama, 14400 req/jour, zéro carte bancaire
+      // 1. Groq — Llama 4 Scout (vision, GRATUIT, remplace llama-3.2-vision)
       {
-        name: 'groq/llama-3.2-11b-vision',
+        name: 'groq/llama-4-scout-vision',
         call: () => callOpenAICompat({
           baseUrl: 'https://api.groq.com/openai/v1',
           apiKey:  process.env.GROQ_API_KEY,
-          model:   'llama-3.2-11b-vision-preview'
+          model:   'meta-llama/llama-4-scout-17b-16e-instruct'
         })
       },
-      // 2. Groq fallback — modèle vision plus grand
+      // 2. Groq — Llama 4 Maverick (vision, plus puissant)
       {
-        name: 'groq/llama-3.2-90b-vision',
+        name: 'groq/llama-4-maverick-vision',
         call: () => callOpenAICompat({
           baseUrl: 'https://api.groq.com/openai/v1',
           apiKey:  process.env.GROQ_API_KEY,
-          model:   'llama-3.2-90b-vision-preview'
+          model:   'meta-llama/llama-4-maverick-17b-128e-instruct'
         })
       },
       // 3. OpenRouter — Gemini 2.0 Flash
@@ -881,7 +881,9 @@ IMPORTANT : réponds uniquement avec le JSON brut, aucun texte avant ou après.`
                          || msg.includes('quota') || msg.includes('Rate limit')
                          || msg.includes('rate_limit') || msg.includes('No endpoints')
                          || msg.includes('not found') || msg.includes('not a valid model')
-                         || msg.includes('model_not_found') || msg.includes('unavailable');
+                         || msg.includes('model_not_found') || msg.includes('unavailable')
+                         || msg.includes('decommissioned') || msg.includes('deprecated')
+                         || msg.includes('does not exist') || msg.includes('not supported');
         console.warn(`Analyze ${p.name} échoué (${isSkippable ? 'skip→suivant' : 'erreur fatale'}) : ${msg.slice(0, 160)}`);
         lastError = err;
         if (!isSkippable) break;  // Erreur inattendue → on abandonne
