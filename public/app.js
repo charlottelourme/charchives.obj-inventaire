@@ -3071,7 +3071,7 @@ async function _analyzeAndFillForm(filename) {
       const existing = new Set(state.editKeywords || []);
       data.keywords.forEach(k => existing.add(k));
       state.editKeywords = [...existing];
-      renderKeywords?.();
+      renderTagChips();
     }
 
     // Univers / Ambiance
