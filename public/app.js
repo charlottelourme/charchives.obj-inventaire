@@ -754,9 +754,10 @@ function render() {
   document.getElementById('countLabel').textContent =
     `${filtered.length} objet${filtered.length!==1?'s':''}`;
 
-  if (state.view==='grid')      renderGrid(filtered);
-  else if (state.view==='gallery')  renderGallery(filtered);
-  else if (state.view==='calendar') renderCalendar(filtered);
+  if (state.view==='grid')            renderGrid(filtered);
+  else if (state.view==='gallery')    renderGallery(filtered);
+  else if (state.view==='constellation') renderConstellation(filtered);
+  else if (state.view==='calendar')   renderCalendar(filtered);
   else if (state.view==='catalogue') renderCatalogue(filtered);
   else if (state.view==='trios')    renderTrios();
   else if (state.view==='stats')    renderStats();
