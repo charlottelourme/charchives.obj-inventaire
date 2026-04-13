@@ -978,8 +978,8 @@ function render() {
     `${filtered.length} objet${filtered.length!==1?'s':''}`;
 
   if (state.view==='grid') {
-    if (state.gravityMode && state.categoryFilter) renderGravity(filtered);
-    else { exitGravityMode(); renderGrid(filtered); }
+    exitGravityMode();
+    renderGrid(filtered);
   } else if (state.view==='derive') {
     if (state.deriveMode==='nuee')    renderGallery(filtered);
     else                              renderConstellation(filtered);
