@@ -5606,11 +5606,6 @@ function bindEvents() {
   // Search
   setupSearch();
 
-  // Are.na — type toggle
-  document.getElementById('btnTypeItem')?.addEventListener('click', () => _setFormType('item'));
-  document.getElementById('btnTypeFragment')?.addEventListener('click', () => _setFormType('fragment'));
-  // Fragment textarea → live preview
-  document.getElementById('fFragmentText')?.addEventListener('input', _updateFragmentPreview);
 }
 
 // ── ARE.NA : Fragment form toggle ────────────────────────────────────────────
