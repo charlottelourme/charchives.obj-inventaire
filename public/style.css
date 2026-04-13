@@ -5797,42 +5797,83 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   color: var(--bg);
 }
 
-/* ── ARE.NA : Breadcrumb bar ── */
+/* ══════════════════════════════════════════════════════════════
+   FIL D'ARIANE — barre fixe en bas de l'écran
+══════════════════════════════════════════════════════════════ */
 .breadcrumb-bar {
   position: fixed;
-  bottom: 52px; /* just above bottom-nav */
+  bottom: 52px;   /* juste au-dessus du bottom-nav */
   left: 0;
   right: 0;
   z-index: 60;
-  height: 34px;
-  background: var(--bg);
+  height: 28px;
+  background: rgba(var(--bg-rgb, 250,250,248), .94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-top: 1px solid var(--border-light);
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 14px;
   gap: 0;
   overflow-x: auto;
   scrollbar-width: none;
+  /* apparition douce */
+  animation: bc-slide-in .18s ease forwards;
+}
+@keyframes bc-slide-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .breadcrumb-bar::-webkit-scrollbar { display: none; }
-.breadcrumb-bar.visible { display: flex; }
+
+/* Tokens partagés (barre fixe + modale) */
 .bc-item {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px;
   font-weight: 500;
+  letter-spacing: .01em;
   color: var(--text-3);
   cursor: pointer;
   white-space: nowrap;
-  padding: 2px 4px;
+  padding: 2px 5px;
   border-radius: 2px;
-  transition: color .1s;
+  transition: color .12s, background .12s;
 }
-.bc-item:hover { color: var(--text); }
-.bc-item.bc-current { color: var(--text); font-weight: 600; cursor: default; }
+.bc-item:hover {
+  color: var(--text);
+  background: var(--border-light);
+}
+.bc-item.bc-current {
+  color: var(--text);
+  font-weight: 600;
+  cursor: default;
+  background: none;
+}
 .bc-sep {
-  font-size: 10px;
+  font-size: 9px;
   color: var(--text-3);
-  padding: 0 2px;
+  padding: 0 1px;
   user-select: none;
+  opacity: .6;
+}
+
+/* ── Fil d'Ariane dans la fiche détail ── */
+.detail-bc-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  padding: 18px 0 4px;
+  margin-top: 24px;
+  border-top: 1px solid var(--border-light);
+}
+.detail-bc-bar .bc-item {
+  font-size: 10px;
+  padding: 2px 4px;
+}
+.detail-bc-bar .bc-sep {
+  font-size: 9px;
+  padding: 0 1px;
 }
