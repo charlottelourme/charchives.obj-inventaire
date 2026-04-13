@@ -616,7 +616,6 @@ function buildIndexTrigger() {
       <div class="idx-inline-drop" id="idxInlineDrop" style="display:none"></div>
     </div>
   `;
-  `;
 
   document.getElementById('idxTriggerBtn')?.addEventListener('click', openIndexOverlay);
 
