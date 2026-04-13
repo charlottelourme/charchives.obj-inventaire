@@ -4153,24 +4153,114 @@ function _hexToRgb(hex) {
   return [(n>>16)&255, (n>>8)&255, n&255];
 }
 
+let _statsBubbleSim = null;
+
 function _renderStatsBubbles(verbeDist) {
+  if (_statsBubbleSim) { _statsBubbleSim.stop(); _statsBubbleSim = null; }
   const el = document.getElementById('statsBubbles');
   if (!el) return;
-  if (!verbeDist.length) { el.innerHTML = '<span style="color:var(--text-3);font-size:13px">Aucune intention assignée</span>'; return; }
+  el.innerHTML = '';
+
+  if (!verbeDist.length) {
+    el.innerHTML = '<span style="color:var(--text-3);font-size:13px;font-style:italic">Aucune intention assignée</span>';
+    return;
+  }
+
+  // Fallback statique si D3 absent
+  if (!window.d3) {
+    const maxCount = Math.max(...verbeDist.map(v => v.count));
+    el.innerHTML = verbeDist.map(v => {
+      const size = Math.round(72 + (v.count / maxCount) * 128);
+      const [r,g,b] = _hexToRgb(v.bg);
+      const luma = 0.299*r + 0.587*g + 0.114*b;
+      const tc = luma > 160 ? `rgba(${r},${g},${b},1)` : `rgba(255,255,255,.9)`;
+      return `<div class="stats-bubble" style="width:${size}px;height:${size}px;background:radial-gradient(circle at 32% 32%,rgba(${r},${g},${b},.28),rgba(${r},${g},${b},.75));border:1px solid rgba(${r},${g},${b},.22)" title="${v.name}">
+        <span class="stats-bubble-count" style="color:${tc}">${v.count}</span>
+        <span class="stats-bubble-name" style="color:${tc}">${v.name}</span>
+      </div>`;
+    }).join('');
+    return;
+  }
+
+  // ── D3 force — bulles orbitales ────────────────────────────────────────────
+  const W = el.clientWidth || 720;
+  const H = 340;
   const maxCount = Math.max(...verbeDist.map(v => v.count));
-  const minSize = 72; const maxSize = 200;
-  el.innerHTML = verbeDist.map(v => {
-    const size = Math.round(minSize + (v.count / maxCount) * (maxSize - minSize));
-    const [r,g,b] = _hexToRgb(v.bg);
-    // Couleur texte : si la bulle est claire, texte foncé ; sinon blanc
-    const luma = 0.299*r + 0.587*g + 0.114*b;
-    const textColor = luma > 160 ? `rgba(${r},${g},${b},1)` : `rgba(255,255,255,.9)`;
-    const nameColor = luma > 160 ? `rgba(${r},${g},${b},.65)` : `rgba(255,255,255,.55)`;
-    return `<div class="stats-bubble" style="width:${size}px;height:${size}px;background:radial-gradient(circle at 32% 32%, rgba(${r},${g},${b},.28) 0%, rgba(${r},${g},${b},.75) 100%);border:1px solid rgba(${r},${g},${b},.22);" title="${v.name} — ${v.count} objet${v.count>1?'s':''}">
-      <span class="stats-bubble-count" style="color:${textColor}">${v.count}</span>
-      <span class="stats-bubble-name" style="color:${nameColor}">${v.name}</span>
-    </div>`;
-  }).join('');
+  const minR = 38, maxR = 88;
+
+  const nodes = verbeDist.map(v => ({
+    ...v,
+    r: Math.round(minR + (v.count / maxCount) * (maxR - minR)),
+    x: W / 2 + (Math.random() - 0.5) * 260,
+    y: H / 2 + (Math.random() - 0.5) * 120,
+  }));
+
+  const svg = d3.select(el).append('svg')
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet')
+    .style('width', '100%').style('height', `${H}px`).style('overflow', 'visible');
+
+  const nodeEls = svg.selectAll('g.sgn').data(nodes).join('g')
+    .attr('class', 'sgn').style('cursor', 'pointer');
+
+  nodeEls.each(function(d) {
+    const g = d3.select(this);
+    const [r, gv, b] = _hexToRgb(d.bg);
+    const luma = 0.299 * r + 0.587 * gv + 0.114 * b;
+    const textFill = luma > 160 ? d.bg : '#fff';
+
+    // Aura de fond
+    g.append('circle').attr('r', d.r)
+      .attr('fill', d.bg).attr('fill-opacity', 0.13)
+      .attr('stroke', d.bg).attr('stroke-width', 1.5).attr('stroke-opacity', 0.45);
+
+    // Nombre — grand, centré
+    g.append('text')
+      .attr('class', 'sgn-count')
+      .attr('y', d.r < 55 ? -2 : -6)
+      .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+      .attr('fill', d.bg)
+      .text(d.count);
+
+    // Nom — Spectral italic, dessous
+    g.append('text')
+      .attr('class', 'sgn-name')
+      .attr('y', d.r < 55 ? 14 : 18)
+      .attr('text-anchor', 'middle')
+      .attr('fill', d.bg)
+      .text(d.name);
+  });
+
+  // Drag + click → filtrer l'inventaire
+  const drag = d3.drag()
+    .on('start', (ev, d) => { if (!ev.active) _statsBubbleSim.alphaTarget(0.25).restart(); d.fx = d.x; d.fy = d.y; })
+    .on('drag',  (ev, d) => { d.fx = ev.x; d.fy = ev.y; })
+    .on('end',   (ev, d) => { if (!ev.active) _statsBubbleSim.alphaTarget(0); d.fx = null; d.fy = null; });
+
+  nodeEls.call(drag).on('click', (ev, d) => {
+    ev.stopPropagation();
+    state.categoryFilter = d.name;
+    state.gravityMode = false;
+    state.attrFilters.subcat = [];
+    setView('grid');
+    buildCategoryFilterBar();
+    render();
+  });
+
+  // Simulation — bulles qui se repoussent et restent dans le cadre
+  _statsBubbleSim = d3.forceSimulation(nodes)
+    .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.06))
+    .force('collide', d3.forceCollide(d => d.r + 12).strength(0.88))
+    .force('charge',  d3.forceManyBody().strength(-30))
+    .alphaDecay(0.018)
+    .velocityDecay(0.42)
+    .on('tick', () => {
+      nodes.forEach(n => {
+        n.x = Math.max(n.r + 6, Math.min(W - n.r - 6, n.x));
+        n.y = Math.max(n.r + 6, Math.min(H - n.r - 6, n.y));
+      });
+      nodeEls.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
 }
 
 function _renderStatusBars(statusFreq, total) {
