@@ -705,7 +705,7 @@ function setView(v, _silent = false) {
   render();
 }
 
-// ── La Dérive : sub-mode Nuée / Réseau ──────────────────────────────────────
+// ── La Dérive : sub-mode Nuée / Constellation ──────────────────────────────
 function _applyDeriveMode(mode, skipRender = false) {
   state.deriveMode = mode;
   // Toggle panes with fade
@@ -713,6 +713,9 @@ function _applyDeriveMode(mode, skipRender = false) {
   const reseau = document.getElementById('deriveReseauPane');
   if (nuee)   nuee.classList.toggle('derive-pane-hidden',   mode !== 'nuee');
   if (reseau) reseau.classList.toggle('derive-pane-hidden', mode !== 'reseau');
+  // Shuffle button only visible in Nuée mode
+  const shuffleBtn = document.getElementById('deriveShuffleBtn');
+  if (shuffleBtn) shuffleBtn.classList.toggle('hidden', mode !== 'nuee');
   // Active button
   document.querySelectorAll('.derive-seg-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.mode === mode));
