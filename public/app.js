@@ -3616,7 +3616,6 @@ function renderPhotos() {
         </div>
         <div class="photo-ai-row">
           ${i===0 ? `<button class="photo-btn photo-analyze" data-i="0" title="Analyser l'objet et pré-remplir la fiche">
-            <span class="photo-btn-icon">✦</span>
             <span class="photo-btn-label">Analyser</span>
           </button>` : ''}
           <button class="photo-btn photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Retouche studio AI">
