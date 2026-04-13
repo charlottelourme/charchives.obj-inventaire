@@ -565,10 +565,24 @@ function buildCategoryFilterBar() {
     pill.addEventListener('click', () => {
       const cat = pill.dataset.cat;
       state.categoryFilter = cat;
-      state.gravityMode = false; // toujours grille dans l'inventaire
+      state.gravityMode = false;
       state.attrFilters.subcat = [];
       buildIndexTrigger();
       buildAttrFilterBar();
+      // Fil d'Ariane : garder uniquement le niveau "vue", puis push le verbe
+      state.breadcrumb = state.breadcrumb.slice(0, 1);
+      if (cat) {
+        pushBreadcrumb(cat, () => {
+          state.categoryFilter = cat;
+          state.attrFilters.subcat = [];
+          buildCategoryFilterBar();
+          buildIndexTrigger();
+          buildAttrFilterBar();
+          render();
+        });
+      } else {
+        renderBreadcrumbBar(); // "Toutes" — revenir au niveau vue seul
+      }
       render();
     });
   });
