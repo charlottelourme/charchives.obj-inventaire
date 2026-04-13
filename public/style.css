@@ -2785,6 +2785,33 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   opacity: .7;
 }
 
+/* ── Stats bulles D3 force ─────────────────────── */
+#statsBubbles { min-height: 100px; }
+
+/* Nombre — grand chiffre Spectral */
+.sgn-count {
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+/* Nom — Inter uppercase sous le chiffre */
+.sgn-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  pointer-events: none;
+  user-select: none;
+  opacity: .75;
+}
+/* Hover : légère mise en avant */
+.sgn:hover circle { stroke-opacity: .75 !important; fill-opacity: .22 !important; }
+.sgn:hover .sgn-count { font-size: 30px; }
+
 /* ── Barres dégradé statuts ────────────────────── */
 .stats-gradient-bars {
   display: flex;
