@@ -481,17 +481,15 @@ function buildIndexTrigger() {
   const activeTypos = state.attrFilters.subcat;
   bar.style.display = '';
 
-  // Typologies à afficher : celles du verbe actif, ou toutes
+  // Typologies : uniquement si un verbe est sélectionné
   let typologies = [];
   if (state.categoryFilter) {
     const verbe = getVerbes().find(v => v.name === state.categoryFilter);
     if (verbe) typologies = getTypologies(verbe).map(t => ({
       name: t, color: verbe.bgColor || verbe.color || '#2D2D2D', fg: verbe.textColor || '#fff'
     }));
-  } else {
-    typologies = getAllTypologies().map(t => ({ name: t.name, color: t.color, fg: t.textColor || '#fff' }));
+    typologies.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
   }
-  typologies.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
 
   // Pills de typologies
   const pillsHtml = typologies.map(({ name: t, color, fg }) => {
