@@ -2797,7 +2797,7 @@ async function saveCollection(asDraft = false) {
     const body = {
       type:            isFragment ? 'fragment' : 'item',
       textContent:     isFragment ? (document.getElementById('fFragmentText')?.value||'') : '',
-      backgroundColor: isFragment ? (document.getElementById('fFragmentBg')?.value||'') : '',
+      backgroundColor: isFragment ? (state.editFragmentBg || '#1a1a1a') : '',
       expositions:     [...(state.editExpositions||[])],
       name:           document.getElementById('fName').value.trim()||(isFragment?'Fragment':'Sans titre'),
       category:       document.getElementById('fCategory').value,
