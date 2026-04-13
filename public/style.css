@@ -615,6 +615,7 @@ main { padding: 0; }
   object-fit: contain;
   padding: 10%;
   transform-origin: center;
+  background: transparent; /* laisse var(--bg) du parent apparaître */
 }
 .card-thumb-area--detoured:hover .card-thumb {
   transform: scale(1.04);
