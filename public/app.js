@@ -1037,8 +1037,24 @@ function setView(v, _silent = false) {
   const tabEl = document.getElementById(tabs[v]);
   if (tabEl) tabEl.classList.add('active');
 
-  // If entering derive, set the correct sub-pane
-  if (v === 'derive') _applyDeriveMode(state.deriveMode, true);
+  // Si on entre dans Dérive → réinitialiser tous les filtres Inventaire
+  if (v === 'derive') {
+    state.categoryFilter    = '';
+    state.attrFilters       = { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [], motifs: [], usage: [], role: [] };
+    state.statusFilter      = 'all';
+    state.searchQuery       = '';
+    state.activeKeywordFilters = new Set();
+    state.detailList        = [];
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = '';
+    document.body.classList.remove('verbe-active');
+    document.body.style.removeProperty('--page-verbe-bg');
+    document.body.style.removeProperty('--page-verbe-text');
+    buildCategoryFilterBar();
+    buildAttrFilterBar();
+    renderSearchActiveTags();
+    _applyDeriveMode(state.deriveMode, true);
+  }
 
   // Breadcrumb push
   if (!_silent && VIEW_LABELS[v]) {
