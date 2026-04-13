@@ -488,15 +488,57 @@ function buildIndexTrigger() {
 
   bar.innerHTML = `
     <button class="idx-trigger-btn" id="idxTriggerBtn">
-      <span class="idx-trigger-text">Typologies</span>
+      <span class="idx-trigger-text">Objets</span>
       ${activeTypos.length === 0
-        ? `<em class="idx-trigger-hint">parcourir l'index →</em>`
+        ? `<em class="idx-trigger-hint">parcourir les typologies</em>`
         : `<span class="idx-trigger-count">${activeTypos.length} sélectionnée${activeTypos.length > 1 ? 's' : ''}</span>`}
     </button>
+    <div class="idx-inline-wrap">
+      <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher une typologie…" autocomplete="off" spellcheck="false">
+      <div class="idx-inline-drop" id="idxInlineDrop" style="display:none"></div>
+    </div>
     ${chipsHtml ? `<div class="idx-active-chips">${chipsHtml}</div>` : ''}
   `;
 
   document.getElementById('idxTriggerBtn')?.addEventListener('click', openIndexOverlay);
+
+  // ── Recherche inline avec autocomplete ──
+  const inp = document.getElementById('idxInlineInput');
+  const drop = document.getElementById('idxInlineDrop');
+  if (inp && drop) {
+    inp.addEventListener('input', () => {
+      const q = inp.value.toLowerCase().trim();
+      if (!q) { drop.style.display = 'none'; drop.innerHTML = ''; return; }
+      const matches = [];
+      getVerbes().forEach(verbe => {
+        const col = verbe.bgColor || verbe.color || '#2D2D2D';
+        getTypologies(verbe).filter(t => t.toLowerCase().includes(q)).forEach(t => {
+          matches.push({ t, col, verbeName: verbe.name });
+        });
+      });
+      if (!matches.length) { drop.style.display = 'none'; drop.innerHTML = ''; return; }
+      drop.innerHTML = matches.slice(0, 8).map(m =>
+        `<button class="idx-dd-item" data-typo="${esc(m.t)}" style="--dd-col:${m.col}">
+          <span class="idx-dd-name">${esc(m.t)}</span>
+          <span class="idx-dd-verbe" style="color:${m.col}">${esc(m.verbeName)}</span>
+        </button>`
+      ).join('');
+      drop.style.display = 'block';
+      drop.querySelectorAll('.idx-dd-item').forEach(btn => {
+        btn.addEventListener('mousedown', e => {
+          e.preventDefault(); // évite le blur avant le click
+          const t = btn.dataset.typo;
+          if (!state.attrFilters.subcat.includes(t)) state.attrFilters.subcat.push(t);
+          inp.value = '';
+          drop.style.display = 'none';
+          buildIndexTrigger(); render();
+        });
+      });
+    });
+    inp.addEventListener('blur', () => setTimeout(() => { drop.style.display = 'none'; }, 160));
+    inp.addEventListener('keydown', e => { if (e.key === 'Escape') { inp.value = ''; drop.style.display = 'none'; } });
+  }
+
   bar.querySelectorAll('.idx-active-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       state.attrFilters.subcat = state.attrFilters.subcat.filter(x => x !== chip.dataset.typo);
