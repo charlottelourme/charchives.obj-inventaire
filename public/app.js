@@ -1136,7 +1136,10 @@ function cardHTML(c) {
 
   return `
   <div class="card" data-id="${c.id}"${accentStyle}>
-    <div class="card-thumb-area">
+    ${(() => {
+      const isDetoured = photo && (photo.toLowerCase().endsWith('.png') || photo.includes('detour'));
+      return `<div class="card-thumb-area${isDetoured ? ' card-thumb-area--detoured' : ''}">`;
+    })()}
       ${statusBadge}
       ${photo
         ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="">`
