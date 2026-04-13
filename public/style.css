@@ -2396,6 +2396,244 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* ── Hover : effet table lumineuse supprimé ── */
 
+/* ══════════════════════════════════════════════════════════════
+   INDEX "DIGGER" — Trigger + Overlay typologies
+   ══════════════════════════════════════════════════════════════ */
+
+/* Trigger line (dans #subcategoryFilterBar) */
+.idx-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  transition: color .15s;
+}
+.idx-trigger-btn:hover { color: var(--text); }
+.idx-trigger-text { font-weight: 500; color: var(--text-2); }
+.idx-trigger-hint {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 400;
+}
+.idx-trigger-count {
+  font-size: 11px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Active chips (typologies sélectionnées) */
+.idx-active-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 6px;
+}
+.idx-active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1.5px solid currentColor;
+  background: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  opacity: .85;
+  transition: opacity .12s;
+}
+.idx-active-chip:hover { opacity: 1; }
+
+/* ── Index Overlay ── */
+.idx-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity .28s ease;
+  overflow-y: auto;
+}
+.idx-overlay.idx-overlay-open { opacity: 1; }
+
+.idx-overlay-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 52px 48px 80px;
+}
+.idx-overlay-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.idx-overlay-title {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text);
+}
+.idx-close-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--text-2);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .12s, color .12s;
+}
+.idx-close-btn:hover { background: var(--surface); color: var(--text); }
+
+/* Search input */
+.idx-search-wrap { margin-bottom: 40px; }
+.idx-search-input {
+  width: 100%;
+  border: none;
+  border-bottom: 1.5px solid var(--border);
+  background: transparent;
+  padding: 10px 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s;
+}
+.idx-search-input:focus { border-bottom-color: var(--text); }
+.idx-search-input::placeholder { color: var(--text-3); }
+
+/* Groups */
+.idx-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 36px 48px;
+}
+.idx-group-hdr {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.idx-group-verbe {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+.idx-group-count {
+  font-size: 10px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+}
+.idx-group-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.idx-typo-btn {
+  padding: 4px 11px;
+  border-radius: 3px;
+  border: 1.5px solid transparent;
+  background: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--text);
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+  letter-spacing: .005em;
+}
+.idx-typo-btn:hover { background: var(--surface); }
+.idx-typo-btn.active { font-weight: 500; }
+.idx-empty {
+  color: var(--text-3);
+  font-style: italic;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 14px;
+  grid-column: 1/-1;
+}
+
+@media (max-width: 520px) {
+  .idx-overlay-inner { padding: 36px 20px 60px; }
+  .idx-groups { grid-template-columns: 1fr; gap: 28px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MODE GRAVITÉ — Canvas orbital D3
+   ══════════════════════════════════════════════════════════════ */
+
+#gravityPane {
+  display: none;
+  width: 100%;
+  height: calc(100vh - 200px);
+  min-height: 540px;
+  position: relative;
+}
+#gravityPane.gravity-active {
+  display: block;
+  animation: gravAppear .45s cubic-bezier(.22,.68,0,1.2) both;
+}
+@keyframes gravAppear {
+  from { opacity: 0; transform: scale(.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+#gridView.gravity-hidden,
+#gridExportFooter.gravity-hidden {
+  display: none;
+}
+
+/* Verbe central — Spectral italic */
+.grav-verb-label {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  font-size: 38px;
+  font-weight: 300;
+  pointer-events: none;
+  user-select: none;
+}
+.grav-verb-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  fill: currentColor;
+  opacity: .5;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Labels sous les nœuds */
+.grav-node-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  fill: var(--text-2);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transition: opacity .18s;
+}
+.grav-node:hover .grav-node-label { opacity: 1; }
+
 /* ── Empty state ── */
 .gallery-empty {
   display: flex;
