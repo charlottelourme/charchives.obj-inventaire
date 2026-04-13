@@ -569,7 +569,10 @@ function buildCategoryFilterBar() {
       state.attrFilters.subcat = [];
       buildIndexTrigger();
       buildAttrFilterBar();
-      // Fil d'Ariane : garder uniquement le niveau "vue", puis push le verbe
+      // Fil d'Ariane : s'assurer que le niveau "vue" existe, puis push le verbe
+      if (!state.breadcrumb.length) {
+        state.breadcrumb = [{ label: VIEW_LABELS[state.view] || 'Inventaire', backAction: () => setView(state.view, true) }];
+      }
       state.breadcrumb = state.breadcrumb.slice(0, 1);
       if (cat) {
         pushBreadcrumb(cat, () => {
