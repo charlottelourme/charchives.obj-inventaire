@@ -2723,11 +2723,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   opacity: .5;
 }
 
-/* Pills typologies — cohérentes avec l'app, angles carrés */
+/* Liste typologies — texte pur, sans boîtes */
 .idx-alpha-pills {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  flex-direction: column;
+  gap: 2px;
 }
 .idx-alpha-pill {
   display: inline-flex;
