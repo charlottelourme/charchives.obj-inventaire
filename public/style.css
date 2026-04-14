@@ -662,11 +662,11 @@ main { padding: 0; }
 /* Thumb area (relative container for carousel overlay) */
 .card-thumb-area {
   position: relative;
-  overflow: hidden;
+  overflow: hidden;  /* clip hover overlay + carousel arrows */
 }
-/* Image détourée (PNG transparent) — fond identique à l'arrière-plan, pas de recadrage */
+/* Image détourée (PNG transparent) — fond transparent pour laisser le halo rayonner */
 .card-thumb-area--detoured {
-  background: var(--bg);
+  background: transparent;
 }
 .card-thumb-area--detoured .card-thumb {
   object-fit: contain;
