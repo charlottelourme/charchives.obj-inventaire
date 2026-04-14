@@ -2441,12 +2441,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   user-select: none;
 }
 .derive-seg-btn.active {
-  color: var(--text);
+  color: #000;
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
 }
-.derive-seg-btn:hover:not(.active) { color: var(--text-2); }
+.derive-seg-btn:hover:not(.active) { color: #000; }
 @media (max-width: 520px) {
   .derive-seg-btn { padding: 5px 10px; font-size: 13px; }
 }
