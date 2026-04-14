@@ -1694,12 +1694,14 @@ function cardHTML(c) {
       <div class="card-drop-hint">Déposer les photos ici</div>
     </div>
     <div class="card-body">
-      ${statusColor ? `<span class="card-status-dot" style="background:${statusColor}"></span>` : ''}
       ${metaRow}
       <div class="card-name">${esc(c.name)}</div>
       ${c.description ? `<div class="card-desc">${esc(c.description)}</div>` : ''}
       <div class="card-footer-row">
-        ${priceBadge}
+        <div class="card-price-status">
+          ${statusColor ? `<span class="card-status-dot" style="background:${statusColor}"></span>` : ''}
+          ${priceBadge}
+        </div>
         ${addedDate}
       </div>
     </div>
