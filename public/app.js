@@ -4416,13 +4416,27 @@ function renderPhotos() {
       /* détourage désactivé pendant ambiance */
 
       try {
+        // Phase 1 — Cloudinary : couleur + contraste + teinte
         const result = await api.post('/api/stylize-photo', { filename, hexColor });
         if (result.error) {
           skeleton.remove();
           btn.disabled = false;
-          wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = false);
           _showPhotoToast(`Erreur ambiance : ${result.error}`);
           return;
+        }
+
+        // Phase 2 — Canvas : grain film + vignette blanche
+        const skLabel = skeleton.querySelector('.photo-skeleton-label');
+        if (skLabel) skLabel.innerHTML = 'Grain &amp; vignette…';
+        let finalFilename = result.stylizedFilename;
+        try {
+          const canvasFilename = await _applyAmbianceCanvas(result.stylizedFilename);
+          // Supprimer l'intermédiaire Cloudinary
+          api.post('/api/remove-photo', { ref: result.stylizedFilename }).catch(() => {});
+          finalFilename = canvasFilename;
+        } catch (canvasErr) {
+          console.warn('Canvas ambiance fallback:', canvasErr.message);
+          // Garde la version Cloudinary sans grain/vignette
         }
 
         skeleton.remove();
@@ -4438,7 +4452,7 @@ function renderPhotos() {
             </div>
             <div class="photo-compare-sep"></div>
             <div class="photo-compare-side">
-              <img src="${photoUrl(result.stylizedFilename)}" alt="Après">
+              <img src="${photoUrl(finalFilename)}" alt="Après">
               <div class="photo-compare-label">Ambiance AI</div>
             </div>
           </div>
@@ -4457,25 +4471,22 @@ function renderPhotos() {
         wrap.style.pointerEvents = 'none';
 
         compareEl.querySelector('.photo-compare-apply').addEventListener('click', () => {
-          // Add stylized photo at the end (mise en scène, not replacing main packshot)
-          state.editPhotos.push(result.stylizedFilename);
+          state.editPhotos.push(finalFilename);
           compareEl.remove();
           renderPhotos();
         });
 
         compareEl.querySelector('.photo-compare-cancel').addEventListener('click', () => {
-          api.post('/api/remove-photo', { ref: result.stylizedFilename }).catch(() => {});
+          api.post('/api/remove-photo', { ref: finalFilename }).catch(() => {});
           compareEl.remove();
           wrap.style.opacity = '';
           wrap.style.pointerEvents = '';
           btn.disabled = false;
-          wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = false);
         });
 
       } catch (err) {
         skeleton.remove();
         btn.disabled = false;
-        wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = false);
         _showPhotoToast(`Erreur ambiance : ${err.message}`);
       }
     });
