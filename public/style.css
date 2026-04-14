@@ -6044,15 +6044,16 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   justify-content: center;
   gap: 8px;
   aspect-ratio: 3/4;
-  border: 2px dashed var(--border);
-  background: var(--bg-2);
-  transition: background .15s, border-color .15s;
+  border: none;
+  background: transparent;
+  transition: opacity .15s;
   cursor: default;
-  border-radius: 2px;
+  border-radius: 0;
+  opacity: 0.55;
 }
 .trios-drop-zone.empty.drag-over .trios-empty-slot {
-  background: #f0ede8;
-  border-color: var(--text);
+  opacity: 1;
+  background: rgba(240,237,232,0.5);
 }
 .trios-empty-icon {
   font-size: 28px;
