@@ -681,8 +681,9 @@ main { padding: 0; }
   position: relative;
   overflow: hidden;
   background: transparent;
-  width: 85%;          /* image plus étroite que le texte */
-  margin: 0 auto;      /* centrée dans la carte */
+  width: 85%;           /* image plus étroite que le texte */
+  margin-left: auto;    /* collée à droite → décalage asymétrique éditorial */
+  margin-right: 0;
 }
 /* Image détourée / cutout — fond transparent, objet en entier */
 .card-thumb-area--detoured,
