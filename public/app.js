@@ -1621,10 +1621,8 @@ function cardHTML(c) {
     const fg      = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
     const fontCls = c.noteFont === 'terrain' ? 'font-terrain' : 'font-poetic';
     const wideCls = c.noteWidth === 'wide'   ? ' note-wide'   : '';
-    // Halo teinté à 50% de transparence
-    const halo    = bg + '80';
     return `<div class="card-note${wideCls}" data-id="${c.id}"
-      style="--note-halo:${halo};color:${fg}" draggable="true">
+      style="background:${bg};color:${fg}" draggable="true">
       <div class="card-note-inner">
         <div class="card-note-text ${fontCls}">${esc(c.content || '')}</div>
       </div>
