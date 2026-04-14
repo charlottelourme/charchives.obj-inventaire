@@ -3,13 +3,13 @@
 :root {
   --bg: #FAFAF8;
   --surface: #ffffff;
-  --border: #C4C0B8;         /* allégé — warm gray (était #2D2D2D) */
-  --border-light: #E8E4DE;   /* légèrement plus doux */
-  --border-strong: #8A8680;  /* allégé (était #363636) */
-  --text: #2D2D2D;            /* texte — conservé pour lisibilité */
-  --text-2: #6B6762;          /* allégé (était #555555) */
-  --text-3: #A8A49E;          /* allégé (était #999999) */
-  --accent: #2D2D2D;          /* accent primaire — conservé */
+  --border: #C4C0B8;         /* allégé — warm gray */
+  --border-light: #E8E4DE;
+  --border-strong: #8A8680;
+  --text: #2D2D2D;
+  --text-2: #6B6762;
+  --text-3: #A8A49E;
+  --accent: #2D2D2D;
   --red: #D13F13;
   --tag-bg: #F5F4F1;
   --tag-border: #DEDBD4;
@@ -17,6 +17,8 @@
   --shadow: none;
   --shadow-lg: 0 4px 24px rgba(45,45,45,.08);
   font-size: 14px;
+  /* ── Zoom masonry — modifié par le slider JS ── */
+  --grid-cols: 4;
 }
 
 body {
