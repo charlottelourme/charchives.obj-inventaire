@@ -431,7 +431,11 @@ header h1 {
 
 /* ── Layout ── */
 main { padding: 0; }
-#gridWrapper { padding: 0; }
+#gridWrapper {
+  padding: 0;
+  max-width: 1600px;
+  margin: 0 auto;
+}
 
 .toolbar {
   display: flex;
