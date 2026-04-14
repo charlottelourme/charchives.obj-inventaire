@@ -1333,18 +1333,25 @@ function renderGrid(items) {
     });
     el.innerHTML=html;
   } else {
-    // Titre verbe — texte inline sur fond de page coloré (pas de bloc background)
+    // Titre verbe — nom en grand + pills typologies interactives en dessous
     let titleHTML = '';
     if (state.categoryFilter) {
       const verbe = getVerbes().find(v => v.name === state.categoryFilter);
       if (verbe) {
         const typos = getTypologies(verbe);
+        const col = verbe.bgColor || verbe.color || '#2D2D2D';
+        const fg  = verbe.textColor || '#fff';
+        const pillsHTML = typos.map(t => {
+          const isActive = state.attrFilters.subcat.includes(t);
+          return `<button class="vpt-pill${isActive ? ' active' : ''}" data-typo="${esc(t)}"
+            style="--vpt-col:${col};--vpt-fg:${fg}">${esc(t)}</button>`;
+        }).join('');
         titleHTML = `<div class="verbe-page-title">
-          <h1 class="vpt-name">${esc(verbe.name)}</h1>
-          <div class="vpt-meta">
-            ${typos.length ? `<p class="vpt-typos">${typos.slice(0,5).join(' · ')}${typos.length>5?' · …':''}</p>` : ''}
+          <div class="vpt-top">
+            <h1 class="vpt-name">${esc(verbe.name)}</h1>
             <span class="vpt-count">${items.length}&nbsp;objet${items.length!==1?'s':''}</span>
           </div>
+          ${typos.length ? `<div class="vpt-pills">${pillsHTML}</div>` : ''}
         </div>`;
       }
     }
