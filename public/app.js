@@ -1468,11 +1468,9 @@ function render() {
     const isActive = p.dataset.cat === state.categoryFilter;
     p.classList.toggle('active', isActive);
     if (isActive && p.classList.contains('sfb-pill-verbe')) {
-      // Actif : monochrome — soulignement seul, zéro couleur saturée
-      p.style.color = '';
+      // Actif : Contraste Pur — noir absolu, aucun trait
+      p.style.color = '#000';
       p.style.fontWeight = '700';
-      p.style.textDecoration = 'underline';
-      p.style.textUnderlineOffset = '3px';
       p.style.background = '';
       p.style.borderColor = '';
     } else if (!isActive) {
