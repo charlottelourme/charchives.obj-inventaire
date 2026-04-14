@@ -1041,16 +1041,22 @@ main { padding: 0; }
 }
 .sfb-pill:hover { color: var(--text); background: none; }
 .sfb-pill.active {
-  color: var(--accent);
+  color: #000;
   font-weight: 700;
   background: none;
 }
+/* Point de Galerie — pastille minuscule centrée sous le mot */
 .sfb-pill.active::after {
-  content: '';
+  content: '•';
   position: absolute;
-  bottom: 2px; left: 16px; right: 16px;
-  height: 1.5px;
-  background: currentColor;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  font-size: 8px;
+  line-height: 1;
+  width: auto; height: auto;
+  background: none;
+  color: currentColor;
 }
 
 /* ── Verbes (INTENTION) — Cormorant Garamond italique, éditorial ── */
