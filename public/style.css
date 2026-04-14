@@ -2755,8 +2755,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-inline-wrap {
   position: relative;
   flex: 0 1 220px;
-  margin-left: 4px;
-  align-self: flex-end; /* bottom = même niveau que idx-trigger-hint → trait continu */
+  margin-left: 40px;
+  align-self: flex-end;
 }
 .idx-inline-input {
   width: 100%;
