@@ -4743,7 +4743,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   .grid .card { margin-bottom: 16px; }
   /* Halo réduit sur petite largeur */
   .grid .card::before {
-    filter: blur(20px) grayscale(1);
+    filter: blur(20px);
     top: 18%;
     height: 116%;
   }
