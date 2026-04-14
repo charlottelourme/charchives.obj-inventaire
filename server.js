@@ -460,10 +460,10 @@ app.post('/api/stylize-photo', async (req, res) => {
       cloudinary.uploader.explicit(publicId, {
         type: 'upload',
         eager: [[
-          { effect: 'art:fes' },
-          { effect: 'grain:22' },
-          { effect: 'vignette:40' },
-          { color: `rgb:${colorHex}`, effect: 'tint:18' },
+          { effect: 'contrast:20' },
+          { effect: 'saturation:20' },
+          { effect: 'brightness:8' },
+          { color: `rgb:${colorHex}`, effect: 'tint:22' },
           { quality: 'auto', fetch_format: 'auto' }
         ]],
         eager_async: false
