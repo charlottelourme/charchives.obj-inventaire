@@ -636,10 +636,11 @@ function buildCategoryFilterBar() {
     btn.dataset.bg = v.bgColor || v.color || '#2D2D2D';
     btn.dataset.fg = v.textColor || '#fff';
     if (isActive) {
-      // Actif : pilule pleine avec la couleur du verbe
-      btn.style.background = v.bgColor || v.color || '#2D2D2D';
-      btn.style.color = v.textColor || '#fff';
-      btn.style.borderColor = v.bgColor || v.color || '#2D2D2D';
+      // Actif : couleur du verbe sur le texte + soulignement — zéro fond
+      btn.style.color = v.bgColor || v.color || '#2D2D2D';
+      btn.style.fontWeight = '700';
+      btn.style.textDecoration = 'underline';
+      btn.style.textUnderlineOffset = '3px';
     }
     btn.textContent = v.name;
     bar.appendChild(btn);
@@ -647,15 +648,15 @@ function buildCategoryFilterBar() {
   bar.querySelectorAll('.sfb-pill').forEach(pill => {
     pill.addEventListener('mouseenter', () => {
       if (!pill.classList.contains('active') && pill.dataset.bg) {
-        pill.style.background = pill.dataset.bg + '22';
         pill.style.color = pill.dataset.bg;
-        pill.style.borderColor = pill.dataset.bg + '55';
+        pill.style.background = '';
+        pill.style.borderColor = '';
       }
     });
     pill.addEventListener('mouseleave', () => {
       if (!pill.classList.contains('active')) {
-        pill.style.background = '';
         pill.style.color = '';
+        pill.style.background = '';
         pill.style.borderColor = '';
       }
     });
