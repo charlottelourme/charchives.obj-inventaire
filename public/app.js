@@ -178,84 +178,159 @@ const SEARCH_THESAURUS = {
   // ── Thé & Café ──
   'tasse':'Thé & Café','mug':'Thé & Café','théière':'Thé & Café','thé':'Thé & Café',
   'cafetière':'Thé & Café','café':'Thé & Café','expresso':'Thé & Café','bol':'Thé & Café',
+  'tasse à thé':'Thé & Café','tasse à café':'Thé & Café','sous-tasse':'Thé & Café',
+  'cappuccino':'Thé & Café','infusion':'Thé & Café','tisane':'Thé & Café',
   // ── Assiettes & Plats ──
   'assiette':'Assiettes & Plats','plat':'Assiettes & Plats','faïence':'Assiettes & Plats',
-  'service':'Assiettes & Plats',
+  'service':'Assiettes & Plats','assiette creuse':'Assiettes & Plats',
+  'assiette plate':'Assiettes & Plats','terrine':'Assiettes & Plats','soupière':'Assiettes & Plats',
+  'saladier':'Assiettes & Plats','bol salade':'Assiettes & Plats',
   // ── Couverts ──
   'couvert':'Couverts','fourchette':'Couverts','couteau':'Couverts',
   'cuillère':'Couverts','cuiller':'Couverts','argenterie':'Couverts',
+  'louche':'Couverts','spatule':'Couverts','pince':'Couverts',
   // ── Verres ──
   'verre':'Verres','carafe':'Verres','flûte':'Verres','gobelet':'Verres',
+  'pichet':'Verres','cruche':'Verres','décanteur':'Verres','carafon':'Verres',
+  'shot':'Verres','verre à vin':'Verres','verre à eau':'Verres',
   // ── Plateaux ──
-  'plateau':'Plateaux',
+  'plateau':'Plateaux','plateau de service':'Plateaux','plateau décoratif':'Plateaux',
   // ── Autour de la table ──
   'nappe':'Autour de la table','serviette':'Autour de la table','set':'Autour de la table',
+  'set de table':'Autour de la table','chemin de table':'Autour de la table',
+  'rond de serviette':'Autour de la table','sous-verre':'Autour de la table',
+  // ── Art de la table (terme parent) ──
+  'art de la table':'Art de la table','table':'Art de la table',
+  'vaisselle':'Art de la table','dîner':'Art de la table','repas':'Art de la table',
   // ── Bougeoirs & Chandeliers ──
   'bougeoir':'Bougeoirs & Chandeliers','chandelier':'Bougeoirs & Chandeliers',
   'candélabre':'Bougeoirs & Chandeliers','chandelle':'Bougeoirs & Chandeliers',
+  'photophore':'Bougeoirs & Chandeliers','porte-bougie':'Bougeoirs & Chandeliers',
   // ── Bougies ──
-  'bougie':'Bougies','cierge':'Bougies',
+  'bougie':'Bougies','cierge':'Bougies','bougie parfumée':'Bougies',
   // ── Lampes ──
   'lampe':'Lampes','luminaire':'Lampes','abat-jour':'Lampes','lumière':'Lampes',
+  'suspension':'Lampes','applique':'Lampes','lampe de chevet':'Lampes',
   // ── Vases ──
-  'vase':'Vases','soliflore':'Vases','potiche':'Vases',
+  'vase':'Vases','soliflore':'Vases','potiche':'Vases','amphore':'Vases',
+  'urne':'Vases','cache-pot':'Vases','jardinière':'Vases',
   // ── Sculptures & Figurines ──
   'sculpture':'Sculptures & Figurines','figurine':'Sculptures & Figurines',
   'statuette':'Sculptures & Figurines','statue':'Sculptures & Figurines',
+  'buste':'Sculptures & Figurines','tête':'Sculptures & Figurines',
+  'bronze':'Sculptures & Figurines','céramique':'Sculptures & Figurines',
   // ── Objets muraux ──
   'tableau':'Objets muraux','miroir':'Objets muraux','affiche':'Objets muraux',
-  'gravure':'Objets muraux','estampe':'Objets muraux',
+  'gravure':'Objets muraux','estampe':'Objets muraux','photo':'Objets muraux',
+  'photographie':'Objets muraux','plaque':'Objets muraux',
   // ── Tapisseries & Coussins ──
   'tapisserie':'Tapisseries & Coussins','coussin':'Tapisseries & Coussins',
   'tissu':'Tapisseries & Coussins','broderie':'Tapisseries & Coussins',
-  'textile':'Tapisseries & Coussins',
+  'textile':'Tapisseries & Coussins','jeté':'Tapisseries & Coussins',
+  'plaid':'Tapisseries & Coussins','housse':'Tapisseries & Coussins',
   // ── Boîtes & Coffrets ──
   'boîte':'Boîtes & coffrets','boite':'Boîtes & coffrets','coffret':'Boîtes & coffrets',
-  'étui':'Boîtes & coffrets','cassette':'Boîtes & coffrets',
+  'étui':'Boîtes & coffrets','cassette':'Boîtes & coffrets','trousse':'Boîtes & coffrets',
+  'nécessaire':'Boîtes & coffrets',
   // ── Bonbonnières & Bocaux ──
   'bocal':'Bonbonnières & Bocaux','bonbonnière':'Bonbonnières & Bocaux',
   'pot':'Bonbonnières & Bocaux','jarre':'Bonbonnières & Bocaux',
+  'boîte à sucre':'Bonbonnières & Bocaux','boîte à thé':'Bonbonnières & Bocaux',
   // ── Flacons ──
   'flacon':'Flacons','bouteille':'Flacons','fiole':'Flacons','parfum':'Flacons',
+  'vaporisateur':'Flacons','atomiseur':'Flacons','ampoule':'Flacons',
   // ── Rangements ──
   'rangement':'Rangements','panier':'Rangements','corbeille':'Rangements',
+  'tiroir':'Rangements','organisateur':'Rangements','vide-poche':'Rangements',
   // ── Bijoux ──
   'bijou':'Bijoux','collier':'Bijoux','bracelet':'Bijoux','bague':'Bijoux',
   'anneau':'Bijoux','pendentif':'Bijoux','boucle':'Bijoux','médaille':'Bijoux',
+  'broche':'Bijoux','épingle':'Bijoux','barrette':'Bijoux','chaîne':'Bijoux',
   // ── Foulards ──
   'foulard':'Foulards','écharpe':'Foulards','châle':'Foulards','soie':'Foulards',
+  'bandana':'Foulards','carré':'Foulards',
   // ── Accessoires ──
   'accessoire':'Accessoires','sac':'Accessoires','pochette':'Accessoires','ceinture':'Accessoires',
+  'porte-monnaie':'Accessoires','gant':'Accessoires','chapeau':'Accessoires',
   // ── Livres ──
   'livre':'Livres','roman':'Livres','ouvrage':'Livres','encyclopédie':'Livres',
+  'catalogue':'Livres','atlas':'Livres','dictionnaire':'Livres',
+  'livre d\'art':'Livres','beau livre':'Livres',
   // ── Revues & Cartes postales ──
   'revue':'Revues & Cartes postales','magazine':'Revues & Cartes postales',
   'carte postale':'Revues & Cartes postales','carte':'Revues & Cartes postales',
+  'journal':'Revues & Cartes postales','presse':'Revues & Cartes postales',
   // ── Cadres ──
-  'cadre':'Cadres','encadrement':'Cadres',
+  'cadre':'Cadres','encadrement':'Cadres','cadre photo':'Cadres',
   // ── Beaux arts & Arts graphiques ──
   'peinture':'Beaux arts & Arts graphiques','dessin':'Beaux arts & Arts graphiques',
   'lithographie':'Beaux arts & Arts graphiques','sérigraphie':'Beaux arts & Arts graphiques',
-  'art':'Beaux arts & Arts graphiques',
+  'art':'Beaux arts & Arts graphiques','aquarelle':'Beaux arts & Arts graphiques',
+  'huile':'Beaux arts & Arts graphiques','impression':'Beaux arts & Arts graphiques',
   // ── Minéraux & Fossiles ──
   'fossile':'Minéraux & Fossiles','minéral':'Minéraux & Fossiles','mineral':'Minéraux & Fossiles',
   'cristal':'Minéraux & Fossiles','pierre':'Minéraux & Fossiles','roche':'Minéraux & Fossiles',
   'caillou':'Minéraux & Fossiles','coquillage':'Minéraux & Fossiles','géode':'Minéraux & Fossiles',
+  'ammonite':'Minéraux & Fossiles','silex':'Minéraux & Fossiles',
   // ── Objets scientifiques ──
   'instrument':'Objets scientifiques','loupe':'Objets scientifiques','compas':'Objets scientifiques',
   'mesure':'Objets scientifiques','scientifique':'Objets scientifiques',
+  'thermomètre':'Objets scientifiques','baromètre':'Objets scientifiques',
+  'balance':'Objets scientifiques','sablier':'Objets scientifiques',
   // ── Outils anciens ──
   'outil':'Outils anciens','clé':'Outils anciens','clef':'Outils anciens',
-  'serrure':'Outils anciens','ancien':'Outils anciens',
+  'serrure':'Outils anciens','ancien':'Outils anciens','verrou':'Outils anciens',
+  'cadenas':'Outils anciens','marteau':'Outils anciens',
   // ── Curiosités & Fragments ──
   'curiosité':'Curiosités & Fragments','fragment':'Curiosités & Fragments',
   'bizarre':'Curiosités & Fragments','rare':'Curiosités & Fragments','étrange':'Curiosités & Fragments',
+  'trouvaille':'Curiosités & Fragments','morceau':'Curiosités & Fragments',
   // ── Coupes & Vide-poche ──
-  'coupe':'Coupes & Vide-poche','vide-poche':'Coupes & Vide-poche','coupelle':'Coupes & Vide-poche',
+  'coupe':'Coupes & Vide-poche','coupelle':'Coupes & Vide-poche',
+  'coupole':'Coupes & Vide-poche','vasque':'Coupes & Vide-poche',
   // ── Petits objets ──
-  'miniature':'Petits objets','petit objet':'Petits objets',
+  'miniature':'Petits objets','petit objet':'Petits objets','bibelot':'Petits objets',
+  'breloque':'Petits objets','charm':'Petits objets',
   // ── Usages oubliés ──
   'mystère':'Usages oubliés','inconnu':'Usages oubliés','antique':'Usages oubliés',
+  'objet non identifié':'Usages oubliés',
+};
+
+// ── Groupes parents de typologies — pour l'expansion intelligente ─────────────
+// Quand une recherche aboutit à une typologie fille, on inclut aussi la catégorie
+// parente afin de remonter les objets classés directement sous le groupe.
+const PARENT_TYPOLOGIES = {
+  'Thé & Café':              'Art de la table',
+  'Assiettes & Plats':       'Art de la table',
+  'Couverts':                'Art de la table',
+  'Verres':                  'Art de la table',
+  'Plateaux':                'Art de la table',
+  'Autour de la table':      'Art de la table',
+  'Bougeoirs & Chandeliers': 'Lumière',
+  'Bougies':                 'Lumière',
+  'Lampes':                  'Lumière',
+  'Vases':                   'Décor végétal',
+  'Boîtes & coffrets':       'Contenants',
+  'Bonbonnières & Bocaux':   'Contenants',
+  'Flacons':                 'Contenants',
+  'Rangements':              'Contenants',
+  'Coupes & Vide-poche':     'Contenants',
+  'Bijoux':                  'Parure',
+  'Foulards':                'Parure',
+  'Accessoires':             'Parure',
+  'Livres':                  'Papier & Imprimé',
+  'Revues & Cartes postales':'Papier & Imprimé',
+  'Cadres':                  'Papier & Imprimé',
+  'Beaux arts & Arts graphiques': 'Art',
+  'Sculptures & Figurines':  'Art',
+  'Objets muraux':           'Art',
+  'Minéraux & Fossiles':     'Cabinet de curiosités',
+  'Objets scientifiques':    'Cabinet de curiosités',
+  'Curiosités & Fragments':  'Cabinet de curiosités',
+  'Outils anciens':          'Cabinet de curiosités',
+  'Tapisseries & Coussins':  'Textile',
+  'Petits objets':           'Objets du quotidien',
+  'Usages oubliés':          'Cabinet de curiosités',
 };
 
 // ── Normalisation robuste (accents + casse) ──────────────────────────────────
