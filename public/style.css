@@ -786,11 +786,14 @@ main { padding: 0; }
 }
 .card-verbe-label {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: .03em;
-  padding: 2px 6px;
-  border-radius: 0;
+  font-style: italic;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: .01em;
+  padding: 0;
+  border: none;
+  background: transparent !important;
+  color: var(--text-3);
   white-space: nowrap;
 }
 .card-typo-label {
