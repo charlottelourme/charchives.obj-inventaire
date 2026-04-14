@@ -2302,7 +2302,11 @@ function renderGallery(filtered) {
   _galleryItems = [];
   if (_galleryRafId) { cancelAnimationFrame(_galleryRafId); _galleryRafId = null; }
 
-  let items = filtered || state.collections;
+  // Inclure les notes intercalaires dans la Dérive
+  const noteItems = state.collections.filter(c => c.type === 'note')
+    .sort((a, b) => (a.notePos ?? 9999) - (b.notePos ?? 9999));
+  let items = _intercalateNotes(filtered || state.collections.filter(c => c.type !== 'note'));
+  if (!noteItems.length) items = filtered || state.collections;
 
   // Shuffle si actif — réordonner selon l'ordre mémorisé ou en créer un nouveau
   if (state.galleryShuffled) {
