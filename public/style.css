@@ -447,7 +447,7 @@ main { padding: 0; }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 16px clamp(24px, 4vw, 64px) 16px;
+  padding: 16px var(--filter-gutter); /* aligne count-label sur la même règle que INTENTION/OBJETS */
   min-height: 56px;
 }
 .toolbar-gap { flex: 1; }
