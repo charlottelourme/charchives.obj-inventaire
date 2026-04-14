@@ -4958,7 +4958,7 @@ const SM_SECTION_DEFAULTS = {
   usage:       'Fonctions & Usages',
   univers:     'Atmosphères',
   locations:   'Emplacements',
-  trios:       'Trios'
+  trios:       'Triptyques'
 };
 
 // Labels par défaut des onglets Trios
