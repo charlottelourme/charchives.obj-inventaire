@@ -111,10 +111,9 @@ const EMOTION_OPTIONS = ['poétique','mélancolie','nostalgie','étrange','myst�
 
 const STATUS_COLORS = {
   'Disponible':   '#22c55e',
-  'Réservé':      '#f59e0b',
   'Vendu':        '#9ca3af',
-  'Brouillon':    '#d1d5db',
   'Pas à vendre': '#7c3aed',
+  'Brouillon':    '#d1d5db',
 };
 
 const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
