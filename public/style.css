@@ -921,55 +921,55 @@ main { padding: 0; }
   opacity: .7;
 }
 
-/* ── Pill de base ── */
+/* ── Pill de base → texte pur, aucune pilule ── */
 .sfb-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 14px;
+  padding: 6px 16px;
   border: none;
-  border-right: none;          /* plus de séparateurs verticaux */
+  border-radius: 0;
   background: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-3);
+  transition: color .15s;
+  white-space: nowrap;
+  margin: 0;
+  position: relative;
+  letter-spacing: .03em;
+}
+.sfb-pill:hover { color: var(--text); background: none; }
+.sfb-pill.active {
+  color: var(--accent);
+  font-weight: 700;
+  background: none;
+}
+.sfb-pill.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 16px; right: 16px;
+  height: 1.5px;
+  background: currentColor;
+}
+
+/* ── Verbes (INTENTION) — texte pur, fond coloré actif conservé (injecté JS) ── */
+.sfb-pill-verbe {
   font-family: 'Inter', sans-serif;
   font-size: 11.5px;
   font-weight: 500;
-  cursor: pointer;
-  color: var(--text-2);
-  transition: color .15s, background .15s, border-color .15s;
-  white-space: nowrap;
-  border-radius: 9999px;
-  margin: 2px 1px;
+  letter-spacing: .02em;
+  padding: 6px 16px;
+  border-radius: 0;
+  border: none;
+  transition: color .15s, background .15s;
+  margin: 0;
 }
-.sfb-pill:hover {
-  background: var(--tag-bg);
-  color: var(--text);
-}
-/* État actif générique (ex : "Toutes") */
-.sfb-pill.active {
-  background: var(--accent);
-  color: #F5F5F0;
-}
-
-/* ── Verbes (INTENTION) — pilules rondes colorées ── */
-.sfb-pill-verbe {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: .01em;
-  padding: 5px 14px;
-  border-radius: 9999px;
-  border: 1.5px solid transparent;
-  transition: background .15s, color .15s, border-color .15s;
-  margin: 2px 1px;
-}
-.sfb-pill-verbe:hover {
-  background: var(--tag-bg);
-  color: var(--text);
-}
-/* Verbe actif : fond coloré + texte contrasté (couleurs injectées via JS) */
-.sfb-pill-verbe.active {
-  /* background, color et border-color injectés via JS */
-}
+.sfb-pill-verbe:hover { color: var(--text); background: none; }
+/* Verbe actif : fond coloré conservé pour identification visuelle (injecté JS) */
+.sfb-pill-verbe.active { /* background, color injectés via JS */ }
 
 /* ── Ligne OBJET — pills rondes neutres ── */
 #subcategoryFilterBar {
