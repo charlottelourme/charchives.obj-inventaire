@@ -161,7 +161,7 @@ body.verbe-active .search-bar::placeholder { color: var(--text-3); opacity: 1; }
   gap: 16px;
 }
 .vpt-name {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(42px, 6vw, 78px);
   font-weight: 300;
   letter-spacing: -.03em;
@@ -245,7 +245,7 @@ body.dark-mode header {
   background: rgba(24,24,24,.96);
 }
 header h1 {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 16px;
   font-weight: 500;
   letter-spacing: .16em;
@@ -663,7 +663,7 @@ main { padding: 0; }
   padding: 8px 0;
 }
 .cho-description {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-weight: 300;
   font-size: clamp(13px, 2vw, 19px);
@@ -690,7 +690,7 @@ main { padding: 0; }
   line-height: 1.8;
 }
 .cho-price {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 20px;
   font-weight: 300;
   letter-spacing: -.02em;
@@ -793,7 +793,7 @@ main { padding: 0; }
   margin-bottom: 6px;
 }
 .card-verbe-label {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 10px;
   font-weight: 400;
   letter-spacing: .03em;
@@ -814,7 +814,7 @@ main { padding: 0; }
 }
 
 .card-name {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.28;
@@ -907,7 +907,7 @@ main { padding: 0; }
   z-index: 1;
 }
 .vab-name {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(52px, 8vw, 110px);
   font-weight: 300;
   letter-spacing: -.03em;
@@ -958,7 +958,7 @@ main { padding: 0; }
   padding: 32px;
 }
 .cat-hdr-name {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(42px, 6vw, 80px);
   font-weight: 300;
   letter-spacing: -.02em;
@@ -1111,7 +1111,7 @@ main { padding: 0; }
 
 /* Boutons typologies — Spectral italique, léger */
 .tfb-pill {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 15px;
   font-weight: 300;
@@ -1341,7 +1341,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   z-index: 2;
 }
 .tl-sep-label {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(42px, 5.5vw, 68px);
   font-weight: 300;
   color: var(--text);
@@ -1484,7 +1484,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   z-index: 1;
 }
 .modal-title {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 18px;
   font-weight: 400;
 }
@@ -2156,7 +2156,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   margin-bottom: 14px;
 }
 .cal-mini-year-label {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 20px;
   font-weight: 300;
   letter-spacing: -.02em;
@@ -2395,7 +2395,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   border: none;
   background: transparent;
   border-radius: 0;
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 14px;
   font-weight: 400;
@@ -2538,7 +2538,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* Name labels */
 .con-label {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 10px;
   font-weight: 400;
   fill: var(--text);
@@ -2653,7 +2653,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-trigger-btn:hover { color: var(--text); }
 .idx-trigger-text { font-weight: 500; color: var(--text-2); }
 .idx-trigger-hint {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 12px;
   color: var(--text-3);
@@ -2741,7 +2741,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-dd-item:hover { background: var(--surface); }
 .idx-dd-name { flex: 1; }
 .idx-dd-verbe {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 10px;
   opacity: .8;
@@ -2831,7 +2831,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   padding-bottom: 16px;
 }
 .idx-overlay-title {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 20px;
   font-weight: 400;
@@ -2901,7 +2901,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* Lettrine éditoriale */
 .idx-alpha-letter {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 22px;
   font-weight: 300;
@@ -2956,7 +2956,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-empty {
   color: var(--text-3);
   font-style: italic;
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 13px;
   padding: 20px 0;
 }
@@ -2994,7 +2994,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* Verbe central — Spectral italic */
 .grav-verb-label {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 38px;
   font-weight: 300;
@@ -3125,7 +3125,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .stats-kpi-item:first-child { border-left: 1px solid var(--border-light); padding-left: 32px; }
 .stats-kpi-item:not(:first-child) { padding-left: 32px; }
 .stats-kpi-number {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(52px, 7vw, 88px);
   font-weight: 300;
   color: var(--text);
@@ -3169,7 +3169,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   filter: brightness(1.08);
 }
 .stats-bubble-count {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(18px, 2.5vw, 32px);
   font-weight: 300;
   line-height: 1;
@@ -3187,7 +3187,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* Nombre — grand chiffre Spectral */
 .sgn-count {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 28px;
   font-weight: 300;
   line-height: 1;
@@ -3229,7 +3229,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   letter-spacing: .07em;
 }
 .stats-grad-bar-count {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 22px;
   font-weight: 300;
   color: var(--text);
@@ -3875,7 +3875,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   100% { transform: rotate(360deg); }
 }
 .starting-title {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 22px;
   font-weight: 400;
   color: var(--text);
@@ -4290,7 +4290,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   flex: 1;
   height: 32px;
   padding: 4px 10px;
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 16px;
   border: 1px solid var(--border-light);
   border-radius: 0;
@@ -5770,7 +5770,7 @@ label, input, select, textarea, button {
   font-family: 'Inter', sans-serif;
 }
 h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
 }
 .settings-section-title, .attr-group-header span, .form-group-label {
   font-family: 'Inter', sans-serif;
@@ -5780,7 +5780,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 /* KPI values — handled in stats redesign via .stats-kpi-number */
 /* Detail modal title */
 #detailModal .detail-title {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 22px;
   font-weight: 400;
 }
@@ -5928,7 +5928,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 }
 /* Verbe : label coloré — carré, sans arrondi */
 .portrait-verbe-pill {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 11px;
   font-weight: 400;
   padding: 3px 8px;
@@ -5952,7 +5952,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 }
 /* Titre : XXL Spectral italique — la vedette */
 .portrait-title {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(26px, 3.2vw, 42px);
   font-weight: 300;
   font-style: italic;
@@ -5981,7 +5981,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   text-transform: uppercase;
 }
 .portrait-price {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 18px;
   font-weight: 400;
   color: var(--text);
@@ -6001,7 +6001,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 }
 /* Description : légèrement plus grande, lisible sur le halo */
 .portrait-desc {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 14.5px;
   font-style: italic;
   color: #2a2623; /* très sombre */
@@ -6082,7 +6082,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   margin-bottom: 12px;
 }
 .trios-headline {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 42px;
   font-weight: 300;
   color: var(--text);
@@ -6119,7 +6119,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 .trios-link-bar {
   text-align: center;
   margin-bottom: 40px;
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 18px;
   font-weight: 300;
   color: var(--text-2);
@@ -6515,7 +6515,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   border: 2px solid var(--bg);
 }
 .tl-origine-label {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 13px;
   font-weight: 300;
   color: var(--text-2);
@@ -6550,7 +6550,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   flex-shrink: 0;
 }
 .tl-none-label {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 13px;
   color: var(--text-3);
   font-weight: 300;
@@ -6634,7 +6634,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   overflow: hidden;
 }
 .fragment-preview-text {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 13px;
   line-height: 1.5;
@@ -6657,7 +6657,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   border: 1.5px solid var(--border);
   border-radius: 2px;
   background: var(--bg);
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 14px;
   line-height: 1.6;
@@ -6757,7 +6757,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   overflow: hidden;
 }
 .card-fragment .frag-text {
-  font-family: 'Spectral', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 14px;
   line-height: 1.5;
