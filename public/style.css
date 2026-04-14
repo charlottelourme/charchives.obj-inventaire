@@ -2605,35 +2605,35 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   inset: 0;
   z-index: 9000;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  padding: 40px 24px;
-  /* Backdrop flouté élégant */
-  background: rgba(240, 236, 230, 0.48);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding: 0;
+  background: rgba(240, 236, 230, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   opacity: 0;
   transition: opacity .28s ease;
 }
 .idx-overlay.idx-overlay-open { opacity: 1; }
 
-/* Carte centrale — reprend le style Fiche Objet : angles carrés, bordure */
+/* Plein écran — pas de carte centrale, surface propre bord-à-bord */
 .idx-overlay-inner {
   background: var(--bg);
-  border-radius: 2px;
-  border: 1px solid var(--border);
-  box-shadow: 0 24px 64px rgba(45,40,35,.13), 0 4px 16px rgba(45,40,35,.06);
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
   width: 100%;
-  max-width: 720px;
-  max-height: 82vh;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transform: translateY(18px) scale(0.97);
+  transform: translateY(24px);
   transition: transform .38s cubic-bezier(.22,.68,0,1.2);
 }
 .idx-overlay.idx-overlay-open .idx-overlay-inner {
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
 /* En-tête fixe */
