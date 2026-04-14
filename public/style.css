@@ -122,11 +122,16 @@ body.verbe-active .search-bar::placeholder { color: var(--text-3); opacity: 1; }
 /* ── Titre verbe inline (remplace le bandeau) ── */
 .verbe-page-title {
   display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 44px 32px 28px;
+}
+/* Ligne du haut : nom + compteur */
+.vpt-top {
+  display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 44px 32px 20px;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 16px;
 }
 .vpt-name {
   font-family: 'Spectral', Georgia, serif;
@@ -137,26 +142,6 @@ body.verbe-active .search-bar::placeholder { color: var(--text-3); opacity: 1; }
   color: var(--page-verbe-text, var(--text));
   margin: 0;
 }
-.vpt-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-  padding-bottom: 4px;
-}
-.vpt-typos {
-  font-family: 'Inter', sans-serif;
-  font-size: 9.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .18em;
-  color: var(--page-verbe-text, var(--text));
-  opacity: .45;
-  text-align: right;
-  max-width: 340px;
-  line-height: 1.8;
-  margin: 0;
-}
 .vpt-count {
   font-family: 'Inter', sans-serif;
   font-size: 9px;
@@ -165,6 +150,41 @@ body.verbe-active .search-bar::placeholder { color: var(--text-3); opacity: 1; }
   letter-spacing: .24em;
   color: var(--page-verbe-text, var(--text));
   opacity: .35;
+  padding-bottom: 6px;
+  white-space: nowrap;
+}
+/* Rangée de pills typologies sous le nom */
+.vpt-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.vpt-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border: 1.5px solid var(--vpt-col, var(--border));
+  border-radius: 9999px;
+  background: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--text);
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.vpt-pill:hover {
+  background: var(--vpt-col, var(--border));
+  color: var(--vpt-fg, var(--bg));
+  border-color: var(--vpt-col, var(--border));
+}
+.vpt-pill.active {
+  background: var(--vpt-col, var(--text));
+  color: var(--vpt-fg, var(--bg));
+  border-color: var(--vpt-col, var(--text));
 }
 
 /* ── Header ── */
