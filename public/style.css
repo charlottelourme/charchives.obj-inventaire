@@ -4761,7 +4761,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     min-height: 36px;
     min-width: 80px;
     justify-content: center;
-    font-size: 10px;
+    font-size: 9.5px; /* cohérent avec desktop */
     border-radius: 4px;
   }
   /* sfb-label fond solide (sticky) */
