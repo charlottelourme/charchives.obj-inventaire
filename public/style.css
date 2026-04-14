@@ -1066,6 +1066,85 @@ main { padding: 0; }
 /* Verbe actif : fond coloré conservé pour identification visuelle (injecté JS) */
 .sfb-pill-verbe.active { /* background, color injectés via JS */ }
 
+/* ══════════════════════════════════════════════════════════════
+   BARRE TYPOLOGIES — Flux typographique primaire
+   Texte pur, scroll horizontal, Spectral italique.
+   Les Verbes deviennent filtre secondaire.
+══════════════════════════════════════════════════════════════ */
+.typo-filter-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 4px clamp(16px, 4vw, 64px) 0;
+  min-height: 44px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex-wrap: nowrap;
+  border-bottom: 1px solid var(--border-light);
+}
+.typo-filter-bar::-webkit-scrollbar { display: none; }
+
+/* Bouton "Toutes" — Inter uppercase discret */
+.tfb-all {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  padding: 10px 16px 10px 0;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color .15s;
+}
+.tfb-all:hover { color: var(--text-2); }
+.tfb-all.active {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Boutons typologies — Spectral italique, léger */
+.tfb-pill {
+  font-family: 'Spectral', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: .01em;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color .15s;
+  position: relative;
+}
+.tfb-pill:hover { color: var(--text-2); }
+.tfb-pill.active {
+  color: var(--text);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+}
+
+/* Dark mode */
+body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
+
+/* Mobile — scroll horizontal sans padding latéral excessif */
+@media (max-width: 520px) {
+  .typo-filter-bar { padding-left: 10px; padding-right: 10px; }
+  .tfb-pill { font-size: 13px; padding: 8px 10px; }
+  .tfb-all { padding-right: 10px; }
+}
+
 /* ── Ligne OBJET — pills rondes neutres ── */
 #subcategoryFilterBar {
   flex-wrap: wrap;
