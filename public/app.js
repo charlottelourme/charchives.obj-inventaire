@@ -3706,6 +3706,62 @@ async function _analyzeAndFillForm(filename) {
 
 function _updateStylizeButtonsState() { /* no-op — ambiance toujours disponible */ }
 
+// ── Ambiance : post-traitement Canvas (grain film + vignette blanche) ──────────
+async function _applyAmbianceCanvas(imgUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const W = img.naturalWidth, H = img.naturalHeight;
+        const canvas = document.createElement('canvas');
+        canvas.width = W; canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        // 1. Image de base
+        ctx.drawImage(img, 0, 0);
+
+        // 2. Grain film léger (bruit aléatoire sur chaque pixel)
+        const imgData = ctx.getImageData(0, 0, W, H);
+        const d = imgData.data;
+        const grainStrength = 18;
+        for (let i = 0; i < d.length; i += 4) {
+          const g = (Math.random() - 0.5) * grainStrength;
+          d[i]   = Math.min(255, Math.max(0, d[i]   + g));
+          d[i+1] = Math.min(255, Math.max(0, d[i+1] + g));
+          d[i+2] = Math.min(255, Math.max(0, d[i+2] + g));
+        }
+        ctx.putImageData(imgData, 0, 0);
+
+        // 3. Vignette blanche radiale sur les contours
+        const cx = W / 2, cy = H / 2;
+        const innerR = Math.min(W, H) * 0.28;
+        const outerR = Math.max(W, H) * 0.78;
+        const grad = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR);
+        grad.addColorStop(0,    'rgba(255,255,255,0)');
+        grad.addColorStop(0.55, 'rgba(255,255,255,0.04)');
+        grad.addColorStop(0.82, 'rgba(255,255,255,0.28)');
+        grad.addColorStop(1,    'rgba(255,255,255,0.60)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+
+        // 4. Upload du résultat
+        canvas.toBlob(blob => {
+          if (!blob) { reject(new Error('Canvas toBlob failed')); return; }
+          const file = new File([blob], `ambiance_${Date.now()}.jpg`, { type: 'image/jpeg' });
+          api.uploadPhotos([file])
+            .then(({ filenames }) => resolve(filenames[0]))
+            .catch(reject);
+        }, 'image/jpeg', 0.90);
+
+      } catch(err) { reject(err); }
+    };
+    img.onerror = () => reject(new Error('Chargement image CORS échoué'));
+    // Cache-bust pour éviter les problèmes CORS avec les URLs Cloudinary déjà en cache
+    img.src = imgUrl.includes('?') ? imgUrl + '&_t=' + Date.now() : imgUrl + '?_t=' + Date.now();
+  });
+}
+
 // ── Photos ─────────────────────────────────────────────────────────────────────
 function _showPhotoToast(msg) {
   let toast = document.getElementById('photoToast');
