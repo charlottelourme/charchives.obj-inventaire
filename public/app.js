@@ -5103,7 +5103,7 @@ function smAccordion(key, title, content, defaultOpen, editable = false) {
 function smTriosTabsHTML(draft) {
   const labels = draft.triosTabLabels || {};
   return `<div class="sm-trios-tabs">
-    <p class="sm-trios-hint">Renomme les 3 onglets de la vue Trios.</p>
+    <p class="sm-trios-hint">Renomme les 3 onglets de la vue Triptyque.</p>
     ${TRIOS_TAB_KEYS.map((key, i) => `
       <div class="sm-field-row">
         <label class="sm-trios-tab-label">Onglet ${i+1}</label>
