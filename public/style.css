@@ -1099,10 +1099,10 @@ main { padding: 0; }
   text-underline-offset: 4px;
 }
 
-/* Boutons typologies — Spectral italique, léger */
+/* Boutons typologies — Cormorant Garamond, léger */
 .tfb-pill {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
+  font-style: normal;
   font-size: 15px;
   font-weight: 300;
   letter-spacing: .01em;
