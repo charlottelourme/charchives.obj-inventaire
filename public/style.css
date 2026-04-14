@@ -7234,12 +7234,30 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .sm-thes-select:focus { border-color: var(--border-strong); }
 
 /* ══════════════════════════════════════════════════════════════
-   TYPOGRAPHIE BRUTALISME D'ARCHIVE
-   Cormorant Garamond (Serif dramatique) + Cutive Mono (Machine)
-   Ajustements d'échelle et de chasse post-substitution globale.
+   LOI TYPOGRAPHIQUE BINAIRE — "Conceptuel" vs "Factuel"
+   ──────────────────────────────────────────────────────────────
+   CONCEPTUEL  → Cormorant Garamond italic  = ce qui donne sens
+   FACTUEL     → Cutive Mono upright        = ce qui informe
 ══════════════════════════════════════════════════════════════ */
 
-/* ── Cormorant Garamond : grands titres en italique ── */
+/* ── Classe utilitaire : Conceptuel (poétique, navigation majeure, verbes) ── */
+.font-concept {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-style: italic !important;
+  font-weight: 300 !important;
+  letter-spacing: .01em !important;
+}
+
+/* ── Classe utilitaire : Factuel (technique, filtres, données, labels) ── */
+.font-factual {
+  font-family: 'Cutive Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  letter-spacing: .05em !important;
+  text-transform: uppercase !important;
+}
+
+/* ── Cormorant Garamond : grands titres, navigation majeure ── */
 .vpt-name,
 .vab-name,
 .cat-hdr-name,
