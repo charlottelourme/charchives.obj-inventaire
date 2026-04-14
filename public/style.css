@@ -5669,15 +5669,24 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   }
   .portrait-thumb { width: 52px; height: 52px; }
 }
-/* ── Colonne photo ── */
+/* ── Colonne photo — fond transparent, séparateur gradient ── */
 .portrait-photo-col {
-  border-right: 1px solid var(--border);
-  background: var(--bg);
+  border-right: none;
+  background: transparent;
   display: flex;
   flex-direction: column;
   position: sticky;
   top: 0;
   max-height: calc(92vh - 52px - 56px);
+}
+/* Séparateur éthéré remplaçant le border-right solide */
+.portrait-photo-col::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 8%; bottom: 8%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(45,45,45,.10), transparent);
+  pointer-events: none;
 }
 .portrait-main-wrap {
   flex: 1;
@@ -5685,8 +5694,8 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
-  padding: 24px;
+  background: transparent;
+  padding: 32px;
 }
 .portrait-main-img {
   max-width: 100%;
