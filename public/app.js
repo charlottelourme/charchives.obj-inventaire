@@ -638,11 +638,9 @@ function buildCategoryFilterBar() {
     btn.dataset.bg = v.bgColor || v.color || '#2D2D2D';
     btn.dataset.fg = v.textColor || '#fff';
     if (isActive) {
-      // Actif : monochrome — soulignement seul, zéro couleur saturée
-      btn.style.color = '';
+      // Actif : Contraste Pur — couleur noire, aucun trait
+      btn.style.color = '#000';
       btn.style.fontWeight = '700';
-      btn.style.textDecoration = 'underline';
-      btn.style.textUnderlineOffset = '3px';
     }
     btn.textContent = v.name;
     bar.appendChild(btn);
