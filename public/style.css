@@ -6546,18 +6546,18 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 ══════════════════════════════════════════════════════════════ */
 .breadcrumb-bar {
   position: fixed;
-  bottom: 52px;   /* juste au-dessus du bottom-nav */
+  bottom: 44px;   /* calé sur le bord supérieur du bottom-nav */
   left: 0;
   right: 0;
   z-index: 60;
-  height: 28px;
-  background: rgba(var(--bg-rgb, 250,250,248), .94);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-top: 1px solid var(--border-light);
+  height: 18px;
+  background: rgba(var(--bg-rgb, 250,250,248), .82);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-top: 1px solid rgba(0,0,0,.04);
   display: flex;
   align-items: center;
-  padding: 0 14px;
+  padding: 0 12px;
   gap: 0;
   overflow-x: auto;
   scrollbar-width: none;
