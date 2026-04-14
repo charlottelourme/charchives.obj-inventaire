@@ -5559,14 +5559,15 @@ main { padding-bottom: 44px; }
 }
 /* Point de Galerie — filtre attribut actif */
 .mf-btn.mf-active::after {
-  content: '•';
+  content: '';
   position: absolute;
   left: 50%;
-  bottom: -8px;
+  bottom: -4px;
   transform: translateX(-50%);
-  font-size: 7px;
-  line-height: 1;
-  color: currentColor;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: currentColor;
 }
 body.dark-mode .mf-btn.mf-active { color: #F5F5F0; }
 .mf-btn.mf-open { background: var(--border); color: var(--text); }
