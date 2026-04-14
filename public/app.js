@@ -1756,6 +1756,16 @@ function _drawConGraph(canvas, nodes, links) {
         .classed('con-node-focus',    nd => nd.id === d.id)
         .classed('con-node-neighbor', nd => neighbors.has(nd.id));
 
+      // ── Halo : drop-shadow reprenant la couleur du verbe ──
+      const haloColor = getVerbeBgColor(d.category) || '#9ca3af';
+      nodeEl.style('filter', function(nd) {
+        if (nd.id === d.id)          return `drop-shadow(0 0 14px ${haloColor})`;
+        if (nd.category === d.category && neighbors.has(nd.id))
+                                      return `drop-shadow(0 0 8px ${haloColor}80)`;
+        if (nd.category === d.category) return `drop-shadow(0 0 5px ${haloColor}44)`;
+        return null;
+      });
+
       // Show neighbor labels + bouton panier du node survolé
       nodeEl.selectAll('text.con-label')
         .classed('con-label-show', function() {
@@ -1778,6 +1788,7 @@ function _drawConGraph(canvas, nodes, links) {
       linkEl.classed('con-link-lit', false).attr('stroke-opacity', 0.18);
       nodesG.classed('con-has-hover', false);
       nodeEl.classed('con-node-focus', false).classed('con-node-neighbor', false);
+      nodeEl.style('filter', null);  // retire tous les halos
       nodeEl.selectAll('text.con-label').classed('con-label-show', false).attr('opacity', 0);
       nodeEl.selectAll('g.con-add-btn').style('opacity', 0);
     })
