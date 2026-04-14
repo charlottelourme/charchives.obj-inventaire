@@ -2803,6 +2803,25 @@ function renderTrios() {
   _renderSavedTrios();
 }
 
+// ── Astérisque ornemental SVG — icône "Coup de cœur" ─────────────────────────
+// 4 branches principales (gravure fine) + 8 éclats radiaux animés (révélation encre)
+function _asteriskSVG() {
+  return `<svg class="ast-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true">
+    <line class="ast-s" x1="12" y1="2.5" x2="12" y2="21.5"/>
+    <line class="ast-s" x1="2.5" y1="12" x2="21.5" y2="12"/>
+    <line class="ast-s" x1="5.1"  y1="5.1"  x2="18.9" y2="18.9"/>
+    <line class="ast-s" x1="18.9" y1="5.1"  x2="5.1"  y2="18.9"/>
+    <line class="ast-b" x1="12" y1="7.2" x2="12" y2="4.2" transform="rotate(22.5,12,12)"/>
+    <line class="ast-b" x1="12" y1="7.2" x2="12" y2="4.2" transform="rotate(67.5,12,12)"/>
+    <line class="ast-b" x1="12" y1="7.2" x2="12" y2="4.2" transform="rotate(112.5,12,12)"/>
+    <line class="ast-b" x1="12" y1="7.2" x2="12" y2="4.2" transform="rotate(157.5,12,12)"/>
+    <line class="ast-b" x1="12" y1="7.2" x2="12" y2="4.2" transform="rotate(202.5,12,12)"/>
+    <line class="ast-b" x1="12" y1="7.2" x2="12" y2="4.2" transform="rotate(247.5,12,12)"/>
+    <line class="ast-b" x1="12" y1="7.2" x2="12" y2="4.2" transform="rotate(292.5,12,12)"/>
+    <line class="ast-b" x1="12" y1="7.2" x2="12" y2="4.2" transform="rotate(337.5,12,12)"/>
+  </svg>`;
+}
+
 // ══ MARQUE-PAGES — "Mettre de côté" ══════════════════════════════════════════
 async function toggleBookmark(id) {
   const col = state.collections.find(c => c.id === id);
