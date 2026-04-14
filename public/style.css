@@ -6058,8 +6058,8 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   text-transform: uppercase;
 }
 .portrait-price {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 18px;
+  font-family: 'Cutive Mono', monospace; /* Factuel → Cutive Mono */
+  font-size: 14px;
   font-weight: 400;
   color: var(--text);
   margin-left: auto;
