@@ -603,16 +603,16 @@ main { padding: 0; }
 .card::before {
   content: '';
   position: absolute;
-  /* Rectangle strict : toute la largeur, inset latéral négatif pour déborder */
-  left: -8%;
-  width: 116%;
-  top: 10%;            /* démarre tôt pour couvrir le haut de l'image */
-  height: 130%;        /* descend bien sous le texte */
+  /* Inset dynamique : collé au contenu réel de la carte */
+  top: 0;              /* démarre au bord supérieur de la carte */
+  bottom: -24px;       /* dépasse légèrement la dernière ligne de texte */
+  left: -8%;           /* débordement latéral pour fondre les bords */
+  right: -8%;          /* symétrique — remplace width: 116% */
   background: var(--verbe-accent, rgba(190,182,170,0.72));
   filter: blur(42px);  /* flou fort sur rectangle = bords fondus naturels */
   border-radius: 4px;  /* quasi-nul — on veut un bloc, pas un ovale */
   z-index: -1;
-  opacity: 0.50;       /* +8% vs 0.42 — couleur plus affirmée */
+  opacity: 0.50;
   pointer-events: none;
   transition: opacity .42s ease;
 }
