@@ -4908,7 +4908,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   /* Vue tabs : scroll horizontal */
   .view-tabs { overflow-x: auto; scrollbar-width: none; }
   .view-tabs::-webkit-scrollbar { display: none; }
-  .view-tab { font-size: 10px; padding: 3px 8px; white-space: nowrap; flex-shrink: 0; }
+  .view-tab { font-size: 14px; padding: 3px 10px; white-space: nowrap; flex-shrink: 0; }
 }
 
 /* Tablette 521–900px : 3 colonnes — géré par la règle column-count ci-dessus */
