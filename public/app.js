@@ -4033,6 +4033,7 @@ function _showPhotoToast(msg) {
 const _crop = {
   overlay: null, canvas: null, ctx: null,
   img: null,           // Image source
+  isPng: false,        // true si la source est un PNG (préserve la transparence)
   ratio: 'free',       // 'free' | nombre
   // Position de l'image dans le canvas (letterbox)
   imgX: 0, imgY: 0, imgW: 0, imgH: 0,
