@@ -1154,23 +1154,16 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   .tfb-all { padding-right: 10px; }
 }
 
-/* ── Ligne OBJET — pills rondes neutres ── */
+/* ── Ligne OBJETS — même structure que categoryFilterBar ── */
 #subcategoryFilterBar {
-  flex-wrap: wrap;
-  gap: 4px 3px;
-  padding: 4px 12px 8px;
-  min-height: auto;
+  flex-wrap: nowrap;
+  gap: 0;
+  padding: 8px var(--filter-gutter);
+  min-height: 52px;
   border-bottom: none;
   background: transparent;
-  border-right: none;
 }
-#subcategoryFilterBar .sfb-label {
-  border-right: none;
-  min-width: auto;
-  padding: 0 10px 0 4px;
-  margin-right: 2px;
-  letter-spacing: .12em;
-}
+/* Le label "OBJETS" est injecté par buildIndexTrigger — hérite de .sfb-label */
 
 /* Typologies : texte pur, aucun fond ── */
 .sfb-pill-typo {
