@@ -1229,6 +1229,7 @@ function setView(v, _silent = false) {
     document.body.classList.remove('verbe-active');
     document.body.style.removeProperty('--page-verbe-bg');
     document.body.style.removeProperty('--page-verbe-text');
+    buildTypologyFilterBar();
     buildCategoryFilterBar();
     buildAttrFilterBar();
     renderSearchActiveTags();
