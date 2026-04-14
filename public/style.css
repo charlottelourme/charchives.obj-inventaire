@@ -4832,10 +4832,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   border-top-color: transparent; /* Contraste Pur — pas de trait */
   border-bottom: none;
 }
-/* Point de Galerie nav mobile : apparaît EN HAUT (sens inverse) */
+/* Point de Galerie nav mobile : cercle géométrique EN HAUT (sens inverse) */
 .bottom-nav .view-tab.active::after {
   bottom: auto;
   top: 5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: currentColor;
 }
 
 /* Padding bas pour ne pas cacher le contenu */
