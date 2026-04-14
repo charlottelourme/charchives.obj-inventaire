@@ -7281,15 +7281,15 @@ body {
   text-transform: uppercase;
 }
 
-/* Pills UI — taille réduite pour compenser la chasse mono */
-.sfb-pill          { font-size: 10px; letter-spacing: .04em; }
-.sfb-pill-verbe    { font-size: 10px; letter-spacing: .04em; }
-.tfb-all           { font-size: 8px;  letter-spacing: .18em; }
-.attr-chip         { font-size: 10px; }
+/* Pills UI — taille ajustée pour Cutive Mono */
+.sfb-pill          { font-size: 12px; letter-spacing: .04em; }
+.sfb-pill-verbe    { font-size: 12px; letter-spacing: .04em; }
+.tfb-all           { font-size: 9px;  letter-spacing: .14em; }
+.attr-chip         { font-size: 11px; }
 
 /* Boutons */
-.btn               { font-size: 10px; letter-spacing: .06em; }
-.btn-export        { font-size: 9px;  letter-spacing: .10em; }
+.btn               { font-size: 12px; letter-spacing: .06em; }
+.btn-export        { font-size: 10px; letter-spacing: .10em; }
 .bottom-nav .view-tab { font-size: 9px; letter-spacing: .10em; }
 
 /* Métadonnées carte (verbe + typo) */
