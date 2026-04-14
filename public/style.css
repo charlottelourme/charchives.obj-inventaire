@@ -509,7 +509,7 @@ main { padding: 0; }
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--card-min, 260px), 1fr));
-  gap: 36px;
+  gap: 52px 48px;
   border: none;
   padding: 36px 32px;
   transition: --card-min 0.12s linear;
