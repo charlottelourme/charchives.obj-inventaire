@@ -1643,30 +1643,6 @@ function cardHTML(c) {
   const haloColor = verbeHasColor ? bgColor + '55' : 'rgba(45,45,45,0.08)';
   const accentStyle = ` style="--verbe-accent:${haloAccent};--card-halo:${haloColor}"`;
 
-  // Hover overlay — glassmorphism galerie : description centre + technique bas
-  const attrs = c.attributes || {};
-  const techParts = [];
-  if (attrs.matieres?.length)  techParts.push(attrs.matieres.slice(0,2).join(' · '));
-  if (attrs.origine?.length)   techParts.push(attrs.origine[0]);
-  if (attrs.taille)            techParts.push(attrs.taille);
-
-  // Overlay : 50% opacité pour laisser l'image transparaître sous le blur
-  const overlayBg = bgColor && bgColor !== 'transparent'
-    ? bgColor + '80'   // hex + alpha 80 = ~50%
-    : 'rgba(30,28,25,0.52)';
-  const overlayText = bgColor && bgColor !== 'transparent' ? textColor : '#fff';
-  const descText = c.description ? esc(c.description) : '';
-  const hoverOverlay = `
-    <div class="card-hover-overlay" style="background:${overlayBg}">
-      <div class="cho-description-wrap" style="color:${overlayText}">
-        <div class="cho-description${descText ? '' : ' cho-empty'}">${descText || '—'}</div>
-      </div>
-      <div style="color:${overlayText}">
-        ${techParts.length ? `<div class="cho-tech">${techParts.map(p => esc(p)).join(' · ')}</div>` : ''}
-        ${c.price != null && c.price !== '' ? `<div class="cho-price" style="color:${overlayText}">${c.price}&nbsp;€</div>` : ''}
-      </div>
-    </div>`;
-
   // ── imageMode : portrait (3:4) | landscape (4:3) | cutout (auto) ──
   const _isDetoured = photo && (photo.toLowerCase().endsWith('.png') || photo.includes('detour'));
   const imageMode = c.imageMode || (_isDetoured ? 'cutout' : 'portrait');
