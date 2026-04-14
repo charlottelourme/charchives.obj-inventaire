@@ -5208,8 +5208,9 @@ body.dark-mode .sfb-pill-sm.active { color: #F5F5F0; }
 /* btn-primary / tabs : fond accent clair en dark → texte sombre */
 body.dark-mode .btn-primary,
 body.dark-mode .modal-tab.active,
-body.dark-mode .view-tab.active,
 body.dark-mode .tl-mode-btn.active { color: #2D2D2D; }
+/* view-tab actif dark : texte écru (pas de fond) */
+body.dark-mode .view-tab.active { color: #F5F5F0; }
 /* attr-chip.selected : fond anthracite → texte écru */
 body.dark-mode .attr-chip.selected { color: #F5F5F0; }
 body.dark-mode #universChips .attr-chip.selected { color: #f0ede8; }
