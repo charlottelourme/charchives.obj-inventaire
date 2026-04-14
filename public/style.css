@@ -819,7 +819,9 @@ main { padding: 0; }
 .card-body {
   padding: 14px 16px 18px;
   position: relative;
-  z-index: 0; /* au-dessus du ::before halo mais dans le même contexte */
+  z-index: 2;              /* passe au-dessus du bas de l'image */
+  margin-top: -24px;       /* remonte sur l'image — effet affiche */
+  width: 100%;             /* plus large que l'image (qui est à 85%) */
 }
 
 /* Micro-label de typo/verbe en haut du card-body */
