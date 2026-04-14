@@ -409,9 +409,9 @@ header h1 {
 .btn:hover { color: var(--text); }
 .btn-primary { background: var(--text); color: #fff; border-color: var(--text); }
 .btn-primary:hover { background: #444; border-color: #444; color: #fff; }
-.btn-ghost { border-color: transparent; color: var(--text-2); }
-.btn-ghost:hover { background: var(--tag-bg); color: var(--text); border-color: var(--border-light); }
-.btn-ghost.active { background: var(--tag-bg); color: var(--text); }
+.btn-ghost { border-color: transparent; background: transparent; color: var(--text-2); }
+.btn-ghost:hover { background: transparent; color: var(--text); border-color: transparent; }
+.btn-ghost.active { background: transparent; color: var(--text); border-color: transparent; }
 .btn-danger { color: var(--red); border-color: var(--red); }
 .btn-danger:hover { background: #fdf0ef; }
 .btn-sm { padding: 4px 10px; font-size: 11px; }
