@@ -2660,13 +2660,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   font-weight: 500;
   color: var(--text);
   letter-spacing: .03em;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--border);
+  /* Remplace text-decoration par border-bottom → aligne visuellement avec le border-bottom de l'input */
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 5px;  /* même espace bas que l'input (padding: 5px 4px) */
 }
 .idx-trigger-btn:hover .idx-trigger-hint {
-  text-decoration-color: var(--text);
+  border-bottom-color: var(--text);
 }
 .idx-trigger-count {
   font-size: 11px;
