@@ -1740,6 +1740,233 @@ function bindCardEvents(el) {
   });
 }
 
+// ══════════════════════════════════════════════════════════════
+// NOTES INTERCALAIRES — Blocs de texte narratifs
+// ══════════════════════════════════════════════════════════════
+
+// ── Intercalation des notes dans la liste d'objets ────────────
+function _intercalateNotes(items) {
+  const notes = state.collections
+    .filter(c => c.type === 'note')
+    .sort((a, b) => (a.notePos ?? 9999) - (b.notePos ?? 9999));
+  if (!notes.length) return items;
+  const result = [...items];
+  // Insère depuis la fin pour préserver les indices
+  [...notes].reverse().forEach(note => {
+    const pos = Math.min(Math.max(0, Math.round(note.notePos ?? result.length)), result.length);
+    result.splice(pos, 0, note);
+  });
+  return result;
+}
+
+// ── Drag & drop — repositionner une note dans la grille ───────
+function _initNoteDragDrop(el, items) {
+  let _dragNoteId = null;
+
+  el.querySelectorAll('.card-note').forEach(noteEl => {
+    noteEl.addEventListener('dragstart', e => {
+      _dragNoteId = noteEl.dataset.id;
+      noteEl.classList.add('note-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('application/x-note-id', _dragNoteId);
+    });
+    noteEl.addEventListener('dragend', () => {
+      noteEl.classList.remove('note-dragging');
+      el.querySelectorAll('.note-drop-after').forEach(t => t.classList.remove('note-drop-after'));
+      _dragNoteId = null;
+    });
+    noteEl.addEventListener('click', e => {
+      if (!e.defaultPrevented) openNoteModal(noteEl.dataset.id);
+    });
+    noteEl.querySelector('.card-note-menu-btn')?.addEventListener('click', e => {
+      e.stopPropagation();
+      openNoteModal(noteEl.dataset.id);
+    });
+  });
+
+  // Drop targets : tous les cards (objets + autres notes)
+  el.querySelectorAll('.card, .card-note').forEach(card => {
+    card.addEventListener('dragover', e => {
+      if (!_dragNoteId) return; // pas une note qui est draguée
+      if (card.dataset.id === _dragNoteId) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      el.querySelectorAll('.note-drop-after').forEach(t => t.classList.remove('note-drop-after'));
+      card.classList.add('note-drop-after');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('note-drop-after'));
+    card.addEventListener('drop', async e => {
+      if (!_dragNoteId) return;
+      if (!e.dataTransfer.types.includes('application/x-note-id')) return;
+      e.preventDefault();
+      card.classList.remove('note-drop-after');
+
+      const dropTargetId = card.dataset.id;
+      // Calcul du nouvel index parmi les objets
+      const itemIdx = items.findIndex(c => c.id === dropTargetId);
+      let newPos;
+      if (itemIdx >= 0) {
+        // Déposé sur un objet → après lui
+        newPos = itemIdx + 1;
+      } else {
+        // Déposé sur une autre note → reprend sa position +0.5
+        const targetNote = state.collections.find(c => c.id === dropTargetId && c.type === 'note');
+        newPos = targetNote ? (targetNote.notePos ?? 0) + 0.5 : 0;
+      }
+
+      const note = state.collections.find(c => c.id === _dragNoteId);
+      if (note) {
+        note.notePos = newPos;
+        try { await api.put(`/api/collections/${_dragNoteId}`, { notePos: newPos }); }
+        catch(err) { console.warn('Note drag save failed:', err); }
+        render();
+      }
+    });
+  });
+}
+
+// ── Couleurs disponibles pour les notes ──────────────────────
+function _noteColors() {
+  const verbeColors = getVerbes()
+    .filter(v => v.bgColor || v.color)
+    .map(v => ({ hex: v.bgColor || v.color, label: v.name }));
+  return [
+    { hex: '#FAFAF8', label: 'Blanc chaud' },
+    { hex: '#F5E6D3', label: 'Parchemin' },
+    { hex: '#EDE8E0', label: 'Lin' },
+    { hex: '#D9D0C7', label: 'Pierre' },
+    { hex: '#E8EEF4', label: 'Ciel' },
+    { hex: '#E8F4EF', label: 'Menthe' },
+    { hex: '#2D2D2D', label: 'Anthracite' },
+    ...verbeColors,
+  ];
+}
+
+// ── État de la modale note ────────────────────────────────────
+let _noteEditId        = null;
+let _noteSelectedColor = '#F5E6D3';
+let _noteSelectedFont  = 'poetic';
+let _noteSelectedWidth = 'single';
+
+function openNoteModal(id) {
+  _noteEditId = id || null;
+  const titleEl   = document.getElementById('noteModalTitle');
+  const contentEl = document.getElementById('nContent');
+  const deleteBtn = document.getElementById('noteDeleteBtn');
+
+  if (id) {
+    const note = state.collections.find(c => c.id === id);
+    if (!note) return;
+    titleEl.textContent  = 'Modifier la note';
+    contentEl.value      = note.content || '';
+    _noteSelectedColor   = note.backgroundColor || '#F5E6D3';
+    _noteSelectedFont    = note.noteFont  || 'poetic';
+    _noteSelectedWidth   = note.noteWidth || 'single';
+    deleteBtn.style.display = '';
+  } else {
+    titleEl.textContent  = 'Nouvelle note';
+    contentEl.value      = '';
+    _noteSelectedColor   = '#F5E6D3';
+    _noteSelectedFont    = 'poetic';
+    _noteSelectedWidth   = 'single';
+    deleteBtn.style.display = 'none';
+  }
+  _renderNoteColorSwatches();
+  _syncNoteOptBtns();
+  _updateNotePreview();
+  document.getElementById('noteModal').style.display = 'flex';
+  setTimeout(() => contentEl.focus(), 60);
+}
+
+function closeNoteModal() {
+  document.getElementById('noteModal').style.display = 'none';
+}
+
+function _renderNoteColorSwatches() {
+  const wrap   = document.getElementById('noteColorSwatches');
+  const colors = _noteColors();
+  wrap.innerHTML = colors.map(c => {
+    const isLight = c.hex === '#FAFAF8' || c.hex === '#F5E6D3' || c.hex === '#EDE8E0'
+                  || c.hex === '#E8EEF4' || c.hex === '#E8F4EF' || _luminance(c.hex) > 0.75;
+    return `<button class="note-swatch${c.hex === _noteSelectedColor ? ' selected' : ''}"
+      style="background:${c.hex};${isLight ? 'border-color:var(--border)' : ''}"
+      data-hex="${c.hex}" title="${esc(c.label)}"></button>`;
+  }).join('');
+  wrap.querySelectorAll('.note-swatch').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _noteSelectedColor = btn.dataset.hex;
+      wrap.querySelectorAll('.note-swatch').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _updateNotePreview();
+    });
+  });
+}
+
+function _syncNoteOptBtns() {
+  document.querySelectorAll('#noteFontGroup [data-font]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.font === _noteSelectedFont);
+  });
+  document.querySelectorAll('#noteWidthGroup [data-width]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.width === _noteSelectedWidth);
+  });
+}
+
+function _updateNotePreview() {
+  const preview = document.getElementById('notePreview');
+  const textEl  = document.getElementById('notePreviewText');
+  if (!preview || !textEl) return;
+  const bg  = _noteSelectedColor;
+  const lum = _luminance(bg);
+  const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+  preview.style.background = bg;
+  preview.style.color      = fg;
+  textEl.className = 'note-preview-text ' + (_noteSelectedFont === 'terrain' ? 'font-terrain' : 'font-poetic');
+  const content = document.getElementById('nContent')?.value || '';
+  textEl.textContent = content || '—';
+}
+
+async function saveNote() {
+  const content = (document.getElementById('nContent')?.value || '').trim();
+  if (!content) { document.getElementById('nContent')?.focus(); return; }
+
+  const payload = {
+    type: 'note',
+    content,
+    backgroundColor: _noteSelectedColor,
+    noteFont:  _noteSelectedFont,
+    noteWidth: _noteSelectedWidth,
+  };
+
+  try {
+    if (_noteEditId) {
+      const updated = await api.put(`/api/collections/${_noteEditId}`, payload);
+      const idx = state.collections.findIndex(c => c.id === _noteEditId);
+      if (idx >= 0) state.collections[idx] = { ...state.collections[idx], ...updated };
+    } else {
+      // notePos = fin de la liste d'objets courante
+      payload.notePos = getFiltered().length;
+      const created = await api.post('/api/collections', payload);
+      state.collections.unshift(created);
+    }
+    closeNoteModal();
+    render();
+  } catch(err) {
+    alert('Erreur lors de l\'enregistrement\u00a0: ' + err.message);
+  }
+}
+
+async function deleteNote(id) {
+  if (!confirm('Supprimer cette note définitivement\u00a0?')) return;
+  try {
+    await api.del(`/api/collections/${id}`);
+    state.collections = state.collections.filter(c => c.id !== id);
+    closeNoteModal();
+    render();
+  } catch(err) {
+    alert('Erreur\u00a0: ' + err.message);
+  }
+}
+
 function updateCardThumb(el,id,photos,idx) {
   const card=el.querySelector(`.card[data-id="${id}"]`); if(!card) return;
   const img=card.querySelector('.card-thumb'); if(img) img.src=photoUrl(photos[idx]);
