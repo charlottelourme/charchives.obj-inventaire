@@ -751,15 +751,26 @@ main { padding: 0; }
 }
 .card-thumb {
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: 3/4;          /* Portrait par défaut — ratio éditorial */
   object-fit: cover;
   display: block;
   background: transparent;
   transition: transform .5s cubic-bezier(.22,.68,0,1.2);
 }
+/* Ratio Paysage 4:3 */
+.card-thumb-area--landscape .card-thumb {
+  aspect-ratio: 4/3;
+}
+/* Détouré : hauteur libre, objet visible en entier */
+.card-thumb-area--cutout .card-thumb {
+  aspect-ratio: unset;
+  height: auto;
+  object-fit: contain;
+  padding: 10%;
+}
 .card-thumb-placeholder {
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: 3/4;          /* aligné sur le ratio portrait */
   background: var(--tag-bg);
   display: flex;
   align-items: center;
