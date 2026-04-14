@@ -5291,7 +5291,8 @@ main { padding-bottom: 44px; }
 }
 #attrFilterBar {
   border-bottom: none;
-  padding: 4px var(--filter-gutter) 10px calc(var(--filter-gutter) + var(--label-w));
+  /* +6px : même règle verticale que les autres lignes */
+  padding: 4px var(--filter-gutter) 10px calc(var(--filter-gutter) + var(--label-w) + 6px);
   background: transparent;
   display: flex;
   flex-wrap: wrap;
