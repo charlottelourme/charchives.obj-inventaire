@@ -1476,18 +1476,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   color: #000;
   font-weight: 700;
 }
-/* Point de Galerie — status pills */
-.sfb-pill-sm.active::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -4px;
-  transform: translateX(-50%);
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: currentColor;
-}
+/* Pas de Point de Galerie sur les pills de statut */
 
 /* ── Bouton Sélection — aligné à droite de la barre de statut ── */
 .sfb-pill-selection {
