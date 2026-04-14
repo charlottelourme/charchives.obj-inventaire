@@ -6693,6 +6693,31 @@ function bindEvents() {
   document.getElementById('fabBtn').addEventListener('click', openNew);
   document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
   document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+
+  // ── Note Modal — Intercalaires narratifs ──
+  document.getElementById('noteBtn').addEventListener('click', () => openNoteModal(null));
+  document.getElementById('noteModalClose').addEventListener('click', closeNoteModal);
+  document.getElementById('noteModalCancel').addEventListener('click', closeNoteModal);
+  document.getElementById('noteModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeNoteModal(); });
+  document.getElementById('noteModalSave').addEventListener('click', saveNote);
+  document.getElementById('noteDeleteBtn').addEventListener('click', () => { if (_noteEditId) deleteNote(_noteEditId); });
+  // Font selector
+  document.querySelectorAll('#noteFontGroup [data-font]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _noteSelectedFont = btn.dataset.font;
+      _syncNoteOptBtns();
+      _updateNotePreview();
+    });
+  });
+  // Width selector
+  document.querySelectorAll('#noteWidthGroup [data-width]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _noteSelectedWidth = btn.dataset.width;
+      _syncNoteOptBtns();
+    });
+  });
+  // Aperçu live sur frappe
+  document.getElementById('nContent').addEventListener('input', _updateNotePreview);
   document.getElementById('settingsModalClose').addEventListener('click', closeSettingsModal);
   document.getElementById('settingsModalCancel').addEventListener('click', closeSettingsModal);
   document.getElementById('settingsModalSave').addEventListener('click', saveSettingsModal);
