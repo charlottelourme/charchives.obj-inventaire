@@ -47,9 +47,9 @@ body.dark-mode image {
   filter: grayscale(100%) contrast(1.08) brightness(1.12);
 }
 
-/* ── Thème verbe actif — fond teinté léger (~18% opacité) ── */
+/* ── Thème verbe actif — fond neutre (monochrome) ── */
 body.verbe-active {
-  background-color: var(--page-verbe-bg, var(--bg));
+  background-color: var(--bg); /* pas de teinte colorée — fond identique au mode neutre */
 }
 
 /* Header : verre dépoli blanc — fond clair teinté → header reste neutre */
