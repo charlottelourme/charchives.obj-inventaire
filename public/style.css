@@ -903,16 +903,15 @@ main { padding: 0; }
   position: relative;
   cursor: pointer;
   border: none;
-  border-radius: 0;
-  overflow: visible;
-  isolation: isolate;
+  border-radius: 2px;
+  overflow: hidden;
   transition: transform .38s cubic-bezier(.22,.68,0,1.1);
   min-height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 28px 24px;
-  background: transparent;
+  /* background fourni par inline style via backgroundColor de la note */
 }
 @media (hover: hover) {
   .card-note:hover { transform: scale(1.02); }
