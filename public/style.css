@@ -687,6 +687,7 @@ main { padding: 0; }
 
 .card-body {
   padding: 14px 16px 18px;
+  position: relative;
 }
 
 /* Micro-label de typo/verbe en haut du card-body */
