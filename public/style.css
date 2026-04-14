@@ -6575,32 +6575,35 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   display: inline-flex;
   align-items: center;
   font-family: 'Inter', sans-serif;
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: .01em;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: .02em;
   color: var(--text-3);
+  opacity: .6;
   cursor: pointer;
   white-space: nowrap;
-  padding: 2px 5px;
+  padding: 1px 4px;
   border-radius: 2px;
-  transition: color .12s, background .12s;
+  transition: color .12s, opacity .12s;
 }
 .bc-item:hover {
-  color: var(--text);
-  background: var(--border-light);
+  color: var(--text-2);
+  opacity: 1;
+  background: none;
 }
 .bc-item.bc-current {
-  color: var(--text);
-  font-weight: 600;
+  color: var(--text-2);
+  font-weight: 500;
+  opacity: .85;
   cursor: default;
   background: none;
 }
 .bc-sep {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-3);
   padding: 0 1px;
   user-select: none;
-  opacity: .6;
+  opacity: .3;
 }
 
 /* ── Fil d'Ariane dans la fiche détail ── */
