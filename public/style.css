@@ -4771,8 +4771,11 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   /* Halo réduit sur petite largeur */
   .grid .card::before {
     filter: blur(20px);
-    top: 18%;
-    height: 116%;
+    border-radius: 4px;
+    left: -6%;
+    width: 112%;
+    top: 14%;
+    height: 118%;
   }
   /* Typographie compacte */
   .card-body { padding: 7px 9px 11px; }
