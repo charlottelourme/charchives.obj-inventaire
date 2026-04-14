@@ -1460,10 +1460,7 @@ function cardHTML(c) {
       const isDetoured = photo && (photo.toLowerCase().endsWith('.png') || photo.includes('detour'));
       return `<div class="card-thumb-area${isDetoured ? ' card-thumb-area--detoured' : ''}">`;
     })()}
-      ${statusBadge}
-      <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des mis de côté' : 'Mettre de côté'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">
-        ${c.bookmarked ? '♥' : '♡'}
-      </button>
+      <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des mis de côté' : 'Mettre de côté'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">+</button>
       ${photo
         ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="">`
         : `<div class="card-thumb-placeholder">◻</div>`}
@@ -1476,6 +1473,7 @@ function cardHTML(c) {
       ${hoverOverlay}
     </div>
     <div class="card-body">
+      ${statusColor ? `<span class="card-status-dot" style="background:${statusColor}"></span>` : ''}
       ${metaRow}
       <div class="card-name">${esc(c.name)}</div>
       ${c.description ? `<div class="card-desc">${esc(c.description)}</div>` : ''}
