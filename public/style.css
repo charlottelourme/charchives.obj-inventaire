@@ -1113,11 +1113,21 @@ main { padding: 0; }
   flex-shrink: 0;
   transition: color .15s;
 }
-.tfb-all:hover { color: var(--text-2); }
+.tfb-all:hover { color: #000; }
 .tfb-all.active {
-  color: var(--text);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: #000;
+  font-weight: 700;
+  position: relative;
+}
+.tfb-all.active::after {
+  content: '•';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  font-size: 7px;
+  line-height: 1;
+  color: currentColor;
 }
 
 /* Boutons typologies — Cutive Mono compact, étiquette de musée ── */
