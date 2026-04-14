@@ -570,7 +570,7 @@ main { padding: 0; }
 @media (min-width: 1440px) {
   :root { --grid-cols: 5; }
   .grid { column-gap: 44px; padding-left: 80px; padding-right: 80px; }
-  .grid .card { margin-bottom: 48px; }
+  .grid .card { margin-bottom: 88px; }
 }
 
 /* ── Laptop (769px – 1024px) — défaut 3 colonnes ── */
