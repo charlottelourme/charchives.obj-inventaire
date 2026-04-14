@@ -263,7 +263,7 @@ header h1 {
 .view-tab {
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
+  /* border-bottom supprimé — Contraste Pur */
   padding: 0 16px;
   height: 100%;
   display: flex;
@@ -275,12 +275,12 @@ header h1 {
   font-weight: 300;
   cursor: pointer;
   color: var(--text-3);
-  transition: color .15s, border-color .15s;
+  transition: color .15s;
   white-space: nowrap;
   letter-spacing: .01em;
 }
-.view-tab:hover { color: var(--text-2); }
-.view-tab.active { color: var(--text); border-bottom-color: var(--text); }
+.view-tab:hover { color: #000; }
+.view-tab.active { color: #000; font-weight: 500; }
 /* ── Search widget ── */
 .search-wrap {
   position: relative;
