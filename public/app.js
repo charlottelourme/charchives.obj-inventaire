@@ -744,9 +744,9 @@ function buildAttrFilterBar() {
     bar.style.display = 'none';
   } else {
     bar.style.display = '';
+    buildMultiFilter('filterStylesWrap',   'origine',  'Origine', ATTRIBUTES_DEF.origine.options);
     buildMultiFilter('filterMatieresWrap', 'matieres', 'Matière', ATTRIBUTES_DEF.matieres.options);
-    buildMultiFilter('filterStylesWrap', 'origine', 'Origine', ATTRIBUTES_DEF.origine.options);
-    buildMultiFilter('filterEtatWrap', 'etat_traces', 'État', ATTRIBUTES_DEF.etat_traces.options);
+    // État supprimé de l'interface
     buildMultiFilter('filterCouleursWrap', 'couleurs', 'Couleur', state.settings.colors||[]);
   }
   buildSubcategoryBar();
