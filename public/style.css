@@ -104,8 +104,9 @@ body.verbe-active .sfb-pill-sm { background: transparent; color: var(--text-2); 
 body.verbe-active .sfb-pill-sm:hover { background: var(--tag-bg); color: var(--text); }
 body.verbe-active .sfb-pill-sm.active { background: var(--page-verbe-text); color: #F5F5F0; border-color: var(--page-verbe-text); }
 
-/* En mode verbe : masquer Brouillon */
-body.verbe-active #statusFilterBar .sfb-pill[data-status="Brouillon"] { display: none; }
+/* En mode verbe : masquer Brouillon et Pas à vendre */
+body.verbe-active #statusFilterBar .sfb-pill[data-status="Brouillon"],
+body.verbe-active #statusFilterBar .sfb-pill[data-status="Pas à vendre"] { display: none; }
 
 /* Filtres attributs */
 body.verbe-active #attrFilterBar { background: transparent; }
