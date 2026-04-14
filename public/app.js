@@ -4347,9 +4347,11 @@ function renderPhotos() {
         wrap.style.opacity = '.35';
         wrap.style.pointerEvents = 'none';
 
-        // Helper : applique un filename final dans le state
+        // Helper : applique un filename final dans le state (conserve l'originale)
         const _applyFilename = (finalFilename) => {
-          state.editPhotos.splice(i, 1, finalFilename);
+          // Insère la version traitée juste après l'originale — l'originale est conservée
+          state.editPhotos.splice(i + 1, 0, finalFilename);
+          // Déplace en première position (photo principale de la carte)
           const [moved] = state.editPhotos.splice(state.editPhotos.indexOf(finalFilename), 1);
           state.editPhotos.unshift(moved);
           compareEl.remove();
