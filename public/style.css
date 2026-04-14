@@ -282,7 +282,7 @@ header h1 {
   letter-spacing: .01em;
 }
 
-/* ── Halo de Navigation — nuage flouté derrière le mot ── */
+/* ── Halo de Navigation — nuage flouté : survol uniquement ── */
 .view-tab::before {
   content: '';
   position: absolute;
@@ -296,8 +296,24 @@ header h1 {
   transition: opacity .4s ease;
   pointer-events: none;
 }
-.view-tab:hover::before,
-.view-tab.active::before {
+/* Halo : hover seulement — l'état actif utilise le Point de Galerie */
+.view-tab:hover::before { opacity: 1; }
+
+/* Point de Galerie — tab actif : pastille centrée en bas du header */
+.view-tab::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  font-size: 8px;
+  line-height: 1;
+  color: currentColor;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+.view-tab.active::after {
+  content: '•';
   opacity: 1;
 }
 
