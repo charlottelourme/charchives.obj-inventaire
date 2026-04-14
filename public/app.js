@@ -817,37 +817,50 @@ function buildIndexTrigger() {
   const inp = document.getElementById('idxInlineInput');
   const drop = document.getElementById('idxInlineDrop');
   if (inp && drop) {
-    inp.addEventListener('input', () => {
+    // Construit et affiche les suggestions (toutes si q vide, filtrées sinon)
+    const showSuggestions = () => {
       const q = inp.value.toLowerCase().trim();
-      if (!q) { drop.style.display = 'none'; drop.innerHTML = ''; return; }
-      const matches = [];
-      getVerbes().forEach(verbe => {
-        const col = verbe.bgColor || verbe.color || '#2D2D2D';
-        getTypologies(verbe).filter(t => t.toLowerCase().includes(q)).forEach(t => {
-          matches.push({ t, col, verbeName: verbe.name });
-        });
-      });
-      if (!matches.length) { drop.style.display = 'none'; drop.innerHTML = ''; return; }
-      drop.innerHTML = matches.slice(0, 8).map(m =>
-        `<button class="idx-dd-item" data-typo="${esc(m.t)}" style="--dd-col:${m.col}">
-          <span class="idx-dd-name">${esc(m.t)}</span>
-          <span class="idx-dd-verbe" style="color:${m.col}">${esc(m.verbeName)}</span>
+      // Toutes les typologies triées alphabétiquement, filtrées si requête
+      const all = getAllTypologies()
+        .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+      const matches = q
+        ? all.filter(m => m.name.toLowerCase().includes(q))
+        : all;
+      if (!matches.length) {
+        drop.innerHTML = '<div class="idx-dd-empty">Aucune typologie</div>';
+        drop.style.display = 'block';
+        return;
+      }
+      drop.innerHTML = matches.slice(0, 12).map(m =>
+        `<button class="idx-dd-item" data-typo="${esc(m.name)}">
+          <span class="idx-dd-name">${esc(m.name)}</span>
+          <em class="idx-dd-verbe">${esc(m.verbeName)}</em>
         </button>`
       ).join('');
       drop.style.display = 'block';
       drop.querySelectorAll('.idx-dd-item').forEach(btn => {
         btn.addEventListener('mousedown', e => {
-          e.preventDefault(); // évite le blur avant le click
+          e.preventDefault();
           const t = btn.dataset.typo;
-          if (!state.attrFilters.subcat.includes(t)) state.attrFilters.subcat.push(t);
+          state.typoFilter = t;
+          state.categoryFilter = '';
+          state.attrFilters.subcat = [];
           inp.value = '';
           drop.style.display = 'none';
-          buildIndexTrigger(); render();
+          buildTypologyFilterBar();
+          buildCategoryFilterBar();
+          buildIndexTrigger();
+          render();
         });
       });
-    });
+    };
+
+    inp.addEventListener('focus', showSuggestions);
+    inp.addEventListener('input', showSuggestions);
     inp.addEventListener('blur', () => setTimeout(() => { drop.style.display = 'none'; }, 160));
-    inp.addEventListener('keydown', e => { if (e.key === 'Escape') { inp.value = ''; drop.style.display = 'none'; } });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { inp.value = ''; drop.style.display = 'none'; inp.blur(); }
+    });
   }
 
   // Pills inline — toggle sélection
