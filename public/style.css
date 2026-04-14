@@ -4901,21 +4901,57 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
 }
 .sm-new-group-input:focus { border-color: var(--border); background: var(--surface); }
 
-/* ── Dark Mode ── */
+/* ══════════════════════════════════════════════════════════════
+   DARK MODE — Palette abyssale, halos lumineux
+══════════════════════════════════════════════════════════════ */
 body.dark-mode {
-  --bg: #181818;
-  --surface: #212121;
-  --border: #48453E;       /* gris chaud visible sur fond sombre */
-  --border-light: #2E2C28; /* séparations discrètes */
-  --border-strong: #68655E;
-  --text: #E8E6E2;
-  --text-2: #9E9A94;
-  --text-3: #646058;
-  --tag-bg: #252320;
-  --tag-border: #38352E;
-  --accent: #E8E6E2;
+  --bg: #111111;              /* Noir profond */
+  --surface: #1A1A1A;
+  --border: #333330;          /* gris anthracite visible */
+  --border-light: #222220;
+  --border-strong: #555550;
+  --text: #F0EDE8;            /* Blanc cassé doux */
+  --text-2: #9A9690;
+  --text-3: #585450;
+  --tag-bg: #1C1C1A;
+  --tag-border: #2E2C28;
+  --accent: #F0EDE8;
+  --shadow-lg: 0 4px 24px rgba(0,0,0,.32);
 }
-body.dark-mode header { background: var(--bg); }
+
+/* ── Halos en Dark Mode — nuage de lumière ── */
+body.dark-mode .card::before {
+  background: rgba(155, 150, 145, 0.32); /* gris clair = lumière relative sur fond noir */
+  opacity: 0.50;
+}
+body.dark-mode .card:hover::before {
+  opacity: 0.78;
+}
+body.dark-mode .portrait-halo {
+  background: rgba(150, 145, 140, 0.38);
+  opacity: 0.55;
+}
+
+/* ── Glassmorphism adapté au dark ── */
+body.dark-mode header {
+  background: rgba(17,17,17,0.90) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+body.dark-mode #detailModal {
+  background: rgba(10, 9, 8, 0.92) !important;
+}
+body.dark-mode #detailModal .modal-header {
+  background: rgba(18, 16, 14, 0.82) !important;
+}
+body.dark-mode .con-panier {
+  background: rgba(18, 16, 14, 0.90);
+}
+body.dark-mode .bottom-nav {
+  background: rgba(14, 12, 11, 0.85) !important;
+}
+
+/* ── Modales standard ── */
 body.dark-mode .modal { background: var(--surface); }
 body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
   background: var(--bg); color: var(--text); border-color: var(--border);
