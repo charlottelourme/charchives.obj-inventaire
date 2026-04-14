@@ -736,18 +736,23 @@ main { padding: 0; }
   width: 85%;          /* image plus étroite que le texte */
   margin: 0 auto;      /* centrée dans la carte */
 }
-/* Image détourée (PNG transparent) — fond transparent pour laisser le halo rayonner */
-.card-thumb-area--detoured {
+/* Image détourée / cutout — fond transparent, objet en entier */
+.card-thumb-area--detoured,
+.card-thumb-area--cutout {
   background: transparent;
 }
-.card-thumb-area--detoured .card-thumb {
+.card-thumb-area--detoured .card-thumb,
+.card-thumb-area--cutout .card-thumb {
+  aspect-ratio: unset;
+  height: auto;
   object-fit: contain;
   padding: 10%;
   transform-origin: center;
   background: transparent;
 }
-.card-thumb-area--detoured:hover .card-thumb {
-  transform: none; /* pas de zoom — l'objet reste immobile */
+.card-thumb-area--detoured:hover .card-thumb,
+.card-thumb-area--cutout:hover .card-thumb {
+  transform: none;
 }
 .card-thumb {
   width: 100%;
