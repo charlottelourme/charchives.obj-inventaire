@@ -1231,15 +1231,17 @@ function setView(v, _silent = false) {
     _applyDeriveMode(state.deriveMode, true);
   }
 
-  // Breadcrumb — restaurer l'état précédent de la vue, ou créer une entrée racine
+  // Breadcrumb — accumuler la navigation cross-vues
   if (!_silent && VIEW_LABELS[v]) {
-    const saved = _breadcrumbByView[v];
-    if (saved && saved.length) {
-      state.breadcrumb = saved;
+    const viewLabel = VIEW_LABELS[v];
+    // Si cette vue est déjà dans le fil → on revient à ce point (truncate)
+    const existingIdx = state.breadcrumb.findIndex(b => b.label === viewLabel);
+    if (existingIdx >= 0) {
+      state.breadcrumb = state.breadcrumb.slice(0, existingIdx + 1);
       renderBreadcrumbBar();
     } else {
-      state.breadcrumb = [];
-      pushBreadcrumb(VIEW_LABELS[v], () => setView(v, true));
+      // Nouvelle vue → l'ajouter au fil existant
+      pushBreadcrumb(viewLabel, () => setView(v, true));
     }
   }
   render();
