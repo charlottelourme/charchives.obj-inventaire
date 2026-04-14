@@ -580,7 +580,7 @@ main { padding: 0; }
     column-gap: 28px;
     padding: 32px 40px calc(80px + env(safe-area-inset-bottom));
   }
-  .grid .card { margin-bottom: 28px; }
+  .grid .card { margin-bottom: 60px; }
 }
 
 /* ── Card ── */
