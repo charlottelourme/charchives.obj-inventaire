@@ -1605,6 +1605,24 @@ function renderGrid(items) {
 }
 
 function cardHTML(c) {
+  // ── Note intercalaire ──
+  if (c.type === 'note') {
+    const bg      = c.backgroundColor || '#F5E6D3';
+    const lum     = _luminance(bg);
+    const fg      = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+    const fontCls = c.noteFont === 'terrain' ? 'font-terrain' : 'font-poetic';
+    const wideCls = c.noteWidth === 'wide'   ? ' note-wide'   : '';
+    // Halo teinté à 50% de transparence
+    const halo    = bg + '80';
+    return `<div class="card-note${wideCls}" data-id="${c.id}"
+      style="--note-halo:${halo};color:${fg}" draggable="true">
+      <div class="card-note-inner">
+        <div class="card-note-text ${fontCls}">${esc(c.content || '')}</div>
+      </div>
+      <button class="card-note-menu-btn" title="Modifier la note">···</button>
+    </div>`;
+  }
+
   // ── Fragment card ──
   if (c.type === 'fragment') {
     const bg  = c.backgroundColor || '#1a1a1a';
