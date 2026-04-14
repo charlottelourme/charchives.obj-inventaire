@@ -5654,8 +5654,9 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
     max-height: 42vw;    /* ratio compact : ~40% de l'écran */
     min-height: 180px;
     border-right: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(45,45,45,.07);
   }
+  .portrait-photo-col::after { display: none; } /* pas de séparateur vertical sur mobile */
   .portrait-main-wrap { padding: 14px; }
   .portrait-info-col {
     padding: 20px 20px 32px;
