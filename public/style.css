@@ -4854,7 +4854,8 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     right: -6%;
   }
   /* Typographie compacte */
-  .card-body { padding: 7px 9px 11px; }
+  .card-body { padding: 7px 9px 11px; margin-top: -14px; }
+  .card-thumb-area { width: 88%; } /* légèrement plus large sur mobile */
   .card-meta-row { font-size: 9px; gap: 3px; margin-bottom: 2px; }
   .card-verbe-label, .card-typo-label { font-size: 9px; }
   .card-name { font-size: 12px; line-height: 1.3; }
