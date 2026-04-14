@@ -661,6 +661,7 @@ main { padding: 0; }
 .card-thumb-area {
   position: relative;
   overflow: hidden;  /* clip hover overlay + carousel arrows */
+  background: transparent;
 }
 /* Image détourée (PNG transparent) — fond transparent pour laisser le halo rayonner */
 .card-thumb-area--detoured {
