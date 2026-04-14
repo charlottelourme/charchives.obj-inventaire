@@ -5854,7 +5854,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 .portrait-attr-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 0; /* le séparateur · est géré par ::before sur .portrait-attr-pill + .portrait-attr-pill */
 }
 .portrait-attr-pill {
   font-family: 'Inter', sans-serif;
