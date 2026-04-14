@@ -2469,6 +2469,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   width: 100%;
   padding: 4px 20px 6px;
 }
+/* Quand la barre de recherche est seule (verbe actif, pills déplacées dans le titre) */
+.idx-search-row--alone {
+  padding: 6px 12px;
+}
+.idx-search-row--alone .idx-inline-input {
+  max-width: 340px;
+}
 
 /* ── Recherche inline dans la barre ── */
 .idx-inline-wrap {
