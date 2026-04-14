@@ -2776,9 +2776,9 @@ function _setTriosLinkBar(trio) {
   if (trio?.ruleLabel) {
     bar.innerHTML = `<span class="trios-link-pre">${esc(trio.ruleLabel)}</span>`;
   } else if (trio?.linkTags?.length) {
-    bar.innerHTML = `<span class="trios-link-pre">Trio lié par</span>${trio.linkTags.map(t=>`<span class="trios-link-tag">${esc(t)}</span>`).join('<span class="trios-link-amp"> &amp; </span>')}`;
+    bar.innerHTML = `<span class="trios-link-pre">Triptyque lié par</span>${trio.linkTags.map(t=>`<span class="trios-link-tag">${esc(t)}</span>`).join('<span class="trios-link-amp"> &amp; </span>')}`;
   } else {
-    bar.innerHTML = `<span class="trios-link-pre">Trio aléatoire</span>`;
+    bar.innerHTML = `<span class="trios-link-pre">Triptyque aléatoire</span>`;
   }
 }
 
