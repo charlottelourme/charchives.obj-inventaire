@@ -582,6 +582,10 @@ main { padding: 0; }
 @media (hover: none) {
   .card:active { opacity: .82; transform: scale(.98); }
 }
+/* Micro-flottaison de la carte entière au survol */
+@media (hover: hover) {
+  .card:hover { transform: translateY(-4px); }
+}
 
 /* ── Card hover overlay — glassmorphism galerie ── */
 .card-hover-overlay {
