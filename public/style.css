@@ -72,8 +72,8 @@ body.verbe-active .view-tab {
 }
 body.verbe-active .view-tab:hover { color: var(--text-2); background: none; }
 body.verbe-active .view-tab.active {
-  color: var(--page-verbe-text);
-  border-bottom-color: var(--page-verbe-text);
+  color: var(--text);
+  border-bottom-color: var(--text);
   background: none;
 }
 
