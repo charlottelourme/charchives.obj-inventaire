@@ -5846,9 +5846,10 @@ label, input, select, textarea, button {
 }
 h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .portrait-title, .vpt-name, .vab-name, .cat-hdr-name,
-.stats-kpi-number, .trios-headline, .idx-overlay-title {
+.stats-kpi-number, .trios-headline {
   font-family: 'Cormorant Garamond', Georgia, serif;
 }
+/* .idx-overlay-title : Cutive Mono — cohérent avec le trigger "Typologies" (défini dans sa règle propre) */
 .settings-section-title, .attr-group-header span, .form-group-label {
   font-family: 'Cutive Mono', monospace;
 }
