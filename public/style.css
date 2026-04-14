@@ -1439,14 +1439,15 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   background: none;
 }
 #subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo).active::after {
-  content: '•';
+  content: '';
   position: absolute;
   left: 50%;
-  bottom: -10px;
+  bottom: -4px;
   transform: translateX(-50%);
-  font-size: 8px;
-  line-height: 1;
-  color: currentColor;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: currentColor;
 }
 
 .sfb-dot { display: none; }
