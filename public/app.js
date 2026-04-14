@@ -4236,13 +4236,17 @@ function _cropClose() {
 }
 
 async function _cropValidate() {
-  const { img, imgX, imgY, imgW, imgH, selX, selY, selW, selH } = _crop;
+  const { img, imgX, imgY, imgW, imgH, selX, selY, selW, selH, isPng } = _crop;
+  const mime    = isPng ? 'image/png' : 'image/jpeg';
+  const quality = isPng ? undefined   : .92;
   if (selW < 4 || selH < 4) {
     // Pas de sélection → prend l'image entière
     const out = document.createElement('canvas');
     out.width = img.naturalWidth; out.height = img.naturalHeight;
-    out.getContext('2d').drawImage(img, 0, 0);
-    const blob = await new Promise(r => out.toBlob(r, 'image/jpeg', .92));
+    const ctx = out.getContext('2d');
+    ctx.clearRect(0, 0, out.width, out.height); // préserve transparence PNG
+    ctx.drawImage(img, 0, 0);
+    const blob = await new Promise(r => out.toBlob(r, mime, quality));
     _cropClose();
     _crop._onCrop(blob); return;
   }
@@ -4255,8 +4259,10 @@ async function _cropValidate() {
   const rh = selH * scaleY;
   const out = document.createElement('canvas');
   out.width = Math.round(rw); out.height = Math.round(rh);
-  out.getContext('2d').drawImage(img, rx, ry, rw, rh, 0, 0, out.width, out.height);
-  const blob = await new Promise(r => out.toBlob(r, 'image/jpeg', .92));
+  const ctx = out.getContext('2d');
+  ctx.clearRect(0, 0, out.width, out.height); // préserve transparence PNG
+  ctx.drawImage(img, rx, ry, rw, rh, 0, 0, out.width, out.height);
+  const blob = await new Promise(r => out.toBlob(r, mime, quality));
   _cropClose();
   _crop._onCrop(blob);
 }
