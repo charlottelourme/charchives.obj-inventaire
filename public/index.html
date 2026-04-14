@@ -62,17 +62,18 @@
         <input type="range" id="cardSizeSlider" class="card-size-slider" min="140" max="480" value="260" step="10">
       </div>
     </div>
-    <!-- ── Barre Typologies — filtre primaire, texte pur ── -->
-    <div class="typo-filter-bar" id="typologyFilterBar">
-      <button class="tfb-all active" data-typo="">Tout</button>
-    </div>
-    <!-- ── Verbes — filtre secondaire ── -->
+    <!-- ── Intentions (Verbes) — filtre principal, toujours visible ── -->
     <div class="status-filter-bar" id="categoryFilterBar">
       <span class="sfb-label">Intention</span>
       <button class="sfb-pill active" data-cat="">Toutes</button>
     </div>
+    <!-- ── Objets / Typologies — trigger + recherche inline ── -->
     <div class="status-filter-bar" id="subcategoryFilterBar" style="display:none">
       <span class="sfb-label">Sous-cat.</span>
+    </div>
+    <!-- ── Barre Typologies — masquée par défaut, remplie via overlay ── -->
+    <div class="typo-filter-bar" id="typologyFilterBar" style="display:none">
+      <button class="tfb-all active" data-typo="">Tout</button>
     </div>
     <div class="status-filter-bar status-filter-bar-sm" id="statusFilterBar">
       <button class="sfb-pill sfb-pill-sm active" data-status="">Tous</button>
