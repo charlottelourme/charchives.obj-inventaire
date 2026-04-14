@@ -914,23 +914,8 @@ main { padding: 0; }
   padding: 28px 24px;
   background: transparent;
 }
-/* Halo de fond — même logique que .card::before */
-.card-note::before {
-  content: '';
-  position: absolute;
-  top: 0; bottom: -24px;
-  left: -8%; right: -8%;
-  background: var(--note-halo, rgba(190,182,170,0.72));
-  filter: blur(42px);
-  border-radius: 4px;
-  z-index: -1;
-  opacity: 0.65;
-  pointer-events: none;
-  transition: opacity .42s ease;
-}
 @media (hover: hover) {
   .card-note:hover { transform: scale(1.02); }
-  .card-note:hover::before { opacity: 0.85; }
 }
 /* Séparateur pleine largeur : column-span */
 .card-note.note-wide {
