@@ -793,8 +793,8 @@ function buildIndexTrigger() {
     : '';
 
   bar.innerHTML = `
+    <span class="sfb-label">Objets</span>
     <button class="idx-trigger-btn" id="idxTriggerBtn">
-      <span class="idx-trigger-text">Objets</span>
       <em class="idx-trigger-hint">parcourir les typologies</em>
     </button>
     ${typoChip}
