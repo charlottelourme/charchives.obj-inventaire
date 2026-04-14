@@ -317,6 +317,7 @@ const LB = { photos: [], idx: 0 };
 const TL = { zoom:1, panX:0, panY:0, isDragging:false, hasDragged:false, startX:0, startY:0, startPanX:0, startPanY:0 };
 const _charts = {};
 let _kwShowAll = false;
+let _breadcrumbByView = {};    // breadcrumb persistant par vue
 let _currentTrio     = null;  // dernier trio généré (modes 1 & 2)
 let _triosActiveTab  = 'hasard'; // 'hasard' | 'regles' | 'manuel'
 let _triosManualSlots = [null, null, null]; // objets placés en mode manuel
