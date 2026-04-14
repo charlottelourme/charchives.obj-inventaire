@@ -2765,13 +2765,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   background: transparent;
   padding: 5px 4px;
   font-family: 'Cutive Mono', monospace;
-  font-size: 11.5px;
+  font-size: 15px; /* aligné sur .idx-trigger-hint */
   color: var(--text);
   outline: none;
   transition: border-color .15s;
 }
 .idx-inline-input:focus { border-bottom-color: var(--text-2); }
-.idx-inline-input::placeholder { color: var(--text-3); font-style: italic; }
+.idx-inline-input::placeholder { color: var(--text-3); font-style: normal; }
 
 /* Dropdown autocomplete */
 .idx-inline-drop {
