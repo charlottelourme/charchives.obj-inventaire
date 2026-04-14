@@ -717,13 +717,13 @@ main { padding: 0; }
   font-weight: 400;
   letter-spacing: .03em;
   padding: 2px 7px;
-  border-radius: 9999px;
+  border-radius: 2px;
   white-space: nowrap;
 }
 .card-typo-label {
   font-family: 'Inter', sans-serif;
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: .09em;
   color: var(--text-3);
