@@ -600,6 +600,7 @@ async function init(attempt = 0) {
     getCategoryOrder().forEach(c => state.calendarActiveCategories.add(c));
     state.calendarActiveCategories.add('');
 
+    buildTypologyFilterBar();
     buildCategoryFilterBar();
     buildSubcategoryBar();
     render();
