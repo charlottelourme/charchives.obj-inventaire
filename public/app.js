@@ -1356,6 +1356,18 @@ function renderGrid(items) {
       }
     }
     el.innerHTML = titleHTML + `<div class="grid">${items.map(c=>cardHTML(c)).join('')}</div>`;
+    // Pills typologies dans le titre — toggle filtre
+    el.querySelectorAll('.vpt-pill').forEach(pill => {
+      pill.addEventListener('click', e => {
+        e.stopPropagation();
+        const t = pill.dataset.typo;
+        const idx = state.attrFilters.subcat.indexOf(t);
+        if (idx >= 0) state.attrFilters.subcat.splice(idx, 1);
+        else state.attrFilters.subcat.push(t);
+        buildIndexTrigger();
+        render();
+      });
+    });
   }
   bindCardEvents(el);
 }
