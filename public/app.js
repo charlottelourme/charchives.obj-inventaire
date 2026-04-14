@@ -1354,10 +1354,13 @@ function render() {
     const isActive = p.dataset.cat === state.categoryFilter;
     p.classList.toggle('active', isActive);
     if (isActive && p.classList.contains('sfb-pill-verbe') && p.dataset.bg) {
-      // Actif : pilule pleine avec la couleur du verbe
-      p.style.background = p.dataset.bg;
-      p.style.color = p.dataset.fg || '#fff';
-      p.style.borderColor = p.dataset.bg;
+      // Actif : couleur du verbe, souligné, zéro fond
+      p.style.color = p.dataset.bg;
+      p.style.fontWeight = '700';
+      p.style.textDecoration = 'underline';
+      p.style.textUnderlineOffset = '3px';
+      p.style.background = '';
+      p.style.borderColor = '';
     } else if (!isActive) {
       p.style.background = '';
       p.style.color = '';
