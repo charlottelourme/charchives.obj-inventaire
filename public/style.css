@@ -5769,7 +5769,9 @@ body.dark-mode .subcat-chip.selected { color: #1a1917; }
 label, input, select, textarea, button {
   font-family: 'Cutive Mono', monospace;
 }
-h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
+h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
+.portrait-title, .vpt-name, .vab-name, .cat-hdr-name,
+.stats-kpi-number, .trios-headline, .idx-overlay-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
 }
 .settings-section-title, .attr-group-header span, .form-group-label {
