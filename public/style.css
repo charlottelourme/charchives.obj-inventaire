@@ -5811,19 +5811,22 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 .portrait-meta-tag {
   font-size: 11px;
   color: var(--text-3);
-  padding: 2px 8px;
-  border: 1px solid var(--border-light);
+  padding: 0;
+  border: none;
+  background: transparent;
 }
 .portrait-sep {
   height: 1px;
-  background: var(--border-light);
-  margin: 20px 0;
+  background: linear-gradient(to right, rgba(45,45,45,.08), rgba(45,45,45,.06), transparent);
+  margin: 22px 0;
 }
+/* Description : légèrement plus grande, lisible sur le halo */
 .portrait-desc {
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  color: var(--text-2);
-  line-height: 1.75;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 14.5px;
+  font-style: italic;
+  color: #2a2623; /* très sombre */
+  line-height: 1.8;
 }
 /* ── Attributs style fiche de musée ── */
 .portrait-attrs {
