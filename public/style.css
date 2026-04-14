@@ -2984,7 +2984,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* Lettrine éditoriale */
 .idx-alpha-letter {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
+  font-style: normal;
   font-size: 22px;
   font-weight: 300;
   color: var(--text-3);
