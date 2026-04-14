@@ -2710,7 +2710,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-groups {
   overflow-y: auto;
   flex: 1;
-  padding: 40px 60px 60px;
+  padding: 24px 28px 36px;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
@@ -2718,10 +2718,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-groups::-webkit-scrollbar-thumb { background: var(--border); }
 .idx-groups::-webkit-scrollbar-track { background: transparent; }
 
-/* Grille alphabétique — 3 colonnes aérées */
+/* Grille alphabétique — 2 colonnes pour le panel modal */
 .idx-alpha-grid {
-  columns: 3;
-  column-gap: 52px;
+  columns: 2;
+  column-gap: 36px;
 }
 @media (max-width: 700px) {
   .idx-alpha-grid { columns: 2; column-gap: 28px; }
