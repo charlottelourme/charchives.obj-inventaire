@@ -1126,10 +1126,16 @@ function setView(v, _silent = false) {
     _applyDeriveMode(state.deriveMode, true);
   }
 
-  // Breadcrumb — navigation explicite : on repart à zéro sur la vue
+  // Breadcrumb — restaurer l'état précédent de la vue, ou créer une entrée racine
   if (!_silent && VIEW_LABELS[v]) {
-    state.breadcrumb = [];
-    pushBreadcrumb(VIEW_LABELS[v], () => setView(v, true));
+    const saved = _breadcrumbByView[v];
+    if (saved && saved.length) {
+      state.breadcrumb = saved;
+      renderBreadcrumbBar();
+    } else {
+      state.breadcrumb = [];
+      pushBreadcrumb(VIEW_LABELS[v], () => setView(v, true));
+    }
   }
   render();
 }
