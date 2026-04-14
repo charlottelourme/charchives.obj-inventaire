@@ -4367,7 +4367,7 @@ function renderPhotos() {
           skeleton.remove();
           btn.disabled = false;
           wrap.querySelector('.photo-enhance') && (wrap.querySelector('.photo-enhance').disabled = false);
-          _showPhotoToast('Erreur lors de la stylisation AI. Veuillez réessayer.');
+          _showPhotoToast(`Erreur ambiance : ${result.error}`);
           return;
         }
 
