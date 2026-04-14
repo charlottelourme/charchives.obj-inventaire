@@ -102,13 +102,11 @@ body.verbe-active .sfb-pill:hover { background: var(--tag-bg); color: var(--text
 body.verbe-active .sfb-pill-verbe.active {
   opacity: 1;
 }
-/* Pill "Toutes" actif — monochrome */
+/* Pill "Toutes" actif — Point de Galerie */
 body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active {
   background: transparent !important;
-  color: var(--text) !important;
+  color: #000 !important;
   font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 3px;
   opacity: 1;
 }
 
