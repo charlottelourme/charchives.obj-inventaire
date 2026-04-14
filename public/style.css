@@ -1489,11 +1489,13 @@ body.dark-mode .form-intent-band {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 7px;
-  background: var(--tag-bg);
-  border: 1px solid var(--tag-border);
-  border-radius: 3px;
+  padding: 2px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   font-size: 12px;
+  font-weight: 500;
   color: var(--text);
 }
 .tag-chip button {
