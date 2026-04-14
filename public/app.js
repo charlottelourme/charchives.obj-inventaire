@@ -1667,12 +1667,16 @@ function cardHTML(c) {
       </div>
     </div>`;
 
+  // ── imageMode : portrait (3:4) | landscape (4:3) | cutout (auto) ──
+  const _isDetoured = photo && (photo.toLowerCase().endsWith('.png') || photo.includes('detour'));
+  const imageMode = c.imageMode || (_isDetoured ? 'cutout' : 'portrait');
+  const thumbAreaMod = imageMode === 'cutout'    ? ' card-thumb-area--cutout'
+                     : imageMode === 'landscape' ? ' card-thumb-area--landscape'
+                     : ''; // portrait par défaut
+
   return `
   <div class="card" data-id="${c.id}"${accentStyle}>
-    ${(() => {
-      const isDetoured = photo && (photo.toLowerCase().endsWith('.png') || photo.includes('detour'));
-      return `<div class="card-thumb-area${isDetoured ? ' card-thumb-area--detoured' : ''}">`;
-    })()}
+    <div class="card-thumb-area${thumbAreaMod}">
       <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">${_asteriskSVG()}</button>
       ${photo
         ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="">`
