@@ -82,10 +82,10 @@ body.verbe-active .toolbar,
 body.verbe-active #gridWrapper {
   background: transparent;
 }
-/* Count label : accent coloré du verbe */
+/* Count label : gris discret */
 body.verbe-active .count-label {
-  color: var(--page-verbe-text);
-  opacity: .65;
+  color: var(--text-3);
+  opacity: 1;
 }
 body.verbe-active .toolbar-slider-sep { background: var(--border); opacity: .3; }
 body.verbe-active .card-size-slider { opacity: .7; }
