@@ -166,7 +166,7 @@ body.verbe-active .search-bar::placeholder { color: var(--text-3); opacity: 1; }
   font-weight: 300;
   letter-spacing: -.03em;
   line-height: .9;
-  color: var(--page-verbe-text, var(--text));
+  color: var(--text); /* monochrome — plus de couleur verbe */
   margin: 0;
 }
 .vpt-count {
@@ -175,8 +175,8 @@ body.verbe-active .search-bar::placeholder { color: var(--text-3); opacity: 1; }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .24em;
-  color: var(--page-verbe-text, var(--text));
-  opacity: .35;
+  color: var(--text-3); /* monochrome */
+  opacity: .75;
   padding-bottom: 6px;
   white-space: nowrap;
 }
