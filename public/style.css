@@ -1408,16 +1408,15 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   background: none;
 }
 .sfb-pill-typo.active::after {
-  content: '•';
+  content: '';
   position: absolute;
   left: 50%;
-  bottom: -10px;
+  bottom: -4px;
   transform: translateX(-50%);
-  font-size: 8px;
-  line-height: 1;
-  width: auto; height: auto;
-  background: none;
-  color: currentColor;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: currentColor;
 }
 
 /* "Tous" dans la barre typo — même style texte pur */
