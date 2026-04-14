@@ -623,15 +623,18 @@ let _mfSearchTerms = {}; // persists search text per filter key
 function buildAttrFilterBar() {
   const bar = document.getElementById('attrFilterBar');
   if (!bar) return;
-  const hasCatFilter = state.categoryFilter !== '';
-  bar.style.display = ''; // always visible in grid
 
-  // Sous-catégories — barre de pills dédiée sous les catégories
+  if (state.categoryFilter) {
+    // Verbe actif : masquer la barre Matière/Origine/État/Couleur
+    bar.style.display = 'none';
+  } else {
+    bar.style.display = '';
+    buildMultiFilter('filterMatieresWrap', 'matieres', 'Matière', ATTRIBUTES_DEF.matieres.options);
+    buildMultiFilter('filterStylesWrap', 'origine', 'Origine', ATTRIBUTES_DEF.origine.options);
+    buildMultiFilter('filterEtatWrap', 'etat_traces', 'État', ATTRIBUTES_DEF.etat_traces.options);
+    buildMultiFilter('filterCouleursWrap', 'couleurs', 'Couleur', state.settings.colors||[]);
+  }
   buildSubcategoryBar();
-  buildMultiFilter('filterMatieresWrap', 'matieres', 'Matière', ATTRIBUTES_DEF.matieres.options);
-  buildMultiFilter('filterStylesWrap', 'origine', 'Origine', ATTRIBUTES_DEF.origine.options);
-  buildMultiFilter('filterEtatWrap', 'etat_traces', 'État', ATTRIBUTES_DEF.etat_traces.options);
-  buildMultiFilter('filterCouleursWrap', 'couleurs', 'Couleur', state.settings.colors||[]);
 }
 
 function buildSubcategoryBar() { buildIndexTrigger(); } // alias rétrocompat
