@@ -4512,6 +4512,28 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   grid-template-columns: 1fr 1fr 1fr;
 }
 
+/* ── Tablette (521-768px) — Masonry 3 colonnes ──────────────────── */
+@media (min-width: 521px) and (max-width: 768px) {
+  .grid {
+    display: block;
+    columns: 3;
+    column-gap: 18px;
+    padding: 16px 16px calc(88px + env(safe-area-inset-bottom));
+  }
+  .grid .card {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    margin-bottom: 20px;
+    overflow: visible;
+  }
+  .grid .card::before {
+    filter: blur(28px) grayscale(1);
+  }
+  .card-body { padding: 10px 12px 14px; }
+  .card-name { font-size: 14px; }
+}
+
 /* ── Mobile responsive ─────────────────────────────────────────── */
 @media (max-width: 520px) {
   /* ══════════════════════════════════════
