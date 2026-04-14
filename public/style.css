@@ -22,7 +22,7 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Cutive Mono', monospace;
   line-height: 1.5;
   min-height: 100vh;
   transition: background-color .5s ease, color .5s ease, border-color .5s ease;
