@@ -4626,17 +4626,59 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
 
   /* ══════════════════════════════════════
-     GRILLE : 2 colonnes compactes
+     GRILLE MOBILE — Masonry 2 colonnes CSS
+     (columns layout = imbrication fluide,
+      zéro trou vertical contrairement à grid)
   ══════════════════════════════════════ */
   .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 12px;
+    /* ① Quitter CSS Grid → CSS Columns */
+    display: block;
+    columns: 2;
+    column-gap: 14px;
+    /* ② Padding généreux en bas : dernière ligne
+       jamais cachée par la nav ou le safe-area */
+    padding: 10px 10px calc(96px + env(safe-area-inset-bottom));
   }
-  .grid .card { border: none; }
-  .card-body { padding: 10px 12px 14px; }
-  .card-name { font-size: 13px; line-height: 1.35; }
-  .card-desc { display: none; } /* masqué sur mobile, visible en détail */
+
+  /* ③ Chaque carte : inline-block pour que break-inside
+     fonctionne + occupe toute la largeur de colonne */
+  .grid .card {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    margin-bottom: 18px;
+    border: none;
+    /* overflow: visible doit rester (halo peut déborder) */
+    overflow: visible;
+  }
+
+  /* ④ Halo directionnel mobile : blur réduit,
+     la forme reste rectangulaire mais moins étalée */
+  .grid .card::before {
+    filter: blur(22px) grayscale(1);
+    top: 18%;
+    height: 118%;
+  }
+
+  /* ⑤ Typographie carte mobile — compacte et élégante */
+  .card-body {
+    padding: 8px 10px 12px;
+  }
+  .card-meta-row {
+    font-size: 9px;
+    gap: 4px;
+    margin-bottom: 3px;
+  }
+  .card-verbe-label,
+  .card-typo-label {
+    font-size: 9px;
+  }
+  .card-name {
+    font-size: 13px;
+    line-height: 1.3;
+    letter-spacing: -.01em;
+  }
+  .card-desc { display: none; }
 
   /* ══════════════════════════════════════
      MODALES : PLEIN ÉCRAN NATIF
