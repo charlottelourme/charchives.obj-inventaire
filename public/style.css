@@ -297,22 +297,24 @@ header h1 {
 }
 /* Halo : hover seulement — l'état actif utilise le Point de Galerie */
 .view-tab:hover::before { opacity: 1; }
+/* Éradication du double indicateur — halo masqué sur .active */
+.view-tab.active::before { opacity: 0 !important; }
 
-/* Point de Galerie — tab actif : pastille centrée en bas du header */
+/* Point de Galerie — tab actif : cercle géométrique centré en bas du header */
 .view-tab::after {
   content: '';
   position: absolute;
   left: 50%;
-  bottom: 6px;
+  bottom: 8px;
   transform: translateX(-50%);
-  font-size: 8px;
-  line-height: 1;
-  color: currentColor;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: currentColor;
   opacity: 0;
   transition: opacity .2s ease;
 }
 .view-tab.active::after {
-  content: '•';
   opacity: 1;
 }
 
