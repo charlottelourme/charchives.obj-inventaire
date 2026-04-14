@@ -2365,7 +2365,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .con-links-group.con-has-hover .con-link.con-link-lit { stroke-opacity: .7 !important; }
 
 /* Nodes */
-.con-node { cursor: pointer; }
+.con-node {
+  cursor: pointer;
+  transition: opacity .22s ease, filter .22s ease;
+}
 .con-node circle.con-node-bg {
   transition: opacity .22s ease;
 }
