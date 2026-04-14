@@ -5012,6 +5012,43 @@ function smTriosTabsHTML(draft) {
   </div>`;
 }
 
+function smThesaurusHTML() {
+  // Collecte toutes les typologies disponibles pour le <select>
+  const allTypos = [];
+  getVerbes().forEach(v => getTypologies(v).forEach(t => {
+    if (!allTypos.includes(t)) allTypos.push(t);
+  }));
+  allTypos.sort((a, b) => a.localeCompare(b, 'fr'));
+
+  const entries = Object.entries(_customThesaurus).sort(([a], [b]) => a.localeCompare(b, 'fr'));
+
+  const entriesHTML = entries.length
+    ? entries.map(([alias, typo]) => `
+      <div class="sm-thes-row" data-alias="${esc(alias)}">
+        <span class="sm-thes-alias">${esc(alias)}</span>
+        <span class="sm-thes-arrow">→</span>
+        <span class="sm-thes-typo">${esc(typo)}</span>
+        <button class="sm-thes-del" data-alias="${esc(alias)}" title="Supprimer">✕</button>
+      </div>`).join('')
+    : '<p class="sm-thes-empty">Aucun synonyme personnalisé encore.</p>';
+
+  const optionsHTML = allTypos.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
+
+  return `<div class="sm-thesaurus">
+    <p class="sm-thes-hint">Associe un mot-clé à une typologie pour l'entraîner dans la barre de recherche.</p>
+    <div class="sm-thes-entries" id="smThesEntries">${entriesHTML}</div>
+    <div class="sm-thes-add">
+      <input type="text" class="sm-thes-input" id="smThesAliasInput" placeholder="Mot-clé (ex: tasse, lampe…)">
+      <span class="sm-thes-sep">→</span>
+      <select class="sm-thes-select" id="smThesTypoSelect">
+        <option value="">— Choisir une typologie —</option>
+        ${optionsHTML}
+      </select>
+      <button class="btn btn-ghost btn-sm sm-thes-add-btn" id="smThesAddBtn">+ Ajouter</button>
+    </div>
+  </div>`;
+}
+
 function smGroupedListHTML(groups, key) {
   const safeGroups = isGrouped(groups) ? groups : [];
   return `<div class="sm-groups" data-key="${key}">
