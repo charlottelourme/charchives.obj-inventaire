@@ -1494,16 +1494,15 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
 }
 /* Point de Galerie — status pills */
 .sfb-pill-sm.active::after {
-  content: '•';
+  content: '';
   position: absolute;
   left: 50%;
-  bottom: -8px;
+  bottom: -4px;
   transform: translateX(-50%);
-  font-size: 7px;
-  line-height: 1;
-  width: auto; height: auto;
-  background: none;
-  color: currentColor;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: currentColor;
 }
 
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
