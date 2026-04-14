@@ -5084,7 +5084,10 @@ async function handlePhotoFiles(files) {
   for (const file of files) {
     await new Promise(resolve => {
       openCropper(file, async (croppedBlob) => {
-        const croppedFile = new File([croppedBlob], file.name, { type: 'image/jpeg' });
+        const isPng      = croppedBlob.type === 'image/png';
+        const ext        = isPng ? 'png' : 'jpg';
+        const baseName   = file.name.replace(/\.\w+$/, '');
+        const croppedFile = new File([croppedBlob], `${baseName}.${ext}`, { type: croppedBlob.type });
         const { filenames } = await api.uploadPhotos([croppedFile]);
         state.editPhotos.push(...filenames);
         renderPhotos();
