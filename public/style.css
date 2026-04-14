@@ -5858,14 +5858,21 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 .portrait-attr-pill {
   font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: var(--text);
-  padding: 3px 9px;
-  border: 1px solid var(--border);
+  color: #1e1c19;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
   letter-spacing: .01em;
 }
+.portrait-attr-pill + .portrait-attr-pill::before {
+  content: ' · ';
+  color: var(--text-3);
+  margin: 0 2px;
+}
 .portrait-pill-univers {
-  border-style: dashed;
+  border: none;
   color: var(--text-2);
+  font-style: italic;
 }
 
 /* ══════════════════════════════════════════════════════════════
