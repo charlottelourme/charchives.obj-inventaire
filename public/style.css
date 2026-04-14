@@ -555,24 +555,22 @@ main { padding: 0; }
 .card::before {
   content: '';
   position: absolute;
-  left: 2%;
-  width: 96%;
-  top: 28%;           /* commence en bas de la 1ère moitié de l'image */
-  height: 92%;        /* s'étire jusque sous le texte */
+  left: 0;
+  width: 100%;
+  top: 22%;           /* commence à mi-image */
+  height: 125%;       /* s'étire bien sous le texte */
   background: var(--verbe-accent, rgba(190,182,170,0.7));
-  filter: blur(54px);
-  border-radius: 50%; /* blob organique, pas un rectangle */
+  filter: blur(38px);
+  border-radius: 12px; /* rectangulaire, léger arrondi */
   z-index: -1;
-  opacity: 0.36;
+  opacity: 0.32;
   pointer-events: none;
-  transform-origin: center 0%;
-  transition: opacity .42s ease, transform .48s cubic-bezier(.22,.68,0,1.1);
+  transition: opacity .42s ease;
 }
 
 @media (hover: hover) {
   .card:hover::before {
-    opacity: 0.68;
-    transform: scaleY(1.14);
+    opacity: 0.62;
   }
 }
 
