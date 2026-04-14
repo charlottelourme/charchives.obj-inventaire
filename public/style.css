@@ -6747,3 +6747,92 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
 }
 .cp-item:hover .cp-remove { opacity: 1; }
 .cp-remove:hover { color: var(--red); border-color: var(--red); }
+
+
+/* ══════════════════════════════════════════════════════════════
+   DICTIONNAIRE DE RECHERCHE — Paramètres
+   ══════════════════════════════════════════════════════════════ */
+
+.sm-thesaurus { display: flex; flex-direction: column; gap: 14px; padding: 4px 0; }
+
+.sm-thes-hint {
+  font-size: 11.5px;
+  color: var(--text-3);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.sm-thes-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sm-thes-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: var(--tag-bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 12px;
+}
+.sm-thes-alias {
+  font-weight: 600;
+  color: var(--text);
+  min-width: 90px;
+}
+.sm-thes-arrow { color: var(--text-3); font-size: 10px; }
+.sm-thes-typo {
+  flex: 1;
+  color: var(--text-2);
+  font-style: italic;
+}
+.sm-thes-del {
+  border: none; background: none; cursor: pointer;
+  color: var(--text-3); font-size: 11px; padding: 2px 4px;
+  border-radius: 2px; transition: color .1s, background .1s;
+}
+.sm-thes-del:hover { color: var(--red); background: #d13f1310; }
+
+.sm-thes-empty {
+  font-size: 11.5px;
+  color: var(--text-3);
+  padding: 8px 0;
+}
+
+/* Formulaire d'ajout */
+.sm-thes-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+.sm-thes-input {
+  flex: 0 1 140px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 12px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+.sm-thes-input:focus { border-color: var(--border-strong); }
+.sm-thes-sep { color: var(--text-3); font-size: 12px; }
+.sm-thes-select {
+  flex: 1;
+  min-width: 160px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 12px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+}
+.sm-thes-select:focus { border-color: var(--border-strong); }
