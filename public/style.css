@@ -1489,6 +1489,18 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   background-color: currentColor;
 }
 
+/* ── Bouton Sélection — aligné à droite de la barre de statut ── */
+.sfb-pill-selection {
+  margin-left: auto;
+  border-left: 1px solid var(--border);
+  padding-left: 20px;
+  letter-spacing: .08em;
+}
+.sfb-pill-selection.active {
+  color: #000;
+  font-weight: 700;
+}
+
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
 .card-status-badge { display: none; }
 
