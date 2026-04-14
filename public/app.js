@@ -5140,6 +5140,7 @@ function renderSettingsModal() {
     ${smAccordion('univers', smGetCurrentLabel(draft, 'univers'), smListHTML(draft.univers || [], 'univers'), false, true)}
     ${smAccordion('locations', smGetCurrentLabel(draft, 'locations'), smListHTML(draft.locations || [], 'locations'), false, true)}
     ${smAccordion('trios', 'Onglets Trios', smTriosTabsHTML(draft), false, false)}
+    ${smAccordion('thesaurus', 'Dictionnaire de recherche', smThesaurusHTML(), false, false)}
   </div>`;
   bindSmModal();
 }
