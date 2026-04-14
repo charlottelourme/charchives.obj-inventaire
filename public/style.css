@@ -526,7 +526,7 @@ main { padding: 0; }
   border: none;
   border-radius: 2px;
   overflow: hidden;
-  transition: box-shadow .4s cubic-bezier(.22,.68,0,1.1), transform .4s cubic-bezier(.22,.68,0,1.1);
+  transition: box-shadow .4s cubic-bezier(.22,.68,0,1.1);
   cursor: pointer;
   position: relative;
 }
