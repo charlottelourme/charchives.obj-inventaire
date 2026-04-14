@@ -636,8 +636,8 @@ function buildCategoryFilterBar() {
     btn.dataset.bg = v.bgColor || v.color || '#2D2D2D';
     btn.dataset.fg = v.textColor || '#fff';
     if (isActive) {
-      // Actif : couleur du verbe sur le texte + soulignement — zéro fond
-      btn.style.color = v.bgColor || v.color || '#2D2D2D';
+      // Actif : monochrome — soulignement seul, zéro couleur saturée
+      btn.style.color = '';
       btn.style.fontWeight = '700';
       btn.style.textDecoration = 'underline';
       btn.style.textUnderlineOffset = '3px';
@@ -647,8 +647,8 @@ function buildCategoryFilterBar() {
   });
   bar.querySelectorAll('.sfb-pill').forEach(pill => {
     pill.addEventListener('mouseenter', () => {
-      if (!pill.classList.contains('active') && pill.dataset.bg) {
-        pill.style.color = pill.dataset.bg;
+      if (!pill.classList.contains('active')) {
+        pill.style.color = '';  // monochrome — pas de tint couleur au survol
         pill.style.background = '';
         pill.style.borderColor = '';
       }
