@@ -7299,7 +7299,7 @@ body {
 .bottom-nav .view-tab { font-size: 9px; letter-spacing: .10em; }
 
 /* Métadonnées carte (verbe + typo) */
-.card-verbe-label  { font-size: 10px; font-style: normal; font-weight: 400; }
+.card-verbe-label  { font-size: 11px; font-style: italic; font-weight: 300; color: var(--text-3); }
 .card-typo-label   { font-size: 9px;  letter-spacing: .14em; }
 .card-price        { font-size: 11px; }
 
