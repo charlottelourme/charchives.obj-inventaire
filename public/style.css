@@ -1148,13 +1148,21 @@ main { padding: 0; }
   transition: color .15s;
   position: relative;
 }
-.tfb-pill:hover { color: var(--text-2); }
+.tfb-pill:hover { color: #000; }
 .tfb-pill.active {
-  color: var(--text);
+  color: #000;
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1px;
+}
+/* Point de Galerie — barre typologies */
+.tfb-pill.active::after {
+  content: '•';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  font-size: 7px;
+  line-height: 1;
+  color: currentColor;
 }
 
 /* Dark mode */
