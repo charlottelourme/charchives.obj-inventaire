@@ -1518,9 +1518,13 @@ function cardHTML(c) {
   const metaRow = (verbeLabel || typoLabel) ? `<div class="card-meta-row">${verbeLabel}${typoLabel}</div>` : '';
   const priceBadge = c.price != null && c.price !== '' ? `<span class="card-price">${c.price} €</span>` : '';
   const addedDate = c.createdAt ? `<div class="card-added-date">${formatRelativeDate(c.createdAt)}</div>` : '';
-  // Halo coloré pour box-shadow au hover (hex 8 chiffres = couleur + opacité)
-  const haloColor = bgColor && bgColor !== 'transparent' ? bgColor + '55' : 'rgba(45,45,45,0.18)';
-  const accentStyle = ` style="--verbe-accent:${bgColor || 'transparent'};--card-halo:${haloColor}"`;
+  // Halo Directionnel — couleur du verbe pour le blob ::before
+  // Si l'objet a une catégorie mappée à un verbe avec couleur propre, on l'utilise.
+  // Sinon, fallback chaud neutre (évite un halo anthracite sur fond blanc).
+  const verbeHasColor = c.category && getVerbes().some(v => v.name === c.category && (v.bgColor || v.color));
+  const haloAccent = verbeHasColor ? bgColor : 'rgba(198,188,175,0.8)';
+  const haloColor = verbeHasColor ? bgColor + '55' : 'rgba(45,45,45,0.08)';
+  const accentStyle = ` style="--verbe-accent:${haloAccent};--card-halo:${haloColor}"`;
 
   // Hover overlay — glassmorphism galerie : description centre + technique bas
   const attrs = c.attributes || {};
