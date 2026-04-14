@@ -1227,11 +1227,12 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   opacity: .75;
 }
 
-/* ── Barre statuts — navigation texte pure ── */
+/* ── Barre statuts — pills alignées sur le contenu (après label) ── */
 .status-filter-bar-sm {
   border-bottom: none;
   border-top: none;
-  padding: 4px clamp(24px, 4vw, 64px) 12px;
+  /* left padding = gutter + label-w pour aligner avec les verbes / "parcourir" */
+  padding: 4px var(--filter-gutter) 10px calc(var(--filter-gutter) + var(--label-w));
   gap: 0;
   flex-wrap: wrap;
   min-height: auto;
