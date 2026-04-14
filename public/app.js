@@ -1218,6 +1218,7 @@ function setView(v, _silent = false) {
   // Si on entre dans Dérive → réinitialiser tous les filtres Inventaire
   if (v === 'derive') {
     state.categoryFilter    = '';
+    state.typoFilter        = '';
     state.attrFilters       = { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [], motifs: [], usage: [], role: [] };
     state.statusFilter      = '';
     state.searchQuery       = '';
