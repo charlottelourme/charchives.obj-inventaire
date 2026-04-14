@@ -7358,8 +7358,11 @@ input, select, textarea {
   letter-spacing: .02em;
 }
 
-/* Navigation onglets (Inventaire, Dérive, etc.) */
-.view-tab { font-size: 10px; letter-spacing: .08em; }
+/* Navigation onglets (Inventaire, Dérive, etc.) — Cormorant italic */
+.view-tab { font-size: 17px; letter-spacing: .01em; }
+@media (max-width: 520px) {
+  .view-tab { font-size: 15px; padding: 0 10px; }
+}
 
 /* Labels filtres attributs */
 .mf-btn { font-size: 9px; letter-spacing: .06em; }
