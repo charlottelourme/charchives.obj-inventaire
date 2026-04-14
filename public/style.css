@@ -4902,10 +4902,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   .view-tab { font-size: 10px; padding: 3px 8px; white-space: nowrap; flex-shrink: 0; }
 }
 
-/* Tablette : 3 colonnes */
-@media (min-width: 521px) and (max-width: 900px) {
-  .grid { grid-template-columns: repeat(3, 1fr); }
-}
+/* Tablette 521–900px : 3 colonnes — géré par la règle column-count ci-dessus */
 
 /* ── Grouped search dropdown (formulaire objet) ── */
 .gs-wrapper { position: relative; width: 100%; }
