@@ -1201,9 +1201,6 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   width: auto; height: auto;
   background: none;
   color: currentColor;
-  /* remplace : bottom: 2px; left: 14px; right: 14px;
-  height: 1.5px;
-  background: currentColor;
 }
 
 /* "Tous" dans la barre typo — même style texte pur */
