@@ -4893,7 +4893,7 @@ body.dark-mode .private-notice { background: #3a2e00; border-color: #5a4a00; col
 body.dark-mode .settings-sec { border-color: var(--border); }
 body.dark-mode .settings-sec-header { background: var(--surface); }
 body.dark-mode .settings-sec-header:hover { background: var(--tag-bg); }
-body.dark-mode .card { background: var(--surface); }
+/* body.dark-mode .card : reste transparent — le halo fonctionne aussi en dark mode */
 body.dark-mode .modal-tabs { border-color: var(--border); }
 /* Dark mode : pills actives avec palette Héritage → texte écru toujours lisible */
 body.dark-mode .sfb-pill.active,
