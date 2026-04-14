@@ -4292,6 +4292,17 @@ function renderPhotos() {
     });
   });
 
+  // ── Mettre en 1ère position (photo principale de la carte) ────────────────────
+  el.querySelectorAll('.photo-set-main').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const i = parseInt(btn.dataset.i);
+      const [moved] = state.editPhotos.splice(i, 1);
+      state.editPhotos.unshift(moved);
+      renderPhotos();
+    });
+  });
+
   el.querySelectorAll('.photo-enhance').forEach(btn=>{
     btn.addEventListener('click', async e=>{
       e.stopPropagation();
