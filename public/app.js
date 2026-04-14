@@ -148,6 +148,7 @@ const state = {
   editSubcategories: [],
   dpYear: new Date().getFullYear(),
   dpSelectedDate: '',
+  typoFilter: '',          // filtre primaire par Typologie (barre Typologies)
   attrFilters: { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [] },
   calDateType: 'dateAchat',
   calYear: 2025,
