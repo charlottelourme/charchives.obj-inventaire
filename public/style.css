@@ -2944,7 +2944,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   background: transparent;
   padding: 4px 0;
   font-family: 'Cutive Mono', monospace;
-  font-size: 13px;
+  font-size: 15px; /* aligné sur .idx-trigger-hint */
   color: var(--text);
   outline: none;
 }
