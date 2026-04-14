@@ -1663,7 +1663,6 @@ function cardHTML(c) {
         <button class="card-next" data-id="${c.id}">›</button>
       </div>` : ''}
       <div class="card-drop-hint">Déposer les photos ici</div>
-      ${hoverOverlay}
     </div>
     <div class="card-body">
       ${statusColor ? `<span class="card-status-dot" style="background:${statusColor}"></span>` : ''}
