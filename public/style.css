@@ -989,54 +989,54 @@ main { padding: 0; }
   letter-spacing: .12em;
 }
 
-/* Typologies : chips rondes, léger contour */
+/* Typologies : texte pur, aucun fond ── */
 .sfb-pill-typo {
-  border: 1px solid var(--border-light);  /* contour léger */
-  border-radius: 9999px;
-  padding: 4px 12px;
+  border: none;
+  border-radius: 0;
+  padding: 5px 14px;
   font-family: 'Inter', sans-serif;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: .07em;
-  color: var(--text-2);
+  letter-spacing: .08em;
+  color: var(--text-3);
   background: transparent;
-  transition: background .15s, color .15s, border-color .15s;
-  margin: 1px;
+  transition: color .15s;
+  margin: 0;
+  position: relative;
 }
-.sfb-pill-typo:hover {
-  background: var(--tag-bg);
-  border-color: var(--border);
-  color: var(--text);
-}
+.sfb-pill-typo:hover { color: var(--text); background: none; }
 .sfb-pill-typo.active {
-  background: var(--accent);
-  color: #F5F5F0;
-  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+  background: none;
+}
+.sfb-pill-typo.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 14px; right: 14px;
+  height: 1.5px;
+  background: currentColor;
 }
 
-/* "Tous" dans la barre typo — même style */
+/* "Tous" dans la barre typo — même style texte pur */
 #subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo) {
-  border: 1px solid var(--border-light);
-  border-radius: 9999px;
-  padding: 4px 12px;
+  border: none;
+  border-radius: 0;
+  padding: 5px 14px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: .07em;
+  letter-spacing: .08em;
   background: transparent;
-  color: var(--text-2);
-  margin: 1px;
+  color: var(--text-3);
+  margin: 0;
 }
-#subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo):hover {
-  background: var(--tag-bg);
-  border-color: var(--border);
-  color: var(--text);
-}
+#subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo):hover { color: var(--text); background: none; }
 #subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo).active {
-  background: var(--accent);
-  color: #F5F5F0;
-  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+  background: none;
 }
 
 .sfb-dot { display: none; }
