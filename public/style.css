@@ -1186,14 +1186,22 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
 }
 .sfb-pill-typo:hover { color: var(--text); background: none; }
 .sfb-pill-typo.active {
-  color: var(--accent);
+  color: #000;
   font-weight: 700;
   background: none;
 }
 .sfb-pill-typo.active::after {
-  content: '';
+  content: '•';
   position: absolute;
-  bottom: 2px; left: 14px; right: 14px;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  font-size: 8px;
+  line-height: 1;
+  width: auto; height: auto;
+  background: none;
+  color: currentColor;
+  /* remplace : bottom: 2px; left: 14px; right: 14px;
   height: 1.5px;
   background: currentColor;
 }
