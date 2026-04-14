@@ -1606,7 +1606,8 @@ function cardHTML(c) {
     : (c.subcategory && c.subcategory !== 'Autre' ? [c.subcategory] : (c.subcategoryCustom ? [c.subcategoryCustom] : []));
   const typoText = subcats.join(' · ');
   // Micro-labels dans le body
-  const verbeLabel = c.category ? `<span class="card-verbe-label" style="background:${bgColor};color:${textColor}">${esc(c.category)}</span>` : '';
+  // Verbe : texte flottant italic, sans fond ni bordure — couleur neutre via CSS
+  const verbeLabel = c.category ? `<span class="card-verbe-label">${esc(c.category)}</span>` : '';
   const typoLabel = typoText ? `<span class="card-typo-label">${esc(typoText)}</span>` : '';
   const metaRow = (verbeLabel || typoLabel) ? `<div class="card-meta-row">${verbeLabel}${typoLabel}</div>` : '';
   const priceBadge = c.price != null && c.price !== '' ? `<span class="card-price">${c.price} €</span>` : '';
