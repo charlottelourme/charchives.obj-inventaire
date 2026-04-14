@@ -5294,11 +5294,11 @@ main { padding-bottom: 44px; }
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .06em;
+  font-size: 9.5px;    /* aligné sur .sfb-pill-sm */
+  font-weight: 500;    /* idem */
+  letter-spacing: .08em; /* idem */
   text-transform: uppercase;
-  padding: 4px 12px;
+  padding: 4px 10px;   /* idem */
   border: none;
   border-radius: 9999px;
   background: var(--tag-bg);
