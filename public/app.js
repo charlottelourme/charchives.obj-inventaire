@@ -4777,7 +4777,9 @@ function renderPhotos() {
       const i = parseInt(btn.dataset.i);
       const filename = state.editPhotos[i];
       openCropper(photoUrl(filename), async (croppedBlob) => {
-        const croppedFile = new File([croppedBlob], `crop_${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const isPng      = croppedBlob.type === 'image/png';
+        const ext        = isPng ? 'png' : 'jpg';
+        const croppedFile = new File([croppedBlob], `crop_${Date.now()}.${ext}`, { type: croppedBlob.type });
         const { filenames } = await api.uploadPhotos([croppedFile]);
         if (filenames?.[0]) {
           const old = state.editPhotos[i];
