@@ -60,15 +60,14 @@ body.verbe-active header .btn-ghost,
 body.verbe-active header .btn-icon {
   color: var(--text);
 }
-/* View tabs : underline dans la couleur du verbe */
+/* View tabs : Contraste Pur — même logique en mode verbe */
 body.verbe-active .view-tab {
   color: var(--text-3);
-  border-bottom-color: transparent;
 }
-body.verbe-active .view-tab:hover { color: var(--text-2); background: none; }
+body.verbe-active .view-tab:hover { color: #000; background: none; }
 body.verbe-active .view-tab.active {
-  color: var(--text);
-  border-bottom-color: var(--text);
+  color: #000;
+  font-weight: 500;
   background: none;
 }
 
