@@ -1777,13 +1777,13 @@ function _drawConGraph(canvas, nodes, links) {
         .attr('preserveAspectRatio', 'xMidYMid slice');
     }
 
-    // Contour coloré (code couleur famille de verbes) — plus marqué
+    // Halo flou SVG (remplace le contour stroke) — cercle coloré flou sous la photo
     g.append('circle')
-      .attr('r', R)
-      .attr('fill', 'none')
-      .attr('stroke', bg)
-      .attr('stroke-width', 2.5)
-      .attr('stroke-opacity', 0.85);
+      .attr('r', R * 1.18)
+      .attr('fill', bg)
+      .attr('fill-opacity', 0.28)
+      .attr('filter', 'blur(10px)')
+      .attr('stroke', 'none');
 
     // ── Bouton "mettre de côté" — top-right du cercle ──
     const inPanier = _conPanier.includes(d.id);
