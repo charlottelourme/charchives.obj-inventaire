@@ -1282,18 +1282,24 @@ function getFiltered() {
     if (textStr.includes(q)) return true;
 
     // ── PASSE B : correspondance thésaurus → égalité stricte sur la typologie ─
-    // "tasse" → ["Thé & Café"] → vérifie si l'objet appartient à cette typologie
+    // "tasse" → ["Thé & Café"] + parent "Art de la table" → vérifie les deux niveaux
     const mappedTypos = _thesaurusLookup(q);
     if (mappedTypos.length) {
+      // Expansion : ajouter les catégories parentes de chaque typologie trouvée
+      const expandedTypos = new Set(mappedTypos.map(_normalize));
+      mappedTypos.forEach(typo => {
+        const parent = PARENT_TYPOLOGIES[typo];
+        if (parent) expandedTypos.add(_normalize(parent));
+      });
       const objTypos = [
         c.subcategory,
         c.subcategoryCustom,
         ...(Array.isArray(c.subcategories) ? c.subcategories : [])
       ].filter(Boolean);
       // Comparaison normalisée : supprime accents + casse pour "Thé & Café" == "the & cafe"
-      if (mappedTypos.some(mapped =>
-        objTypos.some(t => _normalize(t) === _normalize(mapped)) ||
-        _normalize(c.category||'') === _normalize(mapped)
+      if ([...expandedTypos].some(mapped =>
+        objTypos.some(t => _normalize(t) === mapped) ||
+        _normalize(c.category||'') === mapped
       )) return true;
     }
 
