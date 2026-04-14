@@ -692,6 +692,36 @@ function buildCategoryFilterBar() {
   buildAttrFilterBar();
 }
 
+// ── Barre Typologies — filtre primaire ────────────────────────────────────────
+function buildTypologyFilterBar() {
+  const bar = document.getElementById('typologyFilterBar');
+  if (!bar) return;
+
+  const typologies = getAllTypologies(); // [{name, verbeName, color, textColor}]
+  // Tri alphabétique
+  typologies.sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+
+  let html = `<button class="tfb-all${!state.typoFilter ? ' active' : ''}" data-typo="">Tout</button>`;
+  typologies.forEach(t => {
+    const isActive = state.typoFilter === t.name;
+    html += `<button class="tfb-pill${isActive ? ' active' : ''}" data-typo="${esc(t.name)}">${esc(t.name)}</button>`;
+  });
+  bar.innerHTML = html;
+
+  bar.querySelectorAll('[data-typo]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.typoFilter    = btn.dataset.typo;
+      state.categoryFilter = '';      // les deux filtres sont mutuellement exclusifs
+      state.attrFilters.subcat = [];
+      buildTypologyFilterBar();
+      buildCategoryFilterBar();
+      buildSubcategoryBar();
+      buildAttrFilterBar();
+      render();
+    });
+  });
+}
+
 // ── Build attribute filter bar ────────────────────────────────────────────────
 // ── Multi-select filter dropdowns ──────────────────────────────────────────────
 let _openMfId = null; // which dropdown is currently open
