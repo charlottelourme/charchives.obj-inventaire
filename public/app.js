@@ -5182,6 +5182,21 @@ function renderSettingsModal() {
   bindSmModal();
 }
 
+function _bindThesDelBtns(container) {
+  container.querySelectorAll('.sm-thes-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const alias = btn.dataset.alias;
+      delete _customThesaurus[alias];
+      _saveCustomThesaurus();
+      btn.closest('.sm-thes-row')?.remove();
+      const entries = document.getElementById('smThesEntries');
+      if (entries && !entries.querySelector('.sm-thes-row')) {
+        entries.innerHTML = '<p class="sm-thes-empty">Aucun synonyme personnalisé encore.</p>';
+      }
+    });
+  });
+}
+
 function bindSmModal() {
   const body = document.getElementById('settingsModalBody');
   if (!body) return;
