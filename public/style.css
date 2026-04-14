@@ -2641,16 +2641,17 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px 16px;
+  padding: 28px 60px 24px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--border);
 }
 .idx-overlay-title {
   font-family: 'Spectral', Georgia, serif;
   font-style: italic;
-  font-size: 22px;
-  font-weight: 400;
+  font-size: 28px;
+  font-weight: 300;
   color: var(--text);
+  letter-spacing: -.01em;
 }
 .idx-close-btn {
   width: 28px; height: 28px;
