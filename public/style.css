@@ -538,20 +538,45 @@ main { padding: 0; }
 
 /* ── Card ── */
 .card {
-  background: var(--surface);
+  background: transparent;
   border: none;
   border-radius: 0;
-  overflow: hidden;
-  transition: box-shadow .4s cubic-bezier(.22,.68,0,1.1);
+  overflow: visible;    /* le halo peut déborder vers le bas et les côtés */
   cursor: pointer;
   position: relative;
+  isolation: isolate;   /* contexte d'empilement pour le ::before */
+  transition: transform .38s cubic-bezier(.22,.68,0,1.1);
 }
+
+/* ── Halo Directionnel ─────────────────────────────────────────────────────
+   Blob coloré derrière l'image, étiré vers le bas pour que le texte
+   repose naturellement sur un fond lumineux de la couleur du Verbe.
+   ───────────────────────────────────────────────────────────────────────── */
+.card::before {
+  content: '';
+  position: absolute;
+  left: 2%;
+  width: 96%;
+  top: 28%;           /* commence en bas de la 1ère moitié de l'image */
+  height: 92%;        /* s'étire jusque sous le texte */
+  background: var(--verbe-accent, rgba(190,182,170,0.7));
+  filter: blur(54px);
+  border-radius: 50%; /* blob organique, pas un rectangle */
+  z-index: -1;
+  opacity: 0.36;
+  pointer-events: none;
+  transform-origin: center 0%;
+  transition: opacity .42s ease, transform .48s cubic-bezier(.22,.68,0,1.1);
+}
+
 @media (hover: hover) {
-  .card:hover {
-    box-shadow: 0 12px 56px 10px var(--card-halo, rgba(45,45,45,0.18)), 0 2px 12px rgba(0,0,0,0.06);
+  .card:hover::before {
+    opacity: 0.68;
+    transform: scaleY(1.14);
   }
 }
-.card.drag-over { background: #f5f5f0; }
+
+.card.drag-over { outline: 2px dashed var(--border); }
 
 /* Tap feedback on touch devices */
 @media (hover: none) {
