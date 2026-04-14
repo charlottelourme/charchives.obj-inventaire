@@ -1540,15 +1540,21 @@ function formatRelativeDate(isoStr) {
 // ── Grid ───────────────────────────────────────────────────────────────────────
 function renderGrid(items) {
   const el = document.getElementById('gridView');
-  if (!items.length) { el.innerHTML='<div class="empty-state grid-empty">Aucun objet.</div>'; return; }
+  const notes = state.collections.filter(c => c.type === 'note');
+
+  if (!items.length && !notes.length) {
+    el.innerHTML='<div class="empty-state grid-empty">Aucun objet.</div>'; return;
+  }
 
   if (state.sortBy==='category') {
-    // Tri par catégorie : chaque groupe a son bandeau bord-à-bord + sa grille
+    // Tri par catégorie : notes en tête, puis groupes
     const groups = new Map();
     getCategoryOrder().forEach(c => groups.set(c,[]));
     groups.set('',[]);
     items.forEach(c => { const k=c.category||''; if(!groups.has(k))groups.set(k,[]); groups.get(k).push(c); });
-    let html='';
+    let html = notes.length
+      ? `<div class="grid">${notes.map(c=>cardHTML(c)).join('')}</div>`
+      : '';
     groups.forEach((cards,cat)=>{
       if (!cards.length) return;
       const bgColor = getVerbeBgColor(cat);
@@ -1587,7 +1593,9 @@ function renderGrid(items) {
         </div>`;
       }
     }
-    el.innerHTML = titleHTML + `<div class="grid">${items.map(c=>cardHTML(c)).join('')}</div>`;
+    // Intercaler les notes parmi les objets
+    const combined = _intercalateNotes(items);
+    el.innerHTML = titleHTML + `<div class="grid">${combined.map(c=>cardHTML(c)).join('')}</div>`;
     // Pills typologies dans le titre — toggle filtre
     el.querySelectorAll('.vpt-pill').forEach(pill => {
       pill.addEventListener('click', e => {
@@ -1602,6 +1610,7 @@ function renderGrid(items) {
     });
   }
   bindCardEvents(el);
+  _initNoteDragDrop(el, items);
 }
 
 function cardHTML(c) {
