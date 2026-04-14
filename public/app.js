@@ -6288,65 +6288,80 @@ function renderSearchDropdown() {
   const list  = document.getElementById('searchKwList');
   const q = input.value.toLowerCase().trim();
 
-  // Build suggestion groups
+  // Build suggestion groups — ordre : Typologies > Intentions > Matières > Mots-clés
   const groups = [];
 
-  // ── Catégories ──
-  const cats = getCategories().map(c=>c.name).filter(n=>!q||n.toLowerCase().includes(q));
-  if (cats.length) groups.push({
-    label: 'Catégorie',
-    items: cats.slice(0,5).map(n=>({
-      text: n, badge: null, color: getCategoryColor(n),
-      action: ()=>{ state.categoryFilter=n; state.attrFilters.subcat=[]; input.value=''; buildCategoryFilterBar(); buildSubcategoryBar(); buildAttrFilterBar(); pushBreadcrumb(n, ()=>{ state.categoryFilter=n; buildCategoryFilterBar(); render(); }); render(); }
+  // ── 1. Typologies (priorité absolue) — alphabétique ──
+  const allTypos = getAllTypologies()
+    .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+  const typoHits = q
+    ? allTypos.filter(t => t.name.toLowerCase().includes(q))
+    : allTypos;
+  if (typoHits.length) groups.push({
+    label: 'Typologies',
+    items: typoHits.slice(0, 8).map(t => ({
+      text: t.name, badge: t.verbeName, color: t.color,
+      action: () => {
+        state.typoFilter = t.name;
+        state.categoryFilter = '';
+        state.attrFilters.subcat = [];
+        input.value = '';
+        buildTypologyFilterBar();
+        buildCategoryFilterBar();
+        buildIndexTrigger();
+        document.getElementById('searchDropdown').classList.remove('open');
+        render();
+      }
     }))
   });
 
-  // ── Sous-catégories ──
-  const subcatHits = [];
-  getCategories().forEach(cat=>{
-    (cat.subcategories||[]).forEach(sub=>{
-      if (!q||sub.toLowerCase().includes(q)) subcatHits.push({sub,cat:cat.name,color:cat.color});
-    });
-  });
-  if (subcatHits.length) groups.push({
-    label: 'Sous-catégorie',
-    items: subcatHits.slice(0,6).map(({sub,cat,color})=>({
-      text: sub, badge: cat, color,
-      action: ()=>{ state.categoryFilter=cat; state.attrFilters.subcat=[sub]; input.value=''; buildCategoryFilterBar(); buildSubcategoryBar(); buildAttrFilterBar(); render(); }
-    }))
-  });
-
-  // ── Attributs (Matières, Styles, État…) ──
-  const attrGroups = [
-    { key:'matieres',   label:'Matière', options: ATTRIBUTES_DEF.matieres.options },
-    { key:'origine',    label:'Origine', options: ATTRIBUTES_DEF.origine.options },
-    { key:'etat_traces',label:'État',    options: ATTRIBUTES_DEF.etat_traces.options },
-    { key:'couleurs',   label:'Couleur', options: state.settings.colors||[] },
-  ];
-  attrGroups.forEach(({key,label,options})=>{
-    const hits = options.filter(o=>q&&o.toLowerCase().includes(q));
-    if (!hits.length) return;
-    groups.push({
-      label,
-      items: hits.slice(0,4).map(val=>({
-        text: val, badge: null, color: null,
-        action: ()=>{ if(!state.attrFilters[key].includes(val)) state.attrFilters[key].push(val); input.value=''; buildAttrFilterBar(); render(); }
+  // ── 2. Intentions / Verbes — seulement si requête active ──
+  if (q) {
+    const cats = getCategories().map(c => c.name).filter(n => n.toLowerCase().includes(q));
+    if (cats.length) groups.push({
+      label: 'Intentions',
+      items: cats.slice(0, 4).map(n => ({
+        text: n, badge: null, color: getCategoryColor(n),
+        action: () => { state.categoryFilter=n; state.attrFilters.subcat=[]; input.value=''; buildCategoryFilterBar(); buildSubcategoryBar(); buildAttrFilterBar(); pushBreadcrumb(n, ()=>{ state.categoryFilter=n; buildCategoryFilterBar(); render(); }); document.getElementById('searchDropdown').classList.remove('open'); render(); }
       }))
     });
-  });
+  }
 
-  // ── Mots-clés ──
-  const freq = kwFrequency();
-  let keywords = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(([k])=>k);
-  if (q) keywords = keywords.filter(k=>k.toLowerCase().includes(q));
-  if (keywords.length) groups.push({
-    label: 'Mots-clés',
-    items: keywords.slice(0,8).map(k=>({
-      text: k, badge: String(freq[k]), color: null,
-      action: ()=>{ if(state.activeKeywordFilters.has(k)) state.activeKeywordFilters.delete(k); else state.activeKeywordFilters.add(k); renderSearchActiveTags(); renderSearchDropdown(); render(); },
-      isKw: true, active: state.activeKeywordFilters.has(k)
-    }))
-  });
+  // ── 3. Attributs (Matières, Origine, État…) — seulement si requête active ──
+  if (q) {
+    const attrGroups = [
+      { key:'matieres',    label:'Matière', options: ATTRIBUTES_DEF.matieres.options },
+      { key:'origine',     label:'Origine', options: ATTRIBUTES_DEF.origine.options },
+      { key:'etat_traces', label:'État',    options: ATTRIBUTES_DEF.etat_traces.options },
+      { key:'couleurs',    label:'Couleur', options: state.settings.colors||[] },
+    ];
+    attrGroups.forEach(({key,label,options})=>{
+      const hits = options.filter(o => o.toLowerCase().includes(q));
+      if (!hits.length) return;
+      groups.push({
+        label,
+        items: hits.slice(0,4).map(val=>({
+          text: val, badge: null, color: null,
+          action: ()=>{ if(!state.attrFilters[key].includes(val)) state.attrFilters[key].push(val); input.value=''; buildAttrFilterBar(); document.getElementById('searchDropdown').classList.remove('open'); render(); }
+        }))
+      });
+    });
+  }
+
+  // ── 4. Mots-clés — seulement si requête active ──
+  if (q) {
+    const freq = kwFrequency();
+    let keywords = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(([k])=>k)
+      .filter(k => k.toLowerCase().includes(q));
+    if (keywords.length) groups.push({
+      label: 'Mots-clés',
+      items: keywords.slice(0,6).map(k=>({
+        text: k, badge: String(freq[k]), color: null,
+        action: ()=>{ if(state.activeKeywordFilters.has(k)) state.activeKeywordFilters.delete(k); else state.activeKeywordFilters.add(k); renderSearchActiveTags(); renderSearchDropdown(); render(); },
+        isKw: true, active: state.activeKeywordFilters.has(k)
+      }))
+    });
+  }
 
   if (!groups.length) {
     list.innerHTML = q ? '<div class="search-kw-empty">Aucun résultat</div>' : '<div class="search-kw-empty">Tapez pour chercher…</div>';
