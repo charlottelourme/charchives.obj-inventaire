@@ -6416,13 +6416,33 @@ function bindEvents() {
   (() => {
     const slider = document.getElementById('cardSizeSlider');
     if (!slider) return;
-    const apply = v => document.documentElement.style.setProperty('--card-min', v + 'px');
+
+    // Convertit la valeur slider (140→480) en nombre de colonnes (6→2)
+    // Plus le slider est vers la droite (grande valeur = grand zoom) → moins de colonnes
+    const sliderToColumns = v => {
+      const min = parseFloat(slider.min) || 140;
+      const max = parseFloat(slider.max) || 480;
+      const ratio = (parseFloat(v) - min) / (max - min); // 0 (petit) → 1 (grand)
+      // 6 colonnes (zoom out max) → 2 colonnes (zoom in max)
+      return Math.max(1, Math.round(6 - ratio * 4));
+    };
+
+    const apply = v => {
+      const cols = sliderToColumns(v);
+      document.documentElement.style.setProperty('--grid-cols', cols);
+      // Maintenir --card-min pour compatibilité avec d'autres usages éventuels
+      document.documentElement.style.setProperty('--card-min', v + 'px');
+    };
+
+    // Appliquer la valeur initiale
+    apply(slider.value);
+
     slider.addEventListener('input', e => apply(e.target.value));
+
     // Mobile touch fix: stop parent from intercepting horizontal swipe
     slider.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
     slider.addEventListener('touchmove',  e => {
       e.stopPropagation();
-      // Manually update value from touch position
       const rect  = slider.getBoundingClientRect();
       const ratio = Math.min(1, Math.max(0, (e.touches[0].clientX - rect.left) / rect.width));
       const min   = parseFloat(slider.min) || 140;
