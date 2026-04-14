@@ -121,7 +121,6 @@ body.verbe-active #subcategoryFilterBar { background: transparent; }
 body.verbe-active .sfb-pill-sm { background: transparent; color: var(--text-2); opacity: 1; }
 body.verbe-active .sfb-pill-sm:hover { background: none; color: var(--text); }
 body.verbe-active .sfb-pill-sm.active { background: transparent; color: var(--text); font-weight: 700; }
-body.verbe-active .sfb-pill-sm.active::after { color: var(--text); }
 
 /* En mode verbe : masquer Brouillon et Pas à vendre */
 body.verbe-active #statusFilterBar .sfb-pill[data-status="Brouillon"],
