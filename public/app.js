@@ -259,34 +259,56 @@ const SEARCH_THESAURUS = {
   'mystère':'Usages oubliés','inconnu':'Usages oubliés','antique':'Usages oubliés',
 };
 
-// ── Thésaurus : retourne la liste des typologies mappées pour un terme ──────────
-// Retourne un tableau de noms de typologies (casse d'origine conservée pour
-// les comparaisons strictes).  Utilisé par getFiltered() ET _buildIndexGroups().
+// ── Normalisation robuste (accents + casse) ──────────────────────────────────
+function _normalize(s) {
+  return (s || '').toLowerCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  // "Thé & Café" → "the & cafe" ; "tasse" → "tasse"
+}
+
+// ── Thésaurus personnalisé — stocké en localStorage ───────────────────────────
+// Format : { "mot-clé": "Nom Typologie", ... }
+let _customThesaurus = {};
+try { _customThesaurus = JSON.parse(localStorage.getItem('charchives_thesaurus') || '{}'); } catch(e) {}
+
+function _saveCustomThesaurus() {
+  localStorage.setItem('charchives_thesaurus', JSON.stringify(_customThesaurus));
+}
+
+// Thésaurus runtime = base statique + entrées personnalisées
+function _getRuntimeThesaurus() {
+  return { ...SEARCH_THESAURUS, ..._customThesaurus };
+}
+
+// ── Lookup : retourne la liste des typologies mappées pour un terme ──────────
 function _thesaurusLookup(q) {
   if (!q || q.length < 2) return [];
+  const qn = _normalize(q);
+  const thesaurus = _getRuntimeThesaurus();
   const cats = new Set();
 
-  // 1. Correspondance exacte : "tasse" → "Thé & Café"
-  if (SEARCH_THESAURUS[q]) cats.add(SEARCH_THESAURUS[q]);
+  // 1. Correspondance exacte normalisée : "tasse" → "Thé & Café"
+  Object.entries(thesaurus).forEach(([alias, target]) => {
+    if (_normalize(alias) === qn) cats.add(target);
+  });
 
-  // 2. Préfixe : l'alias commence par q (min 3 chars pour éviter le bruit)
-  //    ex: q="bou" → "bougeoir","bougie","bouteille"…
-  if (q.length >= 3) {
-    Object.entries(SEARCH_THESAURUS).forEach(([alias, target]) => {
-      if (alias.startsWith(q)) cats.add(target);
+  // 2. Préfixe (min 3 chars) : "bou" → "bougeoir"…
+  if (qn.length >= 3) {
+    Object.entries(thesaurus).forEach(([alias, target]) => {
+      if (_normalize(alias).startsWith(qn)) cats.add(target);
     });
   }
 
-  // 3. q commence par l'alias (alias plus court que q)
-  //    ex: q="tasses" → alias="tasse" → "Thé & Café"
-  Object.entries(SEARCH_THESAURUS).forEach(([alias, target]) => {
-    if (alias.length >= 3 && q.startsWith(alias)) cats.add(target);
+  // 3. L'alias est un préfixe de q : "tasses" → alias "tasse"
+  Object.entries(thesaurus).forEach(([alias, target]) => {
+    const an = _normalize(alias);
+    if (an.length >= 3 && qn.startsWith(an)) cats.add(target);
   });
 
   return [...cats];
 }
 
-// Rétrocompat pour l'index overlay (ne change pas son comportement)
+// Rétrocompat pour l'index overlay
 function _smartSearchExpand(q) {
   if (!q) return [q];
   return [q, ..._thesaurusLookup(q).map(t => t.toLowerCase())];
