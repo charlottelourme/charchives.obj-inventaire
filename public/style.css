@@ -1103,17 +1103,18 @@ main { padding: 0; }
   text-underline-offset: 4px;
 }
 
-/* Boutons typologies — Cormorant Garamond, léger */
+/* Boutons typologies — Cutive Mono compact, étiquette de musée ── */
 .tfb-pill {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Cutive Mono', monospace;
   font-style: normal;
-  font-size: 15px;
-  font-weight: 300;
-  letter-spacing: .01em;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .06em;
+  text-transform: uppercase;
   color: var(--text-3);
   background: none;
   border: none;
-  padding: 8px 14px;
+  padding: 8px 12px;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
@@ -1123,9 +1124,9 @@ main { padding: 0; }
 .tfb-pill:hover { color: var(--text-2); }
 .tfb-pill.active {
   color: var(--text);
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: underline;
-  text-underline-offset: 5px;
+  text-underline-offset: 4px;
   text-decoration-thickness: 1px;
 }
 
