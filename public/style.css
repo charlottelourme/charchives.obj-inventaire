@@ -60,16 +60,21 @@ body.verbe-active header .btn-ghost,
 body.verbe-active header .btn-icon {
   color: var(--text);
 }
-/* View tabs : Contraste Pur — même logique en mode verbe */
+/* View tabs : Halo de Navigation — même logique en mode verbe */
 body.verbe-active .view-tab {
   color: var(--text-3);
 }
-body.verbe-active .view-tab:hover { color: #000; background: none; }
+body.verbe-active .view-tab:hover { color: #000; }
 body.verbe-active .view-tab.active {
   color: #000;
   font-weight: 500;
-  background: none;
 }
+/* Dark mode : halo plus sombre pour ressortir sur fond noir */
+body.dark-mode .view-tab::before {
+  background-color: #27272a;   /* zinc-800 */
+}
+body.dark-mode .view-tab:hover,
+body.dark-mode .view-tab.active { color: #fff; }
 
 /* Toolbar + grid : transparents */
 body.verbe-active .toolbar,
