@@ -4244,17 +4244,20 @@ function renderPhotos() {
   el.innerHTML = state.editPhotos.map((filename,i) => `
     <div class="photo-card${i===0&&state.editPhotos.length>1?' is-main':''}" draggable="true" data-i="${i}">
       <div class="photo-thumb-wrap">
-        ${i===0&&state.editPhotos.length>1?'<div class="photo-main-badge">Principal</div>':''}
+        ${i===0&&state.editPhotos.length>1?'<div class="photo-main-badge">⊙ Principale</div>':''}
         <img src="${photoUrl(filename)}" alt="" draggable="false">
         <button class="photo-remove" data-i="${i}" title="Supprimer">✕</button>
       </div>
       <div class="photo-ai-bar">
         <div class="photo-edit-row">
+          ${i>0 ? `<button class="photo-btn photo-set-main" data-i="${i}" title="Afficher cette photo en premier sur la carte">
+            <span class="photo-btn-label">☆ Principale</span>
+          </button>` : '<div class="photo-btn-spacer"></div>'}
           <button class="photo-btn photo-crop" data-i="${i}" title="Recadrer l'image">
             <span class="photo-btn-label">Recadrer</span>
           </button>
           <button class="photo-btn photo-enhance" data-i="${i}" data-filename="${esc(filename)}" title="Supprimer le fond — PNG transparent">
-            <span class="photo-btn-label">Détourage auto</span>
+            <span class="photo-btn-label">Détourage</span>
           </button>
         </div>
         <div class="photo-ai-row">
