@@ -1581,6 +1581,12 @@ body.dark-mode .form-intent-band {
   z-index: 2;
   pointer-events: none;
 }
+/* Bouton "☆ Principale" — mettre en 1ère position */
+.photo-set-main { flex: 1; }
+.photo-set-main .photo-btn-label { color: #B8860B; }
+.photo-set-main:hover .photo-btn-label { color: #7a5800; }
+/* Spacer pour aligner la grille quand pas de bouton Principale */
+.photo-btn-spacer { flex: 1; }
 .photo-remove {
   position: absolute;
   top: 6px;
