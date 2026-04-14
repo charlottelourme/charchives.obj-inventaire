@@ -2915,10 +2915,29 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 
 /* ── Detail modal: glassmorphism when opened from gallery ── */
+/* ── Halo sans Bloc : overlay frosted-light ── */
 #detailModal {
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  background: rgba(20,20,20,.52) !important;
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  background: rgba(246,242,236,0.82) !important; /* ivoire doux, pas noir */
+}
+/* Panel : zéro fond solide */
+#detailModal .modal {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+/* Header : bande frosted pour lisibilité au scroll */
+#detailModal .modal-header {
+  background: rgba(248,244,238,0.72) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(45,45,45,.06) !important;
+}
+/* Footer : transparent */
+#detailModal .modal-footer {
+  background: transparent !important;
+  border-top: 1px solid rgba(45,45,45,.06) !important;
 }
 
 /* ── Responsive ── */
