@@ -4614,7 +4614,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     padding: 16px 20px calc(88px + env(safe-area-inset-bottom));
   }
   .grid .card { margin-bottom: 22px; }
-  .grid .card::before { filter: blur(28px) grayscale(1); }
+  .grid .card::before { filter: blur(28px); }
   .card-body { padding: 10px 12px 14px; }
   .card-name { font-size: 14px; }
 }
