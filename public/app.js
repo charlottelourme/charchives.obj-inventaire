@@ -4268,6 +4268,10 @@ function openCropper(source, onCrop) {
   _crop._onCrop = onCrop;
   _crop.ratio   = 'free';
   _crop.selW = 0; _crop.selH = 0;
+  // Détecte si la source est un PNG pour préserver la transparence
+  _crop.isPng = typeof source === 'string'
+    ? /\.png(\?|#|$)/i.test(source)
+    : (source instanceof File && source.type === 'image/png');
   document.querySelectorAll('[data-ratio]').forEach(b => b.classList.toggle('active', b.dataset.ratio === 'free'));
 
   const img  = new Image();
