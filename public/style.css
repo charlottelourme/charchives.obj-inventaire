@@ -604,7 +604,8 @@ main { padding: 0; }
 }
 @media (hover: hover) {
   .card:hover .card-hover-overlay { opacity: 1; }
-  .card:hover .card-thumb { transform: scale(1.04); }
+  /* Image : léger zoom + micro-flottaison vers le haut */
+  .card:hover .card-thumb { transform: scale(1.03) translateY(-4px); }
   .card:hover .card-nav { opacity: 0; }
 }
 /* Zone centrale — description en plein centre */
