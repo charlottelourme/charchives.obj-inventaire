@@ -1296,9 +1296,19 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
 }
 #subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo):hover { color: var(--text); background: none; }
 #subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo).active {
-  color: var(--accent);
+  color: #000;
   font-weight: 700;
   background: none;
+}
+#subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo).active::after {
+  content: '•';
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  font-size: 8px;
+  line-height: 1;
+  color: currentColor;
 }
 
 .sfb-dot { display: none; }
