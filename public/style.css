@@ -3113,30 +3113,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   font-size: 13px;
 }
 
-/* ── Detail modal: glassmorphism when opened from gallery ── */
-/* ── Halo sans Bloc : overlay frosted-light ── */
-#detailModal {
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  background: rgba(246,242,236,0.82) !important; /* ivoire doux, pas noir */
-}
-/* Panel : zéro fond solide */
-#detailModal .modal {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-/* Header : bande frosted pour lisibilité au scroll */
+/* ── Fiche Produit — StandardModal : fenêtre nette + halo intérieur ──
+   Le .modal-overlay fournit le backdrop flouté (défini en haut).
+   Le .modal fournit la boîte nette (border + box-shadow).
+   Le .portrait-halo à l'intérieur crée le soft block coloré.
+   Contraste : bord strict de la fenêtre ↔ nuage doux du halo interne.
+   ──────────────────────────────────────────────────────────────────── */
 #detailModal .modal-header {
-  background: rgba(248,244,238,0.72) !important;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(45,45,45,.06) !important;
-}
-/* Footer : transparent */
-#detailModal .modal-footer {
-  background: transparent !important;
-  border-top: 1px solid rgba(45,45,45,.06) !important;
+  border-bottom: 1px solid var(--border);
 }
 
 /* ── Responsive ── */
