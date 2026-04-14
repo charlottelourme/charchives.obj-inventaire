@@ -98,8 +98,8 @@ body.verbe-active select.status-filter {
 
 /* Barres de filtres — restent transparentes, couleurs normales */
 body.verbe-active .status-filter-bar { background: transparent; }
-/* Label "Intention" : accent verbe discret */
-body.verbe-active .sfb-label { color: var(--page-verbe-text); opacity: .5; }
+/* Label "Intention" : gris discret */
+body.verbe-active .sfb-label { color: var(--text-3); opacity: 1; }
 /* Pills non-actives : normales */
 body.verbe-active .sfb-pill { color: var(--text-2); opacity: 1; }
 body.verbe-active .sfb-pill:hover { background: var(--tag-bg); color: var(--text); }
