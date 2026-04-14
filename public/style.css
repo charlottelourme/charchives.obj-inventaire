@@ -250,7 +250,7 @@ header h1 {
 }
 .header-sep { flex: 1; }
 
-/* ── View tabs — underline editorial, sans boîte ── */
+/* ── View tabs — Contraste Pur : actif = noir #000, inactif = gris ── */
 .view-tabs {
   display: flex;
   gap: 0;
