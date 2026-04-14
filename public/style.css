@@ -679,9 +679,8 @@ main { padding: 0; }
   width: 100%;
   aspect-ratio: 1/1;
   object-fit: cover;
-  mix-blend-mode: multiply;
   display: block;
-  background: var(--tag-bg);
+  background: transparent;
   transition: transform .5s cubic-bezier(.22,.68,0,1.2);
 }
 .card-thumb-placeholder {
