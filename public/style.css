@@ -19,6 +19,9 @@
   font-size: 14px;
   /* ── Zoom masonry — modifié par le slider JS ── */
   --grid-cols: 4;
+  /* ── Grille des filtres — alignement vertical strict ── */
+  --filter-gutter: clamp(20px, 3.5vw, 60px); /* marge gauche de toutes les barres */
+  --label-w: 96px;  /* largeur fixe de la colonne "INTENTION" / "OBJETS" */
 }
 
 body {
