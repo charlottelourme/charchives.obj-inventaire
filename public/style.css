@@ -536,15 +536,13 @@ main { padding: 0; }
 }
 
 /* ── Grid — Masonry CSS Colonnes (Pinterest) ───────────────────────────────
-   column-width: le slider --card-min continue de fonctionner.
-   Le navigateur calcule le nombre de colonnes automatiquement.
+   column-count fixe par breakpoint — nombre de colonnes prévisible.
    ─────────────────────────────────────────────────────────────────────────── */
 .grid {
   display: block;
-  column-width: var(--card-min, 260px);
-  column-gap: 36px;
-  padding: 40px 64px calc(80px + env(safe-area-inset-bottom));
-  transition: column-width 0.15s ease;
+  column-count: 4;
+  column-gap: 40px;
+  padding: 48px 64px calc(80px + env(safe-area-inset-bottom));
 }
 /* Carte : inline-block + break-inside indispensables au masonry CSS */
 .grid .card {
@@ -557,18 +555,18 @@ main { padding: 0; }
   vertical-align: top;
 }
 
-/* ── Ultra-large (≥ 1440px) — padding élargi ── */
+/* ── Ultra-large (≥ 1440px) — 5 colonnes ── */
 @media (min-width: 1440px) {
-  .grid { column-gap: 44px; padding-left: 80px; padding-right: 80px; }
+  .grid { column-count: 5; column-gap: 44px; padding-left: 80px; padding-right: 80px; }
   .grid .card { margin-bottom: 48px; }
 }
 
-/* ── Laptop (769px – 1024px) ── */
+/* ── Laptop (769px – 1024px) — 3 colonnes ── */
 @media (min-width: 769px) and (max-width: 1024px) {
   .grid {
-    column-width: calc(var(--card-min, 240px) * 0.85);
-    column-gap: 24px;
-    padding: 24px 32px calc(80px + env(safe-area-inset-bottom));
+    column-count: 3;
+    column-gap: 28px;
+    padding: 32px 40px calc(80px + env(safe-area-inset-bottom));
   }
   .grid .card { margin-bottom: 28px; }
 }
