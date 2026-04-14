@@ -592,29 +592,31 @@ main { padding: 0; }
   transition: transform .38s cubic-bezier(.22,.68,0,1.1);
 }
 
-/* ── Halo Directionnel ─────────────────────────────────────────────────────
-   Blob coloré derrière l'image, étiré vers le bas pour que le texte
-   repose naturellement sur un fond lumineux de la couleur du Verbe.
+/* ── Halo Soft Block ───────────────────────────────────────────────────────
+   Rectangle diffus — couvre image + texte en colonne.
+   Le flou sur un rectangle strict donne des "bords fondus"
+   sans former un cercle lumineux.
    ───────────────────────────────────────────────────────────────────────── */
 .card::before {
   content: '';
   position: absolute;
-  left: 0;
-  width: 100%;
-  top: 22%;           /* commence à mi-image */
-  height: 125%;       /* s'étire bien sous le texte */
-  background: var(--verbe-accent, rgba(190,182,170,0.65));
-  filter: blur(38px);
-  border-radius: 12px;
+  /* Rectangle strict : toute la largeur, inset latéral négatif pour déborder */
+  left: -8%;
+  width: 116%;
+  top: 10%;            /* démarre tôt pour couvrir le haut de l'image */
+  height: 130%;        /* descend bien sous le texte */
+  background: var(--verbe-accent, rgba(190,182,170,0.72));
+  filter: blur(42px);  /* flou fort sur rectangle = bords fondus naturels */
+  border-radius: 4px;  /* quasi-nul — on veut un bloc, pas un ovale */
   z-index: -1;
-  opacity: 0.42;
+  opacity: 0.50;       /* +8% vs 0.42 — couleur plus affirmée */
   pointer-events: none;
   transition: opacity .42s ease;
 }
 
 @media (hover: hover) {
   .card:hover::before {
-    opacity: 0.70;
+    opacity: 0.72;     /* +2% vs l'ancien 0.70 */
   }
 }
 
