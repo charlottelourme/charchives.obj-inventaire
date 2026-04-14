@@ -3291,40 +3291,49 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .attr-chip {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: none;
+  padding: 4px 8px;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
   font-size: 12px;
   font-weight: 400;
   cursor: pointer;
   color: var(--text-2);
-  transition: all .12s;
+  transition: color .12s;
   white-space: nowrap;
   line-height: 1.4;
+  position: relative;
 }
 .attr-chip:hover {
-  border-color: var(--border-strong);
-  color: var(--text);
-  background: var(--tag-bg);
+  border: none;
+  background: transparent;
+  color: #000;
 }
 .attr-chip.selected {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+  background: transparent;
+  border: none;
+  color: #000;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-/* Univers chips (slightly different style) */
+/* Univers chips */
 #universChips .attr-chip {
   font-size: 12px;
 }
 #universChips .attr-chip.selected {
-  background: #4a3728;
-  border-color: #4a3728;
+  background: transparent;
+  border: none;
+  color: #4a3728;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .tag-univers {
-  background: #f0ede8;
-  border-color: #d9d4cc;
+  background: transparent;
+  border: none;
   color: #5a4a3a;
 }
 
