@@ -799,7 +799,7 @@ function buildIndexTrigger() {
     </button>
     ${typoChip}
     <div class="idx-inline-wrap">
-      <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher…" autocomplete="off" spellcheck="false">
+      <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher" autocomplete="off" spellcheck="false">
       <div class="idx-inline-drop" id="idxInlineDrop" style="display:none"></div>
     </div>
   `;
