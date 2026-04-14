@@ -2419,10 +2419,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .con-links-group.con-has-hover .con-link { stroke-opacity: .04 !important; }
 .con-links-group.con-has-hover .con-link.con-link-lit { stroke-opacity: .7 !important; }
 
-/* Nodes */
+/* Nodes — monochrome */
 .con-node {
   cursor: pointer;
   transition: opacity .22s ease, filter .22s ease;
+  filter: grayscale(1); /* désature les halos colorés des nœuds */
 }
 .con-node circle.con-node-bg {
   transition: opacity .22s ease;
