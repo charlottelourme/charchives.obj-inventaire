@@ -2646,8 +2646,9 @@ function openDetail(id) {
        </div>` : '';
 
   // ── Header pills ──
+  // Verbe : italique flottant, sans fond — cohérent avec les cartes
   const verbePill = c.category
-    ? `<span class="portrait-verbe-pill" style="background:${bgColor};color:${fgColor}">${esc(c.category)}</span>` : '';
+    ? `<span class="portrait-verbe-pill">${esc(c.category)}</span>` : '';
   const typoPill = sub
     ? `<span class="portrait-typo-pill">${esc(sub)}</span>` : '';
 
