@@ -4776,15 +4776,15 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     column-gap: 12px;
     padding: 8px 10px calc(96px + env(safe-area-inset-bottom));
   }
-  .grid .card { margin-bottom: 16px; }
-  /* Halo réduit sur petite largeur */
+  .grid .card { margin-bottom: 40px; }
+  /* Halo réduit sur petite largeur — inset dynamique */
   .grid .card::before {
     filter: blur(20px);
     border-radius: 4px;
+    top: 0;
+    bottom: -16px;
     left: -6%;
-    width: 112%;
-    top: 14%;
-    height: 118%;
+    right: -6%;
   }
   /* Typographie compacte */
   .card-body { padding: 7px 9px 11px; }
