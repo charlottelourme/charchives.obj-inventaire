@@ -2964,14 +2964,17 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-groups::-webkit-scrollbar-thumb { background: var(--border); }
 .idx-groups::-webkit-scrollbar-track { background: transparent; }
 
-/* Grille alphabétique — 2 colonnes pour le panel modal */
+/* Grille alphabétique — sommaire de catalogue multi-colonnes */
 .idx-alpha-grid {
-  columns: 2;
-  column-gap: 36px;
+  columns: 3;          /* 3 colonnes sur les panneaux ≥ 800px */
+  column-gap: 40px;
 }
-@media (max-width: 700px) {
+@media (max-width: 820px) {
   .idx-alpha-grid { columns: 2; column-gap: 28px; }
-  .idx-groups { padding: 28px 24px 40px; }
+}
+@media (max-width: 520px) {
+  .idx-alpha-grid { columns: 1; }
+  .idx-groups { padding: 20px 18px 32px; }
 }
 .idx-alpha-section {
   break-inside: avoid;
