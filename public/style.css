@@ -728,11 +728,13 @@ main { padding: 0; }
 .card-verbe-badge { display: none; }
 .card-typo-badge { display: none; }
 
-/* Thumb area (relative container for carousel overlay) */
+/* Thumb area — rétrécie à 85% pour l'asymétrie éditoriale */
 .card-thumb-area {
   position: relative;
-  overflow: hidden;  /* clip hover overlay + carousel arrows */
+  overflow: hidden;
   background: transparent;
+  width: 85%;          /* image plus étroite que le texte */
+  margin: 0 auto;      /* centrée dans la carte */
 }
 /* Image détourée (PNG transparent) — fond transparent pour laisser le halo rayonner */
 .card-thumb-area--detoured {
