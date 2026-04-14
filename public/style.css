@@ -5389,25 +5389,40 @@ main { padding-bottom: 44px; }
   color: var(--text-2);
   cursor: pointer;
   white-space: nowrap;
+  position: relative; /* contexte pour le Point de Galerie */
   transition: background .15s, color .15s;
 }
 .mf-btn:hover { background: var(--border); color: var(--text); }
+/* État actif : Contraste Pur — aucun fond, texte noir, Point de Galerie */
 .mf-btn.mf-active {
-  background: var(--accent);
+  background: transparent;
   border: none;
-  color: #fff;
-  font-weight: 600;
+  color: #000;
+  font-weight: 700;
 }
-body.dark-mode .mf-btn.mf-active { color: #1a1917; }
+/* Point de Galerie — filtre attribut actif */
+.mf-btn.mf-active::after {
+  content: '•';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  font-size: 7px;
+  line-height: 1;
+  color: currentColor;
+}
+body.dark-mode .mf-btn.mf-active { color: #F5F5F0; }
 .mf-btn.mf-open { background: var(--border); color: var(--text); }
+/* Badge de comptage — visible sur fond transparent */
 .mf-count {
-  background: rgba(255,255,255,.25);
+  background: var(--border-light);
   border-radius: 10px;
   padding: 0 5px;
   font-size: 10px;
   font-weight: 600;
   min-width: 16px;
   text-align: center;
+  color: var(--text-2);
 }
 .mf-btn:not(.mf-active) .mf-count {
   background: var(--accent);
