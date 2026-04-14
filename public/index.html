@@ -723,6 +723,48 @@
 
 <!-- Export footer fusionné dans le bottom-nav -->
 
+<!-- ── Note Modal — Intercalaires narratifs ── -->
+<div class="modal-overlay" id="noteModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="noteModalTitle">Nouvelle note</span>
+      <button class="modal-close" id="noteModalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Texte</label>
+        <textarea id="nContent" rows="5" placeholder="Souvenir, citation, note de chine…" style="font-family:inherit;line-height:1.6"></textarea>
+      </div>
+      <div class="field">
+        <label>Style typographique</label>
+        <div class="note-opt-group" id="noteFontGroup">
+          <button class="note-opt-btn active" data-font="poetic">Cormorant — poétique</button>
+          <button class="note-opt-btn" data-font="terrain">Cutive Mono — terrain</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Format dans la grille</label>
+        <div class="note-opt-group" id="noteWidthGroup">
+          <button class="note-opt-btn active" data-width="single">Intercalaire</button>
+          <button class="note-opt-btn" data-width="wide">Séparateur pleine largeur</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Couleur</label>
+        <div class="note-color-swatches" id="noteColorSwatches"></div>
+      </div>
+      <div class="note-preview" id="notePreview">
+        <span class="note-preview-text" id="notePreviewText">Aperçu</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost note-delete-btn" id="noteDeleteBtn" style="display:none">Supprimer</button>
+      <button class="btn btn-ghost" id="noteModalCancel">Annuler</button>
+      <button class="btn btn-primary" id="noteModalSave">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Settings Modal (standalone) ── -->
 <div class="modal-overlay" id="settingsModal" style="display:none">
   <div class="modal modal-edit">
