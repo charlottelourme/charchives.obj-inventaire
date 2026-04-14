@@ -7228,3 +7228,116 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   cursor: pointer;
 }
 .sm-thes-select:focus { border-color: var(--border-strong); }
+
+/* ══════════════════════════════════════════════════════════════
+   TYPOGRAPHIE BRUTALISME D'ARCHIVE
+   Cormorant Garamond (Serif dramatique) + Cutive Mono (Machine)
+   Ajustements d'échelle et de chasse post-substitution globale.
+══════════════════════════════════════════════════════════════ */
+
+/* ── Cormorant Garamond : grands titres en italique ── */
+.vpt-name,
+.vab-name,
+.cat-hdr-name,
+.tl-sep-label,
+.idx-overlay-title,
+.portrait-title,
+.trios-headline,
+.derive-seg-btn,
+.tfb-pill,
+.fragment-preview-text {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* Titres de stats : grands et légers */
+.stats-kpi-number { font-weight: 300; letter-spacing: -.02em; }
+
+/* Nom de carte — léger, élégant */
+.card-name {
+  font-weight: 300;
+  font-size: 17px;   /* +1px : Cormorant est optiquement plus petite que Spectral */
+  letter-spacing: .005em;
+}
+@media (max-width: 520px) {
+  .card-name { font-size: 14px; }
+}
+
+/* Nom dans la fiche objet */
+.portrait-title { font-weight: 300; }
+
+/* ── Cutive Mono : UI compacte, look "étiquette de musée" ── */
+
+/* Base corps : Cutive Mono est optiquement plus large → ligne haute */
+body {
+  line-height: 1.6;
+  letter-spacing: .01em;
+}
+
+/* Labels en majuscules : chasse augmentée, très petits */
+.sfb-label,
+.vpt-count,
+.card-typo-label,
+.card-meta-row,
+.portrait-typo-pill,
+.portrait-attr-label,
+.trios-eyebrow,
+.vab-typos,
+.gef-label,
+.bc-item,
+.bc-sep {
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+/* Pills UI — taille réduite pour compenser la chasse mono */
+.sfb-pill          { font-size: 10px; letter-spacing: .04em; }
+.sfb-pill-verbe    { font-size: 10px; letter-spacing: .04em; }
+.tfb-all           { font-size: 8px;  letter-spacing: .18em; }
+.attr-chip         { font-size: 10px; }
+
+/* Boutons */
+.btn               { font-size: 10px; letter-spacing: .06em; }
+.btn-export        { font-size: 9px;  letter-spacing: .10em; }
+.bottom-nav .view-tab { font-size: 9px; letter-spacing: .10em; }
+
+/* Métadonnées carte (verbe + typo) */
+.card-verbe-label  { font-size: 10px; font-style: italic; font-weight: 300; }
+.card-typo-label   { font-size: 9px;  letter-spacing: .14em; }
+.card-price        { font-size: 11px; }
+
+/* Fiche objet (portrait) */
+.portrait-attr-label { font-size: 8px; letter-spacing: .22em; }
+.portrait-attr-pill  { font-size: 10px; letter-spacing: .03em; }
+.portrait-desc       { font-size: 14px; line-height: 1.7; }
+
+/* Barre de typo — Cormorant agrandi */
+.tfb-pill { font-size: 16px; }
+
+/* Header h1 — Cormorant avec style archive */
+header h1 {
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -.01em;
+  font-size: 18px;
+}
+
+/* Inputs / selects — mono à taille lisible */
+input, select, textarea {
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
+/* Navigation onglets (Inventaire, Dérive, etc.) */
+.view-tab { font-size: 10px; letter-spacing: .08em; }
+
+/* Labels filtres attributs */
+.mf-btn { font-size: 9px; letter-spacing: .06em; }
+
+/* Constellation — labels nœuds */
+.con-label { font-size: 10px; letter-spacing: .02em; }
+
+/* ── Dark mode : Cutive Mono s'éclaircit légèrement ── */
+body.dark-mode .card-name { color: var(--text); }
+body.dark-mode .portrait-title { color: var(--text); }
