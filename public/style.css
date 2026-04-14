@@ -1065,17 +1065,21 @@ main { padding: 0; }
 .sfb-pill-sm:hover { background: var(--tag-bg); border-color: var(--border); color: var(--text); }
 .sfb-pill-sm.active { background: var(--accent); border-color: var(--accent); color: #F5F5F0; }
 
-/* ── Card status badge ── */
-.card-status-badge {
+/* ── Card status badge (ancien, conservé pour compatibilité) ── */
+.card-status-badge { display: none; }
+
+/* ── Card status dot — dans le card-body, coin haut-droit ── */
+.card-status-dot {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 9px;
-  height: 9px;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.6);
+  box-shadow: 0 1px 3px rgba(45,45,45,.18);
   z-index: 2;
-  box-shadow: 0 1px 3px rgba(45,45,45,.25);
+  flex-shrink: 0;
 }
 
 /* ── Timeline ── */
