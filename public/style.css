@@ -104,6 +104,11 @@ body.verbe-active .sfb-pill-sm { background: transparent; color: var(--text-2); 
 body.verbe-active .sfb-pill-sm:hover { background: var(--tag-bg); color: var(--text); }
 body.verbe-active .sfb-pill-sm.active { background: var(--page-verbe-text); color: #F5F5F0; border-color: var(--page-verbe-text); }
 
+/* En mode verbe : masquer Réservé, Brouillon, Mis de côté */
+body.verbe-active #statusFilterBar .sfb-pill[data-status="Réservé"],
+body.verbe-active #statusFilterBar .sfb-pill[data-status="Brouillon"],
+body.verbe-active #statusFilterBar .sfb-pill[data-bookmark="true"] { display: none; }
+
 /* Filtres attributs */
 body.verbe-active #attrFilterBar { background: transparent; }
 body.verbe-active .mf-btn { background: var(--tag-bg); border: none; color: var(--text-2); }
