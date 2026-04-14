@@ -1204,11 +1204,10 @@ function getFiltered() {
         c.subcategoryCustom,
         ...(Array.isArray(c.subcategories) ? c.subcategories : [])
       ].filter(Boolean);
-      // Comparaison insensible à la casse ET à la catégorie verbe (category)
-      const qLower = (s) => s.toLowerCase().trim();
+      // Comparaison normalisée : supprime accents + casse pour "Thé & Café" == "the & cafe"
       if (mappedTypos.some(mapped =>
-        objTypos.some(t => qLower(t) === qLower(mapped)) ||
-        qLower(c.category||'') === qLower(mapped)
+        objTypos.some(t => _normalize(t) === _normalize(mapped)) ||
+        _normalize(c.category||'') === _normalize(mapped)
       )) return true;
     }
 
