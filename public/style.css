@@ -736,6 +736,7 @@ main { padding: 0; }
 .card-body {
   padding: 14px 16px 18px;
   position: relative;
+  z-index: 0; /* au-dessus du ::before halo mais dans le même contexte */
 }
 
 /* Micro-label de typo/verbe en haut du card-body */
