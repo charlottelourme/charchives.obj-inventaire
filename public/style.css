@@ -131,7 +131,7 @@ body.verbe-active #statusFilterBar .sfb-pill[data-status="Pas à vendre"] { disp
 body.verbe-active #attrFilterBar { background: transparent; }
 body.verbe-active .mf-btn { background: var(--tag-bg); border: none; color: var(--text-2); }
 body.verbe-active .mf-btn:hover { background: var(--border-light); color: var(--text); }
-body.verbe-active .mf-btn.mf-active { background: var(--text); color: var(--bg); }
+body.verbe-active .mf-btn.mf-active { background: transparent; color: #000; font-weight: 700; }
 body.verbe-active .clear-attr-btn { color: var(--text-3); opacity: 1; }
 
 /* Barre de recherche */
