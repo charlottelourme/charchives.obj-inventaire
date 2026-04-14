@@ -640,9 +640,10 @@ function buildIndexTrigger() {
       style="${isActive ? `background:${color};color:${fg};border-color:${color}` : `border:1.5px solid ${color}40`}">${esc(t)}</button>`;
   }).join('');
 
+  // Verbe actif : plus de pills dans la barre — elles sont dans le titre du grid
+  // On garde uniquement la recherche inline
   bar.innerHTML = state.categoryFilter ? `
-    <div class="idx-pills-row">${pillsHtml}</div>
-    <div class="idx-search-row">
+    <div class="idx-search-row idx-search-row--alone">
       <div class="idx-inline-wrap">
         <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher une typologie…" autocomplete="off" spellcheck="false">
         <div class="idx-inline-drop" id="idxInlineDrop" style="display:none"></div>
