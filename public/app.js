@@ -1353,9 +1353,9 @@ function render() {
   document.querySelectorAll('#categoryFilterBar .sfb-pill').forEach(p => {
     const isActive = p.dataset.cat === state.categoryFilter;
     p.classList.toggle('active', isActive);
-    if (isActive && p.classList.contains('sfb-pill-verbe') && p.dataset.bg) {
-      // Actif : couleur du verbe, souligné, zéro fond
-      p.style.color = p.dataset.bg;
+    if (isActive && p.classList.contains('sfb-pill-verbe')) {
+      // Actif : monochrome — soulignement seul, zéro couleur saturée
+      p.style.color = '';
       p.style.fontWeight = '700';
       p.style.textDecoration = 'underline';
       p.style.textUnderlineOffset = '3px';
