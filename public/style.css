@@ -25,7 +25,26 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
   min-height: 100vh;
-  transition: background-color .45s cubic-bezier(.4,0,.2,1);
+  transition: background-color .5s ease, color .5s ease, border-color .5s ease;
+}
+
+/* ── Monochrome — Filtre photo global ─────────────────────────────────────────
+   Toutes les photos en niveaux de gris. Le léger boost contraste évite le
+   "boueux". SVG <image> dans la constellation couvert séparément.
+   ─────────────────────────────────────────────────────────────────────────── */
+img {
+  filter: grayscale(100%) contrast(1.1);
+  transition: filter .4s ease;
+}
+/* SVG <image> dans la D3 constellation */
+.con-node image,
+image { filter: grayscale(100%) contrast(1.1); }
+
+/* Dark mode : légère hausse de luminosité pour compenser l'assombrissement global */
+body.dark-mode img,
+body.dark-mode .con-node image,
+body.dark-mode image {
+  filter: grayscale(100%) contrast(1.08) brightness(1.12);
 }
 
 /* ── Thème verbe actif — fond teinté léger (~18% opacité) ── */
