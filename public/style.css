@@ -2638,30 +2638,34 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
    INDEX "DIGGER" — Trigger + Overlay typologies
    ══════════════════════════════════════════════════════════════ */
 
-/* Trigger line (dans #subcategoryFilterBar) */
+/* Trigger (dans #subcategoryFilterBar) — le label "OBJETS" est un .sfb-label séparé */
 .idx-trigger-btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px 20px;
-  font-family: 'Cutive Mono', monospace;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-2);
-  transition: color .15s;
+  padding: 0;    /* le bar fournit le gutter, pas le bouton */
+  transition: opacity .15s;
 }
-.idx-trigger-btn:hover { color: var(--text); }
-.idx-trigger-text { font-weight: 500; color: var(--text-2); }
+.idx-trigger-btn:hover { opacity: .75; }
+
+/* "parcourir les typologies" — action majeure, poids visuel égal aux verbes */
 .idx-trigger-hint {
   font-family: 'Cutive Mono', monospace;
   font-style: normal;
-  font-size: 10px;
-  color: var(--text-3);
-  font-weight: 400;
-  letter-spacing: .04em;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: .03em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--border);
+}
+.idx-trigger-btn:hover .idx-trigger-hint {
+  text-decoration-color: var(--text);
 }
 .idx-trigger-count {
   font-size: 11px;
