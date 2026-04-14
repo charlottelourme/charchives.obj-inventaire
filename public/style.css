@@ -774,8 +774,8 @@ main { padding: 0; }
   padding: 14px 16px 18px;
   position: relative;
   z-index: 2;              /* passe au-dessus du bas de l'image */
-  margin-top: -24px;       /* remonte sur l'image — effet affiche */
-  width: 100%;             /* plus large que l'image (qui est à 85%) */
+  margin-top: -8px;        /* effleurement subtil — plus de chevauchement agressif */
+  width: 100%;             /* plus large que l'image (qui est à 85%) — bord gauche dépasse */
 }
 
 /* Micro-label de typo/verbe en haut du card-body */
