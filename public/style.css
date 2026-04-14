@@ -5252,7 +5252,7 @@ main { padding-bottom: 44px; }
 }
 #attrFilterBar {
   border-bottom: none;
-  padding: 4px 14px 10px;
+  padding: 4px var(--filter-gutter) 10px calc(var(--filter-gutter) + var(--label-w));
   background: transparent;
   display: flex;
   flex-wrap: wrap;
