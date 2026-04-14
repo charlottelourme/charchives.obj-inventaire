@@ -73,8 +73,7 @@ body.verbe-active .view-tab.active {
 body.dark-mode .view-tab::before {
   background-color: #27272a;   /* zinc-800 */
 }
-body.dark-mode .view-tab:hover,
-body.dark-mode .view-tab.active { color: #fff; }
+body.dark-mode .view-tab:hover { color: #fff; }
 
 /* Toolbar + grid : transparents */
 body.verbe-active .toolbar,
