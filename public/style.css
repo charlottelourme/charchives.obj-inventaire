@@ -522,7 +522,7 @@ main { padding: 0; }
 .card {
   background: var(--surface);
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
   transition: box-shadow .4s cubic-bezier(.22,.68,0,1.1);
   cursor: pointer;
