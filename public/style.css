@@ -5747,34 +5747,40 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   gap: 6px;
   margin-bottom: 16px;
 }
+/* Verbe : label coloré — carré, sans arrondi */
 .portrait-verbe-pill {
   font-family: 'Spectral', Georgia, serif;
   font-size: 11px;
   font-weight: 400;
-  padding: 3px 12px;
-  border-radius: 9999px;
-  letter-spacing: .02em;
+  padding: 3px 8px;
+  border-radius: 0;
+  letter-spacing: .03em;
 }
+/* Typologie : texte seul, souligné — cohérent avec la charte tags */
 .portrait-typo-pill {
   font-family: 'Inter', sans-serif;
   font-size: 9px;
-  font-weight: 600;
-  letter-spacing: .1em;
+  font-weight: 700;
+  letter-spacing: .12em;
   text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 9999px;
-  border: 1px solid var(--border);
-  color: var(--text-2);
+  padding: 3px 0;
+  border-radius: 0;
+  border: none;
   background: transparent;
+  color: var(--text-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
+/* Titre : XXL Spectral italique — la vedette */
 .portrait-title {
   font-family: 'Spectral', Georgia, serif;
-  font-size: 30px;
+  font-size: clamp(26px, 3.2vw, 42px);
   font-weight: 300;
-  line-height: 1.2;
-  color: var(--text);
-  margin-bottom: 12px;
-  letter-spacing: -.01em;
+  font-style: italic;
+  line-height: 1.15;
+  color: #1a1816; /* noir profond pour contraste maximal sur le halo */
+  margin-bottom: 14px;
+  letter-spacing: -.02em;
 }
 .portrait-meta {
   display: flex;
