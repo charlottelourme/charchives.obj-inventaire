@@ -2648,11 +2648,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .idx-trigger-btn:hover { color: var(--text); }
 .idx-trigger-text { font-weight: 500; color: var(--text-2); }
 .idx-trigger-hint {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-size: 12px;
+  font-family: 'Cutive Mono', monospace;
+  font-style: normal;
+  font-size: 10px;
   color: var(--text-3);
   font-weight: 400;
+  letter-spacing: .04em;
 }
 .idx-trigger-count {
   font-size: 11px;
