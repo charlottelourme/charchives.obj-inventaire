@@ -6879,7 +6879,11 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   position: absolute;
   bottom: 20px; right: 20px;
   z-index: 10;
-  background: var(--bg);
+  background: rgba(248,244,238,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: none !important;
+  box-shadow: none !important;
   border: 1px solid var(--border);
   box-shadow: 0 8px 32px rgba(45,40,35,.10);
   border-radius: 2px;
