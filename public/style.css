@@ -992,33 +992,34 @@ main { padding: 0; }
 /* ── Status filter bar ── */
 /* ══ FILTER NAVIGATION — "Galerie d'art" — sans border fatigue ══ */
 
-/* Conteneur de chaque rangée de filtres */
+/* Conteneur de chaque rangée de filtres — grille cohérente */
 .status-filter-bar {
   display: flex;
   align-items: center;
   gap: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   border-bottom: none;
-  padding: 8px clamp(24px, 4vw, 64px);
+  padding: 8px var(--filter-gutter);
   min-height: 52px;
   background: transparent;
 }
 
-/* Label "INTENTION" / "OBJET" — discret */
+/* ── Label de ligne : "INTENTION", "OBJETS" — colonne fixe à gauche ──
+   Tous les labels partagent exactement la même largeur → axe vertical strict */
 .sfb-label {
   font-family: 'Cutive Mono', monospace;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: .18em;
+  letter-spacing: .10em;
   color: var(--text-3);
-  padding: 6px 20px 6px 0;
-  border-right: none;
+  width: var(--label-w);
+  min-width: var(--label-w);
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  min-width: 72px;
-  opacity: .55;
+  padding: 0;
+  opacity: 1;
 }
 
 /* ── Pill de base → texte pur, aucune pilule ── */
