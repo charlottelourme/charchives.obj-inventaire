@@ -4823,10 +4823,10 @@ function _renderStatusBars(statusFreq, total) {
   const el = document.getElementById('statsStatusBars');
   if (!el) return;
   const statuses = [
-    { key: 'Disponible', color: '#22c55e' },
-    { key: 'Réservé',    color: '#f59e0b' },
-    { key: 'Vendu',      color: '#9ca3af' },
-    { key: 'Brouillon',  color: '#c4bfb8' }
+    { key: 'Disponible',   color: '#22c55e' },
+    { key: 'Vendu',        color: '#9ca3af' },
+    { key: 'Pas à vendre', color: '#7c3aed' },
+    { key: 'Brouillon',    color: '#d1d5db' }
   ];
   const withData = statuses.filter(s => (statusFreq[s.key]||0) > 0);
   if (!withData.length) { el.innerHTML = ''; return; }
