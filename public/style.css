@@ -28,22 +28,12 @@ body {
   transition: background-color .5s ease, color .5s ease, border-color .5s ease;
 }
 
-/* ── Monochrome — Filtre photo global ─────────────────────────────────────────
-   Toutes les photos en niveaux de gris. Le léger boost contraste évite le
-   "boueux". SVG <image> dans la constellation couvert séparément.
-   ─────────────────────────────────────────────────────────────────────────── */
-img {
-  filter: grayscale(100%) contrast(1.1);
-  transition: filter .4s ease;
-}
-/* SVG <image> dans la D3 constellation */
-.con-node image,
-image { filter: grayscale(100%) contrast(1.1); }
+/* ── Photos : couleurs en Light Mode, noir & blanc en Dark Mode ── */
+img { transition: filter .4s ease; }
 
-/* Dark mode : légère hausse de luminosité pour compenser l'assombrissement global */
+/* Dark mode uniquement : grayscale + boost luminosité */
 body.dark-mode img,
-body.dark-mode .con-node image,
-body.dark-mode image {
+body.dark-mode .con-node image {
   filter: grayscale(100%) contrast(1.08) brightness(1.12);
 }
 
