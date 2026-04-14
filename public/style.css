@@ -915,21 +915,21 @@ main { padding: 0; }
   background: transparent;
 }
 
-/* Label "INTENTION" / "OBJET" — discret, sans bordure droite */
+/* Label "INTENTION" / "OBJET" — discret */
 .sfb-label {
   font-family: 'Inter', sans-serif;
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: .16em;
+  letter-spacing: .18em;
   color: var(--text-3);
-  padding: 6px 14px 6px 4px;
+  padding: 6px 20px 6px 0;
   border-right: none;
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  min-width: 80px;
-  opacity: .7;
+  min-width: 72px;
+  opacity: .55;
 }
 
 /* ── Pill de base → texte pur, aucune pilule ── */
