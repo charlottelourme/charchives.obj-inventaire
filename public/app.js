@@ -1626,7 +1626,11 @@ function _drawConGraph(canvas, nodes, links) {
   const svg = d3.select(canvas).append('svg')
     .attr('width', SVG_W)
     .attr('height', SVG_H)
-    .style('display', 'block');
+    .style('display', 'block')
+    .style('opacity', '0')
+    .style('transition', 'opacity .42s ease');
+  // Fade-in après le premier rendu navigateur
+  requestAnimationFrame(() => requestAnimationFrame(() => svg.style('opacity', '1')));
 
   // ── Defs: circular clipPaths for photo nodes ──
   const defs = svg.append('defs');
