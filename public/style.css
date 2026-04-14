@@ -666,76 +666,9 @@ main { padding: 0; }
 @media (hover: none) {
   .card:active { opacity: .82; transform: scale(.98); }
 }
-/* Survol : seul le halo change d'opacité — pas de déplacement */
+/* Survol : léger gonflement global — catalogue pur, aucun voile */
 @media (hover: hover) {
-  .card:hover { transform: none; }
-}
-
-/* ── Card hover overlay — glassmorphism galerie ── */
-.card-hover-overlay {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity .38s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 22px 20px 18px;
-  pointer-events: none;
-  z-index: 3;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-@media (hover: hover) {
-  .card:hover .card-hover-overlay { opacity: 1; }
-  /* Image : immobile — pas de scale ni de translateY */
-  .card:hover .card-thumb { transform: none; }
-  .card:hover .card-nav { opacity: 0; }
-}
-/* Zone centrale — description en plein centre */
-.cho-description-wrap {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 8px 0;
-}
-.cho-description {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(13px, 2vw, 19px);
-  line-height: 1.6;
-  text-align: center;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.cho-description.cho-empty {
-  opacity: .45;
-  font-size: 13px;
-}
-/* Zone basse — infos techniques minimalistes */
-.cho-tech {
-  font-family: 'Cutive Mono', monospace;
-  font-size: 8.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .18em;
-  text-align: center;
-  opacity: .75;
-  line-height: 1.8;
-}
-.cho-price {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 20px;
-  font-weight: 300;
-  letter-spacing: -.02em;
-  margin-top: 6px;
-  line-height: 1;
-  text-align: center;
+  .card:hover { transform: scale(1.02); }
 }
 
 /* Header row de la carte : masqué — info dans card-body */
