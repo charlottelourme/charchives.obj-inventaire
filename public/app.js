@@ -786,11 +786,18 @@ function buildIndexTrigger() {
     return;
   }
   bar.style.display = '';
+
+  // Chip pour le filtre typo actif (sélectionné depuis l'overlay)
+  const typoChip = state.typoFilter
+    ? `<button class="idx-active-chip" id="idxClearTypoBtn">${esc(state.typoFilter)} ×</button>`
+    : '';
+
   bar.innerHTML = `
     <button class="idx-trigger-btn" id="idxTriggerBtn">
       <span class="idx-trigger-text">Objets</span>
       <em class="idx-trigger-hint">parcourir les typologies</em>
     </button>
+    ${typoChip}
     <div class="idx-inline-wrap">
       <input type="text" class="idx-inline-input" id="idxInlineInput" placeholder="Rechercher…" autocomplete="off" spellcheck="false">
       <div class="idx-inline-drop" id="idxInlineDrop" style="display:none"></div>
@@ -798,6 +805,13 @@ function buildIndexTrigger() {
   `;
 
   document.getElementById('idxTriggerBtn')?.addEventListener('click', openIndexOverlay);
+  // Effacer le filtre typo actif
+  document.getElementById('idxClearTypoBtn')?.addEventListener('click', () => {
+    state.typoFilter = '';
+    buildTypologyFilterBar();
+    buildIndexTrigger();
+    render();
+  });
 
   // ── Recherche inline avec autocomplete ──
   const inp = document.getElementById('idxInlineInput');
