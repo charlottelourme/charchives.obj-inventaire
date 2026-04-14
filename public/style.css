@@ -6611,64 +6611,35 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge {
   position: absolute;
   top: 8px; right: 8px;
   z-index: 6;
-  width: 30px; height: 30px;
+  width: 28px; height: 28px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.45);
+  border: 1px solid rgba(255,255,255,.5);
   background: rgba(255,255,255,.80);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   cursor: pointer;
   opacity: 0;
-  transition: opacity .22s ease, background .2s ease;
+  transition: opacity .22s ease, background .35s ease, border-color .35s ease;
   display: flex; align-items: center; justify-content: center;
   padding: 0;
 }
 .card:hover .card-bookmark-btn { opacity: 1; }
 .card-bookmark-btn.bookmarked {
   opacity: 1 !important;
-  background: rgba(255,255,255,.96);
-  border-color: rgba(45,45,45,.18);
+  background: #2D2D2D;
+  border-color: #2D2D2D;
 }
 .card-bookmark-btn:hover { background: rgba(255,255,255,.98); }
+.card-bookmark-btn.bookmarked:hover { background: #1a1a1a; }
 
-/* ── Astérisque SVG — lignes de gravure ── */
+/* ── Astérisque SVG — 4 branches, style gravure ── */
 .ast-icon .ast-s {
   stroke: var(--text-3);
-  stroke-width: 1;
+  stroke-width: 1.2;
   stroke-linecap: round;
-  transition: stroke 1.1s ease-in-out;
+  transition: stroke .35s ease;
 }
-.ast-icon .ast-b {
-  stroke: var(--text);
-  stroke-width: 0.8;
-  stroke-linecap: round;
-  /* Longueur du trait = 3 (de y=7.2 à y=4.2) */
-  stroke-dasharray: 3;
-  stroke-dashoffset: 3;
-  opacity: 0;
-  /* Transition lente — révélation encre sur papier */
-  transition: stroke-dashoffset 1.4s ease-in-out,
-              opacity 0.7s ease-in-out;
-}
-
-/* État actif : éclat complet */
-.card-bookmark-btn.bookmarked .ast-icon .ast-s {
-  stroke: var(--text);
-}
-.card-bookmark-btn.bookmarked .ast-icon .ast-b {
-  stroke-dashoffset: 0;
-  opacity: 1;
-}
-
-/* Délais en cascade — les 8 éclats fleurissent l'un après l'autre */
-.card-bookmark-btn.bookmarked .ast-icon .ast-b:nth-child(5)  { transition-delay: 0s; }
-.card-bookmark-btn.bookmarked .ast-icon .ast-b:nth-child(6)  { transition-delay: .06s; }
-.card-bookmark-btn.bookmarked .ast-icon .ast-b:nth-child(7)  { transition-delay: .12s; }
-.card-bookmark-btn.bookmarked .ast-icon .ast-b:nth-child(8)  { transition-delay: .18s; }
-.card-bookmark-btn.bookmarked .ast-icon .ast-b:nth-child(9)  { transition-delay: .24s; }
-.card-bookmark-btn.bookmarked .ast-icon .ast-b:nth-child(10) { transition-delay: .30s; }
-.card-bookmark-btn.bookmarked .ast-icon .ast-b:nth-child(11) { transition-delay: .36s; }
-.card-bookmark-btn.bookmarked .ast-icon .ast-b:nth-child(12) { transition-delay: .42s; }
+.card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: #fff; }
 
 /* Pill "Mis de côté" dans la status bar */
 .sfb-pill-bookmark.active { background: #8b5cf620; border-color: #8b5cf6 !important; color: #8b5cf6; }
