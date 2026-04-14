@@ -2386,7 +2386,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   background: transparent;
   border-radius: 0;
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
+  font-style: normal;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: .01em;
