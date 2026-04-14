@@ -2332,6 +2332,23 @@ function renderGallery(filtered) {
   grid.innerHTML = '';
 
   items.forEach(c => {
+    // ── Note intercalaire dans la Dérive ──
+    if (c.type === 'note') {
+      const bg  = c.backgroundColor || '#F5E6D3';
+      const lum = _luminance(bg);
+      const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+      const fontCls = c.noteFont === 'terrain' ? 'font-terrain' : 'font-poetic';
+      const item = document.createElement('div');
+      item.className = 'gallery-item g-note g-sm';
+      item.dataset.id  = c.id;
+      item.style.background = bg;
+      item.style.color      = fg;
+      item.innerHTML = `<div class="gallery-note-text ${fontCls}">${esc(c.content || '')}</div>`;
+      grid.appendChild(item);
+      // Les notes ne sont pas cliquables dans la Dérive
+      return;
+    }
+
     const size = _gallerySize(c.id);
     const item = document.createElement('div');
     item.className = `gallery-item ${size}`;
