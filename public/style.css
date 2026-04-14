@@ -4734,7 +4734,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
      GRILLE MOBILE — 2 colonnes fixes
   ══════════════════════════════════════ */
   .grid {
-    columns: 2;
+    column-count: 2;
     column-gap: 12px;
     padding: 8px 10px calc(96px + env(safe-area-inset-bottom));
   }
