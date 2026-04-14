@@ -421,8 +421,8 @@ main { padding: 0; }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px clamp(10px, 2vw, 20px) 12px;
-  min-height: 48px;
+  padding: 16px clamp(24px, 4vw, 64px) 16px;
+  min-height: 56px;
 }
 .toolbar-gap { flex: 1; }
 .status-filter {
