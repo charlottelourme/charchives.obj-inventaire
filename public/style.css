@@ -2909,8 +2909,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   padding-bottom: 16px;
 }
 .idx-overlay-title {
-  font-family: 'Cutive Mono', monospace; /* cohérent avec le trigger "Typologies" */
-  font-style: normal;
+  font-family: 'Cutive Mono', monospace;
+  font-style: normal !important; /* force l'upright — annule tout héritage italic */
   font-size: 15px;
   font-weight: 500;
   color: var(--text);
