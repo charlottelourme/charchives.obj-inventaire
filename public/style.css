@@ -4676,9 +4676,15 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 .bottom-nav .view-tab:hover { color: var(--text-2); background: none; }
 .bottom-nav .view-tab.active {
-  color: var(--text);
-  border-top-color: var(--text);
+  color: #000;
+  font-weight: 600;
+  border-top-color: transparent; /* Contraste Pur — pas de trait */
   border-bottom: none;
+}
+/* Point de Galerie nav mobile : apparaît EN HAUT (sens inverse) */
+.bottom-nav .view-tab.active::after {
+  bottom: auto;
+  top: 5px;
 }
 
 /* Padding bas pour ne pas cacher le contenu */
