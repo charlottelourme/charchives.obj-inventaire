@@ -5190,6 +5190,40 @@ function bindSmModal() {
   // Site title
   body.querySelector('.sm-sitetitle-input')?.addEventListener('input', e => { draft.siteTitle = e.target.value; });
 
+  // ── Dictionnaire de recherche ──────────────────────────────────────────────
+  // Ajouter une entrée
+  body.querySelector('#smThesAddBtn')?.addEventListener('click', () => {
+    const aliasInput = body.querySelector('#smThesAliasInput');
+    const typoSelect = body.querySelector('#smThesTypoSelect');
+    const alias = (aliasInput?.value || '').trim().toLowerCase();
+    const typo  = typoSelect?.value || '';
+    if (!alias || !typo) return;
+    _customThesaurus[alias] = typo;
+    _saveCustomThesaurus();
+    aliasInput.value = '';
+    typoSelect.value = '';
+    // Re-render uniquement la zone dictionnaire
+    const entries = body.querySelector('#smThesEntries');
+    if (entries) {
+      const rows = Object.entries(_customThesaurus).sort(([a],[b]) => a.localeCompare(b,'fr'));
+      entries.innerHTML = rows.length
+        ? rows.map(([al, tp]) => `
+          <div class="sm-thes-row" data-alias="${esc(al)}">
+            <span class="sm-thes-alias">${esc(al)}</span>
+            <span class="sm-thes-arrow">→</span>
+            <span class="sm-thes-typo">${esc(tp)}</span>
+            <button class="sm-thes-del" data-alias="${esc(al)}" title="Supprimer">✕</button>
+          </div>`).join('')
+        : '<p class="sm-thes-empty">Aucun synonyme personnalisé encore.</p>';
+      _bindThesDelBtns(entries);
+    }
+  });
+  // Enter dans le champ alias → même effet
+  body.querySelector('#smThesAliasInput')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') body.querySelector('#smThesAddBtn')?.click();
+  });
+  _bindThesDelBtns(body);
+
   // Accordion toggles (persist state via _smExpandedSections)
   body.querySelectorAll('.sm-accordion-header').forEach(h => {
     h.addEventListener('click', e => {
