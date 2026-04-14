@@ -892,6 +892,197 @@ main { padding: 0; }
 }
 .card.drag-over .card-drop-hint { opacity: 1; }
 
+/* ══════════════════════════════════════════════════════════════
+   NOTES INTERCALAIRES — Blocs de texte narratifs dans la grille
+══════════════════════════════════════════════════════════════ */
+.card-note {
+  position: relative;
+  cursor: pointer;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  isolation: isolate;
+  transition: transform .38s cubic-bezier(.22,.68,0,1.1);
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+  background: transparent;
+}
+/* Halo de fond — même logique que .card::before */
+.card-note::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: -24px;
+  left: -8%; right: -8%;
+  background: var(--note-halo, rgba(190,182,170,0.72));
+  filter: blur(42px);
+  border-radius: 4px;
+  z-index: -1;
+  opacity: 0.65;
+  pointer-events: none;
+  transition: opacity .42s ease;
+}
+@media (hover: hover) {
+  .card-note:hover { transform: scale(1.02); }
+  .card-note:hover::before { opacity: 0.85; }
+}
+/* Séparateur pleine largeur : column-span */
+.card-note.note-wide {
+  column-span: all;
+  width: 100%;
+  min-height: 100px;
+  padding: 32px clamp(20px, 4vw, 80px);
+}
+/* Contenu centré */
+.card-note-inner {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+.card-note-text {
+  line-height: 1.65;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+.card-note-text.font-poetic {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(15px, 1.8vw, 22px);
+  font-weight: 300;
+  letter-spacing: .01em;
+}
+.card-note-text.font-terrain {
+  font-family: 'Cutive Mono', monospace;
+  font-size: clamp(10px, 1.1vw, 13px);
+  font-weight: 400;
+  letter-spacing: .04em;
+}
+/* Menu contextuel — discret, au survol */
+.card-note-menu-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  background: rgba(255,255,255,.82);
+  border: none;
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 14px;
+  letter-spacing: .1em;
+  cursor: pointer;
+  color: var(--text-2);
+  backdrop-filter: blur(4px);
+  transition: opacity .18s, background .1s;
+  z-index: 10;
+  line-height: 1.4;
+}
+.card-note:hover .card-note-menu-btn { opacity: 1; }
+.card-note-menu-btn:hover { background: #fff; color: var(--text); }
+/* Drag & drop */
+.card-note[draggable="true"] { cursor: grab; }
+.card-note[draggable="true"]:active { cursor: grabbing; }
+.card-note.note-dragging { opacity: .35; pointer-events: none; }
+.card-note.note-drop-before { box-shadow: -4px 0 0 var(--border-strong); }
+.card-note.note-drop-after,
+.card.note-drop-after { box-shadow: 4px 0 0 var(--border-strong); }
+
+/* ── Note Modal — formulaire ── */
+.btn-note {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: .04em;
+}
+.note-opt-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.note-opt-btn {
+  padding: 7px 16px;
+  border: 1px solid var(--border);
+  background: none;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text-2);
+  transition: background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.note-opt-btn + .note-opt-btn { border-left: none; }
+.note-opt-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.note-opt-btn:not(.active):hover { background: var(--tag-bg); color: var(--text); }
+/* Swatches de couleur */
+.note-color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 4px;
+}
+.note-swatch {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform .12s, border-color .12s;
+  flex-shrink: 0;
+}
+.note-swatch:hover { transform: scale(1.15); }
+.note-swatch.selected { border-color: var(--text); transform: scale(1.15); }
+/* Aperçu en bas du formulaire */
+.note-preview {
+  margin-top: 16px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-light);
+  padding: 16px 20px;
+  transition: background .2s;
+}
+.note-preview-text {
+  text-align: center;
+  line-height: 1.6;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+/* Note dans la galerie Dérive */
+.gallery-item.g-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  cursor: default;
+}
+.gallery-note-text {
+  text-align: center;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.gallery-note-text.font-poetic {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(13px, 1.6vw, 18px);
+  font-weight: 300;
+}
+.gallery-note-text.font-terrain {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .04em;
+}
+.note-delete-btn { color: var(--red) !important; margin-right: auto; }
+
 /* ── Verbe active banner — bord-à-bord éditorial ── */
 .verbe-active-banner {
   display: flex;
