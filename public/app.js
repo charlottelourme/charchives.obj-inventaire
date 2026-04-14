@@ -1189,11 +1189,6 @@ function setView(v, _silent = false) {
   if (v === 'timeline')       v = 'calendar';   // frise fusionnée
   if (v === 'gallery')        { v = 'derive'; state.deriveMode = 'nuee'; }
   if (v === 'constellation')  { v = 'derive'; state.deriveMode = 'reseau'; }
-  // Sauvegarder le breadcrumb de la vue actuelle avant de changer
-  const _prevView = state.view;
-  if (!_silent && _prevView && state.breadcrumb.length) {
-    _breadcrumbByView[_prevView] = [...state.breadcrumb];
-  }
   state.view = v;
 
   const views = {
