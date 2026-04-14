@@ -1262,16 +1262,21 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
 }
 .sfb-pill-sm:hover { background: none; color: var(--text); }
 .sfb-pill-sm.active {
-  color: var(--accent);
+  color: #000;
   font-weight: 700;
 }
+/* Point de Galerie — status pills */
 .sfb-pill-sm.active::after {
-  content: '';
+  content: '•';
   position: absolute;
-  bottom: 0; left: 10px; right: 10px;
-  height: 1.5px;
-  background: currentColor;
-  border-radius: 1px;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  font-size: 7px;
+  line-height: 1;
+  width: auto; height: auto;
+  background: none;
+  color: currentColor;
 }
 
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
