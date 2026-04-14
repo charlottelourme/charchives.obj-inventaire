@@ -1248,18 +1248,74 @@ function _updateDeriveThumb() {
 }
 
 // ── Filters & sort ─────────────────────────────────────────────────────────────
+// ── Score de pertinence pour le tri des résultats de recherche ──────────────
+// Hiérarchie : Typologie exacte > Thésaurus→Typo > Matière > Nom > Verbe > reste
+function _searchScore(c, q) {
+  if (!q || q.length < 2) return 0;
+  const qn = _normalize(q);
+
+  const objTypos = [
+    c.subcategory, c.subcategoryCustom,
+    ...(Array.isArray(c.subcategories) ? c.subcategories : [])
+  ].filter(Boolean);
+
+  // 1 — Typologie : correspondance exacte normalisée → priorité maximale
+  if (objTypos.some(t => _normalize(t) === qn)) return 100;
+  // 1b — Début de mot : "assise" → "Assises"
+  if (objTypos.some(t => _normalize(t).startsWith(qn) || qn.startsWith(_normalize(t)))) return 88;
+
+  // 2 — Thésaurus → Typologie (ex: "tasse" → "Thé & Café")
+  const mappedTypos = _thesaurusLookup(q);
+  if (mappedTypos.length) {
+    const expandedTypos = new Set(mappedTypos.map(_normalize));
+    mappedTypos.forEach(typo => {
+      const parent = PARENT_TYPOLOGIES[typo];
+      if (parent) expandedTypos.add(_normalize(parent));
+    });
+    if ([...expandedTypos].some(m =>
+      objTypos.some(t => _normalize(t) === m) || _normalize(c.category || '') === m
+    )) return 80;
+  }
+
+  // 3 — Matière exacte (ex: "porcelaine", "laiton")
+  const matieres = c.attributes?.matieres || [];
+  if (matieres.some(m => _normalize(m) === qn)) return 72;
+  if (matieres.some(m => _normalize(m).includes(qn))) return 60;
+
+  // 4 — Nom de l'objet
+  const nameN = _normalize(c.name || '');
+  if (nameN === qn)               return 55;
+  if (nameN.startsWith(qn))       return 48;
+  if (nameN.includes(qn))         return 40;
+
+  // 5 — Verbe/catégorie
+  const catN = _normalize(c.category || '');
+  if (catN === qn || catN.includes(qn)) return 32;
+
+  // 6 — Autres champs (description, mots-clés, etc.)
+  return 10;
+}
+
 function getFiltered() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
   const activeKws = [...state.activeKeywordFilters];
-  return applySortTo(state.collections.filter(c => {
+
+  const filtered = state.collections.filter(c => {
+    // ── Filtre primaire : Typologie sélectionnée dans la barre Typologies ──
+    if (state.typoFilter) {
+      const objTypos = [
+        c.subcategory, c.subcategoryCustom,
+        ...(Array.isArray(c.subcategories) ? c.subcategories : [])
+      ].filter(Boolean);
+      if (!objTypos.includes(state.typoFilter)) return false;
+    }
+    // ── Filtres classiques ──
     if (state.categoryFilter && c.category !== state.categoryFilter) return false;
-    if (state.statusFilter  && c.itemStatus !== state.statusFilter)  return false;
+    if (state.statusFilter   && c.itemStatus !== state.statusFilter)  return false;
     if (state.bookmarkFilter && !c.bookmarked) return false;
     if (state.activeExpoFilter && !(c.expositions||[]).includes(state.activeExpoFilter)) return false;
     if (activeKws.length && !activeKws.every(kw => (c.keywords||[]).includes(kw))) return false;
-    // Attribute filters (multi-select: OR within same filter, must match all active filters)
     const af = state.attrFilters;
-    // subcategories filter: support array or legacy string
     const subcatList = Array.isArray(c.subcategories) && c.subcategories.length
       ? c.subcategories
       : (c.subcategory && c.subcategory !== 'Autre' ? [c.subcategory] : (c.subcategoryCustom ? [c.subcategoryCustom] : []));
@@ -1270,43 +1326,38 @@ function getFiltered() {
     if (af.couleurs.length && !af.couleurs.some(v=>(c.attributes?.couleurs||[]).includes(v))) return false;
     if (!q) return true;
 
-    // ── PASSE A : recherche textuelle littérale ─────────────────────────────
-    // Concatène tous les champs texte et cherche q dedans (simple includes)
+    // ── PASSE A : correspondance textuelle directe ──────────────────────────
     const textStr = [
       c.name, c.description, c.category, c.subcategory, c.subcategoryCustom,
       ...(Array.isArray(c.subcategories) ? c.subcategories : []),
-      ...(c.keywords||[]),
-      ...(c.univers||[]),
-      ...(Object.values(c.attributes||{}).flat()),
-      c.itemStatus
+      ...(c.keywords||[]), ...(c.univers||[]),
+      ...(Object.values(c.attributes||{}).flat()), c.itemStatus
     ].filter(Boolean).join(' ').toLowerCase();
-
     if (textStr.includes(q)) return true;
 
-    // ── PASSE B : correspondance thésaurus → égalité stricte sur la typologie ─
-    // "tasse" → ["Thé & Café"] + parent "Art de la table" → vérifie les deux niveaux
+    // ── PASSE B : thésaurus → expansion typologique ─────────────────────────
     const mappedTypos = _thesaurusLookup(q);
     if (mappedTypos.length) {
-      // Expansion : ajouter les catégories parentes de chaque typologie trouvée
       const expandedTypos = new Set(mappedTypos.map(_normalize));
       mappedTypos.forEach(typo => {
         const parent = PARENT_TYPOLOGIES[typo];
         if (parent) expandedTypos.add(_normalize(parent));
       });
-      const objTypos = [
-        c.subcategory,
-        c.subcategoryCustom,
-        ...(Array.isArray(c.subcategories) ? c.subcategories : [])
-      ].filter(Boolean);
-      // Comparaison normalisée : supprime accents + casse pour "Thé & Café" == "the & cafe"
+      const objTypos = [c.subcategory, c.subcategoryCustom,
+        ...(Array.isArray(c.subcategories) ? c.subcategories : [])].filter(Boolean);
       if ([...expandedTypos].some(mapped =>
-        objTypos.some(t => _normalize(t) === mapped) ||
-        _normalize(c.category||'') === mapped
+        objTypos.some(t => _normalize(t) === mapped) || _normalize(c.category||'') === mapped
       )) return true;
     }
-
     return false;
-  }));
+  });
+
+  // ── Tri sémantique quand une requête est active ─────────────────────────
+  // Remplace le tri utilisateur : la Typologie exacte remonte en premier
+  if (q.length >= 2) {
+    return filtered.sort((a, b) => _searchScore(b, q) - _searchScore(a, q));
+  }
+  return applySortTo(filtered);
 }
 
 function applySortTo(items) {
