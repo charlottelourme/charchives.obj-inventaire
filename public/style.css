@@ -4664,58 +4664,25 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
 
   /* ══════════════════════════════════════
-     GRILLE MOBILE — Masonry 2 colonnes CSS
-     (columns layout = imbrication fluide,
-      zéro trou vertical contrairement à grid)
+     GRILLE MOBILE — 2 colonnes fixes
   ══════════════════════════════════════ */
   .grid {
-    /* ① Quitter CSS Grid → CSS Columns */
-    display: block;
     columns: 2;
-    column-gap: 14px;
-    /* ② Padding généreux en bas : dernière ligne
-       jamais cachée par la nav ou le safe-area */
-    padding: 10px 10px calc(96px + env(safe-area-inset-bottom));
+    column-gap: 12px;
+    padding: 8px 10px calc(96px + env(safe-area-inset-bottom));
   }
-
-  /* ③ Chaque carte : inline-block pour que break-inside
-     fonctionne + occupe toute la largeur de colonne */
-  .grid .card {
-    display: inline-block;
-    width: 100%;
-    break-inside: avoid;
-    margin-bottom: 18px;
-    border: none;
-    /* overflow: visible doit rester (halo peut déborder) */
-    overflow: visible;
-  }
-
-  /* ④ Halo directionnel mobile : blur réduit,
-     la forme reste rectangulaire mais moins étalée */
+  .grid .card { margin-bottom: 16px; }
+  /* Halo réduit sur petite largeur */
   .grid .card::before {
-    filter: blur(22px) grayscale(1);
+    filter: blur(20px) grayscale(1);
     top: 18%;
-    height: 118%;
+    height: 116%;
   }
-
-  /* ⑤ Typographie carte mobile — compacte et élégante */
-  .card-body {
-    padding: 8px 10px 12px;
-  }
-  .card-meta-row {
-    font-size: 9px;
-    gap: 4px;
-    margin-bottom: 3px;
-  }
-  .card-verbe-label,
-  .card-typo-label {
-    font-size: 9px;
-  }
-  .card-name {
-    font-size: 13px;
-    line-height: 1.3;
-    letter-spacing: -.01em;
-  }
+  /* Typographie compacte */
+  .card-body { padding: 7px 9px 11px; }
+  .card-meta-row { font-size: 9px; gap: 3px; margin-bottom: 2px; }
+  .card-verbe-label, .card-typo-label { font-size: 9px; }
+  .card-name { font-size: 12px; line-height: 1.3; }
   .card-desc { display: none; }
 
   /* ══════════════════════════════════════
