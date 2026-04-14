@@ -2670,12 +2670,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* Trigger (dans #subcategoryFilterBar) — le label "OBJETS" est un .sfb-label séparé */
 .idx-trigger-btn {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end; /* aligne le bas de l'hint avec le bas du bouton */
   gap: 12px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;    /* le bar fournit le gutter, pas le bouton */
+  padding: 0 0 0 16px; /* 16px gauche = même offset que .sfb-pill → axe vertical unifié */
+  align-self: flex-end; /* bottom du bouton = bottom de l'input → trait continu */
   transition: opacity .15s;
 }
 .idx-trigger-btn:hover { opacity: .75; }
