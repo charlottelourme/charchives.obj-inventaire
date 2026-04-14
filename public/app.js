@@ -1363,6 +1363,8 @@ function getFiltered() {
   const activeKws = [...state.activeKeywordFilters];
 
   const filtered = state.collections.filter(c => {
+    // Les notes intercalaires ne sont jamais filtrées — gérées séparément
+    if (c.type === 'note') return false;
     // ── Filtre primaire : Typologie sélectionnée dans la barre Typologies ──
     if (state.typoFilter) {
       const objTypos = [
