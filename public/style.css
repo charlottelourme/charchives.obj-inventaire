@@ -545,17 +545,42 @@ main { padding: 0; }
   box-shadow: none;
 }
 
-/* ── Grid ── */
+/* ── Grid — Masonry CSS Colonnes (Pinterest) ───────────────────────────────
+   column-width: le slider --card-min continue de fonctionner.
+   Le navigateur calcule le nombre de colonnes automatiquement.
+   ─────────────────────────────────────────────────────────────────────────── */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--card-min, 260px), 1fr));
-  gap: 64px 52px;
-  border: none;
-  padding: 48px 64px;
-  transition: --card-min 0.12s linear;
+  display: block;
+  column-width: var(--card-min, 260px);
+  column-gap: 36px;
+  padding: 40px 64px calc(80px + env(safe-area-inset-bottom));
+  transition: column-width 0.15s ease;
 }
+/* Carte : inline-block + break-inside indispensables au masonry CSS */
 .grid .card {
+  display: inline-block;
+  width: 100%;
+  break-inside: avoid;
+  margin-bottom: 40px;
   border: none;
+  overflow: visible; /* halo peut déborder */
+  vertical-align: top;
+}
+
+/* ── Ultra-large (≥ 1440px) — padding élargi ── */
+@media (min-width: 1440px) {
+  .grid { column-gap: 44px; padding-left: 80px; padding-right: 80px; }
+  .grid .card { margin-bottom: 48px; }
+}
+
+/* ── Laptop (769px – 1024px) ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid {
+    column-width: calc(var(--card-min, 240px) * 0.85);
+    column-gap: 24px;
+    padding: 24px 32px calc(80px + env(safe-area-inset-bottom));
+  }
+  .grid .card { margin-bottom: 28px; }
 }
 
 /* ── Card ── */
