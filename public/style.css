@@ -7281,10 +7281,12 @@ body {
   text-transform: uppercase;
 }
 
-/* Pills UI — taille ajustée pour Cutive Mono */
+/* Pills UI — Cutive Mono à taille lisible */
 .sfb-pill          { font-size: 12px; letter-spacing: .04em; }
-.sfb-pill-verbe    { font-size: 12px; letter-spacing: .04em; }
+/* Verbes : Cormorant italic grand → pas de font-size override ici (défini dans .sfb-pill-verbe) */
+.sfb-pill-verbe    { font-size: 18px; } /* conserve le style Cormorant défini ci-dessus */
 .tfb-all           { font-size: 9px;  letter-spacing: .14em; }
+.tfb-pill          { font-size: 11px; }  /* Cutive Mono compact — pas d'agrandissement */
 .attr-chip         { font-size: 11px; }
 
 /* Boutons */
@@ -7293,7 +7295,7 @@ body {
 .bottom-nav .view-tab { font-size: 9px; letter-spacing: .10em; }
 
 /* Métadonnées carte (verbe + typo) */
-.card-verbe-label  { font-size: 10px; font-style: italic; font-weight: 300; }
+.card-verbe-label  { font-size: 10px; font-style: normal; font-weight: 400; }
 .card-typo-label   { font-size: 9px;  letter-spacing: .14em; }
 .card-price        { font-size: 11px; }
 
@@ -7302,15 +7304,22 @@ body {
 .portrait-attr-pill  { font-size: 10px; letter-spacing: .03em; }
 .portrait-desc       { font-size: 14px; line-height: 1.7; }
 
-/* Barre de typo — Cormorant agrandi */
-.tfb-pill { font-size: 16px; }
-
-/* Header h1 — Cormorant avec style archive */
+/* Header h1 — Cormorant archive */
 header h1 {
   font-style: italic;
   font-weight: 300;
   letter-spacing: -.01em;
   font-size: 18px;
+}
+
+/* ── Desktop (≥ 1024px) : texte plus aéré ── */
+@media (min-width: 1024px) {
+  :root { font-size: 15px; }
+  .sfb-pill       { font-size: 13px; }
+  .tfb-pill       { font-size: 12px; }
+  .sfb-pill-verbe { font-size: 19px; }
+  .card-name      { font-size: 18px; }
+  .card-verbe-label { font-size: 11px; }
 }
 
 /* Inputs / selects — mono à taille lisible */
