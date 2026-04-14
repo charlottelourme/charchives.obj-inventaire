@@ -720,8 +720,8 @@ main { padding: 0; }
   font-size: 10px;
   font-weight: 400;
   letter-spacing: .03em;
-  padding: 2px 7px;
-  border-radius: 2px;
+  padding: 2px 6px;
+  border-radius: 0;
   white-space: nowrap;
 }
 .card-typo-label {
