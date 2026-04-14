@@ -2907,12 +2907,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   padding-bottom: 16px;
 }
 .idx-overlay-title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-size: 20px;
-  font-weight: 400;
+  font-family: 'Cutive Mono', monospace; /* cohérent avec le trigger "Typologies" */
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--text);
-  letter-spacing: -.01em;
+  letter-spacing: .03em;
+  text-transform: none;
 }
 /* Bouton fermer — identique à .modal-close */
 .idx-close-btn {
