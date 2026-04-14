@@ -100,9 +100,10 @@ body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active {
 body.verbe-active #subcategoryFilterBar { background: transparent; }
 
 /* Pills statuts : styles normaux */
-body.verbe-active .sfb-pill-sm { background: transparent; color: var(--text-2); border-color: var(--border-light); opacity: 1; }
-body.verbe-active .sfb-pill-sm:hover { background: var(--tag-bg); color: var(--text); }
-body.verbe-active .sfb-pill-sm.active { background: var(--page-verbe-text); color: #F5F5F0; border-color: var(--page-verbe-text); }
+body.verbe-active .sfb-pill-sm { background: transparent; color: var(--text-2); opacity: 1; }
+body.verbe-active .sfb-pill-sm:hover { background: none; color: var(--text); }
+body.verbe-active .sfb-pill-sm.active { background: transparent; color: var(--page-verbe-text); font-weight: 700; }
+body.verbe-active .sfb-pill-sm.active::after { background: var(--page-verbe-text); }
 
 /* En mode verbe : masquer Brouillon et Pas à vendre */
 body.verbe-active #statusFilterBar .sfb-pill[data-status="Brouillon"],
