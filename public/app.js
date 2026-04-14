@@ -2557,15 +2557,20 @@ function openDetail(id) {
     ? `<div class="detail-expo-row">${itemExpos.map(e=>`<button class="detail-expo-chip" data-expo-id="${e.id}">${esc(e.title)}</button>`).join('')}</div>`
     : '';
 
+  // Couleur du halo : couleur du verbe ou warm-neutral si non défini
+  const verbeHasHaloColor = c.category && getVerbes().some(v => v.name === c.category && (v.bgColor || v.color));
+  const portraitHaloColor = verbeHasHaloColor ? bgColor : 'rgba(195,185,170,0.8)';
+
   // Fragment modal variant
   if (c.type === 'fragment') {
     const bg  = c.backgroundColor || '#1a1a1a';
     const lum = _luminance(bg);
     const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
     body.innerHTML = `
-      <div class="portrait-split">
-        <div class="portrait-photo-col" style="background:${bg};border-radius:4px;display:flex;align-items:center;justify-content:center;min-height:200px;padding:32px">
-          <p style="font-family:'Spectral',Georgia,serif;font-style:italic;font-size:18px;line-height:1.6;color:${fg};text-align:center">${esc(c.textContent||'')}</p>
+      <div class="portrait-split" style="--portrait-verbe-accent:${portraitHaloColor}">
+        <div class="portrait-halo"></div>
+        <div class="portrait-photo-col" style="display:flex;align-items:center;justify-content:center;min-height:200px;padding:32px">
+          <p style="font-family:'Spectral',Georgia,serif;font-style:italic;font-size:20px;line-height:1.7;color:${lum > 0.35 ? '#1a1816' : '#f5f5f0'};text-align:center;max-width:360px">${esc(c.textContent||'')}</p>
         </div>
         <div class="portrait-info-col">
           ${(verbePill||typoPill) ? `<div class="portrait-pills-row">${verbePill}${typoPill}</div>` : ''}
@@ -2576,7 +2581,8 @@ function openDetail(id) {
       </div>`;
   } else {
     body.innerHTML = `
-      <div class="portrait-split">
+      <div class="portrait-split" style="--portrait-verbe-accent:${portraitHaloColor}">
+        <div class="portrait-halo"></div>
         <div class="portrait-photo-col">
           <div class="portrait-main-wrap">${mainPhotoHTML}</div>
           ${thumbsHTML}
