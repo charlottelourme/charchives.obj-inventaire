@@ -4726,9 +4726,16 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 4px 10px 8px;
+    /* padding hérité de .status-filter-bar mobile */
   }
   #subcategoryFilterBar::-webkit-scrollbar { display: none; }
+  .idx-trigger-hint { font-size: 12px; } /* réduit sur mobile */
+  .status-filter-bar-sm {
+    padding-left: calc(8px + 72px); /* gutter mobile + label-w mobile */
+  }
+  #attrFilterBar {
+    padding-left: calc(8px + 72px);
+  }
 
   /* ══════════════════════════════════════
      FILTRES : FOND OPAQUE + UNITÉ VISUELLE
