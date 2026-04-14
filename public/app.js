@@ -1459,7 +1459,7 @@ function cardHTML(c) {
       const isDetoured = photo && (photo.toLowerCase().endsWith('.png') || photo.includes('detour'));
       return `<div class="card-thumb-area${isDetoured ? ' card-thumb-area--detoured' : ''}">`;
     })()}
-      <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des mis de côté' : 'Mettre de côté'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">+</button>
+      <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">${_asteriskSVG()}</button>
       ${photo
         ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="">`
         : `<div class="card-thumb-placeholder">◻</div>`}
