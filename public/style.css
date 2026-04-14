@@ -5927,11 +5927,14 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 /* Verbe : label coloré — carré, sans arrondi */
 .portrait-verbe-pill {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 11px;
-  font-weight: 400;
-  padding: 3px 8px;
-  border-radius: 0;
-  letter-spacing: .03em;
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 300;
+  padding: 0;
+  border: none;
+  background: transparent !important;
+  color: var(--text-3);
+  letter-spacing: .01em;
 }
 /* Typologie : texte seul, souligné — cohérent avec la charte tags */
 .portrait-typo-pill {
