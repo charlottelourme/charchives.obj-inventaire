@@ -2656,6 +2656,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   font-family: 'Cutive Mono', monospace;
   font-style: normal;
   font-size: 15px;
+  align-self: flex-end;          /* bottom de ce texte = bottom de l'input → ligne continue */
   font-weight: 500;
   color: var(--text);
   letter-spacing: .03em;
