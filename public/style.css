@@ -293,7 +293,7 @@ header h1 {
   flex-shrink: 0;
 }
 
-/* Barre principale — transparente, seul un trait bas */
+/* Barre principale — identique au champ inline "Rechercher" */
 .search-bar {
   display: flex;
   flex-wrap: wrap;
@@ -301,18 +301,18 @@ header h1 {
   gap: 4px;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border);
   border-radius: 0;
-  padding: 3px 0;
+  padding: 5px 4px;
   min-width: 200px;
   max-width: 340px;
   cursor: text;
-  transition: border-bottom-color .18s;
-  min-height: 28px;
+  transition: border-bottom-color .15s;
+  min-height: 0;
   box-shadow: none;
 }
 .search-bar:focus-within {
-  border-bottom-color: var(--text-3);
+  border-bottom-color: var(--text-2);
   outline: none;
   box-shadow: none;
 }
