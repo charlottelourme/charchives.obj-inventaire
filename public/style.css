@@ -2849,6 +2849,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   -ms-overflow-style: none;
 }
 .con-canvas::-webkit-scrollbar { display: none; }
+/* Curseur "main fermée" appliqué via JS pendant le pan actif */
+.con-canvas.is-panning,
+.con-canvas.is-panning svg { cursor: grabbing !important; }
 /* Le SVG remplit le canvas ; overflow:visible indispensable pour que
    le pan puisse sortir des bords sans clipping brutal */
 .con-canvas svg {
