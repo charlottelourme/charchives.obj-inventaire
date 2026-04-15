@@ -5001,15 +5001,15 @@ body.dark-mode #detailModal .modal-body { background: rgba(22, 22, 20, 0.82); }
   padding: 0 8px;
 }
 .bottom-nav .view-tab {
-  font-size: 10px;
-  padding: 0 14px;
-  color: var(--text-3);
+  font-size: 12px;
+  padding: 0 16px;
+  color: var(--text-2);  /* plus contrasté */
   border-bottom: none;
   border-top: 2px solid transparent;
-  letter-spacing: .08em;
+  letter-spacing: .07em;
   height: 100%;
 }
-.bottom-nav .view-tab:hover { color: var(--text-2); background: none; }
+.bottom-nav .view-tab:hover { color: var(--text); background: none; }
 .bottom-nav .view-tab.active {
   color: #000;
   font-weight: 600;
