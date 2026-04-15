@@ -569,9 +569,9 @@ main { padding: 0; }
   box-shadow: none;
 }
 
-/* ── Grid — CSS Grid multi-colonnes ────────────────────────────────────────
-   grid-template-columns piloté par --grid-cols (modifié par le slider JS).
-   CSS Grid garantit N colonnes même avec peu d'objets (contrairement à column-count).
+/* ── Grid — CSS Colonnes (masonry) ─────────────────────────────────────────
+   column-count piloté par --grid-cols (modifié par le slider JS).
+   Le JS bascule sur CSS Grid quand il y a peu d'objets (< nb colonnes).
    ─────────────────────────────────────────────────────────────────────────── */
 
 /* Valeur de base pour la plage desktop intermédiaire (1025-1439px) */
@@ -583,35 +583,58 @@ main { padding: 0; }
   min-width: 0;
 }
 .grid {
-  display: grid !important;
-  grid-template-columns: repeat(var(--grid-cols, 4), 1fr);
-  align-items: start;  /* chaque carte garde sa hauteur naturelle */
-  gap: 72px;
-  padding: 48px 64px calc(80px + env(safe-area-inset-bottom));
-  box-sizing: border-box;
-  width: 100%;
-}
-.grid .card {
   display: block !important;
   width: 100%;
-  margin-bottom: 0;
+  min-width: 0;
+  -webkit-column-count: var(--grid-cols, 4);
+  column-count: var(--grid-cols, 4);
+  -webkit-column-gap: 72px;
+  column-gap: 72px;
+  padding: 48px 64px calc(80px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+/* Quand le JS détecte peu d'objets, il force CSS Grid via inline style */
+.grid.grid-css {
+  display: grid !important;
+  align-items: start;
+  gap: 72px;
+  column-count: unset !important;
+  -webkit-column-count: unset !important;
+}
+.grid .card {
+  display: inline-block !important;
+  width: 100%;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin-bottom: 72px;
   border: none;
   overflow: visible;
+  vertical-align: top;
+}
+/* En mode CSS Grid (peu d'objets) */
+.grid.grid-css .card {
+  display: block !important;
+  margin-bottom: 0;
 }
 
 /* ── Ultra-large (≥ 1440px) — défaut 5 colonnes ── */
 @media (min-width: 1440px) {
   :root { --grid-cols: 5; }
-  .grid { gap: 96px; padding-left: 80px; padding-right: 80px; }
+  .grid { -webkit-column-gap: 96px; column-gap: 96px; padding-left: 80px; padding-right: 80px; }
+  .grid:not(.grid-css) .card { margin-bottom: 96px; }
+  .grid.grid-css { gap: 96px; }
 }
 
 /* ── Laptop (769px – 1024px) — défaut 3 colonnes ── */
 @media (min-width: 769px) and (max-width: 1024px) {
   :root { --grid-cols: 3; }
   .grid {
-    gap: 52px;
+    -webkit-column-gap: 52px;
+    column-gap: 52px;
     padding: 32px 40px calc(80px + env(safe-area-inset-bottom));
   }
+  .grid:not(.grid-css) .card { margin-bottom: 52px; }
+  .grid.grid-css { gap: 52px; }
 }
 
 /* ── Card ── */
