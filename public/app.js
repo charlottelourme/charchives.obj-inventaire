@@ -1450,18 +1450,32 @@ function applyVerbePageTheme() {
   document.documentElement.style.removeProperty('--page-verbe-text');
 }
 
-// ── Applique column-count en inline style sur tous les .grid — contourne la cascade CSS ──
+// ── Applique le bon layout sur chaque .grid selon le nombre d'objets ──
+// Peu d'objets (≤ nbCols) → CSS Grid (colonnes fiables)
+// Beaucoup d'objets → CSS colonnes (effet masonry)
 function _applyGridCols() {
   const slider = document.getElementById('cardSizeSlider');
   if (!slider) return;
   const min   = parseFloat(slider.min)   || 140;
   const max   = parseFloat(slider.max)   || 480;
   const ratio = (parseFloat(slider.value) - min) / (max - min);
-  const cols  = String(Math.max(2, Math.round(6 - ratio * 4)));
-  document.documentElement.style.setProperty('--grid-cols', cols);
+  const cols  = Math.max(2, Math.round(6 - ratio * 4));
+  document.documentElement.style.setProperty('--grid-cols', String(cols));
   document.querySelectorAll('#gridView .grid').forEach(g => {
-    g.style.columnCount = cols;
-    g.style.webkitColumnCount = cols;
+    const cardCount = g.querySelectorAll(':scope > .card').length;
+    if (cardCount > 0 && cardCount <= cols) {
+      // Peu d'objets : CSS Grid pour garantir N colonnes
+      g.classList.add('grid-css');
+      g.style.gridTemplateColumns = `repeat(${cardCount}, 1fr)`;
+      g.style.columnCount = '';
+      g.style.webkitColumnCount = '';
+    } else {
+      // Beaucoup d'objets : CSS colonnes masonry
+      g.classList.remove('grid-css');
+      g.style.gridTemplateColumns = '';
+      g.style.columnCount = String(cols);
+      g.style.webkitColumnCount = String(cols);
+    }
   });
 }
 
