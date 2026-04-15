@@ -121,16 +121,7 @@ body.verbe-active .sfb-pill-sm.active { background: transparent; color: var(--te
 
 /* En mode verbe : tous les statuts restent visibles */
 
-/* Forcer le masonry colonnes dans les vues verbe — défense contre tout override */
-body.verbe-active .grid {
-  -webkit-column-count: var(--grid-cols, 4) !important;
-  column-count: var(--grid-cols, 4) !important;
-  display: block !important;
-}
-body.verbe-active .grid .card {
-  display: inline-block !important;
-  width: 100% !important;
-}
+/* Vues verbe — la grille CSS Grid s'applique identiquement */
 
 /* Filtres attributs */
 body.verbe-active #attrFilterBar { background: transparent; }
