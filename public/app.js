@@ -2058,9 +2058,11 @@ function _drawConGraph(canvas, nodes, links) {
 
   const W = canvas.clientWidth  || 800;
   const H = canvas.clientHeight || 600;
-  const R = 52; // node radius (agrandi)
 
-  // SVG virtuel plus grand que le canvas → scroll possible
+  // ── Taille image : plus petite que la Nuée — moodboard flottant ──
+  const IMG = 72;  // côté de la boîte image en px SVG
+  const HALF = IMG / 2;
+
   const SVG_W = Math.max(W * 1.8, 1400);
   const SVG_H = Math.max(H * 1.8, 1100);
 
@@ -2070,37 +2072,27 @@ function _drawConGraph(canvas, nodes, links) {
     .style('display', 'block')
     .style('opacity', '0')
     .style('transition', 'opacity .42s ease');
-  // Fade-in après le premier rendu navigateur
   requestAnimationFrame(() => requestAnimationFrame(() => svg.style('opacity', '1')));
 
-  // ── Defs: circular clipPaths for photo nodes ──
-  const defs = svg.append('defs');
-  nodes.forEach(n => {
-    defs.append('clipPath')
-      .attr('id', `con-clip-${n.id}`)
-      .append('circle')
-      .attr('r', R);
-  });
-
-  // ── Link color: based on affinity type ──
+  // ── Couleur des liens ──
   function linkColor(d) {
     const src = nodes.find(n => n.id === (d.source.id || d.source));
-    if (!src) return '#888';
-    if (_conAffinityType === 'intention') return getVerbeBgColor(src.category) || '#888';
+    if (!src) return 'var(--text-3)';
+    if (_conAffinityType === 'intention') return getVerbeBgColor(src.category) || 'var(--text-3)';
     return 'var(--text-3)';
   }
 
-  // ── Links group ──
+  // ── Liens ──
   const linksG = svg.append('g').attr('class', 'con-links-group');
   const linkEl = linksG.selectAll('line')
     .data(links)
     .join('line')
     .attr('class', 'con-link')
     .attr('stroke', linkColor)
-    .attr('stroke-width', d => Math.max(1, Math.sqrt(d.strength) * 1.5))
-    .attr('stroke-opacity', 0.18);
+    .attr('stroke-width', d => Math.max(0.5, Math.sqrt(d.strength)))
+    .attr('stroke-opacity', 0.20);
 
-  // ── Nodes group ──
+  // ── Nœuds — images brutes, sans cercles ──
   const nodesG = svg.append('g').attr('class', 'con-nodes-group');
   const nodeEl = nodesG.selectAll('g.con-node')
     .data(nodes)
@@ -2112,72 +2104,55 @@ function _drawConGraph(canvas, nodes, links) {
     const bg  = getVerbeBgColor(d.category) || '#9ca3af';
     const src = d.photos[0] ? photoUrl(d.photos[0]) : null;
 
-    // Background circle — fond neutre pour clipper la photo
-    g.append('circle')
-      .attr('class', 'con-node-bg')
-      .attr('r', R)
-      .attr('fill', 'var(--bg)')
-      .attr('fill-opacity', 1);
-
     if (src) {
-      // Photo node
+      // Image brute — aucun recadrage, aspect ratio préservé
       g.append('image')
+        .attr('class', 'con-node-photo')
         .attr('href', src)
-        .attr('x', -R).attr('y', -R)
-        .attr('width', R * 2).attr('height', R * 2)
-        .attr('clip-path', `url(#con-clip-${d.id})`)
-        .attr('preserveAspectRatio', 'xMidYMid slice');
+        .attr('x', -HALF).attr('y', -HALF)
+        .attr('width', IMG).attr('height', IMG)
+        .attr('preserveAspectRatio', 'xMidYMid meet');
+    } else {
+      // Placeholder : petite croix colorée
+      g.append('rect')
+        .attr('x', -HALF * 0.6).attr('y', -HALF * 0.6)
+        .attr('width', IMG * 0.6).attr('height', IMG * 0.6)
+        .attr('fill', bg).attr('fill-opacity', 0.28)
+        .attr('stroke', bg).attr('stroke-width', 1);
     }
 
-    // Halo flou SVG (remplace le contour stroke) — cercle coloré flou sous la photo
-    g.append('circle')
-      .attr('r', R * 1.18)
-      .attr('fill', bg)
-      .attr('fill-opacity', 0.28)
-      .attr('filter', 'blur(10px)')
-      .attr('stroke', 'none');
-
-    // ── Bouton "mettre de côté" — top-right du cercle ──
+    // Bouton "mettre de côté" — top-right de l'image
     const inPanier = _conPanier.includes(d.id);
     const addG = g.append('g')
       .attr('class', 'con-add-btn')
-      .attr('transform', `translate(${Math.round(R * 0.65)},${Math.round(-R * 0.65)})`)
+      .attr('transform', `translate(${Math.round(HALF * 0.72)},${Math.round(-HALF * 0.72)})`)
       .style('opacity', 0)
       .style('cursor', 'pointer');
-    addG.append('circle')
-      .attr('r', 11)
-      .attr('fill', inPanier ? bg : 'var(--bg)')
-      .attr('stroke', bg)
-      .attr('stroke-width', 1.5);
-    addG.append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dominant-baseline', 'central')
-      .attr('font-size', '13')
-      .attr('font-weight', '600')
-      .attr('fill', inPanier ? 'white' : bg)
-      .text(inPanier ? '✓' : '+');
+    addG.append('circle').attr('r', 9)
+      .attr('fill', inPanier ? bg : 'var(--bg)').attr('stroke', bg).attr('stroke-width', 1.5);
+    addG.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+      .attr('font-size', '11').attr('font-weight', '600')
+      .attr('fill', inPanier ? 'white' : bg).text(inPanier ? '✓' : '+');
     addG.on('click', (event) => {
       event.stopPropagation();
       _toggleConPanier(d.id);
-      // Met à jour le bouton en place sans re-simuler
       const isNow = _conPanier.includes(d.id);
       addG.select('circle').attr('fill', isNow ? bg : 'var(--bg)');
       addG.select('text').attr('fill', isNow ? 'white' : bg).text(isNow ? '✓' : '+');
     });
 
-    // Name label (hidden by default, shown on neighbor hover)
+    // Label — caché par défaut, révélé au survol des voisins
     g.append('text')
       .attr('class', 'con-label')
-      .attr('y', R + 13)
+      .attr('y', HALF + 12)
       .text(d.name.length > 18 ? d.name.slice(0, 16) + '…' : d.name);
   });
 
-  // ── Hover interactions ──
+  // ── Interactions hover ──
   nodeEl
     .on('mouseenter', function(event, d) {
-      // Find connected node IDs
-      const neighbors = new Set();
-      const connLinks = new Set();
+      const neighbors  = new Set();
+      const connLinks  = new Set();
       links.forEach((l, i) => {
         const sid = l.source.id ?? l.source;
         const tid = l.target.id ?? l.target;
@@ -2186,87 +2161,65 @@ function _drawConGraph(canvas, nodes, links) {
           connLinks.add(i);
         }
       });
-
       linksG.classed('con-has-hover', true);
       linkEl
         .classed('con-link-lit', (l, i) => connLinks.has(i))
-        .attr('stroke-opacity', (l, i) => connLinks.has(i) ? 0.72 : 0.04);
-
+        .attr('stroke-opacity', (l, i) => connLinks.has(i) ? 0.75 : 0.04);
       nodesG.classed('con-has-hover', true);
       nodeEl
         .classed('con-node-focus',    nd => nd.id === d.id)
         .classed('con-node-neighbor', nd => neighbors.has(nd.id));
-
-      // ── Halo : drop-shadow reprenant la couleur du verbe ──
+      // Drop-shadow verbe sur le nœud survolé et ses voisins
       const haloColor = getVerbeBgColor(d.category) || '#9ca3af';
       nodeEl.style('filter', function(nd) {
-        if (nd.id === d.id)          return `drop-shadow(0 0 14px ${haloColor})`;
-        if (nd.category === d.category && neighbors.has(nd.id))
-                                      return `drop-shadow(0 0 8px ${haloColor}80)`;
-        if (nd.category === d.category) return `drop-shadow(0 0 5px ${haloColor}44)`;
+        if (nd.id === d.id) return `drop-shadow(0 0 10px ${haloColor})`;
+        if (neighbors.has(nd.id)) return `drop-shadow(0 0 5px ${haloColor}88)`;
         return null;
       });
-
-      // Show neighbor labels + bouton panier du node survolé
       nodeEl.selectAll('text.con-label')
-        .classed('con-label-show', function() {
-          const nd = d3.select(this.parentNode).datum();
-          return neighbors.has(nd.id) || nd.id === d.id;
-        })
         .attr('opacity', function() {
           const nd = d3.select(this.parentNode).datum();
           return (neighbors.has(nd.id) || nd.id === d.id) ? 1 : 0;
         });
-      // Afficher le bouton "+" uniquement sur le nœud survolé
-      nodeEl.selectAll('g.con-add-btn')
-        .style('opacity', function() {
-          const nd = d3.select(this.parentNode).datum();
-          return nd.id === d.id ? 1 : 0;
-        });
+      nodeEl.selectAll('g.con-add-btn').style('opacity', function() {
+        return d3.select(this.parentNode).datum().id === d.id ? 1 : 0;
+      });
     })
     .on('mouseleave', function() {
       linksG.classed('con-has-hover', false);
-      linkEl.classed('con-link-lit', false).attr('stroke-opacity', 0.18);
+      linkEl.classed('con-link-lit', false).attr('stroke-opacity', 0.20);
       nodesG.classed('con-has-hover', false);
       nodeEl.classed('con-node-focus', false).classed('con-node-neighbor', false);
-      nodeEl.style('filter', null);  // retire tous les halos
-      nodeEl.selectAll('text.con-label').classed('con-label-show', false).attr('opacity', 0);
+      nodeEl.style('filter', null);
+      nodeEl.selectAll('text.con-label').attr('opacity', 0);
       nodeEl.selectAll('g.con-add-btn').style('opacity', 0);
     })
     .on('click', (event, d) => openDetail(d.id));
 
-  // ── Drag behaviour ──
+  // ── Drag ──
   const drag = d3.drag()
-    .on('start', (event, d) => {
-      if (!event.active) _conSim.alphaTarget(0.25).restart();
-      d.fx = d.x; d.fy = d.y;
-    })
-    .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
-    .on('end',  (event, d) => {
-      if (!event.active) _conSim.alphaTarget(0);
-      d.fx = null; d.fy = null;
-    });
-
+    .on('start', (event, d) => { if (!event.active) _conSim.alphaTarget(0.25).restart(); d.fx = d.x; d.fy = d.y; })
+    .on('drag',  (event, d) => { d.fx = event.x; d.fy = event.y; })
+    .on('end',   (event, d) => { if (!event.active) _conSim.alphaTarget(0); d.fx = null; d.fy = null; });
   nodeEl.call(drag);
 
-  // ── D3 force simulation — centré sur le SVG virtuel ──
+  // ── Simulation ──
+  const R_collide = HALF + 16;
   _conSim = d3.forceSimulation(nodes)
-    .force('link',    d3.forceLink(links).id(d => d.id).distance(200).strength(0.45))
-    .force('charge',  d3.forceManyBody().strength(-320).distanceMax(500))
+    .force('link',    d3.forceLink(links).id(d => d.id).distance(180).strength(0.45))
+    .force('charge',  d3.forceManyBody().strength(-280).distanceMax(500))
     .force('center',  d3.forceCenter(SVG_W / 2, SVG_H / 2).strength(0.08))
-    .force('collide', d3.forceCollide(R + 14).strength(0.85))
+    .force('collide', d3.forceCollide(R_collide).strength(0.85))
     .alphaDecay(0.022)
     .velocityDecay(0.35)
     .on('tick', () => {
-      // Garde les noeuds dans le SVG virtuel (pas le viewport)
-      const pad = R + 4;
+      const pad = R_collide + 4;
       nodes.forEach(n => {
         n.x = Math.max(pad, Math.min(SVG_W - pad, n.x));
         n.y = Math.max(pad, Math.min(SVG_H - pad, n.y));
       });
-      linkEl
-        .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+      linkEl.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
       nodeEl.attr('transform', d => `translate(${d.x},${d.y})`);
     });
 }
