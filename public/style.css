@@ -5294,8 +5294,8 @@ body.dark-mode {
   --border-light: #222220;
   --border-strong: #555550;
   --text: #F0EDE8;            /* Blanc cassé doux */
-  --text-2: #9A9690;
-  --text-3: #585450;
+  --text-2: #A09890;          /* secondaire lisible */
+  --text-3: #908880;          /* tertiaire — was #585450, trop sombre */
   --tag-bg: #1C1C1A;
   --tag-border: #2E2C28;
   --accent: #F0EDE8;
