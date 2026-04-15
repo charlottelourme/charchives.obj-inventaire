@@ -6803,7 +6803,7 @@ function bindEvents() {
     // Appliquer la valeur initiale
     apply(slider.value);
 
-    slider.addEventListener('input', e => apply(e.target.value));
+    slider.addEventListener('input', e => { apply(e.target.value); _applyGridCols(); });
 
     // Mobile touch fix: stop parent from intercepting horizontal swipe
     slider.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
