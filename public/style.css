@@ -578,59 +578,49 @@ main { padding: 0; }
   box-shadow: none;
 }
 
-/* ── Grid — Masonry CSS Colonnes (Pinterest) ───────────────────────────────
-   column-count piloté par --grid-cols (modifié par le slider JS).
-   Les @media fixent la valeur par défaut par breakpoint.
+/* ── Grid — CSS Grid multi-colonnes ────────────────────────────────────────
+   grid-template-columns piloté par --grid-cols (modifié par le slider JS).
+   CSS Grid garantit N colonnes même avec peu d'objets (contrairement à column-count).
    ─────────────────────────────────────────────────────────────────────────── */
 
-/* Valeur de base pour la plage desktop intermédiaire (1025-1439px)
-   qui n'avait pas de règle CSS -- le JS surpasse ça dès le premier slide. */
+/* Valeur de base pour la plage desktop intermédiaire (1025-1439px) */
 :root { --grid-cols: 4; }
 
 #gridView {
-  display: block;   /* jamais flex/grid — bloc normal */
+  display: block;
   width: 100%;
   min-width: 0;
 }
 .grid {
-  display: block !important; /* prévenir tout override flex/grid parent */
-  width: 100%;
-  min-width: 0;
-  -webkit-column-count: var(--grid-cols, 4); /* Safari */
-  column-count: var(--grid-cols, 4);
-  -webkit-column-gap: 72px;
-  column-gap: 72px;    /* gap = margin-bottom → quadrillage invisible parfait */
+  display: grid !important;
+  grid-template-columns: repeat(var(--grid-cols, 4), 1fr);
+  align-items: start;  /* chaque carte garde sa hauteur naturelle */
+  gap: 72px;
   padding: 48px 64px calc(80px + env(safe-area-inset-bottom));
   box-sizing: border-box;
-}
-/* Carte : inline-block + break-inside indispensables au masonry CSS */
-.grid .card {
-  display: inline-block !important; /* ne jamais laisser rétablir display:block */
   width: 100%;
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid; /* Safari */
-  margin-bottom: 72px; /* = column-gap — symétrie H/V stricte */
+}
+.grid .card {
+  display: block !important;
+  width: 100%;
+  margin-bottom: 0;
   border: none;
-  overflow: visible;    /* halo peut déborder */
-  vertical-align: top;
+  overflow: visible;
 }
 
 /* ── Ultra-large (≥ 1440px) — défaut 5 colonnes ── */
 @media (min-width: 1440px) {
   :root { --grid-cols: 5; }
-  .grid { -webkit-column-gap: 96px; column-gap: 96px; padding-left: 80px; padding-right: 80px; }
-  .grid .card { margin-bottom: 96px; } /* = column-gap */
+  .grid { gap: 96px; padding-left: 80px; padding-right: 80px; }
 }
 
 /* ── Laptop (769px – 1024px) — défaut 3 colonnes ── */
 @media (min-width: 769px) and (max-width: 1024px) {
   :root { --grid-cols: 3; }
   .grid {
-    -webkit-column-gap: 52px;
-    column-gap: 52px;
+    gap: 52px;
     padding: 32px 40px calc(80px + env(safe-area-inset-bottom));
   }
-  .grid .card { margin-bottom: 52px; } /* = column-gap */
 }
 
 /* ── Card ── */
