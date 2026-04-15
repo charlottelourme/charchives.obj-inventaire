@@ -2005,7 +2005,7 @@ function _buildConGraph(items, affinityType) {
         const mA = a.attributes?.matieres || [];
         const mB = b.attributes?.matieres || [];
         strength = mA.filter(m => mB.includes(m)).length;
-      } else { // epoque
+      } else { // identite (ex-époque) — même origine / même période
         const oA = (a.attributes?.origine || [])[0];
         const oB = (b.attributes?.origine || [])[0];
         if (oA && oA === oB) strength = 1;
