@@ -5461,11 +5461,20 @@ body.dark-mode .view-tab.active {
 }
 /* Les autres utilisent currentColor — héritent automatiquement du text-color corrigé */
 
-/* 4. Barre de recherche — transparente (pas de bandeau dans le header) */
+/* 4. Barre de recherche dark — trait bas légèrement plus visible */
 body.dark-mode .search-bar {
-  background: transparent;
-  border-color: var(--border);
+  border-bottom-color: var(--border);
 }
+body.dark-mode .search-bar:focus-within {
+  border-bottom-color: var(--text-3);
+}
+body.dark-mode .search-dropdown {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+}
+body.dark-mode .search-group + .search-group,
+body.dark-mode .search-index-footer { border-color: var(--border); }
 
 /* 5. Halos colorés — légèrement renforcés sur fond noir pour tenir */
 body.dark-mode .portrait-halo {
