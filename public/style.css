@@ -5480,13 +5480,11 @@ body.dark-mode .search-dropdown {
 body.dark-mode .search-group + .search-group,
 body.dark-mode .search-index-footer { border-color: var(--border); }
 
-/* 5. Halos colorés — légèrement renforcés sur fond noir pour tenir */
+/* 5. Halos colorés — renforcés sur fond noir pour tenir */
 body.dark-mode .portrait-halo {
   opacity: 0.78;
 }
-body.dark-mode .card::before {
-  opacity: 0.62;
-}
+/* card::before dark-mode — défini plus haut, pas de doublon */
 
 /* 6. Fond header hover (halo blur) — adapté dark */
 body.dark-mode .view-tab::before {
