@@ -119,9 +119,7 @@ body.verbe-active .sfb-pill-sm { background: transparent; color: var(--text-2); 
 body.verbe-active .sfb-pill-sm:hover { background: none; color: var(--text); }
 body.verbe-active .sfb-pill-sm.active { background: transparent; color: var(--text); font-weight: 700; }
 
-/* En mode verbe : masquer Brouillon et Pas à vendre */
-body.verbe-active #statusFilterBar .sfb-pill[data-status="Brouillon"],
-body.verbe-active #statusFilterBar .sfb-pill[data-status="Pas à vendre"] { display: none; }
+/* En mode verbe : tous les statuts restent visibles */
 
 /* Filtres attributs */
 body.verbe-active #attrFilterBar { background: transparent; }
