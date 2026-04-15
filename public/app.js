@@ -1473,9 +1473,9 @@ function _applyGridCols() {
   document.querySelectorAll('#gridView .grid').forEach(g => {
     const cardCount = g.querySelectorAll(':scope > .card').length;
     if (cardCount > 0 && cardCount <= cols) {
-      // Peu d'objets : CSS Grid pour garantir N colonnes
+      // Peu d'objets : CSS Grid — utilise le nb de colonnes du slider pour que le zoom fonctionne
       g.classList.add('grid-css');
-      g.style.gridTemplateColumns = `repeat(${cardCount}, 1fr)`;
+      g.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
       g.style.columnCount = '';
       g.style.webkitColumnCount = '';
     } else {
