@@ -1572,7 +1572,8 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   color: #000;
   font-weight: 700;
 }
-/* Icône astérisque dans cercle — Sélection pill */
+/* Icône astérisque dans cercle — Sélection pill
+   Design : fond clair, contour gris, astérisque gris */
 .sel-ast-wrap {
   display: inline-flex;
   align-items: center;
@@ -1580,18 +1581,19 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  background: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--text-3);
   flex-shrink: 0;
-  transition: background .2s;
+  transition: background .2s, border-color .2s;
 }
 /* Spécificité renforcée (.ast-icon.sel-ast = 0,3,0) pour l'emporter sur .ast-icon .ast-s (0,2,0) */
 .ast-icon.sel-ast .ast-s {
-  stroke: var(--bg);
+  stroke: var(--text-3);
   stroke-width: 1.4;
   stroke-linecap: round;
 }
-body.dark-mode .sel-ast-wrap { background: #F5F5F0; }
-body.dark-mode .ast-icon.sel-ast .ast-s { stroke: #111; }
+body.dark-mode .sel-ast-wrap { background: transparent; border-color: var(--text-3); }
+body.dark-mode .ast-icon.sel-ast .ast-s { stroke: var(--text-3); }
 
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
 .card-status-badge { display: none; }
