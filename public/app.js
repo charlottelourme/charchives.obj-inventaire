@@ -6720,6 +6720,14 @@ function bindEvents() {
       _syncNoteOptBtns();
     });
   });
+  // Size selector
+  document.querySelectorAll('#noteSizeGroup [data-size]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _noteSelectedSize = btn.dataset.size;
+      _syncNoteOptBtns();
+      _updateNotePreview();
+    });
+  });
   // Aperçu live sur frappe
   document.getElementById('nContent').addEventListener('input', _updateNotePreview);
   document.getElementById('settingsModalClose').addEventListener('click', closeSettingsModal);
