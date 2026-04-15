@@ -1847,6 +1847,7 @@ function openNoteModal(id) {
     _noteSelectedColor   = note.backgroundColor || '#F5E6D3';
     _noteSelectedFont    = note.noteFont  || 'poetic';
     _noteSelectedWidth   = note.noteWidth || 'single';
+    _noteSelectedSize    = note.noteSize  || 'standard';
     deleteBtn.style.display = '';
   } else {
     titleEl.textContent  = 'Nouvelle note';
@@ -1854,6 +1855,7 @@ function openNoteModal(id) {
     _noteSelectedColor   = '#F5E6D3';
     _noteSelectedFont    = 'poetic';
     _noteSelectedWidth   = 'single';
+    _noteSelectedSize    = 'standard';
     deleteBtn.style.display = 'none';
   }
   _renderNoteColorSwatches();
