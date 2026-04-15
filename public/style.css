@@ -2870,9 +2870,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 .gallery-scroll::-webkit-scrollbar { display: none; }
 
-/* ── Masonry colonnes — images à leur taille naturelle, sans recadrage ── */
+/* ── Masonry colonnes — contrôlées par le slider Nuée ── */
 .gallery-grid {
-  columns: 4;
+  columns: var(--gallery-cols, 4);
   column-gap: 20px;
   padding: 28px 32px 120px;
   background: var(--bg);
