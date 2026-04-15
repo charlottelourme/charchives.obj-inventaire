@@ -2436,7 +2436,24 @@ function renderGallery(filtered) {
 
 function _bindGalleryEvents() {
   _galleryItems.forEach(({ el, id }) => {
-    el.addEventListener('click', () => openDetail(id));
+    el.addEventListener('click', (e) => {
+      // Ignorer les clics sur le bouton bookmark (géré séparément)
+      if (e.target.closest('.gallery-bookmark-btn')) return;
+      openDetail(id);
+    });
+    const bmBtn = el.querySelector('.gallery-bookmark-btn');
+    if (bmBtn) {
+      bmBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        await toggleBookmark(id);
+        // Mise à jour visuelle immédiate
+        const col = state.collections.find(c => c.id === id);
+        if (col) {
+          bmBtn.classList.toggle('bookmarked', !!col.bookmarked);
+          bmBtn.title = col.bookmarked ? 'Retirer des favoris' : 'Coup de cœur';
+        }
+      });
+    }
   });
 }
 
