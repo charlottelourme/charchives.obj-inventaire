@@ -70,9 +70,6 @@ body.verbe-active .view-tab.active {
   font-weight: 500;
 }
 /* Dark mode : halo plus sombre pour ressortir sur fond noir */
-body.dark-mode .view-tab::before {
-  background-color: #27272a;   /* zinc-800 */
-}
 body.dark-mode .view-tab:hover { color: #fff; }
 
 /* Toolbar + grid : transparents */
