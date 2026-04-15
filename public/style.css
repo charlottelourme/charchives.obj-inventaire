@@ -1317,18 +1317,13 @@ main { padding: 0; }
   color: #000;
   font-weight: 600;
 }
-/* Point de Galerie — barre typologies */
-.tfb-pill.active::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -4px;
-  transform: translateX(-50%);
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: currentColor;
+.tfb-pill.active {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  text-decoration-color: currentColor;
 }
+.tfb-pill.active::after { display: none; }
 
 /* Dark mode */
 body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
