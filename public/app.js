@@ -2146,16 +2146,16 @@ function _drawConGraph(canvas, nodes, links) {
       .style('opacity', 0)
       .style('cursor', 'pointer');
     addG.append('circle').attr('r', 9)
-      .attr('fill', inPanier ? bg : 'var(--bg)').attr('stroke', bg).attr('stroke-width', 1.5);
+      .attr('fill', inPanier ? bg : '#2d2d2d').attr('stroke', 'none');
     addG.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-      .attr('font-size', '11').attr('font-weight', '600')
-      .attr('fill', inPanier ? 'white' : bg).text(inPanier ? '✓' : '*');
+      .attr('font-size', '12').attr('font-weight', '400')
+      .attr('fill', inPanier ? '#f5f5f0' : '#f5f5f0').text(inPanier ? '✓' : '*');
     addG.on('click', (event) => {
       event.stopPropagation();
       _toggleConPanier(d.id);
       const isNow = _conPanier.includes(d.id);
-      addG.select('circle').attr('fill', isNow ? bg : 'var(--bg)');
-      addG.select('text').attr('fill', isNow ? 'white' : bg).text(isNow ? '✓' : '*');
+      addG.select('circle').attr('fill', isNow ? bg : '#2d2d2d');
+      addG.select('text').attr('fill', '#f5f5f0').text(isNow ? '✓' : '*');
     });
 
     g.append('text')
