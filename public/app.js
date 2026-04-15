@@ -2918,6 +2918,8 @@ function openDetail(id) {
   // Couleur du halo : couleur du verbe ou warm-neutral si non défini
   const verbeHasHaloColor = c.category && getVerbes().some(v => v.name === c.category && (v.bgColor || v.color));
   const portraitHaloColor = verbeHasHaloColor ? bgColor : 'rgba(195,185,170,0.8)';
+  // Propager la couleur au modal pour le box-shadow (bords fondus)
+  document.getElementById('detailModal').style.setProperty('--portrait-verbe-accent', portraitHaloColor);
 
   // Fragment modal variant
   if (c.type === 'fragment') {
