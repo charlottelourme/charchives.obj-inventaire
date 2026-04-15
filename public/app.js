@@ -6946,7 +6946,27 @@ function bindEvents() {
   });
 
   // View tabs
-  document.getElementById('viewInventaire').addEventListener('click', () => setView('grid'));
+  document.getElementById('viewInventaire').addEventListener('click', () => {
+    // Retour à l'état initial : Toutes (intentions) / Tous (objets)
+    state.categoryFilter        = '';
+    state.typoFilter            = '';
+    state.statusFilter          = '';
+    state.bookmarkFilter        = false;
+    state.attrFilters           = { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [], motifs: [], usage: [], role: [] };
+    state.searchQuery           = '';
+    state.activeKeywordFilters  = new Set();
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = '';
+    document.body.classList.remove('verbe-active');
+    document.body.style.removeProperty('--page-verbe-bg');
+    document.body.style.removeProperty('--page-verbe-text');
+    buildCategoryFilterBar();
+    buildTypologyFilterBar();
+    buildIndexTrigger();
+    buildAttrFilterBar();
+    renderSearchActiveTags();
+    setView('grid');
+  });
   document.getElementById('viewDerive').addEventListener('click', () => setView('derive'));
   document.getElementById('viewAtelier').addEventListener('click', () => { _currentTrio = null; setView('trios'); });
   document.getElementById('viewCalendar').addEventListener('click', () => setView('calendar'));
