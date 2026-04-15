@@ -1332,15 +1332,10 @@ main { padding: 0; }
 }
 .sfb-pill:hover { color: var(--text); background: none; }
 .sfb-pill.active {
-  color: #000;
-  font-weight: 700;
-  background: none;
-}
-.sfb-pill.active {
-  text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
-  text-decoration-color: currentColor;
+  color: var(--text);
+  font-weight: 500;
+  background: var(--tag-bg);
+  text-decoration: none;
 }
 .sfb-pill.active::after { display: none; }
 
