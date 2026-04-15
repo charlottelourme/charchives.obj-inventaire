@@ -1076,7 +1076,7 @@ main { padding: 0; }
 /* Drag & drop — états */
 .card-note[draggable="true"] { cursor: grab; }
 .card-note[draggable="true"]:active { cursor: grabbing; }
-.card-note.note-dragging { opacity: .35; pointer-events: none; }
+.card-note.note-dragging { opacity: .35; }
 .card-note.note-drop-before { box-shadow: -4px 0 0 var(--border-strong); }
 .card-note.note-drop-after,
 .card.note-drop-after { box-shadow: 4px 0 0 var(--border-strong); }
