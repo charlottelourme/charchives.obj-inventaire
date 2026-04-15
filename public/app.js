@@ -1982,7 +1982,9 @@ function updateCardThumb(el,id,photos,idx) {
 // ══ CONSTELLATION — Graphe de connexions D3 ══════════════════════════════════
 
 let _conSim         = null;   // d3 simulation instance
-let _conAffinityType = 'intention'; // 'intention' | 'matiere' | 'epoque'
+let _conZoom        = null;   // d3 zoom behavior
+let _conSvgSel      = null;   // d3 selection de l'élément SVG (pour zoom.scaleTo)
+let _conAffinityType = 'intention'; // 'intention' | 'matiere' | 'identite'
 
 // ── Graph data builder ────────────────────────────────────────────────────────
 function _buildConGraph(items, affinityType) {
