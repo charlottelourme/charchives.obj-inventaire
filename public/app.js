@@ -6810,6 +6810,29 @@ function bindEvents() {
     }, { passive: true });
   })();
 
+  // ── Constellation zoom slider ──────────────────────────────────────────────
+  (() => {
+    const slider = document.getElementById('conZoomSlider');
+    if (!slider) return;
+    const applyScale = v => {
+      if (!_conZoom || !_conSvgSel) return;
+      const scale = Math.max(0.08, Math.min(4, parseFloat(v) / 100));
+      _conSvgSel.transition().duration(180).call(_conZoom.scaleTo, scale);
+    };
+    slider.addEventListener('input', e => applyScale(e.target.value));
+    slider.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
+    slider.addEventListener('touchmove', e => {
+      e.stopPropagation();
+      const rect  = slider.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (e.touches[0].clientX - rect.left) / rect.width));
+      const min   = parseFloat(slider.min) || 10;
+      const max   = parseFloat(slider.max) || 200;
+      const val   = Math.round(min + ratio * (max - min));
+      slider.value = val;
+      applyScale(val);
+    }, { passive: true });
+  })();
+
   // Status filter
   document.querySelectorAll('#statusFilterBar .sfb-pill').forEach(pill=>{
     pill.addEventListener('click',()=>{
