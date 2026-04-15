@@ -7892,5 +7892,5 @@ input, select, textarea {
 .con-label { font-size: 10px; letter-spacing: .02em; }
 
 /* ── Dark mode : Cutive Mono s'éclaircit légèrement ── */
-body.dark-mode .card-name { color: var(--text); text-shadow: 0 1px 3px rgba(24,24,24,.9), 0 0 8px rgba(24,24,24,.6); }
+body.dark-mode .card-name { color: var(--text); text-shadow: none; }
 body.dark-mode .portrait-title { color: var(--text); }
