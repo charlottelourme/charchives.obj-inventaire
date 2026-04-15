@@ -997,13 +997,44 @@ main { padding: 0; }
 }
 .card-note:hover .card-note-menu-btn { opacity: 1; }
 .card-note-menu-btn:hover { background: #fff; color: var(--text); }
-/* Drag & drop */
+/* ── Poignée de déplacement (drag handle) ── */
+.card-note-drag-handle {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  opacity: 0;
+  font-size: 16px;
+  color: currentColor;
+  opacity: 0;
+  cursor: grab;
+  transition: opacity .18s;
+  user-select: none;
+  line-height: 1;
+  padding: 1px 4px;
+  background: rgba(255,255,255,.70);
+  border-radius: 3px;
+  backdrop-filter: blur(4px);
+  z-index: 10;
+}
+.card-note:hover .card-note-drag-handle { opacity: 0.7; }
+.card-note-drag-handle:hover { opacity: 1 !important; }
+.card-note-drag-handle:active { cursor: grabbing; }
+
+/* Drag & drop — états */
 .card-note[draggable="true"] { cursor: grab; }
 .card-note[draggable="true"]:active { cursor: grabbing; }
 .card-note.note-dragging { opacity: .35; pointer-events: none; }
 .card-note.note-drop-before { box-shadow: -4px 0 0 var(--border-strong); }
 .card-note.note-drop-after,
 .card.note-drop-after { box-shadow: 4px 0 0 var(--border-strong); }
+
+/* ── Tailles de texte — variantes ── */
+/* Petit */
+.card-note-text.note-size-sm.font-poetic  { font-size: clamp(11px, 1.1vw, 14px); }
+.card-note-text.note-size-sm.font-terrain { font-size: clamp(8px, 0.75vw, 10px); }
+/* Grand */
+.card-note-text.note-size-lg.font-poetic  { font-size: clamp(22px, 3.2vw, 42px); line-height: 1.35; }
+.card-note-text.note-size-lg.font-terrain { font-size: clamp(14px, 1.7vw, 20px); }
 
 /* ── Note Modal — formulaire ── */
 .btn-note {
