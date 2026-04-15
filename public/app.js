@@ -2191,6 +2191,8 @@ function _drawConGraph(canvas, nodes, links) {
       const nowBookmarked = !!d.bookmarked;
       addG.select('circle').attr('stroke', nowBookmarked ? '#18181b' : '#9ca3af');
       addG.select('text').attr('fill', nowBookmarked ? '#18181b' : '#9ca3af');
+      // Maintient l'opacité sur les favoris même hors survol
+      addG.style('opacity', nowBookmarked ? 1 : 0);
     });
 
     g.append('text')
