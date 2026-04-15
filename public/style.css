@@ -2841,13 +2841,22 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* SVG canvas — scrollable pour ne perdre aucune bulle */
 .con-canvas {
   flex: 1;
-  overflow: hidden;   /* D3 zoom gère le pan — plus de scroll natif */
+  overflow: hidden;   /* D3 zoom gère le pan — aucun scroll natif */
   position: relative;
   cursor: grab;
+  /* Cacher les scrollbars de secours sur tous les navigateurs */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.con-canvas:active { cursor: grabbing; }
-/* Le SVG remplit tout le canvas — dimensions gérées par JS */
-.con-canvas svg { display: block; width: 100%; height: 100%; }
+.con-canvas::-webkit-scrollbar { display: none; }
+/* Le SVG remplit le canvas ; overflow:visible indispensable pour que
+   le pan puisse sortir des bords sans clipping brutal */
+.con-canvas svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;  /* ← critique : sans ça le pan "mure" aux bords SVG */
+}
 
 /* ── SVG elements (augmented by D3) ── */
 
