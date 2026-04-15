@@ -7850,8 +7850,7 @@ body {
 
 /* Boutons */
 .btn               { font-size: 12px; letter-spacing: .06em; }
-.btn-export        { font-size: 10px; letter-spacing: .10em; }
-.bottom-nav .view-tab { font-size: 9px; letter-spacing: .10em; }
+/* Pas d'écrasement — tailles définies dans les blocs principaux ci-dessus */
 
 /* Métadonnées carte (verbe + typo) */
 .card-verbe-label  { font-size: 11px; font-style: italic; font-weight: 300; color: var(--text-3); }
