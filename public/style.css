@@ -1615,17 +1615,17 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  background: var(--text);
+  background: #d1d5db;
   flex-shrink: 0;
   transition: background .2s;
 }
 .sel-ast .ast-s {
-  stroke: #fff;
+  stroke: #6b7280;
   stroke-width: 1.4;
   stroke-linecap: round;
 }
-body.dark-mode .sel-ast-wrap { background: #F5F5F0; }
-body.dark-mode .sel-ast .ast-s { stroke: #111; }
+body.dark-mode .sel-ast-wrap { background: #4b5563; }
+body.dark-mode .sel-ast .ast-s { stroke: #d1d5db; }
 
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
 .card-status-badge { display: none; }
