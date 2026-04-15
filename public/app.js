@@ -6665,6 +6665,11 @@ function setupSearch() {
   input.addEventListener('input',()=>{ renderSearchDropdown(); render(); });
   dropdown.addEventListener('mousedown',e=>e.preventDefault());
   document.addEventListener('click',e=>{ if(!wrap.contains(e.target)) close(); });
+  // Lien "Parcourir l'index complet" → ouvre l'Index Overlay
+  document.getElementById('searchIndexLink')?.addEventListener('click', () => {
+    close();
+    openIndexOverlay();
+  });
 }
 
 // ── Events ─────────────────────────────────────────────────────────────────────
