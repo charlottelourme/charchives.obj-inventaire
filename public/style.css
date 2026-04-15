@@ -2827,19 +2827,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* SVG canvas — scrollable pour ne perdre aucune bulle */
 .con-canvas {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;   /* D3 zoom gère le pan — plus de scroll natif */
   position: relative;
   cursor: grab;
-  /* scrollbar discrète */
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
 }
 .con-canvas:active { cursor: grabbing; }
-.con-canvas::-webkit-scrollbar { width: 6px; height: 6px; }
-.con-canvas::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-.con-canvas::-webkit-scrollbar-track { background: transparent; }
-/* Le SVG a ses propres dimensions explicites (définies via JS) */
-.con-canvas svg { display: block; }
+/* Le SVG remplit tout le canvas — dimensions gérées par JS */
+.con-canvas svg { display: block; width: 100%; height: 100%; }
 
 /* ── SVG elements (augmented by D3) ── */
 
