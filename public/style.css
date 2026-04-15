@@ -5073,7 +5073,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     max-width: 100%;
     width: 100%;
     box-shadow: none;
-    background: transparent;
+    background: rgba(250, 249, 246, 0.96);
     display: flex;
     flex-direction: column;
   }
