@@ -5315,11 +5315,14 @@ body.dark-mode header {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
-body.dark-mode #detailModal {
-  background: rgba(10, 9, 8, 0.92) !important;
+/* Dark mode — backdrop sombre léger, fenêtre toujours transparente */
+body.dark-mode #detailModal.modal-overlay {
+  background: rgba(12, 10, 9, 0.45) !important;
 }
-body.dark-mode #detailModal .modal-header {
-  background: rgba(18, 16, 14, 0.82) !important;
+body.dark-mode #detailModal .modal,
+body.dark-mode #detailModal .modal-header,
+body.dark-mode #detailModal .modal-footer {
+  background: transparent !important;
 }
 body.dark-mode .con-panier {
   background: rgba(18, 16, 14, 0.90);
