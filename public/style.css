@@ -5070,11 +5070,11 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
 /* ── Tablette (521-768px) — 3 colonnes fixes ──────────────────── */
 @media (min-width: 521px) and (max-width: 768px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    column-count: 3;
+    column-gap: 16px;
     padding: 16px 20px calc(88px + env(safe-area-inset-bottom));
   }
-  .grid .card { margin-bottom: 0; }
+  .grid .card { margin-bottom: 48px; }
   .grid .card::before { filter: blur(28px); border-radius: 4px; }
   .card-body { padding: 10px 12px 14px; margin-top: -6px; }
   .card-name { font-size: 14px; }
