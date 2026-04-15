@@ -368,17 +368,17 @@ header h1 {
   font-style: normal;
 }
 
-/* ── Dropdown Omnibar ── */
+/* ── Dropdown Omnibar — identique à .idx-inline-drop ── */
 .search-dropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 6px);
   left: 0;
-  min-width: 100%;
-  width: 300px;
-  background: var(--surface);
-  border: 1px solid var(--border-light);
+  min-width: 260px;
+  width: 340px;
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 0;
-  box-shadow: 0 6px 24px rgba(0,0,0,.07);
+  box-shadow: 0 8px 32px rgba(0,0,0,.10);
   z-index: 200;
   max-height: 360px;
   display: none;
@@ -388,60 +388,17 @@ header h1 {
 .search-dd-results {
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: none;
   min-height: 0;
 }
-.search-kw-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 14px;
+.search-dd-results::-webkit-scrollbar { display: none; }
+/* Items — réutilise .idx-dd-item (déjà défini) pour cohérence */
+.search-kw-empty {
+  padding: 12px 16px;
   font-family: 'Cutive Mono', monospace;
   font-size: 11px;
-  cursor: pointer;
-  color: var(--text-2);
-  gap: 8px;
-  transition: color .1s;
-  letter-spacing: .01em;
-}
-.search-kw-item:hover { color: var(--text); background: transparent; }
-.search-kw-item.active { color: var(--text); }
-.search-kw-item.active .search-sug-text {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.search-kw-count {
-  font-family: 'Cutive Mono', monospace;
-  font-size: 10px;
-  color: var(--text-3);
-  flex-shrink: 0;
-}
-.search-group { padding-bottom: 4px; }
-.search-group + .search-group {
-  border-top: 1px solid var(--border-light);
-  padding-top: 4px;
-}
-.search-group-label {
-  font-family: 'Cutive Mono', monospace;
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: .10em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  padding: 8px 14px 3px;
-}
-.search-sug-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.search-sug-text { flex: 1; }
-.search-kw-empty {
-  padding: 16px 14px;
-  font-family: 'Cutive Mono', monospace;
-  font-size: 10px;
   letter-spacing: .05em;
   color: var(--text-3);
-  text-align: center;
 }
 
 /* ── Pied du dropdown — lien vers l'Index complet ── */
