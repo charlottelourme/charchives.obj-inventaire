@@ -1614,7 +1614,7 @@ function cardHTML(c) {
     const sizeCls  = c.noteSize  === 'small'     ? ' note-size-sm'
                    : c.noteSize  === 'large'      ? ' note-size-lg' : '';
     return `<div class="card-note${wideCls}" data-id="${c.id}"
-      style="background:${bg};color:${fg}" draggable="true">
+      style="--note-bg:${bg};color:${fg}" draggable="true">
       <div class="card-note-drag-handle" title="Déplacer">⠿</div>
       <div class="card-note-inner">
         <div class="card-note-text ${fontCls}${sizeCls}">${esc(c.content || '')}</div>
