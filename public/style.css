@@ -3273,14 +3273,19 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   -webkit-backdrop-filter: none;
 }
 
-/* 2. Fenêtre immatérielle — pas de boîte */
+/* 2. Fenêtre — fond lisible + halo rectangulaire à bords fondus (box-shadow verbe) */
 #detailModal .modal {
-  background: transparent;
+  background: rgba(250, 249, 246, 0.94);
   border: none;
-  box-shadow: none;
+  border-radius: 6px;
+  overflow: hidden;
+  /* Halo rectangulaire : la couleur du verbe rayonne en couronne autour du contenu */
+  box-shadow:
+    0 0 60px 24px var(--portrait-verbe-accent, rgba(195, 185, 170, 0.45)),
+    0 0 120px 40px var(--portrait-verbe-accent, rgba(195, 185, 170, 0.20));
 }
 #detailModal .modal-body {
-  overflow: visible;
+  overflow: auto;
 }
 
 /* 3. Header flottant — prev/next + fermeture uniquement */
