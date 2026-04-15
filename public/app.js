@@ -2199,11 +2199,13 @@ function _drawConGraph(canvas, nodes, links) {
     })
     .on('click', (event, d) => openDetail(d.id));
 
-  // ── Drag nœuds (ne pas interférer avec le zoom/pan du canvas) ──
+  // ── Drag nœuds — repositionner sans déclencher le pan ──
   const drag = d3.drag()
-    .filter(event => event.target.closest('.con-node') && !event.ctrlKey && !event.button)
+    // Filtre standard : bouton gauche, pas de Ctrl
+    .filter(event => !event.ctrlKey && !event.button)
     .on('start', (event, d) => {
-      event.sourceEvent.stopPropagation(); // ne pas déclencher le zoom/pan
+      // stopImmediatePropagation empêche d3.zoom de recevoir le même mousedown
+      event.sourceEvent?.stopImmediatePropagation();
       if (!event.active) _conSim.alphaTarget(0.25).restart();
       d.fx = d.x; d.fy = d.y;
     })
@@ -2211,30 +2213,49 @@ function _drawConGraph(canvas, nodes, links) {
     .on('end',   (event, d) => { if (!event.active) _conSim.alphaTarget(0); d.fx = null; d.fy = null; });
   nodeEl.call(drag);
 
-  // ── D3 zoom — pan par glisser, zoom par molette ou slider ──
+  // ── D3 zoom — pan (glisser), zoom (molette / trackpad / slider) ──
   const INITIAL_SCALE = 0.75;
   const zoom = d3.zoom()
     .scaleExtent([0.08, 4])
+    // Filtre : toujours accepter wheel ; pour mousedown, refuser les nœuds
     .filter(event => {
-      // Zoom/pan seulement sur fond SVG — les nœuds gèrent leur propre drag
-      if (event.type === 'mousedown' && event.target.closest('.con-node')) return false;
-      return !event.ctrlKey && !event.button;
+      if (event.type === 'wheel')      return true;
+      if (event.type === 'touchstart') return true;
+      if (event.type === 'mousedown') {
+        if (event.button !== 0)       return false;
+        if (event.target?.closest?.('.con-node')) return false; // nœud → drag
+      }
+      return !event.ctrlKey;
+    })
+    .on('start', (event) => {
+      // Appliquer le curseur "main fermée" seulement pour un pan (pas wheel)
+      if (event.sourceEvent?.type === 'mousedown') {
+        canvas.classList.add('is-panning');
+      }
     })
     .on('zoom', (event) => {
       zoomLayer.attr('transform', event.transform);
-      // Synchroniser le slider
+      // Sync slider ↔ zoom (bidirectionnel)
       const slider = document.getElementById('conZoomSlider');
       if (slider) slider.value = Math.round(event.transform.k * 100);
+    })
+    .on('end', () => {
+      canvas.classList.remove('is-panning');
     });
 
-  svg.call(zoom).on('dblclick.zoom', null);
+  svg.call(zoom)
+     .on('dblclick.zoom', null); // désactiver le double-clic pour zoomer
 
-  // Centrage initial — scale 0.75 autour du centre du canvas
-  const tx = W / 2 * (1 - INITIAL_SCALE);
-  const ty = H / 2 * (1 - INITIAL_SCALE);
-  svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(INITIAL_SCALE));
+  // Centrage initial : scale 0.75 centré sur le milieu du canvas
+  // d3.zoomIdentity.translate(tx, ty).scale(k) satisfait :
+  //   screen_x = tx + k * svg_x  →  pour (W/2, H/2) fixe : tx = W/2*(1-k)
+  const INIT_K = INITIAL_SCALE;
+  svg.call(
+    zoom.transform,
+    d3.zoomIdentity.translate(W / 2 * (1 - INIT_K), H / 2 * (1 - INIT_K)).scale(INIT_K)
+  );
 
-  // Stocker les références pour le slider
+  // Stocker les références pour le slider externe
   _conZoom   = zoom;
   _conSvgSel = svg;
 
