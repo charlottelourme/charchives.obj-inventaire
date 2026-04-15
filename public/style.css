@@ -348,23 +348,24 @@ header h1 {
 }
 .search-filter-tag button:hover { color: var(--text); }
 
-/* Input — Cutive Mono, placeholder uppercase */
+/* Input — aligné sur .idx-inline-input */
 .search-input-inner {
   border: none;
   outline: none;
   background: transparent;
   font-family: 'Cutive Mono', monospace;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--text);
   min-width: 60px;
   flex: 1;
-  padding: 1px 0;
+  padding: 0;
   letter-spacing: .01em;
 }
 .search-input-inner::placeholder {
   color: var(--text-3);
-  font-size: 10px;
-  letter-spacing: .09em;
+  font-size: 15px;
+  letter-spacing: .06em;
+  font-style: normal;
 }
 
 /* ── Dropdown Omnibar ── */
