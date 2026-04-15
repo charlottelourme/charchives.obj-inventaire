@@ -1450,16 +1450,23 @@ function applyVerbePageTheme() {
   document.documentElement.style.removeProperty('--page-verbe-text');
 }
 
-function render() {
-  // Toujours recalculer --grid-cols depuis le slider (pas de guard : la valeur peut être stale)
+// ── Applique column-count en inline style sur tous les .grid — contourne la cascade CSS ──
+function _applyGridCols() {
   const slider = document.getElementById('cardSizeSlider');
-  if (slider) {
-    const min   = parseFloat(slider.min)   || 140;
-    const max   = parseFloat(slider.max)   || 480;
-    const ratio = (parseFloat(slider.value) - min) / (max - min);
-    const cols  = Math.max(1, Math.round(6 - ratio * 4));
-    document.documentElement.style.setProperty('--grid-cols', cols);
-  }
+  if (!slider) return;
+  const min   = parseFloat(slider.min)   || 140;
+  const max   = parseFloat(slider.max)   || 480;
+  const ratio = (parseFloat(slider.value) - min) / (max - min);
+  const cols  = String(Math.max(2, Math.round(6 - ratio * 4)));
+  document.documentElement.style.setProperty('--grid-cols', cols);
+  document.querySelectorAll('#gridView .grid').forEach(g => {
+    g.style.columnCount = cols;
+    g.style.webkitColumnCount = cols;
+  });
+}
+
+function render() {
+  _applyGridCols();
   // Update category filter pills — réinitialise les inline styles sur les pills inactives
   document.querySelectorAll('#categoryFilterBar .sfb-pill').forEach(p => {
     const isActive = p.dataset.cat === state.categoryFilter;
