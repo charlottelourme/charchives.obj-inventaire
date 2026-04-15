@@ -862,7 +862,7 @@ main { padding: 0; }
   line-height: 1.28;
   color: var(--text);
   letter-spacing: -.01em;
-  text-shadow: 0 1px 3px rgba(255,255,255,.9), 0 0 8px rgba(255,255,255,.6);
+  text-shadow: none;
 }
 .card-desc {
   font-family: 'Cormorant Garamond', Georgia, serif;
