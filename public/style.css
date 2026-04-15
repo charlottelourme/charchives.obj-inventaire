@@ -1331,10 +1331,11 @@ main { padding: 0; }
   letter-spacing: .03em;
 }
 .sfb-pill:hover { color: var(--text); background: none; }
+/* Actif : jeu typographique (clair vs foncé) — aucun fond rectangulaire */
 .sfb-pill.active {
   color: var(--text);
   font-weight: 500;
-  background: var(--tag-bg);
+  background: none;
   text-decoration: none;
 }
 .sfb-pill.active::after { display: none; }
