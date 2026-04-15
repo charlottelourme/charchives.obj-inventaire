@@ -2415,14 +2415,15 @@ function renderGallery(filtered) {
     item.dataset.cat = c.category || '';
 
     const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
+    const bookmarkBtn = `<button class="card-bookmark-btn gallery-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}">${_asteriskSVG()}</button>`;
     if (src) {
       // Si c'est un PNG (image détourée), on pose un fond --bg explicite
       const isPng = c.photos[0].toLowerCase().endsWith('.png') || c.photos[0].includes('detour');
       if (isPng) item.classList.add('g-detoured');
-      item.innerHTML = `<img src="${src}" alt="${esc(c.name||'')}" draggable="false">`;
+      item.innerHTML = `${bookmarkBtn}<img src="${src}" alt="${esc(c.name||'')}" draggable="false">`;
     } else {
       const bg = getVerbeBgColor(c.category);
-      item.innerHTML = `<div class="gallery-ph" style="background:${bg}18">◻</div>`;
+      item.innerHTML = `${bookmarkBtn}<div class="gallery-ph" style="background:${bg}18">◻</div>`;
     }
 
     grid.appendChild(item);
