@@ -1584,7 +1584,7 @@ function renderGrid(items) {
       }
     }
     // Intercaler les notes parmi les objets
-    const combined = _intercalateNotes(items);
+    const combined = _intercalateNotes(items, notesVisible);
     el.innerHTML = titleHTML + `<div class="grid">${combined.map(c=>cardHTML(c)).join('')}</div>`;
     // Pills typologies dans le titre — toggle filtre
     el.querySelectorAll('.vpt-pill').forEach(pill => {
