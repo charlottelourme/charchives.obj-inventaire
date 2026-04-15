@@ -2058,48 +2058,49 @@ function renderConstellation(filtered) {
   });
 }
 
-// ── D3 drawing ────────────────────────────────────────────────────────────────
+// ── D3 drawing — zoom/pan natif ───────────────────────────────────────────────
 function _drawConGraph(canvas, nodes, links) {
   if (!window.d3) { canvas.innerHTML = '<div class="con-empty">D3.js non chargé.</div>'; return; }
 
   const W = canvas.clientWidth  || 800;
   const H = canvas.clientHeight || 600;
 
-  // ── Taille image : plus petite que la Nuée — moodboard flottant ──
-  const IMG = 72;  // côté de la boîte image en px SVG
+  // ── Taille image : moodboard flottant ──
+  const IMG  = 72;
   const HALF = IMG / 2;
 
-  const SVG_W = Math.max(W * 1.8, 1400);
-  const SVG_H = Math.max(H * 1.8, 1100);
-
+  // SVG remplit entièrement le canvas — D3 zoom gère le pan et le zoom
   const svg = d3.select(canvas).append('svg')
-    .attr('width', SVG_W)
-    .attr('height', SVG_H)
+    .attr('width',  W)
+    .attr('height', H)
     .style('display', 'block')
     .style('opacity', '0')
     .style('transition', 'opacity .42s ease');
   requestAnimationFrame(() => requestAnimationFrame(() => svg.style('opacity', '1')));
 
+  // Calque transformé par d3.zoom — tout le contenu est ici
+  const zoomLayer = svg.append('g').attr('class', 'con-zoom-layer');
+
   // ── Couleur des liens ──
   function linkColor(d) {
     const src = nodes.find(n => n.id === (d.source.id || d.source));
-    if (!src) return 'var(--text-3)';
-    if (_conAffinityType === 'intention') return getVerbeBgColor(src.category) || 'var(--text-3)';
-    return 'var(--text-3)';
+    if (!src) return '#9ca3af';
+    if (_conAffinityType === 'intention') return getVerbeBgColor(src.category) || '#9ca3af';
+    return '#9ca3af';
   }
 
   // ── Liens ──
-  const linksG = svg.append('g').attr('class', 'con-links-group');
+  const linksG = zoomLayer.append('g').attr('class', 'con-links-group');
   const linkEl = linksG.selectAll('line')
     .data(links)
     .join('line')
     .attr('class', 'con-link')
     .attr('stroke', linkColor)
-    .attr('stroke-width', d => Math.max(0.5, Math.sqrt(d.strength)))
-    .attr('stroke-opacity', 0.20);
+    .attr('stroke-width', d => Math.max(1.5, Math.sqrt(d.strength) * 1.5))
+    .attr('stroke-opacity', 0.38);
 
   // ── Nœuds — images brutes, sans cercles ──
-  const nodesG = svg.append('g').attr('class', 'con-nodes-group');
+  const nodesG = zoomLayer.append('g').attr('class', 'con-nodes-group');
   const nodeEl = nodesG.selectAll('g.con-node')
     .data(nodes)
     .join('g')
@@ -2111,7 +2112,6 @@ function _drawConGraph(canvas, nodes, links) {
     const src = d.photos[0] ? photoUrl(d.photos[0]) : null;
 
     if (src) {
-      // Image brute — aucun recadrage, aspect ratio préservé
       g.append('image')
         .attr('class', 'con-node-photo')
         .attr('href', src)
@@ -2119,7 +2119,6 @@ function _drawConGraph(canvas, nodes, links) {
         .attr('width', IMG).attr('height', IMG)
         .attr('preserveAspectRatio', 'xMidYMid meet');
     } else {
-      // Placeholder : petite croix colorée
       g.append('rect')
         .attr('x', -HALF * 0.6).attr('y', -HALF * 0.6)
         .attr('width', IMG * 0.6).attr('height', IMG * 0.6)
@@ -2127,7 +2126,7 @@ function _drawConGraph(canvas, nodes, links) {
         .attr('stroke', bg).attr('stroke-width', 1);
     }
 
-    // Bouton "mettre de côté" — top-right de l'image
+    // Bouton "mettre de côté"
     const inPanier = _conPanier.includes(d.id);
     const addG = g.append('g')
       .attr('class', 'con-add-btn')
@@ -2147,7 +2146,6 @@ function _drawConGraph(canvas, nodes, links) {
       addG.select('text').attr('fill', isNow ? 'white' : bg).text(isNow ? '✓' : '+');
     });
 
-    // Label — caché par défaut, révélé au survol des voisins
     g.append('text')
       .attr('class', 'con-label')
       .attr('y', HALF + 12)
@@ -2170,12 +2168,11 @@ function _drawConGraph(canvas, nodes, links) {
       linksG.classed('con-has-hover', true);
       linkEl
         .classed('con-link-lit', (l, i) => connLinks.has(i))
-        .attr('stroke-opacity', (l, i) => connLinks.has(i) ? 0.75 : 0.04);
+        .attr('stroke-opacity', (l, i) => connLinks.has(i) ? 0.85 : 0.06);
       nodesG.classed('con-has-hover', true);
       nodeEl
         .classed('con-node-focus',    nd => nd.id === d.id)
         .classed('con-node-neighbor', nd => neighbors.has(nd.id));
-      // Drop-shadow verbe sur le nœud survolé et ses voisins
       const haloColor = getVerbeBgColor(d.category) || '#9ca3af';
       nodeEl.style('filter', function(nd) {
         if (nd.id === d.id) return `drop-shadow(0 0 10px ${haloColor})`;
@@ -2193,7 +2190,7 @@ function _drawConGraph(canvas, nodes, links) {
     })
     .on('mouseleave', function() {
       linksG.classed('con-has-hover', false);
-      linkEl.classed('con-link-lit', false).attr('stroke-opacity', 0.20);
+      linkEl.classed('con-link-lit', false).attr('stroke-opacity', 0.38);
       nodesG.classed('con-has-hover', false);
       nodeEl.classed('con-node-focus', false).classed('con-node-neighbor', false);
       nodeEl.style('filter', null);
@@ -2202,28 +2199,62 @@ function _drawConGraph(canvas, nodes, links) {
     })
     .on('click', (event, d) => openDetail(d.id));
 
-  // ── Drag ──
+  // ── Drag nœuds (ne pas interférer avec le zoom/pan du canvas) ──
   const drag = d3.drag()
-    .on('start', (event, d) => { if (!event.active) _conSim.alphaTarget(0.25).restart(); d.fx = d.x; d.fy = d.y; })
+    .filter(event => event.target.closest('.con-node') && !event.ctrlKey && !event.button)
+    .on('start', (event, d) => {
+      event.sourceEvent.stopPropagation(); // ne pas déclencher le zoom/pan
+      if (!event.active) _conSim.alphaTarget(0.25).restart();
+      d.fx = d.x; d.fy = d.y;
+    })
     .on('drag',  (event, d) => { d.fx = event.x; d.fy = event.y; })
     .on('end',   (event, d) => { if (!event.active) _conSim.alphaTarget(0); d.fx = null; d.fy = null; });
   nodeEl.call(drag);
 
-  // ── Simulation ──
+  // ── D3 zoom — pan par glisser, zoom par molette ou slider ──
+  const INITIAL_SCALE = 0.75;
+  const zoom = d3.zoom()
+    .scaleExtent([0.08, 4])
+    .filter(event => {
+      // Zoom/pan seulement sur fond SVG — les nœuds gèrent leur propre drag
+      if (event.type === 'mousedown' && event.target.closest('.con-node')) return false;
+      return !event.ctrlKey && !event.button;
+    })
+    .on('zoom', (event) => {
+      zoomLayer.attr('transform', event.transform);
+      // Synchroniser le slider
+      const slider = document.getElementById('conZoomSlider');
+      if (slider) slider.value = Math.round(event.transform.k * 100);
+    });
+
+  svg.call(zoom).on('dblclick.zoom', null);
+
+  // Centrage initial — scale 0.75 autour du centre du canvas
+  const tx = W / 2 * (1 - INITIAL_SCALE);
+  const ty = H / 2 * (1 - INITIAL_SCALE);
+  svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(INITIAL_SCALE));
+
+  // Stocker les références pour le slider
+  _conZoom   = zoom;
+  _conSvgSel = svg;
+
+  // ── Simulation — forceCenter sur le milieu du canvas ──
   const R_collide = HALF + 16;
+
+  // Initialiser les positions près du centre pour un rendu immédiat correct
+  nodes.forEach(n => {
+    if (n.x === undefined) n.x = W / 2 + (Math.random() - 0.5) * 200;
+    if (n.y === undefined) n.y = H / 2 + (Math.random() - 0.5) * 200;
+  });
+
   _conSim = d3.forceSimulation(nodes)
     .force('link',    d3.forceLink(links).id(d => d.id).distance(180).strength(0.45))
     .force('charge',  d3.forceManyBody().strength(-280).distanceMax(500))
-    .force('center',  d3.forceCenter(SVG_W / 2, SVG_H / 2).strength(0.08))
+    .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.08))
     .force('collide', d3.forceCollide(R_collide).strength(0.85))
     .alphaDecay(0.022)
     .velocityDecay(0.35)
     .on('tick', () => {
-      const pad = R_collide + 4;
-      nodes.forEach(n => {
-        n.x = Math.max(pad, Math.min(SVG_W - pad, n.x));
-        n.y = Math.max(pad, Math.min(SVG_H - pad, n.y));
-      });
       linkEl.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
             .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
       nodeEl.attr('transform', d => `translate(${d.x},${d.y})`);
