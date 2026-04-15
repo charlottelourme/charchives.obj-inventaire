@@ -2368,7 +2368,8 @@ function renderGallery(filtered) {
       const item = document.createElement('div');
       item.className = 'gallery-item g-note g-sm';
       item.dataset.id  = c.id;
-      item.style.background = bg;
+      item.style.setProperty('--note-bg', bg);
+      item.style.background = 'transparent';
       item.style.color      = fg;
       item.innerHTML = `<div class="gallery-note-text ${fontCls}">${esc(c.content || '')}</div>`;
       grid.appendChild(item);
