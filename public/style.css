@@ -1495,8 +1495,8 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
 /* ── Card status dot — aligné inline à côté du prix ── */
 .card-status-dot {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   border: none;
   box-shadow: 0 1px 2px rgba(45,45,45,.20);
