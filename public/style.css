@@ -1579,7 +1579,8 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   flex-shrink: 0;
   transition: background .2s;
 }
-.sel-ast .ast-s {
+/* Spécificité renforcée (.ast-icon.sel-ast = 0,3,0) pour l'emporter sur .ast-icon .ast-s (0,2,0) */
+.ast-icon.sel-ast .ast-s {
   stroke: var(--bg);
   stroke-width: 1.4;
   stroke-linecap: round;
