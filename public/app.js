@@ -2149,13 +2149,13 @@ function _drawConGraph(canvas, nodes, links) {
       .attr('fill', inPanier ? bg : 'var(--bg)').attr('stroke', bg).attr('stroke-width', 1.5);
     addG.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
       .attr('font-size', '11').attr('font-weight', '600')
-      .attr('fill', inPanier ? 'white' : bg).text(inPanier ? '✓' : '+');
+      .attr('fill', inPanier ? 'white' : bg).text(inPanier ? '✓' : '*');
     addG.on('click', (event) => {
       event.stopPropagation();
       _toggleConPanier(d.id);
       const isNow = _conPanier.includes(d.id);
       addG.select('circle').attr('fill', isNow ? bg : 'var(--bg)');
-      addG.select('text').attr('fill', isNow ? 'white' : bg).text(isNow ? '✓' : '+');
+      addG.select('text').attr('fill', isNow ? 'white' : bg).text(isNow ? '✓' : '*');
     });
 
     g.append('text')
