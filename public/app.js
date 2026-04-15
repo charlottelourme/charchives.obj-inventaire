@@ -1899,6 +1899,9 @@ function _syncNoteOptBtns() {
   document.querySelectorAll('#noteWidthGroup [data-width]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.width === _noteSelectedWidth);
   });
+  document.querySelectorAll('#noteSizeGroup [data-size]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.size === _noteSelectedSize);
+  });
 }
 
 function _updateNotePreview() {
