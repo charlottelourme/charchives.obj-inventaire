@@ -2169,24 +2169,28 @@ function _drawConGraph(canvas, nodes, links) {
         .attr('stroke', bg).attr('stroke-width', 1);
     }
 
-    // Bouton "mettre de côté"
-    const inPanier = _conPanier.includes(d.id);
+    // Bouton "Coup de cœur" — unifié avec la Sélection (favoris bookmarks)
+    // Style : cercle fond clair + contour gris + astérisque gris (identique à .sel-ast-wrap)
+    const isBookmarked = !!d.bookmarked;
     const addG = g.append('g')
       .attr('class', 'con-add-btn')
       .attr('transform', `translate(${Math.round(HALF * 0.72)},${Math.round(-HALF * 0.72)})`)
       .style('opacity', 0)
       .style('cursor', 'pointer');
-    addG.append('circle').attr('r', 9)
-      .attr('fill', inPanier ? bg : '#2d2d2d').attr('stroke', 'none');
+    // r=8.5 → diamètre 17px comme .sel-ast-wrap
+    addG.append('circle').attr('r', 8.5)
+      .attr('fill', '#F5F4F1')
+      .attr('stroke', isBookmarked ? '#18181b' : '#9ca3af')
+      .attr('stroke-width', 1);
     addG.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-      .attr('font-size', '12').attr('font-weight', '400')
-      .attr('fill', inPanier ? '#f5f5f0' : '#f5f5f0').text(inPanier ? '✓' : '*');
-    addG.on('click', (event) => {
+      .attr('font-size', '11').attr('font-weight', '400')
+      .attr('fill', isBookmarked ? '#18181b' : '#9ca3af').text('*');
+    addG.on('click', async (event) => {
       event.stopPropagation();
-      _toggleConPanier(d.id);
-      const isNow = _conPanier.includes(d.id);
-      addG.select('circle').attr('fill', isNow ? bg : '#2d2d2d');
-      addG.select('text').attr('fill', '#f5f5f0').text(isNow ? '✓' : '*');
+      await toggleBookmark(d.id);
+      const nowBookmarked = !!d.bookmarked;
+      addG.select('circle').attr('stroke', nowBookmarked ? '#18181b' : '#9ca3af');
+      addG.select('text').attr('fill', nowBookmarked ? '#18181b' : '#9ca3af');
     });
 
     g.append('text')
