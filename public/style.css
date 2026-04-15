@@ -932,6 +932,21 @@ main { padding: 0; }
 /* ══════════════════════════════════════════════════════════════
    NOTES INTERCALAIRES — Blocs de texte narratifs dans la grille
 ══════════════════════════════════════════════════════════════ */
+/* Note dans le masonry — mêmes règles que .grid .card */
+.grid .card-note {
+  display: inline-block;
+  width: 100%;
+  break-inside: avoid;
+  margin-bottom: 72px; /* = column-gap */
+  vertical-align: top;
+}
+@media (min-width: 1440px) {
+  .grid .card-note { margin-bottom: 96px; }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid .card-note { margin-bottom: 52px; }
+}
+
 .card-note {
   position: relative;
   cursor: pointer;
