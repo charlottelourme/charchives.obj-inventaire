@@ -667,19 +667,9 @@ function buildCategoryFilterBar() {
       state.attrFilters.subcat = [];
       buildIndexTrigger();
       buildAttrFilterBar();
-      // Fil d'Ariane : trouver l'entrée "Inventaire" dans le fil (pas forcément en position 0)
-      const invLabel = VIEW_LABELS['grid'];
-      const invIdx = state.breadcrumb.findIndex(b => b.label === invLabel);
-      if (invIdx >= 0) {
-        // Tronquer jusqu'à l'entrée Inventaire (on repart du contexte Inventaire)
-        state.breadcrumb = state.breadcrumb.slice(0, invIdx + 1);
-      } else {
-        // Aucune entrée Inventaire — l'insérer en premier
-        state.breadcrumb = [{ label: invLabel, backAction: () => setView('grid', true) }];
-      }
+      // Fil d'Ariane : ajouter la catégorie sans effacer l'historique précédent
       if (cat) {
         pushBreadcrumb(cat, () => {
-          // Revenir à Inventaire + restaurer ce verbe depuis n'importe quelle vue
           if (state.view !== 'grid') setView('grid', true);
           state.categoryFilter = cat;
           state.attrFilters.subcat = [];
@@ -689,7 +679,7 @@ function buildCategoryFilterBar() {
           render();
         });
       } else {
-        renderBreadcrumbBar(); // "Toutes" — revenir au niveau Inventaire seul
+        renderBreadcrumbBar();
       }
       render();
     });
