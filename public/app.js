@@ -1741,7 +1741,8 @@ function bindCardEvents(el) {
 // ══════════════════════════════════════════════════════════════
 
 // ── Intercalation des notes dans la liste d'objets ────────────
-function _intercalateNotes(items) {
+function _intercalateNotes(items, includeNotes = true) {
+  if (!includeNotes) return items;
   const notes = state.collections
     .filter(c => c.type === 'note')
     .sort((a, b) => (a.notePos ?? 9999) - (b.notePos ?? 9999));
