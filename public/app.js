@@ -1451,16 +1451,14 @@ function applyVerbePageTheme() {
 }
 
 function render() {
-  // Garantir que --grid-cols est toujours défini (le slider peut ne pas avoir encore tourné)
-  if (!document.documentElement.style.getPropertyValue('--grid-cols')) {
-    const slider = document.getElementById('cardSizeSlider');
-    if (slider) {
-      const min = parseFloat(slider.min) || 140;
-      const max = parseFloat(slider.max) || 480;
-      const ratio = (parseFloat(slider.value) - min) / (max - min);
-      const cols = Math.max(1, Math.round(6 - ratio * 4));
-      document.documentElement.style.setProperty('--grid-cols', cols);
-    }
+  // Toujours recalculer --grid-cols depuis le slider (pas de guard : la valeur peut être stale)
+  const slider = document.getElementById('cardSizeSlider');
+  if (slider) {
+    const min   = parseFloat(slider.min)   || 140;
+    const max   = parseFloat(slider.max)   || 480;
+    const ratio = (parseFloat(slider.value) - min) / (max - min);
+    const cols  = Math.max(1, Math.round(6 - ratio * 4));
+    document.documentElement.style.setProperty('--grid-cols', cols);
   }
   // Update category filter pills — réinitialise les inline styles sur les pills inactives
   document.querySelectorAll('#categoryFilterBar .sfb-pill').forEach(p => {
