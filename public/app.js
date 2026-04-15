@@ -1620,6 +1620,8 @@ function renderGrid(items) {
   }
   bindCardEvents(el);
   _initNoteDragDrop(el, items);
+  // Applique column-count inline après injection du DOM — contourne tout problème de cascade
+  _applyGridCols();
 }
 
 function cardHTML(c) {
