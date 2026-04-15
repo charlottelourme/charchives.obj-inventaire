@@ -1831,6 +1831,7 @@ let _noteEditId        = null;
 let _noteSelectedColor = '#F5E6D3';
 let _noteSelectedFont  = 'poetic';
 let _noteSelectedWidth = 'single';
+let _noteSelectedSize  = 'standard';
 
 function openNoteModal(id) {
   _noteEditId = id || null;
