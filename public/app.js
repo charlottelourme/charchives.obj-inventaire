@@ -1469,7 +1469,7 @@ function render() {
     if (isActive && p.classList.contains('sfb-pill-verbe')) {
       // Actif : Contraste Pur — noir absolu, aucun trait
       p.style.color = '#000';
-      p.style.fontWeight = '700';
+      p.style.fontWeight = '';
       p.style.background = '';
       p.style.borderColor = '';
     } else if (!isActive) {
