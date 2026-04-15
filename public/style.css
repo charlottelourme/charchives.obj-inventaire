@@ -7815,7 +7815,7 @@ body {
 
 /* Header h1 — Cormorant archive */
 header h1 {
-  font-style: italic;
+  font-style: normal;
   font-weight: 300;
   letter-spacing: -.01em;
   font-size: 18px;
