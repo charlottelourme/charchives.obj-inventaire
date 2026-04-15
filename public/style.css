@@ -2793,6 +2793,20 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   border-bottom: 1px solid var(--border-light);
   background: var(--bg);
   flex-shrink: 0;
+  position: relative;  /* ancre pour le zoom slider */
+}
+/* Jauge de zoom — positionnée à droite de la toolbar, identique à la Nuée */
+.con-zoom-wrap {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.con-zoom-wrap .card-size-slider {
+  width: 120px;
 }
 /* Barre de paramètres centrée */
 .con-aff-bar {
