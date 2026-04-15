@@ -280,14 +280,10 @@ header h1 {
 .view-tab::before, .view-tab::after { display: none !important; }
 
 .view-tab:hover { color: #000; }
-/* Soulignement architectural — 1px, décollé du mot */
 .view-tab.active {
   color: #18181b;
   font-weight: 500;
-  text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 6px;
-  text-decoration-color: #18181b;
+  text-decoration: none;
 }
 /* ══ Omnibar — composant de recherche unifié ══════════════════════════════ */
 .search-wrap {
