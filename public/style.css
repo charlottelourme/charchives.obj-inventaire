@@ -7187,6 +7187,15 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   user-select: none;
   opacity: .3;
 }
+.bc-ellipsis {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 9px;
+  color: var(--text-3);
+  opacity: .45;
+  padding: 1px 3px;
+  user-select: none;
+  letter-spacing: .04em;
+}
 
 /* ── Fil d'Ariane dans la fiche détail ── */
 .detail-bc-bar {
