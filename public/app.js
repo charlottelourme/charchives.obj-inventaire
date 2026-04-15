@@ -1777,9 +1777,10 @@ function _initNoteDragDrop(el, items) {
   el.querySelectorAll('.card-note').forEach(noteEl => {
     noteEl.addEventListener('dragstart', e => {
       _dragNoteId = noteEl.dataset.id;
-      noteEl.classList.add('note-dragging');
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('application/x-note-id', _dragNoteId);
+      // Defer class add — adding it synchronously in dragstart cancels the drag in Chrome
+      requestAnimationFrame(() => noteEl.classList.add('note-dragging'));
     });
     noteEl.addEventListener('dragend', () => {
       noteEl.classList.remove('note-dragging');
