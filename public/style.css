@@ -1038,11 +1038,11 @@ main { padding: 0; }
 
 /* ── Note Modal — formulaire ── */
 .btn-note {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Cutive Mono', monospace;
   font-style: normal;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: .05em;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .07em;
   text-transform: uppercase;
   background: transparent;
   color: var(--text);
