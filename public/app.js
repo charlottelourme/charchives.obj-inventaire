@@ -3009,12 +3009,22 @@ function _renderDetailBreadcrumb(body) {
 
   const bar = document.createElement('div');
   bar.className = 'detail-bc-bar';
-  bar.innerHTML = state.breadcrumb.map((item, i) => {
-    const isCurrent = i === state.breadcrumb.length - 1;
+  const crumbs = state.breadcrumb;
+  const total  = crumbs.length;
+  const hasEllipsis = total > BC_MAX_VISIBLE;
+  const offset  = hasEllipsis ? total - BC_MAX_VISIBLE : 0;
+  const visible = crumbs.slice(offset);
+  let html = hasEllipsis
+    ? `<span class="bc-ellipsis">…</span><span class="bc-sep">›</span>`
+    : '';
+  visible.forEach((item, i) => {
+    const realIdx = offset + i;
+    const isCurrent = realIdx === total - 1;
     const cls = 'bc-item' + (isCurrent ? ' bc-current' : '');
-    return (i > 0 ? `<span class="bc-sep">›</span>` : '') +
-      `<span class="${cls}" data-bc-idx="${i}">${esc(item.label)}</span>`;
-  }).join('');
+    if (i > 0) html += `<span class="bc-sep">›</span>`;
+    html += `<span class="${cls}" data-bc-idx="${realIdx}">${esc(item.label)}</span>`;
+  });
+  bar.innerHTML = html;
 
   // Bind clicks: navigate back
   bar.querySelectorAll('.bc-item:not(.bc-current)').forEach(el => {
