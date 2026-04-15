@@ -1521,14 +1521,21 @@ function formatRelativeDate(isoStr) {
 // ── Grid ───────────────────────────────────────────────────────────────────────
 function renderGrid(items) {
   const el = document.getElementById('gridView');
-  const notes = state.collections.filter(c => c.type === 'note');
+
+  // Notes visibles uniquement si aucun filtre actif (vue globale)
+  const notesVisible = !state.categoryFilter
+    && !state.typoFilter
+    && !state.bookmarkFilter;
+  const notes = notesVisible
+    ? state.collections.filter(c => c.type === 'note')
+    : [];
 
   if (!items.length && !notes.length) {
     el.innerHTML='<div class="empty-state grid-empty">Aucun objet.</div>'; return;
   }
 
   if (state.sortBy==='category') {
-    // Tri par catégorie : notes en tête, puis groupes
+    // Tri par catégorie : notes en tête (si visibles), puis groupes
     const groups = new Map();
     getCategoryOrder().forEach(c => groups.set(c,[]));
     groups.set('',[]);
