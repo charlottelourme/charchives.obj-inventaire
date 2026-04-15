@@ -6715,8 +6715,14 @@ function bindEvents() {
     const apply = v => {
       const cols = sliderToColumns(v);
       document.documentElement.style.setProperty('--grid-cols', cols);
-      // Maintenir --card-min pour compatibilité avec d'autres usages éventuels
       document.documentElement.style.setProperty('--card-min', v + 'px');
+      // --card-zoom : lie la taille du bouton * au zoom de la grille
+      // cols 6 (petites cartes) → scale 0.62 | cols 2 (grandes cartes) → scale 1.20
+      const min = parseFloat(slider.min) || 140;
+      const max = parseFloat(slider.max) || 480;
+      const ratio = (parseFloat(v) - min) / (max - min); // 0→1
+      const zoomScale = (0.62 + ratio * 0.58).toFixed(3); // 0.62→1.20
+      document.documentElement.style.setProperty('--card-zoom', zoomScale);
     };
 
     // Appliquer la valeur initiale
