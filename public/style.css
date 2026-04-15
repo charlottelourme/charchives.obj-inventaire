@@ -659,30 +659,29 @@ main { padding: 0; }
 }
 
 /* ── Halo Soft Block ───────────────────────────────────────────────────────
-   Rectangle diffus — couvre image + texte en colonne.
-   Le flou sur un rectangle strict donne des "bords fondus"
-   sans former un cercle lumineux.
+   Bloc de couleur dense aux bords légèrement adoucis.
+   Blur réduit = bords resserrés → forme rectangulaire affirmée.
+   Opacité haute = couleur solide, pas lavée.
    ───────────────────────────────────────────────────────────────────────── */
 .card::before {
   content: '';
   position: absolute;
-  /* Inset dynamique : collé au contenu réel de la carte */
-  top: 0;              /* démarre au bord supérieur de la carte */
-  bottom: -24px;       /* dépasse légèrement la dernière ligne de texte */
-  left: -8%;           /* débordement latéral pour fondre les bords */
-  right: -8%;          /* symétrique — remplace width: 116% */
-  background: var(--verbe-accent, rgba(190,182,170,0.72));
-  filter: blur(42px);  /* flou fort sur rectangle = bords fondus naturels */
-  border-radius: 4px;  /* quasi-nul — on veut un bloc, pas un ovale */
+  top: 0;
+  bottom: -20px;
+  left: -6%;
+  right: -6%;
+  background: var(--verbe-accent, rgba(190,182,170,0.88));
+  filter: blur(18px);  /* réduit de moitié — bords resserrés, bloc net */
+  border-radius: 3px;
   z-index: -1;
-  opacity: 0.50;
+  opacity: 0.88;       /* dense — bloc de couleur affirmé */
   pointer-events: none;
-  transition: opacity .42s ease;
+  transition: opacity .38s ease;
 }
 
 @media (hover: hover) {
   .card:hover::before {
-    opacity: 0.72;     /* +2% vs l'ancien 0.70 */
+    opacity: 1;
   }
 }
 
