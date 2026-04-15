@@ -6265,10 +6265,36 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 /* ══════════════════════════════════════════════════════════════
    PORTRAIT D'OBJET — Vue détail éditoriale (split-screen)
 ══════════════════════════════════════════════════════════════ */
+/* Portrait modal — halo mou, bords fondus (Soft Block) */
 #detailModal .modal {
   max-width: 1040px;
   width: 95vw;
   max-height: 92vh;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+  isolation: isolate;
+  position: relative;
+}
+/* Couche de fond floue — déborde hors du modal pour fondre les bords */
+#detailModal .modal::before {
+  content: '';
+  position: absolute;
+  inset: -8% -6%;
+  background: var(--surface);
+  filter: blur(52px);
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 4px;
+}
+/* Zones de contenu — fond solide pour lisibilité (header sticky, footer) */
+#detailModal .modal-header,
+#detailModal .modal-body,
+#detailModal .modal-footer {
+  background: var(--surface);
+  position: relative;
+  z-index: 1;
 }
 #detailModal .modal-body {
   padding: 0;
