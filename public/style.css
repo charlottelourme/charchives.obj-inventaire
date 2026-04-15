@@ -5618,44 +5618,7 @@ body.dark-mode .view-tab::before {
 }
 
 /* ── Export footer statique (bas de grille) ── */
-.grid-export-footer {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  padding: 20px 20px 28px;
-  border-top: 1px solid var(--border-light);
-  margin-top: 20px;
-}
-.gef-label {
-  font-family: 'Cutive Mono', monospace;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  margin-right: 12px;
-}
-.gef-btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 14px;
-  height: 32px;
-  background: none;
-  border: 1px solid var(--border);
-  border-right: none;
-  font-family: 'Cutive Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .04em;
-  color: var(--text-2);
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background .12s, color .12s;
-}
-.gef-btn:first-of-type { border-radius: 2px 0 0 2px; }
-.gef-btn:last-child { border-right: 1px solid var(--border); border-radius: 0 2px 2px 0; }
-.gef-btn:hover { background: var(--tag-bg); color: var(--text); }
+/* .grid-export-footer supprimé — exports centralisés dans .bottom-nav */
 
 main { padding-bottom: 44px; }
 
