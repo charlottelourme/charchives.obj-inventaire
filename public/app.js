@@ -814,9 +814,15 @@ function buildIndexTrigger() {
       const matches = q
         ? all.filter(m => m.name.toLowerCase().includes(q))
         : all;
+      const footerHTML = `<div class="search-index-footer">
+        <button class="search-index-link idx-dd-footer-btn">+ Parcourir les typologies</button>
+      </div>`;
       if (!matches.length) {
-        drop.innerHTML = '<div class="idx-dd-empty">Aucune typologie</div>';
+        drop.innerHTML = '<div class="idx-dd-empty">Aucune typologie</div>' + footerHTML;
         drop.style.display = 'block';
+        drop.querySelector('.idx-dd-footer-btn')?.addEventListener('mousedown', e => {
+          e.preventDefault(); drop.style.display = 'none'; openIndexOverlay();
+        });
         return;
       }
       drop.innerHTML = matches.slice(0, 12).map(m =>
@@ -824,7 +830,7 @@ function buildIndexTrigger() {
           <span class="idx-dd-name">${esc(m.name)}</span>
           <em class="idx-dd-verbe">${esc(m.verbeName)}</em>
         </button>`
-      ).join('');
+      ).join('') + footerHTML;
       drop.style.display = 'block';
       drop.querySelectorAll('.idx-dd-item').forEach(btn => {
         btn.addEventListener('mousedown', e => {
@@ -840,6 +846,9 @@ function buildIndexTrigger() {
           buildIndexTrigger();
           render();
         });
+      });
+      drop.querySelector('.idx-dd-footer-btn')?.addEventListener('mousedown', e => {
+        e.preventDefault(); drop.style.display = 'none'; openIndexOverlay();
       });
     };
 
