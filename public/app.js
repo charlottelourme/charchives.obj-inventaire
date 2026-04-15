@@ -1913,7 +1913,8 @@ function _updateNotePreview() {
   const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
   preview.style.background = bg;
   preview.style.color      = fg;
-  textEl.className = 'note-preview-text ' + (_noteSelectedFont === 'terrain' ? 'font-terrain' : 'font-poetic');
+  const sizeCls = _noteSelectedSize === 'small' ? ' note-size-sm' : _noteSelectedSize === 'large' ? ' note-size-lg' : '';
+  textEl.className = 'note-preview-text ' + (_noteSelectedFont === 'terrain' ? 'font-terrain' : 'font-poetic') + sizeCls;
   const content = document.getElementById('nContent')?.value || '';
   textEl.textContent = content || '—';
 }
