@@ -612,7 +612,13 @@ main { padding: 0; }
    column-count piloté par --grid-cols (modifié par le slider JS).
    Les @media fixent la valeur par défaut par breakpoint.
    ─────────────────────────────────────────────────────────────────────────── */
+
+/* Valeur de base pour la plage desktop intermédiaire (1025-1439px)
+   qui n'avait pas de règle CSS -- le JS surpasse ça dès le premier slide. */
+:root { --grid-cols: 4; }
+
 #gridView {
+  display: block;   /* jamais flex/grid — bloc normal */
   width: 100%;
   min-width: 0;
 }
