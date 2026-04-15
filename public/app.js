@@ -2232,7 +2232,9 @@ function _drawConGraph(canvas, nodes, links) {
           return (neighbors.has(nd.id) || nd.id === d.id) ? 1 : 0;
         });
       nodeEl.selectAll('g.con-add-btn').style('opacity', function() {
-        return d3.select(this.parentNode).datum().id === d.id ? 1 : 0;
+        const nd = d3.select(this.parentNode).datum();
+        // Visible au survol du nœud OU si l'objet est favori (reste fixe)
+        return (nd.id === d.id || nd.bookmarked) ? 1 : 0;
       });
     })
     .on('mouseleave', function() {
@@ -2242,7 +2244,11 @@ function _drawConGraph(canvas, nodes, links) {
       nodeEl.classed('con-node-focus', false).classed('con-node-neighbor', false);
       nodeEl.style('filter', null);
       nodeEl.selectAll('text.con-label').attr('opacity', 0);
-      nodeEl.selectAll('g.con-add-btn').style('opacity', 0);
+      // Les favoris gardent leur bouton visible ; les autres le cachent
+      nodeEl.selectAll('g.con-add-btn').style('opacity', function() {
+        const nd = d3.select(this.parentNode).datum();
+        return nd.bookmarked ? 1 : 0;
+      });
     })
     .on('click', (event, d) => openDetail(d.id));
 
