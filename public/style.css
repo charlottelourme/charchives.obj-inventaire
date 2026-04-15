@@ -3256,14 +3256,41 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   font-size: 13px;
 }
 
-/* ── Fiche Produit — StandardModal : fenêtre nette + halo intérieur ──
-   Le .modal-overlay fournit le backdrop flouté (défini en haut).
-   Le .modal fournit la boîte nette (border + box-shadow).
-   Le .portrait-halo à l'intérieur crée le soft block coloré.
-   Contraste : bord strict de la fenêtre ↔ nuage doux du halo interne.
-   ──────────────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   FICHE PRODUIT — Overlay éditorial immatériel
+   ─ Backdrop voile léger · modal transparent · seul le halo interne donne corps
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Backdrop : voile très léger, inventaire visible et net derrière */
+#detailModal.modal-overlay {
+  background: rgba(250, 250, 248, 0.62);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* 2. Fenêtre immatérielle — pas de boîte */
+#detailModal .modal {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+#detailModal .modal-body {
+  overflow: visible;
+}
+
+/* 3. Header flottant — prev/next + fermeture uniquement */
 #detailModal .modal-header {
-  border-bottom: 1px solid var(--border);
+  background: transparent;
+  border-bottom: none;
+}
+#detailModal #detailTitle    { display: none; }
+#detailModal .detail-nav-pos { display: none; }
+
+/* 4. Footer sans bandeau */
+#detailModal .modal-footer {
+  background: transparent;
+  border-top: none;
+  padding: 8px 20px 20px;
 }
 
 /* ── Responsive ── */
