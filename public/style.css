@@ -130,13 +130,11 @@ body.verbe-active .mf-btn:hover { background: var(--border-light); color: var(--
 body.verbe-active .mf-btn.mf-active { background: transparent; color: #000; font-weight: 700; }
 body.verbe-active .clear-attr-btn { color: var(--text-3); opacity: 1; }
 
-/* Barre de recherche */
+/* Barre de recherche — toujours transparente, trait bas seul */
 body.verbe-active .search-bar {
-  background: rgba(255,255,255,.7);
-  border-color: var(--border-light);
-  color: var(--text);
+  background: transparent;
+  border-bottom-color: var(--border-light);
 }
-body.verbe-active .search-bar::placeholder { color: var(--text-3); opacity: 1; }
 
 /* ── Titre verbe inline (remplace le bandeau) ── */
 .verbe-page-title {
