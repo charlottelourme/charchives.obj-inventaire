@@ -1268,11 +1268,14 @@ function _applyDeriveMode(mode, skipRender = false) {
   const reseau = document.getElementById('deriveReseauPane');
   if (nuee)   nuee.classList.toggle('derive-pane-hidden',   mode !== 'nuee');
   if (reseau) reseau.classList.toggle('derive-pane-hidden', mode !== 'reseau');
-  // Shuffle + zoom slider: visibles uniquement en Nuée
+  // Shuffle + zoom slider Nuée: visibles uniquement en Nuée
   const shuffleBtn = document.getElementById('deriveShuffleBtn');
   if (shuffleBtn) shuffleBtn.classList.toggle('hidden', mode !== 'nuee');
   const zoomWrap = document.getElementById('nueeZoomWrap');
   if (zoomWrap) zoomWrap.style.display = mode === 'nuee' ? '' : 'none';
+  // Zoom slider Constellation: visible uniquement en réseau
+  const conZoomWrap = document.getElementById('conZoomWrap');
+  if (conZoomWrap) conZoomWrap.style.display = mode === 'reseau' ? '' : 'none';
   // Active button
   document.querySelectorAll('.derive-seg-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.mode === mode));
