@@ -2909,11 +2909,7 @@ function openDetail(id) {
     c.artiste    ? `<span class="portrait-meta-tag">Création${c.artisteName?' · '+esc(c.artisteName):''}</span>` : ''
   ].filter(Boolean).join('');
 
-  // ── "Apparaît dans" expositions ──
-  const itemExpos = (c.expositions||[]).map(eid => state.expositions.find(e=>e.id===eid)).filter(Boolean);
-  const expoChipsHTML = itemExpos.length
-    ? `<div class="detail-expo-row">${itemExpos.map(e=>`<button class="detail-expo-chip" data-expo-id="${e.id}">${esc(e.title)}</button>`).join('')}</div>`
-    : '';
+  const expoChipsHTML = ''; // section Expositions supprimée
 
   // Couleur du halo : couleur du verbe ou warm-neutral si non défini
   const verbeHasHaloColor = c.category && getVerbes().some(v => v.name === c.category && (v.bgColor || v.color));
