@@ -2856,6 +2856,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   fill: none;
   stroke-linecap: round;
   transition: stroke-opacity .22s ease;
+  stroke: #9ca3af;          /* gris zinc-400 — plus lisible sur fond clair */
+  stroke-width: 1.5;
 }
 /* Hover states via parent class on <g.con-links-group> */
 .con-links-group.con-has-hover .con-link { stroke-opacity: .04 !important; }
