@@ -6077,16 +6077,16 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
    Nuage coloré massif derrière toute la fiche.
    Injecté dynamiquement via --portrait-verbe-accent depuis JS.
    ───────────────────────────────────────────────────────────────────────── */
+/* 5. Halo — Soft Block rectangulaire, bords fondus */
 .portrait-halo {
   position: absolute;
-  inset: -8%;
+  inset: -5%;
   background: var(--portrait-verbe-accent, rgba(192,182,168,0.65));
-  filter: blur(80px);
-  border-radius: 46% 54% 50% 48% / 48% 46% 54% 50%;
+  filter: blur(48px);
+  border-radius: 8px;
   z-index: -1;
-  opacity: 0.45;
+  opacity: 0.72;
   pointer-events: none;
-  transform: scale(0.84) translateY(4%);
   transition: opacity .5s ease;
 }
 @media (max-width: 700px) {
