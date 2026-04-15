@@ -281,25 +281,8 @@ header h1 {
 }
 
 /* ── Halo de Navigation — nuage flouté : survol uniquement ── */
-.view-tab::before {
-  content: '';
-  position: absolute;
-  top: -4px; bottom: -4px;
-  left: -12px; right: -12px;
-  background-color: #e4e4e7;   /* zinc-200 — gris nuageux Light Mode */
-  filter: blur(12px);
-  border-radius: 8px;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity .4s ease;
-  pointer-events: none;
-}
-/* Halo : hover seulement */
-.view-tab:hover::before { opacity: 1; }
-/* Halo masqué sur .active — le soulignement prend le relais */
-.view-tab.active::before { opacity: 0 !important; }
-/* Pas de ::after résiduel */
-.view-tab::after, .view-tab.active::after { display: none !important; }
+/* Pas de halo au hover — soulignement seul indique l'état actif */
+.view-tab::before, .view-tab::after { display: none !important; }
 
 .view-tab:hover { color: #000; }
 /* Soulignement architectural — 1px, décollé du mot */
