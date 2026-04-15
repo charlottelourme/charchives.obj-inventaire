@@ -5051,7 +5051,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
   }
 
-  /* Detail modal — plein écran complet */
+  /* Detail modal — plein écran complet, toujours transparent */
   #detailModal.modal-overlay {
     padding: 0;
     align-items: stretch;
@@ -5063,6 +5063,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     max-width: 100%;
     width: 100%;
     box-shadow: none;
+    background: transparent;
     display: flex;
     flex-direction: column;
   }
@@ -5071,7 +5072,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  #detailModal .modal-header { padding: 14px 16px 0; flex-shrink: 0; }
+  #detailModal .modal-header { padding: 14px 16px 0; flex-shrink: 0; background: transparent; }
 
   /* Autres modales (paramètres, etc.) */
   .modal-overlay { padding: 0; align-items: flex-end; }
