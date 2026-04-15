@@ -4953,20 +4953,31 @@ body.dark-mode #detailModal .modal-body { background: rgba(22, 22, 20, 0.82); }
   display: flex;
   align-items: center;
   gap: 0;
-  padding: 0 8px;
+  padding: 0 4px 0 12px;
+}
+.bottom-nav-export-label {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .10em;
+  color: var(--text-3);
+  padding-right: 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
 }
 .btn-export {
   display: inline-flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 10px;
   height: 100%;
   background: none;
   border: none;
   font-family: 'Cutive Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: .04em;
-  color: var(--text-3);
+  letter-spacing: .06em;
+  color: var(--text-2);  /* plus contrasté que text-3 */
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
