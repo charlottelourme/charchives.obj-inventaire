@@ -2973,20 +2973,6 @@ function openDetail(id) {
     });
   });
 
-  // Exposition chips → filter grid by expo
-  body.querySelectorAll('.detail-expo-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      closeDetail();
-      pushBreadcrumb(btn.textContent, () => {
-        state.activeExpoFilter = null;
-        renderBreadcrumbBar();
-        render();
-      });
-      state.activeExpoFilter = btn.dataset.expoId;
-      render();
-    });
-  });
-
   // Breadcrumb: push item name
   pushBreadcrumb(c.name || 'Détail', () => {
     closeDetail();
