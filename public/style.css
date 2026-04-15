@@ -366,7 +366,6 @@ header h1 {
 .search-input-inner::placeholder {
   color: var(--text-3);
   font-size: 15px;
-  letter-spacing: .06em;
   font-style: normal;
 }
 
