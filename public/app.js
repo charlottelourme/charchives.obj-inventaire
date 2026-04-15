@@ -1922,6 +1922,7 @@ async function saveNote() {
     backgroundColor: _noteSelectedColor,
     noteFont:  _noteSelectedFont,
     noteWidth: _noteSelectedWidth,
+    noteSize:  _noteSelectedSize,
   };
 
   try {
