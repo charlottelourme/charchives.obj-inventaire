@@ -1579,6 +1579,7 @@ function renderGrid(items) {
       </div>`;
     });
     el.innerHTML=html;
+    _applyGridCols();
   } else {
     // Titre verbe — nom en grand + pills typologies interactives en dessous
     let titleHTML = '';
