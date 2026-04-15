@@ -1586,7 +1586,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   stroke-linecap: round;
 }
 body.dark-mode .sel-ast-wrap { background: #F5F5F0; }
-body.dark-mode .sel-ast .ast-s { stroke: #111; }
+body.dark-mode .ast-icon.sel-ast .ast-s { stroke: #111; }
 
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
 .card-status-badge { display: none; }
