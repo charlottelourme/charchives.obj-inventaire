@@ -649,7 +649,7 @@ main { padding: 0; }
 /* ── Ultra-large (≥ 1440px) — défaut 5 colonnes ── */
 @media (min-width: 1440px) {
   :root { --grid-cols: 5; }
-  .grid { column-gap: 96px; padding-left: 80px; padding-right: 80px; }
+  .grid { -webkit-column-gap: 96px; column-gap: 96px; padding-left: 80px; padding-right: 80px; }
   .grid .card { margin-bottom: 96px; } /* = column-gap */
 }
 
@@ -657,6 +657,7 @@ main { padding: 0; }
 @media (min-width: 769px) and (max-width: 1024px) {
   :root { --grid-cols: 3; }
   .grid {
+    -webkit-column-gap: 52px;
     column-gap: 52px;
     padding: 32px 40px calc(80px + env(safe-area-inset-bottom));
   }
