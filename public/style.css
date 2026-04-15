@@ -5370,6 +5370,46 @@ body.dark-mode .card-size-slider { background: #686868; }
 body.dark-mode .card-size-slider::-webkit-slider-thumb { background: #E8E6E2; }
 body.dark-mode .card-size-slider::-moz-range-thumb { background: #E8E6E2; }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   DARK MODE — Corrections de lisibilité (textes actifs + hover + underline)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Textes actifs manquants : tfb / sfb-typo / subcategoryBar */
+body.dark-mode .tfb-all.active,
+body.dark-mode .tfb-pill.active,
+body.dark-mode .sfb-pill-typo.active,
+body.dark-mode #subcategoryFilterBar .sfb-pill:not(.sfb-pill-typo).active,
+body.dark-mode .sfb-pill-selection.active { color: #F5F5F0; }
+
+/* 2. Hover states avec color: #000 hardcodé */
+body.dark-mode .tfb-all:hover,
+body.dark-mode .tfb-pill:hover { color: #F0EDE8; }
+
+/* 3. Soulignement architectural — trait clair sur fond noir */
+body.dark-mode .view-tab.active {
+  text-decoration-color: #F5F5F0;
+}
+/* Les autres utilisent currentColor — héritent automatiquement du text-color corrigé */
+
+/* 4. Barre de recherche — transparente (pas de bandeau dans le header) */
+body.dark-mode .search-bar {
+  background: transparent;
+  border-color: var(--border);
+}
+
+/* 5. Halos colorés — légèrement renforcés sur fond noir pour tenir */
+body.dark-mode .portrait-halo {
+  opacity: 0.78;
+}
+body.dark-mode .card::before {
+  opacity: 0.62;
+}
+
+/* 6. Fond header hover (halo blur) — adapté dark */
+body.dark-mode .view-tab::before {
+  background-color: rgba(255,255,255,.06);
+}
+
 /* ── Export footer statique (bas de grille) ── */
 .grid-export-footer {
   display: flex;
