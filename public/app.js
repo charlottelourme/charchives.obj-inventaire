@@ -1268,9 +1268,11 @@ function _applyDeriveMode(mode, skipRender = false) {
   const reseau = document.getElementById('deriveReseauPane');
   if (nuee)   nuee.classList.toggle('derive-pane-hidden',   mode !== 'nuee');
   if (reseau) reseau.classList.toggle('derive-pane-hidden', mode !== 'reseau');
-  // Shuffle button only visible in Nuée mode
+  // Shuffle + zoom slider: visibles uniquement en Nuée
   const shuffleBtn = document.getElementById('deriveShuffleBtn');
   if (shuffleBtn) shuffleBtn.classList.toggle('hidden', mode !== 'nuee');
+  const zoomWrap = document.getElementById('nueeZoomWrap');
+  if (zoomWrap) zoomWrap.style.display = mode === 'nuee' ? '' : 'none';
   // Active button
   document.querySelectorAll('.derive-seg-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.mode === mode));
