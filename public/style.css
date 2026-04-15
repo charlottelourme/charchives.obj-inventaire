@@ -2813,18 +2813,30 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .con-links-group.con-has-hover .con-link { stroke-opacity: .04 !important; }
 .con-links-group.con-has-hover .con-link.con-link-lit { stroke-opacity: .7 !important; }
 
-/* Nodes — monochrome */
+/* Nœuds — images brutes, sans bulles */
 .con-node {
   cursor: pointer;
   transition: opacity .22s ease, filter .22s ease;
-  filter: none; /* couleurs conservées en mode clair */
+  filter: none;
 }
-.con-node circle.con-node-bg {
-  transition: opacity .22s ease;
+/* Image brute SVG — aucun recadrage, aspect ratio naturel */
+.con-node-photo {
+  pointer-events: none;
+  user-select: none;
 }
 .con-nodes-group.con-has-hover .con-node { opacity: .22; }
 .con-nodes-group.con-has-hover .con-node.con-node-focus { opacity: 1 !important; }
 .con-nodes-group.con-has-hover .con-node.con-node-neighbor { opacity: .85 !important; }
+
+/* ── Zoom slider Nuée ── */
+.nuee-zoom-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.nuee-zoom-wrap .card-size-slider {
+  width: 120px;
+}
 
 /* Name labels */
 .con-label {
