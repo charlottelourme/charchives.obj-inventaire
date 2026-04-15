@@ -6738,6 +6738,35 @@ function bindEvents() {
     }, { passive: true });
   })();
 
+  // ── Nuée zoom slider (Dérive) ──────────────────────────────────────────────
+  (() => {
+    const slider = document.getElementById('nueeZoomSlider');
+    if (!slider) return;
+    const sliderToCols = v => {
+      const min = parseFloat(slider.min) || 80;
+      const max = parseFloat(slider.max) || 480;
+      const ratio = (parseFloat(v) - min) / (max - min);
+      return Math.max(1, Math.round(7 - ratio * 5));
+    };
+    const apply = v => {
+      const grid = document.getElementById('galleryGrid');
+      if (grid) grid.style.setProperty('--gallery-cols', sliderToCols(v));
+    };
+    apply(slider.value);
+    slider.addEventListener('input', e => apply(e.target.value));
+    slider.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
+    slider.addEventListener('touchmove', e => {
+      e.stopPropagation();
+      const rect  = slider.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (e.touches[0].clientX - rect.left) / rect.width));
+      const min   = parseFloat(slider.min) || 80;
+      const max   = parseFloat(slider.max) || 480;
+      const val   = Math.round(min + ratio * (max - min));
+      slider.value = val;
+      apply(val);
+    }, { passive: true });
+  })();
+
   // Status filter
   document.querySelectorAll('#statusFilterBar .sfb-pill').forEach(pill=>{
     pill.addEventListener('click',()=>{
