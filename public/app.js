@@ -6658,22 +6658,20 @@ function renderSearchDropdown() {
     return;
   }
 
-  list.innerHTML = groups.map(g=>`
-    <div class="search-group">
-      <div class="search-group-label">${esc(g.label)}</div>
-      ${g.items.map((item,i)=>`
-        <div class="search-kw-item${item.active?' active':''}" data-gi="${groups.indexOf(g)}" data-ii="${i}">
-          ${item.color ? `<span class="search-sug-dot" style="background:${item.color}"></span>` : ''}
-          <span class="search-sug-text">${esc(item.text)}</span>
-          ${item.badge ? `<span class="search-kw-count">${esc(item.badge)}</span>` : ''}
-        </div>`).join('')}
-    </div>`).join('');
+  // Aplatir les groupes — même rendu que le dropdown inline (idx-dd-item)
+  const flatItems = groups.flatMap(g => g.items.map(item => ({ ...item, groupLabel: g.label })));
 
-  list.querySelectorAll('.search-kw-item').forEach(el=>{
-    el.addEventListener('click', e=>{
-      e.stopPropagation();
-      const g = groups[+el.dataset.gi];
-      g.items[+el.dataset.ii].action();
+  list.innerHTML = flatItems.map((item, i) =>
+    `<button class="idx-dd-item${item.active ? ' active' : ''}" data-idx="${i}">
+      <span class="idx-dd-name">${esc(item.text)}</span>
+      <em class="idx-dd-verbe">${esc(item.badge || item.groupLabel)}</em>
+    </button>`
+  ).join('');
+
+  list.querySelectorAll('.idx-dd-item').forEach((el, i) => {
+    el.addEventListener('mousedown', e => {
+      e.preventDefault();
+      flatItems[i].action();
       document.getElementById('searchDropdown').classList.remove('open');
     });
   });
