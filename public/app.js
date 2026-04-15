@@ -1253,18 +1253,9 @@ function setView(v, _silent = false) {
     _applyDeriveMode(state.deriveMode, true);
   }
 
-  // Breadcrumb — accumuler la navigation cross-vues
+  // Breadcrumb — historique persistant cross-vues (jamais réinitialisé)
   if (!_silent && VIEW_LABELS[v]) {
-    const viewLabel = VIEW_LABELS[v];
-    // Si cette vue est déjà dans le fil → on revient à ce point (truncate)
-    const existingIdx = state.breadcrumb.findIndex(b => b.label === viewLabel);
-    if (existingIdx >= 0) {
-      state.breadcrumb = state.breadcrumb.slice(0, existingIdx + 1);
-      renderBreadcrumbBar();
-    } else {
-      // Nouvelle vue → l'ajouter au fil existant
-      pushBreadcrumb(viewLabel, () => setView(v, true));
-    }
+    pushBreadcrumb(VIEW_LABELS[v], () => setView(v, true));
   }
   render();
 }
