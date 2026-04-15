@@ -2175,7 +2175,7 @@ function _drawConGraph(canvas, nodes, links) {
     const addG = g.append('g')
       .attr('class', 'con-add-btn')
       .attr('transform', `translate(${Math.round(HALF * 0.72)},${Math.round(-HALF * 0.72)})`)
-      .style('opacity', 0)
+      .style('opacity', isBookmarked ? 1 : 0)
       .style('cursor', 'pointer');
     // r=8.5 → diamètre 17px comme .sel-ast-wrap
     addG.append('circle').attr('r', 8.5)
