@@ -955,11 +955,21 @@ main { padding: 0; }
 
 /* ── Note Modal — formulaire ── */
 .btn-note {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-size: 15px;
-  font-weight: 300;
-  letter-spacing: .04em;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--text);
+  border-color: var(--text);
+}
+.btn-note:hover {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--text);
+  opacity: .72;
 }
 .note-opt-group {
   display: flex;
