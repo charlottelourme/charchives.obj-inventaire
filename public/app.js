@@ -7198,33 +7198,47 @@ function renderExpoChipsPicker() {
   container.appendChild(addBtn);
 }
 
-// ── ARE.NA : Breadcrumb ───────────────────────────────────────────────────────
+// ── Historique de navigation — Fil d'Ariane persistant ───────────────────────
+const BC_MAX_HISTORY = 12;  // entrées conservées en mémoire
+const BC_MAX_VISIBLE = 4;   // étapes visibles (les + récentes)
+
 function pushBreadcrumb(label, backAction) {
-  // Remove duplicate tails
-  if (state.breadcrumb.length > 0 && state.breadcrumb[state.breadcrumb.length-1].label === label) return;
+  const tail = state.breadcrumb[state.breadcrumb.length - 1];
+  if (tail && tail.label === label) return; // pas de doublon en queue
   state.breadcrumb.push({ label, backAction });
-  if (state.breadcrumb.length > 6) state.breadcrumb.shift();
+  if (state.breadcrumb.length > BC_MAX_HISTORY) state.breadcrumb.shift();
   renderBreadcrumbBar();
 }
 
 function renderBreadcrumbBar() {
   const bar = document.getElementById('breadcrumbBar');
   if (!bar) return;
-  if (state.breadcrumb.length <= 1) {
-    bar.style.display = 'none';
-    return;
-  }
+  if (state.breadcrumb.length <= 1) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
-  bar.innerHTML = state.breadcrumb.map((item, i) => {
-    const isCurrent = i === state.breadcrumb.length - 1;
+
+  const crumbs = state.breadcrumb;
+  const total  = crumbs.length;
+  // Afficher au plus BC_MAX_VISIBLE items en partant de la fin
+  const hasEllipsis = total > BC_MAX_VISIBLE;
+  const offset      = hasEllipsis ? total - BC_MAX_VISIBLE : 0;
+  const visible     = crumbs.slice(offset);
+
+  let html = hasEllipsis
+    ? `<span class="bc-ellipsis" title="Historique tronqué">…</span><span class="bc-sep">›</span>`
+    : '';
+
+  visible.forEach((item, i) => {
+    const realIdx  = offset + i;
+    const isCurrent = realIdx === total - 1;
     const cls = 'bc-item' + (isCurrent ? ' bc-current' : '');
-    return (i > 0 ? `<span class="bc-sep">›</span>` : '') +
-      `<span class="${cls}" data-bc-idx="${i}">${esc(item.label)}</span>`;
-  }).join('');
+    if (i > 0) html += `<span class="bc-sep">›</span>`;
+    html += `<span class="${cls}" data-bc-idx="${realIdx}">${esc(item.label)}</span>`;
+  });
+
+  bar.innerHTML = html;
   bar.querySelectorAll('.bc-item:not(.bc-current)').forEach(el => {
     el.addEventListener('click', () => {
-      const idx = parseInt(el.dataset.bcIdx);
-      // Trim breadcrumb to that point and invoke back action
+      const idx  = parseInt(el.dataset.bcIdx);
       const item = state.breadcrumb[idx];
       state.breadcrumb = state.breadcrumb.slice(0, idx + 1);
       renderBreadcrumbBar();
