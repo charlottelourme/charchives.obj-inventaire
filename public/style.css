@@ -501,6 +501,7 @@ header h1 {
 /* ── Layout ── */
 main { padding: 0; }
 #gridWrapper {
+  display: block; /* JAMAIS flex — les barres de filtres et la grille doivent s'empiler */
   padding: 0;
   max-width: 1600px;
   margin: 0 auto;
