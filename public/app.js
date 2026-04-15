@@ -640,7 +640,7 @@ function buildCategoryFilterBar() {
     if (isActive) {
       // Actif : Contraste Pur — couleur noire, aucun trait
       btn.style.color = '#000';
-      btn.style.fontWeight = '700';
+      btn.style.fontWeight = '';
     }
     btn.textContent = v.name;
     bar.appendChild(btn);
