@@ -1597,15 +1597,18 @@ function renderGrid(items) {
 function cardHTML(c) {
   // ── Note intercalaire ──
   if (c.type === 'note') {
-    const bg      = c.backgroundColor || '#F5E6D3';
-    const lum     = _luminance(bg);
-    const fg      = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
-    const fontCls = c.noteFont === 'terrain' ? 'font-terrain' : 'font-poetic';
-    const wideCls = c.noteWidth === 'wide'   ? ' note-wide'   : '';
+    const bg       = c.backgroundColor || '#F5E6D3';
+    const lum      = _luminance(bg);
+    const fg       = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+    const fontCls  = c.noteFont  === 'terrain'  ? 'font-terrain'  : 'font-poetic';
+    const wideCls  = c.noteWidth === 'wide'      ? ' note-wide'    : '';
+    const sizeCls  = c.noteSize  === 'small'     ? ' note-size-sm'
+                   : c.noteSize  === 'large'      ? ' note-size-lg' : '';
     return `<div class="card-note${wideCls}" data-id="${c.id}"
       style="background:${bg};color:${fg}" draggable="true">
+      <div class="card-note-drag-handle" title="Déplacer">⠿</div>
       <div class="card-note-inner">
-        <div class="card-note-text ${fontCls}">${esc(c.content || '')}</div>
+        <div class="card-note-text ${fontCls}${sizeCls}">${esc(c.content || '')}</div>
       </div>
       <button class="card-note-menu-btn" title="Modifier la note">···</button>
     </div>`;
