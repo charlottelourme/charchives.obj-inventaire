@@ -2744,51 +2744,44 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* (old standalone views no longer used) */
 
 /* Toolbar */
+/* ── Constellation toolbar — centré, esthétique éditoriale ── */
 .con-toolbar {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 9px 20px;
-  border-bottom: 1px solid var(--border);
+  justify-content: center;
+  padding: 11px 20px;
+  border-bottom: 1px solid var(--border-light);
   background: var(--bg);
   flex-shrink: 0;
-  flex-wrap: wrap;
 }
-.con-toolbar-title {
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .16em;
-  color: var(--text-3);
-}
-.con-aff-pills {
+/* Barre de paramètres centrée */
+.con-aff-bar {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 2.5rem;
 }
+/* Boutons textuels — Cutive Mono, majuscules, soulignement actif */
 .con-aff-btn {
   font-family: 'Cutive Mono', monospace;
-  font-size: 10.5px;
-  font-weight: 500;
-  padding: 4px 12px;
-  border: 1px solid var(--border);
-  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 4px 0;
+  border: none;
+  border-radius: 0;
   background: none;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: background .12s, border-color .12s, color .12s;
-}
-.con-aff-btn:hover { border-color: var(--border-strong); color: var(--text); }
-.con-aff-btn.active {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--bg);
-}
-.con-hint {
-  margin-left: auto;
-  font-size: 9px;
   color: var(--text-3);
-  letter-spacing: .06em;
-  white-space: nowrap;
+  cursor: pointer;
+  transition: color .15s;
+  text-decoration: none;
+  text-underline-offset: 5px;
+  text-decoration-thickness: 1px;
+}
+.con-aff-btn:hover { color: var(--text); }
+.con-aff-btn.active {
+  color: var(--text);
+  text-decoration: underline;
 }
 
 /* SVG canvas — scrollable pour ne perdre aucune bulle */
