@@ -7379,39 +7379,39 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
    ══════════════════════════════════════════════════════════════ */
 
 /* ── Bouton astérisque — Coup de cœur ── */
+/* Design inversé : fond var(--text) + icône var(--bg), même langage que la pill Sélection */
 .card-bookmark-btn {
   position: absolute;
   top: 8px; right: 8px;
   z-index: 6;
+  /* Taille en em — échelle avec le zoom via --card-zoom sur l'ancêtre */
   width: 28px; height: 28px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.5);
-  background: rgba(255,255,255,.80);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  border: none;
+  background: var(--text);
   cursor: pointer;
   opacity: 0;
-  transition: opacity .22s ease, background .35s ease, border-color .35s ease;
+  /* Échelle dynamique liée à la jauge zoom (--card-zoom positionné par le slider JS) */
+  transform: scale(var(--card-zoom, 1));
+  transform-origin: top right;
+  transition: opacity .22s ease, transform .18s ease;
   display: flex; align-items: center; justify-content: center;
   padding: 0;
 }
-.card:hover .card-bookmark-btn { opacity: 1; }
-.card-bookmark-btn.bookmarked {
-  opacity: 1 !important;
-  background: #2D2D2D;
-  border-color: #2D2D2D;
-}
-.card-bookmark-btn:hover { background: rgba(255,255,255,.98); }
-.card-bookmark-btn.bookmarked:hover { background: #1a1a1a; }
+.card:hover .card-bookmark-btn { opacity: 0.80; }
+.card-bookmark-btn.bookmarked  { opacity: 1 !important; }
+.card-bookmark-btn:hover        { opacity: 1 !important; }
 
-/* ── Astérisque SVG — 4 branches, style gravure ── */
+/* ── Astérisque SVG — toujours en contraste sur fond --text ── */
 .ast-icon .ast-s {
   stroke: var(--text-3);
   stroke-width: 1.2;
   stroke-linecap: round;
-  transition: stroke .35s ease;
+  transition: stroke .22s ease;
 }
-.card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: #fff; }
+/* Dans le bouton carte : icône toujours claire sur fond sombre */
+.card-bookmark-btn .ast-icon .ast-s { stroke: var(--bg); stroke-width: 1.4; }
+.card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: var(--bg); }
 
 /* Pill "Mis de côté" dans la status bar */
 .sfb-pill-bookmark.active { background: #8b5cf620; border-color: #8b5cf6 !important; color: #8b5cf6; }
