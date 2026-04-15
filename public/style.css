@@ -1445,14 +1445,34 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
 /* ── Bouton Sélection — aligné à droite de la barre de statut ── */
 .sfb-pill-selection {
   margin-left: auto;
-  border-left: 1px solid var(--border);
-  padding-left: 20px;
+  border-left: none;
+  padding-left: 16px;
   letter-spacing: .08em;
+  gap: 7px;
 }
 .sfb-pill-selection.active {
   color: #000;
   font-weight: 700;
 }
+/* Icône astérisque dans cercle — Sélection pill */
+.sel-ast-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--text);
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.sel-ast .ast-s {
+  stroke: #fff;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+body.dark-mode .sel-ast-wrap { background: #F5F5F0; }
+body.dark-mode .sel-ast .ast-s { stroke: #111; }
 
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
 .card-status-badge { display: none; }
