@@ -1390,7 +1390,7 @@ main { padding: 0; }
 }
 .sfb-pill-verbe:hover { color: var(--text); background: none; }
 /* Verbe actif : fond coloré conservé pour identification visuelle (injecté JS) */
-.sfb-pill-verbe.active { /* background, color injectés via JS */ }
+.sfb-pill-verbe.active { font-weight: 300; text-decoration: none; /* background, color injectés via JS */ }
 
 /* ══════════════════════════════════════════════════════════════
    BARRE TYPOLOGIES — Flux typographique primaire
