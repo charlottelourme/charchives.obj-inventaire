@@ -2207,8 +2207,7 @@ function _drawConGraph(canvas, nodes, links) {
     }
 
     // Bouton "Coup de cœur" — unifié avec la Sélection (favoris bookmarks)
-    // Design : fond blanc, contour gris, astérisque 4 branches gris → noir à l'actif
-    // Icône construite avec 4 lignes SVG (mêmes coordonnées que _asteriskSVG + .sel-ast)
+    // Design : fond blanc + "+" foncé par défaut ; inversé (fond noir + "+" blanc) à l'actif
     const isBookmarked = !!d.bookmarked;
     const addG = g.append('g')
       .attr('class', 'con-add-btn')
@@ -2216,8 +2215,8 @@ function _drawConGraph(canvas, nodes, links) {
       .style('opacity', isBookmarked ? 1 : 0)
       .style('cursor', 'pointer');
     addG.append('circle').attr('r', 8.5)
-      .attr('fill', '#ffffff')
-      .attr('stroke', '#9ca3af')
+      .attr('fill', isBookmarked ? '#18181b' : '#ffffff')
+      .attr('stroke', '#18181b')
       .attr('stroke-width', 1);
     // Croix "+" — 2 branches verticale + horizontale (viewBox 24×24 rendu à 10×10 centré)
     const astColor = isBookmarked ? '#ffffff' : '#18181b'; // actif = inversé
