@@ -2578,8 +2578,8 @@ function _nueeTick() {
     // Decay exponentiel vers 1 (retour fluide après mouseleave)
     if (b.boost > 1) b.boost = Math.max(1, 1 + (b.boost - 1) * 0.94);
 
-    b.x += b.vx * b.boost;
-    b.y += b.vy * b.boost;
+    b.x += b.vx * b.boost * _nueeSpeedMultiplier;
+    b.y += b.vy * b.boost * _nueeSpeedMultiplier;
 
     // Rebonds sur les bords
     if (b.x < 0)              { b.x = 0;            b.vx = Math.abs(b.vx); }
