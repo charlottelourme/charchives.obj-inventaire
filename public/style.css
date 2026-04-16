@@ -6502,38 +6502,42 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   overflow-y: auto;
   max-height: calc(92vh - 52px - 56px);
 }
+/* Ligne Intention + Typologie — alignement baseline, même logique que les cartes */
 .portrait-pills-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  align-items: baseline;
+  gap: 10px;
   margin-bottom: 16px;
+  text-transform: none;
+  letter-spacing: normal;
 }
-/* Verbe : label coloré — carré, sans arrondi */
+/* Intention — typo éditoriale italique, JAMAIS Cutive Mono */
 .portrait-verbe-pill {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
   font-style: italic;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 300;
   padding: 0;
   border: none;
   background: transparent !important;
   color: var(--text-3);
   letter-spacing: .01em;
+  text-transform: none;
 }
-/* Typologie : texte seul, souligné — cohérent avec la charte tags */
+/* Typologie — factuel Cutive Mono, casse d'origine, pas de soulignement */
 .portrait-typo-pill {
   font-family: 'Cutive Mono', monospace;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  padding: 3px 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  padding: 0;
   border-radius: 0;
   border: none;
   background: transparent;
   color: var(--text-2);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
+  text-transform: none;
 }
 /* Titre : XXL Spectral italique — la vedette */
 .portrait-title {
