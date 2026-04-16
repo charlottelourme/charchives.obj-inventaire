@@ -2599,7 +2599,7 @@ function _initNueePhysics() {
     el.style.position = 'absolute';
     el.style.left = '0px';
     el.style.top = '0px';
-    el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${scale})`;
+    el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${scale * _nueeZoom})`;
 
     // Hover = boost ; mouseleave géré par le decay du tick
     el.addEventListener('mouseenter', () => { body.boost = 3.5; });
