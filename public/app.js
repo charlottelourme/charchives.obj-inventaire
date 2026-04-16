@@ -7386,7 +7386,7 @@ function renderExpoChipsPicker() {
 
 // ── Historique de navigation — Fil d'Ariane persistant ───────────────────────
 const BC_MAX_HISTORY = 12;  // entrées conservées en mémoire
-const BC_MAX_VISIBLE = 4;   // étapes visibles (les + récentes)
+const BC_MAX_VISIBLE = 12;  // étapes visibles — toute la largeur de la barre (scroll-x si dépassement)
 
 function pushBreadcrumb(label, backAction) {
   const tail = state.breadcrumb[state.breadcrumb.length - 1];
