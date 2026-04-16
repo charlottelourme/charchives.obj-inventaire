@@ -5301,7 +5301,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     right: -6%;
   }
   /* Typographie compacte */
-  .card-body { padding: 7px 9px 11px; margin-top: -4px; }
+  .card-body { padding: 7px 9px 11px; margin-top: 10px; }
   .card-thumb-area { width: 88%; margin-left: auto; margin-right: 0; } /* asymétrie conservée */
   .card-meta-row { font-size: 9px; gap: 3px; margin-bottom: 2px; }
   .card-verbe-label, .card-typo-label { font-size: 9px; }
