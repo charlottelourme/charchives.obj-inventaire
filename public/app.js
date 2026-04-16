@@ -2478,7 +2478,6 @@ function renderGallery(filtered) {
   });
 
   _bindGalleryEvents();
-  _initGalleryNoteInteractions(grid, items);
   // Démarre immédiatement la physique — les dimensions seront re-mesurées via les img.onload
   _initNueePhysics();
 }
