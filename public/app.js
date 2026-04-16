@@ -1491,13 +1491,12 @@ function _applyGridCols() {
 
 function render() {
   _applyGridCols();
-  // Update category filter pills — réinitialise les inline styles sur les pills inactives
+  // Update category filter pills — la typo adopte la couleur identitaire du verbe à l'actif
   document.querySelectorAll('#categoryFilterBar .sfb-pill').forEach(p => {
     const isActive = p.dataset.cat === state.categoryFilter;
     p.classList.toggle('active', isActive);
     if (isActive && p.classList.contains('sfb-pill-verbe')) {
-      // Actif : pas de couleur inline — la CSS utilise var(--text) qui s'adapte light/dark
-      p.style.color = '';
+      p.style.color = p.dataset.bg || '';
       p.style.fontWeight = '';
       p.style.background = '';
       p.style.borderColor = '';
