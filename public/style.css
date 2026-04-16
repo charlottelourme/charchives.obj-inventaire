@@ -1045,9 +1045,13 @@ main { padding: 0; }
 .card-note[draggable="true"] { cursor: grab; }
 .card-note[draggable="true"]:active { cursor: grabbing; }
 .card-note.note-dragging { opacity: .35; }
-.card-note.note-drop-before { box-shadow: -4px 0 0 var(--border-strong); }
-.card-note.note-drop-after,
-.card.note-drop-after { box-shadow: 4px 0 0 var(--border-strong); }
+/* Indicateur unifié : ligne horizontale au-dessus ou en-dessous de la carte cible */
+.card.note-drop-above,
+.card-note.note-drop-above,
+.gallery-item.note-drop-above { box-shadow: 0 -3px 0 var(--border-strong); }
+.card.note-drop-below,
+.card-note.note-drop-below,
+.gallery-item.note-drop-below { box-shadow: 0 3px 0 var(--border-strong); }
 
 /* ── Tailles de texte — variantes ── */
 /* Petit */
