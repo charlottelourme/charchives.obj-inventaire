@@ -2674,9 +2674,9 @@ function _nueeTick() {
     }
   }
 
-  // 3. Applique au DOM (une seule écriture par corps)
+  // 3. Applique au DOM (une seule écriture par corps) — scale = pose × zoom global
   for (const b of _nueeBodies) {
-    b.el.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg) scale(${b.scale})`;
+    b.el.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg) scale(${b.scale * _nueeZoom})`;
   }
 }
 
