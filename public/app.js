@@ -2179,6 +2179,30 @@ function _drawConGraph(canvas, nodes, links) {
     .attr('stroke-width', d => Math.max(1.5, Math.sqrt(d.strength) * 1.5))
     .attr('stroke-opacity', 0.38);
 
+  // ── Halos Soft Block conditionnels (affinité = intention uniquement) ──
+  const halosG = zoomLayer.append('g').attr('class', 'con-halos-group');
+  const showHalos = _conAffinityType === 'intention';
+  const haloEl = showHalos ? halosG.selectAll('circle.con-halo')
+    .data(nodes)
+    .join('circle')
+    .attr('class', 'con-halo')
+    .attr('r', HALF + 22)
+    .attr('fill', d => getVerbeBgColor(d.category) || '#e5e7eb')
+    .attr('fill-opacity', 0.55)
+    .attr('filter', 'url(#con-halo-blur)')
+    .attr('pointer-events', 'none')
+    : d3.select(null);
+  // Filtre blur SVG (une seule instance)
+  if (showHalos && svg.select('#con-halo-blur').empty()) {
+    const defs = svg.append('defs');
+    defs.append('filter').attr('id', 'con-halo-blur')
+      .attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%')
+      .append('feGaussianBlur').attr('stdDeviation', 16);
+  }
+
+  // ── Labels de cluster (titre verbe en majuscules) ──
+  const labelsG = zoomLayer.append('g').attr('class', 'con-labels-group');
+
   // ── Nœuds — images brutes, sans cercles ──
   const nodesG = zoomLayer.append('g').attr('class', 'con-nodes-group');
   const nodeEl = nodesG.selectAll('g.con-node')
