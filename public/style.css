@@ -1593,10 +1593,9 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   color: #000;
   font-weight: 700;
 }
-/* ── Bouton * Sélection — design unifié ─────────────────────────────────────
-   Par défaut : fond blanc, astérisque gris clair
-   Hover      : fond légèrement assombri
-   Actif      : astérisque noir (fond blanc conservé)
+/* ── Bouton "+" Sélection — design unifié ──────────────────────────────────
+   Par défaut : fond clair + "+" foncé
+   Hover / actif : couleurs inversées (fond foncé + "+" clair)
    ─────────────────────────────────────────────────────────────────────────── */
 .sel-ast-wrap {
   display: inline-flex;
@@ -1606,26 +1605,30 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   height: 17px;
   border-radius: 50%;
   background: #ffffff;
-  border: 1px solid var(--text-3);
+  border: 1px solid var(--text);
   flex-shrink: 0;
-  transition: background .2s, border-color .2s;
+  transition: background .18s ease, border-color .18s ease;
 }
-/* Spécificité renforcée (.ast-icon.sel-ast = 0,3,0) pour l'emporter sur .ast-icon .ast-s (0,2,0) */
+/* Spécificité renforcée pour l'emporter sur .ast-icon .ast-s */
 .ast-icon.sel-ast .ast-s {
-  stroke: var(--text-3);
+  stroke: var(--text);
   stroke-width: 1.4;
   stroke-linecap: round;
   transition: stroke .18s ease;
 }
-/* Hover sur le bouton parent — fond plus sombre */
-.sfb-pill-selection:hover .sel-ast-wrap { background: #ededea; }
-/* État actif : astérisque noir */
-.sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: var(--text); }
-/* Dark mode — transparent avec contour, icône écru à l'actif */
-body.dark-mode .sel-ast-wrap { background: transparent; border-color: var(--text-3); }
-body.dark-mode .sfb-pill-selection:hover .sel-ast-wrap { background: rgba(255,255,255,0.08); }
-body.dark-mode .ast-icon.sel-ast .ast-s { stroke: var(--text-3); }
-body.dark-mode .sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: var(--text); }
+/* Hover ET actif : couleurs inversées — fond sombre + "+" blanc */
+.sfb-pill-selection:hover .sel-ast-wrap,
+.sfb-pill-selection.active .sel-ast-wrap { background: var(--text); }
+.sfb-pill-selection:hover .ast-icon.sel-ast .ast-s,
+.sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: #ffffff; }
+
+/* Dark mode — palette inversée (base transparente, actif = fond clair) */
+body.dark-mode .sel-ast-wrap { background: transparent; border-color: var(--text); }
+body.dark-mode .ast-icon.sel-ast .ast-s { stroke: var(--text); }
+body.dark-mode .sfb-pill-selection:hover .sel-ast-wrap,
+body.dark-mode .sfb-pill-selection.active .sel-ast-wrap { background: var(--text); }
+body.dark-mode .sfb-pill-selection:hover .ast-icon.sel-ast .ast-s,
+body.dark-mode .sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: #18181b; }
 
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
 .card-status-badge { display: none; }
