@@ -5591,11 +5591,7 @@ body.dark-mode .sfb-pill-selection.active { color: #F5F5F0; }
 body.dark-mode .tfb-all:hover,
 body.dark-mode .tfb-pill:hover { color: #F0EDE8; }
 
-/* 3. Soulignement architectural — trait clair sur fond noir */
-body.dark-mode .view-tab.active {
-  text-decoration-color: #F5F5F0;
-}
-/* Les autres utilisent currentColor — héritent automatiquement du text-color corrigé */
+/* 3. Plus de soulignement actif — contraste typographique uniquement */
 
 /* 4. Barre de recherche dark — trait bas légèrement plus visible */
 body.dark-mode .search-bar {
