@@ -2613,7 +2613,7 @@ function _nueeTick() {
 
   // 3. Applique au DOM (une seule écriture par corps)
   for (const b of _nueeBodies) {
-    b.el.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg)`;
+    b.el.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg) scale(${b.scale})`;
   }
 }
 
