@@ -3326,9 +3326,10 @@ function openDetail(id) {
   const typoPill = sub
     ? `<span class="portrait-typo-pill">${esc(sub)}</span>` : '';
 
-  // ── Meta line ──
+  // ── Meta line ── statut dynamique filtré sur valeurs réelles (exclut "Tous" et vide)
+  const isValidStatus = c.itemStatus && ['Disponible','Vendu','Pas à vendre','Brouillon'].includes(c.itemStatus);
   const metaHTML = [
-    c.itemStatus ? `<span class="portrait-status-dot" style="background:${statusColor}"></span><span class="portrait-status-text" style="color:${statusColor}">${esc(c.itemStatus)}</span>` : '',
+    isValidStatus ? `<span class="portrait-status-dot" style="background:${statusColor}"></span><span class="portrait-status-text">${esc(c.itemStatus)}</span>` : '',
     (c.price != null && c.price !== '') ? `<span class="portrait-price">${c.price} €</span>` : '',
     c.depotVente ? `<span class="portrait-meta-tag">Dépôt-vente${c.depotVenteName?' · '+esc(c.depotVenteName):''}</span>` : '',
     c.artiste    ? `<span class="portrait-meta-tag">Création${c.artisteName?' · '+esc(c.artisteName):''}</span>` : ''
