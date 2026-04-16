@@ -2180,28 +2180,41 @@ function _drawConGraph(canvas, nodes, links) {
     }
 
     // Bouton "Coup de cœur" — unifié avec la Sélection (favoris bookmarks)
-    // Design : fond blanc, contour gris, astérisque gris → noir à l'actif (comme .sel-ast-wrap)
+    // Design : fond blanc, contour gris, astérisque 4 branches gris → noir à l'actif
+    // Icône construite avec 4 lignes SVG (mêmes coordonnées que _asteriskSVG + .sel-ast)
     const isBookmarked = !!d.bookmarked;
     const addG = g.append('g')
       .attr('class', 'con-add-btn')
       .attr('transform', `translate(${Math.round(HALF * 0.72)},${Math.round(-HALF * 0.72)})`)
       .style('opacity', isBookmarked ? 1 : 0)
       .style('cursor', 'pointer');
-    // r=8.5 → diamètre 17px comme .sel-ast-wrap
     addG.append('circle').attr('r', 8.5)
       .attr('fill', '#ffffff')
       .attr('stroke', '#9ca3af')
       .attr('stroke-width', 1);
-    addG.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
-      .attr('font-size', '11').attr('font-weight', '400')
-      .attr('fill', isBookmarked ? '#18181b' : '#9ca3af').text('*');
+    // Astérisque 4 branches — viewBox 24×24 rendu à 10×10 centré (scale 10/24, centre (12,12))
+    const astColor = isBookmarked ? '#18181b' : '#9ca3af';
+    const astG = addG.append('g').attr('class', 'con-ast-icon').attr('transform', 'scale(0.4167)');
+    const astLines = [
+      [12, 2.5, 12, 21.5],
+      [2.5, 12, 21.5, 12],
+      [5.1, 5.1, 18.9, 18.9],
+      [18.9, 5.1, 5.1, 18.9]
+    ];
+    astLines.forEach(([x1, y1, x2, y2]) => {
+      astG.append('line')
+        .attr('x1', x1 - 12).attr('y1', y1 - 12)
+        .attr('x2', x2 - 12).attr('y2', y2 - 12)
+        .attr('stroke', astColor)
+        .attr('stroke-width', 1.4 / 0.4167)  // compenser le scale pour garder 1.4px visuel
+        .attr('stroke-linecap', 'round');
+    });
     addG.on('click', async (event) => {
       event.stopPropagation();
       await toggleBookmark(d.id);
       const nowBookmarked = !!d.bookmarked;
-      // Contour reste gris, seul l'astérisque change (gris → noir à l'actif)
-      addG.select('text').attr('fill', nowBookmarked ? '#18181b' : '#9ca3af');
-      // Maintient l'opacité sur les favoris même hors survol
+      // Astérisque : gris par défaut, noir à l'actif — contour reste gris
+      astG.selectAll('line').attr('stroke', nowBookmarked ? '#18181b' : '#9ca3af');
       addG.style('opacity', nowBookmarked ? 1 : 0);
     });
 
