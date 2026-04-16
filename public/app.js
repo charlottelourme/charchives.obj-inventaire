@@ -828,12 +828,14 @@ function buildIndexTrigger() {
         });
         return;
       }
-      drop.innerHTML = matches.slice(0, 12).map(m =>
-        `<button class="idx-dd-item" data-typo="${esc(m.name)}">
-          <span class="idx-dd-name">${esc(m.name)}</span>
+      drop.innerHTML = matches.slice(0, 14).map(m => {
+        const verbe = getVerbes().find(v => v.name === m.verbeName);
+        const darkColor = _verbeActiveColor(verbe);
+        return `<button class="idx-dd-item" data-typo="${esc(m.name)}" style="--dd-dark:${darkColor}">
+          <span class="idx-dd-name"><span class="idx-dd-dot" style="background:${darkColor}"></span>${esc(m.name)}</span>
           <em class="idx-dd-verbe">${esc(m.verbeName)}</em>
-        </button>`
-      ).join('') + footerHTML;
+        </button>`;
+      }).join('') + footerHTML;
       drop.style.display = 'block';
       drop.querySelectorAll('.idx-dd-item').forEach(btn => {
         btn.addEventListener('mousedown', e => {
