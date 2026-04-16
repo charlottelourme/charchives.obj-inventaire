@@ -6819,12 +6819,17 @@ function renderSearchDropdown() {
   // Aplatir les groupes — même rendu que le dropdown inline (idx-dd-item)
   const flatItems = groups.flatMap(g => g.items.map(item => ({ ...item, groupLabel: g.label })));
 
-  list.innerHTML = flatItems.map((item, i) =>
-    `<button class="idx-dd-item${item.active ? ' active' : ''}" data-idx="${i}">
-      <span class="idx-dd-name">${esc(item.text)}</span>
+  list.innerHTML = flatItems.map((item, i) => {
+    // Point de typologie : couleur sombre du duotone (hover sombre et saturé)
+    const dot = item.darkColor
+      ? `<span class="idx-dd-dot" style="background:${item.darkColor}"></span>`
+      : '';
+    const darkAttr = item.darkColor ? ` style="--dd-dark:${item.darkColor}"` : '';
+    return `<button class="idx-dd-item${item.active ? ' active' : ''}" data-idx="${i}"${darkAttr}>
+      <span class="idx-dd-name">${dot}${esc(item.text)}</span>
       <em class="idx-dd-verbe">${esc(item.badge || item.groupLabel)}</em>
-    </button>`
-  ).join('');
+    </button>`;
+  }).join('');
 
   list.querySelectorAll('.idx-dd-item').forEach((el, i) => {
     el.addEventListener('mousedown', e => {
