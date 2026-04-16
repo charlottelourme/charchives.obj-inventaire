@@ -2415,24 +2415,24 @@ function _drawConGraph(canvas, nodes, links) {
     });
 }
 
-// ── Labels de cluster Constellation — centroide par verbe, Cutive Mono MAJ.
+// ── Labels de cluster Constellation — centroide par verbe, Cormorant italique MAJ.
 //    Couleur = textColor du duotone (_verbeActiveColor). Clic → bascule sur le verbe.
+//    Position : au-dessus de l'image la plus haute du cluster (pas sur les images).
 function _updateClusterLabels(labelsG, nodes) {
-  // Groupe les nœuds par verbe
   const groups = new Map();
   for (const n of nodes) {
     if (!n.category) continue;
     if (!groups.has(n.category)) groups.set(n.category, []);
     groups.get(n.category).push(n);
   }
-  // Calcule le centroïde de chaque groupe
+  // Pour chaque cluster : centre X = moyenne, Y = min(y) - offset (image la plus haute)
+  const TITLE_OFFSET = 90;  // distance au-dessus de l'image la plus haute
   const clusters = Array.from(groups.entries())
     .filter(([_, arr]) => arr.length >= 1)
     .map(([name, arr]) => {
-      const cx = arr.reduce((s, n) => s + (n.x || 0), 0) / arr.length;
-      const cy = arr.reduce((s, n) => s + (n.y || 0), 0) / arr.length;
-      // Place le label LÉGÈREMENT AU-DESSUS du centroïde (en pixels locaux)
-      return { name, x: cx, y: cy - 48, count: arr.length };
+      const cx  = arr.reduce((s, n) => s + (n.x || 0), 0) / arr.length;
+      const minY = arr.reduce((m, n) => Math.min(m, n.y || 0), Infinity);
+      return { name, x: cx, y: minY - TITLE_OFFSET, count: arr.length };
     });
 
   const sel = labelsG.selectAll('text.con-cluster-label').data(clusters, d => d.name);
@@ -2442,10 +2442,13 @@ function _updateClusterLabels(labelsG, nodes) {
     .style('cursor', 'pointer')
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
-    .style('font-family', "'Cutive Mono', monospace")
-    .style('font-size', '14px')
-    .style('font-weight', '600')
-    .style('letter-spacing', '.12em')
+    // Typo éditoriale — même police que les onglets Intention (Cormorant Garamond italique)
+    // JAMAIS de Cutive Mono sur les titres de verbe.
+    .style('font-family', "'Cormorant Garamond', Georgia, serif")
+    .style('font-style', 'italic')
+    .style('font-size', '22px')
+    .style('font-weight', '400')
+    .style('letter-spacing', '.02em')
     .style('text-transform', 'uppercase')
     .style('pointer-events', 'all')
     .on('click', (e, d) => {
