@@ -1619,7 +1619,7 @@ function renderGrid(items) {
         }).join('');
         titleHTML = `<div class="verbe-page-title">
           <div class="vpt-top">
-            <h1 class="vpt-name">${esc(verbe.name)}</h1>
+            <h1 class="vpt-name" style="color:${col}">${esc(verbe.name)}</h1>
             <span class="vpt-count">${items.length}&nbsp;objet${items.length!==1?'s':''}</span>
           </div>
           ${typos.length ? `<div class="vpt-pills">${pillsHTML}</div>` : ''}
