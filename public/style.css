@@ -354,8 +354,7 @@ header h1 {
   font-weight: 400;
   white-space: nowrap;
   flex-shrink: 0;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
 }
 .search-filter-tag button {
   background: none;
