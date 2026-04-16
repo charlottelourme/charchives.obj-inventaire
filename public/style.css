@@ -88,9 +88,9 @@ body.verbe-active header .btn-icon {
 body.verbe-active .view-tab {
   color: var(--text-3);
 }
-body.verbe-active .view-tab:hover { color: #000; }
+body.verbe-active .view-tab:hover { color: var(--text); }
 body.verbe-active .view-tab.active {
-  color: #000;
+  color: var(--text);
   font-weight: 500;
 }
 /* Dark mode : halo plus sombre pour ressortir sur fond noir */
