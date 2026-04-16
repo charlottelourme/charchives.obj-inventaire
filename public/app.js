@@ -1493,12 +1493,12 @@ function _applyGridCols() {
 
 function render() {
   _applyGridCols();
-  // Update category filter pills — la typo adopte la couleur identitaire du verbe à l'actif
+  // Update category filter pills — typo sombre/saturée à l'actif (data-active set par buildCategoryFilterBar)
   document.querySelectorAll('#categoryFilterBar .sfb-pill').forEach(p => {
     const isActive = p.dataset.cat === state.categoryFilter;
     p.classList.toggle('active', isActive);
     if (isActive && p.classList.contains('sfb-pill-verbe')) {
-      p.style.color = p.dataset.bg || '';
+      p.style.color = p.dataset.active || p.dataset.bg || '';
       p.style.fontWeight = '';
       p.style.background = '';
       p.style.borderColor = '';
