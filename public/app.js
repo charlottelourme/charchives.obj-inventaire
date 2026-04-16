@@ -2362,26 +2362,33 @@ function _drawConGraph(canvas, nodes, links) {
   _conZoom   = zoom;
   _conSvgSel = svg;
 
-  // ── Simulation — forceCenter sur le milieu du canvas ──
-  const R_collide = HALF + 16;
+  // ── Simulation — grappes serrées ──
+  const R_collide = HALF + 6;
 
-  // Initialiser les positions près du centre pour un rendu immédiat correct
   nodes.forEach(n => {
     if (n.x === undefined) n.x = W / 2 + (Math.random() - 0.5) * 200;
     if (n.y === undefined) n.y = H / 2 + (Math.random() - 0.5) * 200;
   });
 
   _conSim = d3.forceSimulation(nodes)
-    .force('link',    d3.forceLink(links).id(d => d.id).distance(180).strength(0.45))
-    .force('charge',  d3.forceManyBody().strength(-280).distanceMax(500))
-    .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.08))
-    .force('collide', d3.forceCollide(R_collide).strength(0.85))
+    // Liens courts (80) et forts (0.85) → les objets liés se collent
+    .force('link',    d3.forceLink(links).id(d => d.id).distance(80).strength(0.85))
+    // Répulsion faible (−80) + portée limitée → les nœuds acceptent la proximité
+    .force('charge',  d3.forceManyBody().strength(-80).distanceMax(260))
+    .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.05))
+    // Collision stricte — jamais de superposition totale des images
+    .force('collide', d3.forceCollide(R_collide).strength(1))
     .alphaDecay(0.022)
     .velocityDecay(0.35)
     .on('tick', () => {
       linkEl.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
             .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
       nodeEl.attr('transform', d => `translate(${d.x},${d.y})`);
+      // Halos + labels : uniquement quand l'affinité est "intention"
+      if (_conAffinityType === 'intention') {
+        haloEl.attr('cx', d => d.x).attr('cy', d => d.y);
+        _updateClusterLabels(labelsG, nodes);
+      }
     });
 }
 
