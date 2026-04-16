@@ -2448,6 +2448,7 @@ function renderGallery(filtered) {
   });
 
   _bindGalleryEvents();
+  _initGalleryNoteInteractions(grid, items);
   _initGalleryParallax();
 }
 
@@ -2471,6 +2472,76 @@ function _bindGalleryEvents() {
         }
       });
     }
+  });
+}
+
+// ── Notes dans la Dérive Nuée : Drag & Drop + Édition + Suppression ──
+// Réutilise les mêmes fonctions (openNoteModal, saveNote, deleteNote) que l'Inventaire
+// → state partagé, sync automatique via render()
+function _initGalleryNoteInteractions(grid, items) {
+  let _dragNoteId = null;
+
+  grid.querySelectorAll('.gallery-item.g-note').forEach(noteEl => {
+    // Drag start — marquer la note comme en cours de drag
+    noteEl.addEventListener('dragstart', e => {
+      _dragNoteId = noteEl.dataset.id;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('application/x-note-id', _dragNoteId);
+      requestAnimationFrame(() => noteEl.classList.add('note-dragging'));
+    });
+    noteEl.addEventListener('dragend', () => {
+      noteEl.classList.remove('note-dragging');
+      grid.querySelectorAll('.note-drop-after').forEach(t => t.classList.remove('note-drop-after'));
+      _dragNoteId = null;
+    });
+    // Clic sur la note = ouvre la modale d'édition (comme en Inventaire)
+    noteEl.addEventListener('click', e => {
+      if (e.target.closest('.card-note-drag-handle')) return; // ignorer clic sur poignée
+      if (!e.defaultPrevented) openNoteModal(noteEl.dataset.id);
+    });
+    // Bouton ··· = ouvre la modale
+    noteEl.querySelector('.card-note-menu-btn')?.addEventListener('click', e => {
+      e.stopPropagation();
+      openNoteModal(noteEl.dataset.id);
+    });
+  });
+
+  // Drop targets : tous les gallery-item (objets + autres notes)
+  grid.querySelectorAll('.gallery-item').forEach(galItem => {
+    galItem.addEventListener('dragover', e => {
+      if (!_dragNoteId) return;
+      if (galItem.dataset.id === _dragNoteId) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      grid.querySelectorAll('.note-drop-after').forEach(t => t.classList.remove('note-drop-after'));
+      galItem.classList.add('note-drop-after');
+    });
+    galItem.addEventListener('dragleave', () => galItem.classList.remove('note-drop-after'));
+    galItem.addEventListener('drop', async e => {
+      if (!_dragNoteId) return;
+      if (!e.dataTransfer.types.includes('application/x-note-id')) return;
+      e.preventDefault();
+      galItem.classList.remove('note-drop-after');
+
+      const dropTargetId = galItem.dataset.id;
+      // Calcul du nouvel index parmi les objets
+      const itemIdx = items.findIndex(c => c.id === dropTargetId);
+      let newPos;
+      if (itemIdx >= 0 && items[itemIdx]?.type !== 'note') {
+        newPos = itemIdx + 1;
+      } else {
+        const targetNote = state.collections.find(c => c.id === dropTargetId && c.type === 'note');
+        newPos = targetNote ? (targetNote.notePos ?? 0) + 0.5 : 0;
+      }
+
+      const note = state.collections.find(c => c.id === _dragNoteId);
+      if (note) {
+        note.notePos = newPos;
+        try { await api.put(`/api/collections/${_dragNoteId}`, { notePos: newPos }); }
+        catch(err) { console.warn('Gallery note drag save failed:', err); }
+        render();
+      }
+    });
   });
 }
 
