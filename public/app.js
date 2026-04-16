@@ -2485,16 +2485,22 @@ function renderGallery(filtered) {
       return;
     }
 
-    const size = _gallerySize(c.id);
     const item = document.createElement('div');
-    item.className = `gallery-item ${size}`;
+    item.className = 'gallery-item';
     item.dataset.id = c.id;
     item.dataset.cat = c.category || '';
+
+    // Pose aléatoire déterministe (même objet = même position d'un render à l'autre)
+    const pose = _galleryPose(c.id);
+    item.style.setProperty('--nx', `${pose.x}px`);
+    item.style.setProperty('--ny', `${pose.y}px`);
+    item.style.setProperty('--nr', `${pose.rot}deg`);
+    item.style.setProperty('--ns', pose.scale);
+    item.style.zIndex = String(Math.floor((pose.x + pose.y + 3000) / 10));
 
     const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
     const bookmarkBtn = `<button class="card-bookmark-btn gallery-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}">${_asteriskSVG()}</button>`;
     if (src) {
-      // Si c'est un PNG (image détourée), on pose un fond --bg explicite
       const isPng = c.photos[0].toLowerCase().endsWith('.png') || c.photos[0].includes('detour');
       if (isPng) item.classList.add('g-detoured');
       item.innerHTML = `${bookmarkBtn}<img src="${src}" alt="${esc(c.name||'')}" draggable="false">`;
@@ -2504,12 +2510,68 @@ function renderGallery(filtered) {
     }
 
     grid.appendChild(item);
-    _galleryItems.push({ el: item, id: c.id, size, category: c.category || '' });
+    _galleryItems.push({ el: item, id: c.id, category: c.category || '' });
   });
 
   _bindGalleryEvents();
   _initGalleryNoteInteractions(grid, items);
-  _initGalleryParallax();
+  _initNueePanZoom();
+  _applyNueeTransform();
+}
+
+// ── Pan & Zoom sur le viewport Nuée ────────────────────────────────────────
+function _applyNueeTransform() {
+  const surface = document.getElementById('galleryGrid');
+  if (!surface) return;
+  surface.style.transform = `translate(${_nueePan.x}px, ${_nueePan.y}px) scale(${_nueePan.scale})`;
+}
+
+function _initNueePanZoom() {
+  const viewport = document.getElementById('galleryScroll');
+  if (!viewport || viewport.dataset.panZoomInit === '1') return;
+  viewport.dataset.panZoomInit = '1';
+
+  // Pan — drag sur le fond (pas sur un item ni son bouton)
+  viewport.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.gallery-item')) return;
+    _nueeDragging = true;
+    _nueeDragStart = { x: e.clientX - _nueePan.x, y: e.clientY - _nueePan.y };
+    viewport.classList.add('nuee-grabbing');
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!_nueeDragging) return;
+    _nueePan.x = e.clientX - _nueeDragStart.x;
+    _nueePan.y = e.clientY - _nueeDragStart.y;
+    _applyNueeTransform();
+  });
+  window.addEventListener('mouseup', () => {
+    if (!_nueeDragging) return;
+    _nueeDragging = false;
+    viewport.classList.remove('nuee-grabbing');
+  });
+
+  // Zoom — molette (centré sur la souris)
+  viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = viewport.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const delta = -e.deltaY * 0.0015;
+    const newScale = Math.max(0.25, Math.min(3, _nueePan.scale * (1 + delta)));
+    // Recentre le zoom sur la position de la souris
+    _nueePan.x = mx - (mx - _nueePan.x) * (newScale / _nueePan.scale);
+    _nueePan.y = my - (my - _nueePan.y) * (newScale / _nueePan.scale);
+    _nueePan.scale = newScale;
+    _applyNueeTransform();
+    // Sync slider de zoom du header si présent
+    const slider = document.getElementById('nueeZoomSlider');
+    if (slider) {
+      const sMin = parseFloat(slider.min) || 80;
+      const sMax = parseFloat(slider.max) || 480;
+      slider.value = Math.round(sMin + ((newScale - 0.25) / 2.75) * (sMax - sMin));
+    }
+  }, { passive: false });
 }
 
 function _bindGalleryEvents() {
