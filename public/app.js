@@ -2668,24 +2668,27 @@ function _nueeTick() {
   const detail = document.getElementById('detailModal');
   if (detail && detail.style.display !== 'none' && detail.style.display !== '') return;
 
-  const vw = _nueeViewport.clientWidth;
-  const vh = _nueeViewport.clientHeight;
-  // Marge hors-champ : l'objet sort complètement avant d'être téléporté en face
-  const M = 200;
+  // Dimensions lues fraîchement à chaque tick — gère automatiquement le redimensionnement
+  const vw = _nueeViewport.clientWidth  || window.innerWidth;
+  const vh = _nueeViewport.clientHeight || window.innerHeight;
+  const M  = 150;  // marge de sécurité hors-champ
 
-  // 1. Avance chaque corps (vitesse affectée UNIQUEMENT par le boost de survol,
-  //    plus par le slider — celui-ci contrôle désormais le zoom, pas la vitesse)
+  // 1. Avance chaque corps (vitesse affectée uniquement par le boost de survol)
   for (const b of _nueeBodies) {
     if (b.boost > 1) b.boost = Math.max(1, 1 + (b.boost - 1) * 0.94);
 
     b.x += b.vx * b.boost;
     b.y += b.vy * b.boost;
 
-    // Wrapping hors-champ (cascade en cycle fermé / effet Pac-Man)
-    if (b.x + b.w < -M)   b.x = vw + M;        // sort à gauche → réapparaît à droite
-    else if (b.x > vw + M) b.x = -b.w - M;     // sort à droite → réapparaît à gauche
-    if (b.y + b.h < -M)   b.y = vh + M;        // sort en haut → réapparaît en bas
-    else if (b.y > vh + M) b.y = -b.h - M;     // sort en bas → réapparaît en haut
+    // Wrapping strict (spec utilisateur) — on agit sur l'objet-réf, pas une copie.
+    // Sortie par la droite : x > vw + M  → téléporte à gauche (x = -M)
+    if (b.x > vw + M)       b.x = -M;
+    // Sortie par la gauche : x < -M     → téléporte à droite (x = vw + M)
+    else if (b.x < -M)      b.x = vw + M;
+    // Sortie par le bas : y > vh + M    → téléporte en haut (y = -M)
+    if (b.y > vh + M)       b.y = -M;
+    // Sortie par le haut : y < -M       → téléporte en bas (y = vh + M)
+    else if (b.y < -M)      b.y = vh + M;
   }
 
   // 2. Collisions AABB entre paires — échange des vélocités
