@@ -7414,95 +7414,78 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 
 /* ══════════════════════════════════════════════════════════════
    FIL D'ARIANE — barre fixe en bas de l'écran
+   Cutive Mono, troncature intelligente (3 derniers items + "…"),
+   aucun scroll horizontal.
 ══════════════════════════════════════════════════════════════ */
 .breadcrumb-bar {
   position: fixed;
-  bottom: 44px;   /* calé sur le bord supérieur du bottom-nav */
+  bottom: 44px;
   left: 0;
   right: 0;
   z-index: 60;
-  height: 18px;
+  height: 26px;
   background: rgba(var(--bg-rgb, 250,250,248), .82);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   border-top: 1px solid rgba(0,0,0,.04);
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 16px;
   gap: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  /* apparition douce */
+  overflow: hidden;
   animation: bc-slide-in .18s ease forwards;
 }
 @keyframes bc-slide-in {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.breadcrumb-bar::-webkit-scrollbar { display: none; }
 
-/* Tokens partagés (barre fixe + modale) */
 .bc-item {
   display: inline-flex;
   align-items: center;
   font-family: 'Cutive Mono', monospace;
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: .02em;
   color: var(--text-3);
-  opacity: .6;
+  opacity: .7;
   cursor: pointer;
   white-space: nowrap;
   padding: 1px 4px;
   border-radius: 2px;
   transition: color .12s, opacity .12s;
+  max-width: 28ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .bc-item:hover {
-  color: var(--text-2);
+  color: var(--text);
   opacity: 1;
   background: none;
 }
 .bc-item.bc-current {
-  color: var(--text-2);
+  color: var(--text);
   font-weight: 500;
-  opacity: .85;
+  opacity: 1;
   cursor: default;
   background: none;
 }
 .bc-sep {
-  font-size: 8px;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 14px;
   color: var(--text-3);
-  padding: 0 1px;
+  padding: 0 4px;
   user-select: none;
-  opacity: .3;
+  opacity: .4;
 }
 .bc-ellipsis {
   font-family: 'Cutive Mono', monospace;
-  font-size: 9px;
+  font-size: 14px;
   color: var(--text-3);
-  opacity: .45;
-  padding: 1px 3px;
+  opacity: .55;
+  padding: 1px 4px;
   user-select: none;
   letter-spacing: .04em;
-}
-
-/* ── Fil d'Ariane dans la fiche détail ── */
-.detail-bc-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0;
-  padding: 18px 0 4px;
-  margin-top: 24px;
-  border-top: 1px solid var(--border-light);
-}
-.detail-bc-bar .bc-item {
-  font-size: 10px;
-  padding: 2px 4px;
-}
-.detail-bc-bar .bc-sep {
-  font-size: 9px;
-  padding: 0 1px;
 }
 
 
