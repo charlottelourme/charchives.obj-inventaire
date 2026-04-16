@@ -2394,13 +2394,13 @@ function _drawConGraph(canvas, nodes, links) {
     if (n.y === undefined) n.y = H / 2 + (Math.random() - 0.5) * 200;
   });
 
-  // Force de répulsion autour des titres de cluster (mode "intention" uniquement) :
-  // les images sont repoussées vers le bas si elles s'approchent de la zone du titre.
+  // Nœud-aimant répulsif invisible à la position de chaque titre de cluster
+  // → les images s'écartent naturellement pour laisser le titre respirer.
   const TITLE_OFFSET = 90;
-  const TITLE_SHIELD = 70; // rayon de la zone protégée autour du label
+  const TITLE_SHIELD_X = 120; // demi-largeur de la zone protégée (label peut être long)
+  const TITLE_SHIELD_Y = 55;  // demi-hauteur (label fait ~22px de haut)
   function titleRepulsion() {
     if (_conAffinityType !== 'intention') return;
-    // Calcule la position de chaque titre (cx, minY - TITLE_OFFSET)
     const clusterTitles = new Map();
     const groups = new Map();
     for (const n of nodes) {
@@ -2413,15 +2413,20 @@ function _drawConGraph(canvas, nodes, links) {
       const minY = arr.reduce((m, n) => Math.min(m, n.y || 0), Infinity);
       clusterTitles.set(name, { x: cx, y: minY - TITLE_OFFSET });
     }
-    // Pour chaque nœud, s'il est dans le shield d'un titre, pousse-le hors de cette zone
+    // Shield elliptique autour de chaque titre : les nœuds à l'intérieur sont éjectés
     for (const n of nodes) {
       for (const [, t] of clusterTitles) {
         const dx = n.x - t.x, dy = n.y - t.y;
-        const d = Math.hypot(dx, dy);
-        if (d < TITLE_SHIELD && d > 0) {
-          const push = (TITLE_SHIELD - d) * 0.28;
-          n.vx += (dx / d) * push;
-          n.vy += (dy / d) * push;
+        // Distance normalisée dans l'ellipse (≤ 1 = dans la zone protégée)
+        const ndx = dx / TITLE_SHIELD_X;
+        const ndy = dy / TITLE_SHIELD_Y;
+        const nd = Math.hypot(ndx, ndy);
+        if (nd < 1 && nd > 0) {
+          // Pousse radialement hors de l'ellipse, force proportionnelle à la pénétration
+          const push = (1 - nd) * 12;
+          const len = Math.hypot(dx, dy) || 1;
+          n.vx += (dx / len) * push;
+          n.vy += (dy / len) * push;
         }
       }
     }
