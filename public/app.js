@@ -2416,6 +2416,64 @@ function _drawConGraph(canvas, nodes, links) {
     });
 }
 
+// ── Labels de cluster Constellation — centroide par verbe, Cutive Mono MAJ.
+//    Couleur = textColor du duotone (_verbeActiveColor). Clic → bascule sur le verbe.
+function _updateClusterLabels(labelsG, nodes) {
+  // Groupe les nœuds par verbe
+  const groups = new Map();
+  for (const n of nodes) {
+    if (!n.category) continue;
+    if (!groups.has(n.category)) groups.set(n.category, []);
+    groups.get(n.category).push(n);
+  }
+  // Calcule le centroïde de chaque groupe
+  const clusters = Array.from(groups.entries())
+    .filter(([_, arr]) => arr.length >= 1)
+    .map(([name, arr]) => {
+      const cx = arr.reduce((s, n) => s + (n.x || 0), 0) / arr.length;
+      const cy = arr.reduce((s, n) => s + (n.y || 0), 0) / arr.length;
+      // Place le label LÉGÈREMENT AU-DESSUS du centroïde (en pixels locaux)
+      return { name, x: cx, y: cy - 48, count: arr.length };
+    });
+
+  const sel = labelsG.selectAll('text.con-cluster-label').data(clusters, d => d.name);
+
+  sel.enter().append('text')
+    .attr('class', 'con-cluster-label')
+    .style('cursor', 'pointer')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'middle')
+    .style('font-family', "'Cutive Mono', monospace")
+    .style('font-size', '14px')
+    .style('font-weight', '600')
+    .style('letter-spacing', '.12em')
+    .style('text-transform', 'uppercase')
+    .style('pointer-events', 'all')
+    .on('click', (e, d) => {
+      e.stopPropagation();
+      state.categoryFilter = d.name;
+      state.attrFilters.subcat = [];
+      if (state.view !== 'grid') setView('grid');
+      buildCategoryFilterBar();
+      buildIndexTrigger();
+      pushBreadcrumb(d.name, () => {
+        state.categoryFilter = d.name;
+        buildCategoryFilterBar();
+        render();
+      });
+      render();
+    })
+    .merge(sel)
+      .attr('x', d => d.x).attr('y', d => d.y)
+      .style('fill', d => {
+        const verbe = getVerbes().find(v => v.name === d.name);
+        return _verbeActiveColor(verbe);
+      })
+      .text(d => d.name);
+
+  sel.exit().remove();
+}
+
 // ══ NUÉE — Installation cinétique ═══════════════════════════════════════════
 // Fond blanc, objets flottants avec vélocité, collisions murs + entre eux.
 // Hover = boost de vitesse (x3), relâche = retour fluide.
