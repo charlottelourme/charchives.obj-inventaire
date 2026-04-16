@@ -633,14 +633,16 @@ function buildCategoryFilterBar() {
   verbes.forEach(v => {
     const btn = document.createElement('button');
     const isActive = state.categoryFilter === v.name;
-    const verbeColor = v.bgColor || v.color || '#2D2D2D';
+    const verbeColor  = v.bgColor || v.color || '#2D2D2D';
+    const activeColor = _verbeActiveColor(v); // version sombre/saturée du duotone
     btn.className = 'sfb-pill sfb-pill-verbe' + (isActive ? ' active' : '');
     btn.dataset.cat = v.name;
     btn.dataset.bg = verbeColor;
+    btn.dataset.active = activeColor;
     btn.dataset.fg = v.textColor || '#fff';
     if (isActive) {
-      // Actif : la typographie adopte la couleur identitaire du verbe
-      btn.style.color = verbeColor;
+      // Actif : typo = couleur saturée/sombre du duo (jamais le ton pastel)
+      btn.style.color = activeColor;
       btn.style.fontWeight = '';
     }
     btn.textContent = v.name;
