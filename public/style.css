@@ -7912,11 +7912,11 @@ body {
   letter-spacing: .01em;
 }
 
-/* Labels en majuscules : chasse augmentée, très petits */
+/* Labels en majuscules : chasse augmentée, très petits
+   (.card-meta-row retiré : chaque label dedans gère sa propre casse) */
 .sfb-label,
 .vpt-count,
 .card-typo-label,
-.card-meta-row,
 .portrait-typo-pill,
 .portrait-attr-label,
 .trios-eyebrow,
