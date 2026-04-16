@@ -7046,19 +7046,19 @@ function bindEvents() {
     }, { passive: true });
   })();
 
-  // ── Nuée zoom slider (Dérive) ──────────────────────────────────────────────
+  // ── Nuée zoom slider (Dérive) — pilote le scale du pan/zoom ────────────────
   (() => {
     const slider = document.getElementById('nueeZoomSlider');
     if (!slider) return;
-    const sliderToCols = v => {
+    const sliderToScale = v => {
       const min = parseFloat(slider.min) || 80;
       const max = parseFloat(slider.max) || 480;
       const ratio = (parseFloat(v) - min) / (max - min);
-      return Math.max(1, Math.round(7 - ratio * 5));
+      return 0.25 + ratio * 2.75; // range : 0.25 → 3
     };
     const apply = v => {
-      const grid = document.getElementById('galleryGrid');
-      if (grid) grid.style.setProperty('--gallery-cols', sliderToCols(v));
+      _nueePan.scale = sliderToScale(v);
+      _applyNueeTransform();
     };
     apply(slider.value);
     slider.addEventListener('input', e => apply(e.target.value));
