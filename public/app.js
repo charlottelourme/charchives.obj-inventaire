@@ -633,13 +633,14 @@ function buildCategoryFilterBar() {
   verbes.forEach(v => {
     const btn = document.createElement('button');
     const isActive = state.categoryFilter === v.name;
+    const verbeColor = v.bgColor || v.color || '#2D2D2D';
     btn.className = 'sfb-pill sfb-pill-verbe' + (isActive ? ' active' : '');
     btn.dataset.cat = v.name;
-    btn.dataset.bg = v.bgColor || v.color || '#2D2D2D';
+    btn.dataset.bg = verbeColor;
     btn.dataset.fg = v.textColor || '#fff';
     if (isActive) {
-      // Actif : pas de couleur inline — la CSS utilise var(--text) qui s'adapte au dark mode
-      btn.style.color = '';
+      // Actif : la typographie adopte la couleur identitaire du verbe
+      btn.style.color = verbeColor;
       btn.style.fontWeight = '';
     }
     btn.textContent = v.name;
