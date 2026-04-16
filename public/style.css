@@ -1153,7 +1153,6 @@ main { padding: 0; }
 .gallery-item.g-note[draggable="true"] { cursor: grab; }
 .gallery-item.g-note[draggable="true"]:active { cursor: grabbing; }
 .gallery-item.g-note.note-dragging { opacity: .35; }
-.gallery-item.note-drop-after { box-shadow: 4px 0 0 var(--border-strong); }
 /* Poignée + bouton menu apparaissent au hover */
 .gallery-item.g-note:hover .card-note-menu-btn { opacity: 1; }
 .gallery-item.g-note:hover .card-note-drag-handle { opacity: 0.7; }
