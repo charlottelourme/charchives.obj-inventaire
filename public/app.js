@@ -1495,8 +1495,8 @@ function render() {
     const isActive = p.dataset.cat === state.categoryFilter;
     p.classList.toggle('active', isActive);
     if (isActive && p.classList.contains('sfb-pill-verbe')) {
-      // Actif : Contraste Pur — noir absolu, aucun trait
-      p.style.color = '#000';
+      // Actif : pas de couleur inline — la CSS utilise var(--text) qui s'adapte light/dark
+      p.style.color = '';
       p.style.fontWeight = '';
       p.style.background = '';
       p.style.borderColor = '';
