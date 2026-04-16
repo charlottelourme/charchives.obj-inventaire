@@ -2322,6 +2322,10 @@ function _drawConGraph(canvas, nodes, links) {
     })
     .on('click', (event, d) => openDetail(d.id));
 
+  // ── Labels de cluster (titre verbe en majuscules) ──
+  // CRÉÉ EN DERNIER → rendu AU-DESSUS de tout (liens, halos, images)
+  const labelsG = zoomLayer.append('g').attr('class', 'con-labels-group');
+
   // ── Drag nœuds — repositionner sans déclencher le pan ──
   const drag = d3.drag()
     // Filtre standard : bouton gauche, pas de Ctrl
