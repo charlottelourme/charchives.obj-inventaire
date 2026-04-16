@@ -7471,47 +7471,48 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
    MARQUE-PAGES — "Mettre de côté"
    ══════════════════════════════════════════════════════════════ */
 
-/* ── Bouton astérisque — Coup de cœur ── */
-/* Design : fond blanc, contour gris, astérisque gris (identique à Sélection pill) */
+/* ── Bouton * Coup de cœur (cartes + galerie) — design unifié avec Sélection pill ──
+   Par défaut : fond blanc, astérisque gris clair
+   Hover      : fond légèrement assombri
+   Actif      : astérisque noir (reste visible en permanence sur l'image)
+   ────────────────────────────────────────────────────────────────────────────── */
 .card-bookmark-btn {
   position: absolute;
   top: 10px; right: 10px;
   z-index: 6;
-  /* Taille fixe — alignée sur .sel-ast-wrap pour cohérence visuelle */
   width: 17px; height: 17px;
   border-radius: 50%;
   border: 1px solid var(--text-3);
-  background: var(--bg);
+  background: #ffffff;
   cursor: pointer;
   opacity: 0;
-  transition: opacity .22s ease, border-color .22s ease, background .22s ease;
+  transition: opacity .22s ease, background .22s ease;
   display: flex; align-items: center; justify-content: center;
   padding: 0;
 }
 .card:hover .card-bookmark-btn,
 .gallery-item:hover .gallery-bookmark-btn { opacity: 0.90; }
 /* Une fois cliqué (bookmarked) : reste visible en permanence sur l'image */
-.card-bookmark-btn.bookmarked  { opacity: 1 !important; border-color: var(--text); background: var(--bg); }
-.card-bookmark-btn:hover        { opacity: 1 !important; }
+.card-bookmark-btn.bookmarked  { opacity: 1 !important; }
+.card-bookmark-btn:hover        { opacity: 1 !important; background: #ededea; }
 /* Bouton bookmark dans la Dérive Nuée — positionnement spécifique */
 .gallery-bookmark-btn { top: 8px; right: 8px; }
 
-/* ── Astérisque SVG — gris, uniforme partout ── */
+/* ── Astérisque SVG — gris par défaut, noir à l'actif (uniforme partout) ── */
 .ast-icon .ast-s {
   stroke: var(--text-3);
   stroke-width: 1.2;
   stroke-linecap: round;
   transition: stroke .22s ease;
 }
-/* Dans le bouton carte : icône grise sur fond clair */
 .card-bookmark-btn .ast-icon .ast-s { stroke: var(--text-3); stroke-width: 1.4; }
 .card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: var(--text); }
 
-/* Dark mode — bouton carte */
+/* Dark mode — bouton carte transparent, astérisque écru à l'actif */
 body.dark-mode .card-bookmark-btn { background: transparent; border-color: var(--text-3); }
-body.dark-mode .card-bookmark-btn.bookmarked { border-color: #f5f5f0; }
+body.dark-mode .card-bookmark-btn:hover { background: rgba(255,255,255,0.08); }
 body.dark-mode .card-bookmark-btn .ast-icon .ast-s { stroke: var(--text-3); }
-body.dark-mode .card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: #f5f5f0; }
+body.dark-mode .card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: var(--text); }
 
 /* Pill "Mis de côté" dans la status bar */
 .sfb-pill-bookmark.active { background: #8b5cf620; border-color: #8b5cf6 !important; color: #8b5cf6; }
