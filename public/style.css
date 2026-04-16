@@ -130,7 +130,7 @@ body.verbe-active .sfb-pill-verbe.active {
 /* Pill "Toutes" actif — Point de Galerie */
 body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active {
   background: transparent !important;
-  color: #000 !important;
+  color: var(--text) !important;
   font-weight: 700;
   opacity: 1;
 }
