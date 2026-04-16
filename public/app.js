@@ -2199,9 +2199,6 @@ function _drawConGraph(canvas, nodes, links) {
       .append('feGaussianBlur').attr('stdDeviation', 16);
   }
 
-  // ── Labels de cluster (titre verbe en majuscules) ──
-  const labelsG = zoomLayer.append('g').attr('class', 'con-labels-group');
-
   // ── Nœuds — images brutes, sans cercles ──
   const nodesG = zoomLayer.append('g').attr('class', 'con-nodes-group');
   const nodeEl = nodesG.selectAll('g.con-node')
