@@ -1635,16 +1635,17 @@ function renderGrid(items) {
       const verbe = getVerbes().find(v => v.name === state.categoryFilter);
       if (verbe) {
         const typos = getTypologies(verbe);
-        const col = verbe.bgColor || verbe.color || '#2D2D2D';
-        const fg  = verbe.textColor || '#fff';
+        const col         = verbe.bgColor || verbe.color || '#2D2D2D';
+        const fg          = verbe.textColor || '#fff';
+        const activeColor = _verbeActiveColor(verbe);
         const pillsHTML = typos.map(t => {
           const isActive = state.attrFilters.subcat.includes(t);
           return `<button class="vpt-pill${isActive ? ' active' : ''}" data-typo="${esc(t)}"
-            style="--vpt-col:${col};--vpt-fg:${fg}">${esc(t)}</button>`;
+            style="--vpt-col:${activeColor};--vpt-fg:${fg}">${esc(t)}</button>`;
         }).join('');
         titleHTML = `<div class="verbe-page-title">
           <div class="vpt-top">
-            <h1 class="vpt-name" style="color:${col}">${esc(verbe.name)}</h1>
+            <h1 class="vpt-name" style="color:${activeColor}">${esc(verbe.name)}</h1>
             <span class="vpt-count">${items.length}&nbsp;objet${items.length!==1?'s':''}</span>
           </div>
           ${typos.length ? `<div class="vpt-pills">${pillsHTML}</div>` : ''}
