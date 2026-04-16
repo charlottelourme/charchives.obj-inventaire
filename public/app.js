@@ -2505,8 +2505,8 @@ function renderGallery(filtered) {
 
   _bindGalleryEvents();
   _initGalleryNoteInteractions(grid, items);
-  // Attend que les images soient mesurables, puis initialise la physique
-  requestAnimationFrame(() => _initNueePhysics());
+  // Démarre immédiatement la physique — les dimensions seront re-mesurées via les img.onload
+  _initNueePhysics();
 }
 
 // ══ Moteur physique Nuée ═══════════════════════════════════════════════════
