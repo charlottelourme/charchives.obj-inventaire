@@ -2403,6 +2403,7 @@ function renderGallery(filtered) {
 
   items.forEach(c => {
     // ── Note intercalaire dans la Dérive ──
+    // Interactive : drag & drop, clic = modifier, bouton ··· = modifier, state partagé avec Inventaire
     if (c.type === 'note') {
       const bg  = c.backgroundColor || '#F5E6D3';
       const lum = _luminance(bg);
@@ -2410,13 +2411,17 @@ function renderGallery(filtered) {
       const fontCls = c.noteFont === 'terrain' ? 'font-terrain' : 'font-poetic';
       const item = document.createElement('div');
       item.className = 'gallery-item g-note g-sm';
-      item.dataset.id  = c.id;
+      item.dataset.id   = c.id;
+      item.dataset.note = '1';       // marqueur pour les sélecteurs du drag&drop
+      item.draggable    = true;
       item.style.setProperty('--note-bg', bg);
       item.style.background = 'transparent';
       item.style.color      = fg;
-      item.innerHTML = `<div class="gallery-note-text ${fontCls}">${esc(c.content || '')}</div>`;
+      item.innerHTML = `
+        <div class="card-note-drag-handle" title="Déplacer">⠿</div>
+        <div class="gallery-note-text ${fontCls}">${esc(c.content || '')}</div>
+        <button class="card-note-menu-btn" title="Modifier la note">···</button>`;
       grid.appendChild(item);
-      // Les notes ne sont pas cliquables dans la Dérive
       return;
     }
 
