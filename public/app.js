@@ -2531,18 +2531,17 @@ function _initNueePhysics() {
     // Vélocité lente aléatoire (−0.45 à +0.45 px/frame ≈ 27px/s)
     const vx = (Math.random() - 0.5) * 0.9;
     const vy = (Math.random() - 0.5) * 0.9;
-    const rot = parseFloat(el.style.getPropertyValue('--nr')) || 0;
-    const body = { el, x, y, vx, vy, w, h, rot, boost: 1 };
+    const rot   = parseFloat(el.style.getPropertyValue('--nr')) || 0;
+    const scale = parseFloat(el.style.getPropertyValue('--ns')) || 1;
+    const body = { el, x, y, vx, vy, w, h, rot, scale, boost: 1 };
     _nueeBodies.push(body);
-    // Retire la classe legacy, repositionne en absolu
     el.style.position = 'absolute';
     el.style.left = '0px';
     el.style.top = '0px';
-    el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+    el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${scale})`;
 
-    // Hover = boost ; mouseleave = retour fluide
+    // Hover = boost ; mouseleave géré par le decay du tick
     el.addEventListener('mouseenter', () => { body.boost = 3.5; });
-    el.addEventListener('mouseleave', () => { /* decay géré par le tick */ });
   });
 
   // Mesure la taille réelle de chaque body après que les images sont chargées
