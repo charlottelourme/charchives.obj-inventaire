@@ -5526,14 +5526,15 @@ body.dark-mode header {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
-/* Dark mode — backdrop sombre léger, fenêtre lisible avec halo verbe */
+/* Dark mode — backdrop sombre léger, modal transparent (Soft Block halo verbe seul) */
 body.dark-mode #detailModal.modal-overlay {
   background: rgba(8, 7, 6, 0.45) !important;
 }
 body.dark-mode #detailModal .modal {
-  background: rgba(22, 20, 18, 0.94) !important;
+  background: transparent !important;
 }
 body.dark-mode #detailModal .modal-header,
+body.dark-mode #detailModal .modal-body,
 body.dark-mode #detailModal .modal-footer {
   background: transparent !important;
 }
