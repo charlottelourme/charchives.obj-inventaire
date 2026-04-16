@@ -1760,9 +1760,8 @@ function cardHTML(c) {
       <div class="card-drop-hint">Déposer les photos ici</div>
     </div>
     <div class="card-body">
-      ${metaRow}
       <div class="card-name">${esc(c.name)}</div>
-      ${c.description ? `<div class="card-desc">${esc(c.description)}</div>` : ''}
+      ${metaRow}
       <div class="card-footer-row">
         <div class="card-price-status">
           ${statusColor ? `<span class="card-status-dot" style="background:${statusColor}"></span>` : ''}
