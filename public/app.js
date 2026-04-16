@@ -7160,17 +7160,17 @@ function bindEvents() {
     }, { passive: true });
   })();
 
-  // ── Nuée : slider = vitesse globale de l'installation cinétique ────────────
+  // ── Nuée : slider = zoom visuel global (échelle des cartes) ───────────────
   (() => {
     const slider = document.getElementById('nueeZoomSlider');
     if (!slider) return;
-    const sliderToSpeed = v => {
+    const sliderToZoom = v => {
       const min = parseFloat(slider.min) || 80;
       const max = parseFloat(slider.max) || 480;
       const ratio = (parseFloat(v) - min) / (max - min);
-      return 0.2 + ratio * 2.3; // 0.2× (lent) → 2.5× (rapide)
+      return 0.35 + ratio * 1.9; // 0.35× (dézoom large) → 2.25× (zoom serré)
     };
-    const apply = v => { _nueeSpeedMultiplier = sliderToSpeed(v); };
+    const apply = v => { _nueeZoom = sliderToZoom(v); };
     apply(slider.value);
     slider.addEventListener('input', e => apply(e.target.value));
     slider.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
