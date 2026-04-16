@@ -36,11 +36,35 @@ body {
 /* ── Photos : couleurs en Light Mode, noir & blanc en Dark Mode ── */
 img { transition: filter .4s ease; }
 
-/* Dark mode uniquement : grayscale + boost luminosité */
+/* ══════════════════════════════════════════════════════════════════════════
+   DARK MODE — Ponctuation colorée
+   Règle par défaut : grayscale sur toutes les images d'objets.
+   La couleur revient UNIQUEMENT comme révélation : hover grille, fiche produit,
+   vue Triptyque, et notes (qui conservent leur halo verbe).
+   ══════════════════════════════════════════════════════════════════════════ */
 body.dark-mode img,
 body.dark-mode .con-node image {
   filter: grayscale(100%) contrast(1.08) brightness(1.12);
+  transition: filter .22s ease;
 }
+/* 1. Survol d'un objet dans la grille Inventaire — couleur d'origine */
+body.dark-mode .card:hover .card-thumb { filter: none; }
+/* 2. Survol d'un objet dans la Dérive Nuée */
+body.dark-mode .gallery-item:not(.g-note):hover img { filter: none; }
+/* 3. Survol d'un nœud Constellation */
+body.dark-mode .con-node:hover image { filter: none; }
+/* 4. Fiche produit (modale détail) — toujours en couleur, halo inclus */
+body.dark-mode #detailModal img,
+body.dark-mode #detailModal .portrait-main-img,
+body.dark-mode #detailModal .portrait-thumb { filter: none !important; }
+/* 5. Triptyque — comparaison toujours en couleur */
+body.dark-mode #triosView img,
+body.dark-mode .trios-slot-wrap img,
+body.dark-mode .trios-grid img { filter: none !important; }
+/* 6. Notes — pas d'images, mais on garantit que leur halo verbe (::before)
+      n'est pas filtré par un éventuel sélecteur parent */
+body.dark-mode .card-note::before,
+body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
 
 /* ── Thème verbe actif — fond neutre (monochrome) ── */
 body.verbe-active {
