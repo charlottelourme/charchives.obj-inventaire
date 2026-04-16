@@ -1845,8 +1845,7 @@ body.dark-mode .ast-icon.sel-ast .ast-s { stroke: var(--text-3); }
   border: none;
   cursor: pointer;
   color: var(--text-2);
-  font-size: 18px;
-  padding: 10px;         /* min 44×44px tap target */
+  padding: 10px;
   margin: -6px -6px -6px 0;
   line-height: 1;
   min-width: 44px;
@@ -1854,8 +1853,20 @@ body.dark-mode .ast-icon.sel-ast .ast-s { stroke: var(--text-3); }
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color .15s;
 }
 .modal-close:hover { color: var(--text); }
+
+/* ── Icônes UI unifiées — stroke 1.5, box 24×24 (Lucide-like) ────────────── */
+.ui-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  pointer-events: none;
+}
 
 .modal-body { padding: 28px 28px 32px; }
 .field { margin-bottom: 16px; }
