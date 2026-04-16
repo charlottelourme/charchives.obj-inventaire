@@ -1132,19 +1132,27 @@ main { padding: 0; }
   word-break: break-word;
   white-space: pre-wrap;
 }
-/* Note dans la galerie Dérive */
+/* Note dans la galerie Dérive — interactive (drag/drop, clic = édition) */
 .gallery-item.g-note {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px 16px;
-  cursor: default;
+  cursor: pointer;
   /* Soft Block — reprend le style des notes Inventaire */
   background: transparent;
   overflow: visible;
   isolation: isolate;
   position: relative;
 }
+/* Drag & drop — états (identiques aux notes Inventaire) */
+.gallery-item.g-note[draggable="true"] { cursor: grab; }
+.gallery-item.g-note[draggable="true"]:active { cursor: grabbing; }
+.gallery-item.g-note.note-dragging { opacity: .35; }
+.gallery-item.note-drop-after { box-shadow: 4px 0 0 var(--border-strong); }
+/* Poignée + bouton menu apparaissent au hover */
+.gallery-item.g-note:hover .card-note-menu-btn { opacity: 1; }
+.gallery-item.g-note:hover .card-note-drag-handle { opacity: 0.7; }
 .gallery-item.g-note::before {
   content: '';
   position: absolute;
