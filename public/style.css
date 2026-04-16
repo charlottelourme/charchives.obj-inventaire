@@ -3922,15 +3922,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .attr-chip:hover {
   border: none;
   background: transparent;
-  color: #000;
+  color: var(--text);
 }
 .attr-chip.selected {
   background: transparent;
   border: none;
-  color: #000;
+  color: var(--text);
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
 }
 
 /* Univers chips */
@@ -3940,10 +3939,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 #universChips .attr-chip.selected {
   background: transparent;
   border: none;
-  color: #4a3728;
+  color: var(--text);
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
 }
 .tag-univers {
   background: transparent;
