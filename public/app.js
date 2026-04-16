@@ -2483,13 +2483,9 @@ function renderGallery(filtered) {
     item.dataset.id = c.id;
     item.dataset.cat = c.category || '';
 
-    // Pose aléatoire déterministe (même objet = même position d'un render à l'autre)
     const pose = _galleryPose(c.id);
-    item.style.setProperty('--nx', `${pose.x}px`);
-    item.style.setProperty('--ny', `${pose.y}px`);
     item.style.setProperty('--nr', `${pose.rot}deg`);
     item.style.setProperty('--ns', pose.scale);
-    item.style.zIndex = String(Math.floor((pose.x + pose.y + 3000) / 10));
 
     const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
     const bookmarkBtn = `<button class="card-bookmark-btn gallery-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}">${_asteriskSVG()}</button>`;
@@ -2503,68 +2499,128 @@ function renderGallery(filtered) {
     }
 
     grid.appendChild(item);
-    _galleryItems.push({ el: item, id: c.id, category: c.category || '' });
+    _galleryItems.push({ el: item, id: c.id, category: c.category || '', rot: pose.rot });
   });
 
   _bindGalleryEvents();
   _initGalleryNoteInteractions(grid, items);
-  _initNueePanZoom();
-  _applyNueeTransform();
+  // Attend que les images soient mesurables, puis initialise la physique
+  requestAnimationFrame(() => _initNueePhysics());
 }
 
-// ── Pan & Zoom sur le viewport Nuée ────────────────────────────────────────
-function _applyNueeTransform() {
-  const surface = document.getElementById('galleryGrid');
-  if (!surface) return;
-  surface.style.transform = `translate(${_nueePan.x}px, ${_nueePan.y}px) scale(${_nueePan.scale})`;
-}
-
-function _initNueePanZoom() {
+// ══ Moteur physique Nuée ═══════════════════════════════════════════════════
+// Accès DOM direct via style.transform, aucun state React, ~60fps.
+// Pause automatique quand #detailModal est ouvert.
+// ═══════════════════════════════════════════════════════════════════════════
+function _initNueePhysics() {
   const viewport = document.getElementById('galleryScroll');
-  if (!viewport || viewport.dataset.panZoomInit === '1') return;
-  viewport.dataset.panZoomInit = '1';
+  const surface  = document.getElementById('galleryGrid');
+  if (!viewport || !surface) return;
+  _nueeViewport = viewport;
+  const vw = viewport.clientWidth;
+  const vh = viewport.clientHeight;
 
-  // Pan — drag sur le fond (pas sur un item ni son bouton)
-  viewport.addEventListener('mousedown', (e) => {
-    if (e.target.closest('.gallery-item')) return;
-    _nueeDragging = true;
-    _nueeDragStart = { x: e.clientX - _nueePan.x, y: e.clientY - _nueePan.y };
-    viewport.classList.add('nuee-grabbing');
-    e.preventDefault();
-  });
-  window.addEventListener('mousemove', (e) => {
-    if (!_nueeDragging) return;
-    _nueePan.x = e.clientX - _nueeDragStart.x;
-    _nueePan.y = e.clientY - _nueeDragStart.y;
-    _applyNueeTransform();
-  });
-  window.addEventListener('mouseup', () => {
-    if (!_nueeDragging) return;
-    _nueeDragging = false;
-    viewport.classList.remove('nuee-grabbing');
+  // Construire les corps physiques à partir des .gallery-item (hors notes)
+  _nueeBodies = [];
+  const nodes = surface.querySelectorAll('.gallery-item:not(.g-note)');
+  nodes.forEach((el) => {
+    // Position aléatoire dans le viewport, sans dépasser les bords
+    const w = 200, h = 200; // dimension de base (ajustée après mesure)
+    const x = Math.random() * Math.max(10, vw - w);
+    const y = Math.random() * Math.max(10, vh - h);
+    // Vélocité lente aléatoire (−0.45 à +0.45 px/frame ≈ 27px/s)
+    const vx = (Math.random() - 0.5) * 0.9;
+    const vy = (Math.random() - 0.5) * 0.9;
+    const rot = parseFloat(el.style.getPropertyValue('--nr')) || 0;
+    const body = { el, x, y, vx, vy, w, h, rot, boost: 1 };
+    _nueeBodies.push(body);
+    // Retire la classe legacy, repositionne en absolu
+    el.style.position = 'absolute';
+    el.style.left = '0px';
+    el.style.top = '0px';
+    el.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+
+    // Hover = boost ; mouseleave = retour fluide
+    el.addEventListener('mouseenter', () => { body.boost = 3.5; });
+    el.addEventListener('mouseleave', () => { /* decay géré par le tick */ });
   });
 
-  // Zoom — molette (centré sur la souris)
-  viewport.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const rect = viewport.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-    const delta = -e.deltaY * 0.0015;
-    const newScale = Math.max(0.25, Math.min(3, _nueePan.scale * (1 + delta)));
-    // Recentre le zoom sur la position de la souris
-    _nueePan.x = mx - (mx - _nueePan.x) * (newScale / _nueePan.scale);
-    _nueePan.y = my - (my - _nueePan.y) * (newScale / _nueePan.scale);
-    _nueePan.scale = newScale;
-    _applyNueeTransform();
-    // Sync slider de zoom du header si présent
-    const slider = document.getElementById('nueeZoomSlider');
-    if (slider) {
-      const sMin = parseFloat(slider.min) || 80;
-      const sMax = parseFloat(slider.max) || 480;
-      slider.value = Math.round(sMin + ((newScale - 0.25) / 2.75) * (sMax - sMin));
+  // Mesure la taille réelle de chaque body après que les images sont chargées
+  const measureAll = () => {
+    _nueeBodies.forEach((b) => {
+      const r = b.el.getBoundingClientRect();
+      if (r.width && r.height) { b.w = r.width; b.h = r.height; }
+    });
+  };
+  // Deux passes : maintenant + après chargement des images
+  measureAll();
+  surface.querySelectorAll('img').forEach((img) => {
+    if (!img.complete) img.addEventListener('load', measureAll, { once: true });
+  });
+
+  // Démarrer la boucle
+  if (_galleryRafId) cancelAnimationFrame(_galleryRafId);
+  _galleryRafId = requestAnimationFrame(_nueeTick);
+}
+
+function _nueeTick() {
+  _galleryRafId = requestAnimationFrame(_nueeTick);
+  if (!_nueeViewport || !_nueeBodies.length) return;
+  // Pause quand la fiche produit est ouverte
+  const detail = document.getElementById('detailModal');
+  if (detail && detail.style.display !== 'none' && detail.style.display !== '') return;
+
+  const vw = _nueeViewport.clientWidth;
+  const vh = _nueeViewport.clientHeight;
+
+  // 1. Avance chaque corps + decay progressif du boost
+  for (const b of _nueeBodies) {
+    // Decay exponentiel vers 1 (retour fluide après mouseleave)
+    if (b.boost > 1) b.boost = Math.max(1, 1 + (b.boost - 1) * 0.94);
+
+    b.x += b.vx * b.boost;
+    b.y += b.vy * b.boost;
+
+    // Rebonds sur les bords
+    if (b.x < 0)              { b.x = 0;            b.vx = Math.abs(b.vx); }
+    if (b.y < 0)              { b.y = 0;            b.vy = Math.abs(b.vy); }
+    if (b.x + b.w > vw)       { b.x = vw - b.w;     b.vx = -Math.abs(b.vx); }
+    if (b.y + b.h > vh)       { b.y = vh - b.h;     b.vy = -Math.abs(b.vy); }
+  }
+
+  // 2. Collisions AABB entre paires — échange des vélocités
+  const n = _nueeBodies.length;
+  for (let i = 0; i < n; i++) {
+    const a = _nueeBodies[i];
+    for (let j = i + 1; j < n; j++) {
+      const b = _nueeBodies[j];
+      if (a.x < b.x + b.w && a.x + a.w > b.x &&
+          a.y < b.y + b.h && a.y + a.h > b.y) {
+        // Échange des vélocités (rebond élastique simplifié)
+        const tvx = a.vx, tvy = a.vy;
+        a.vx = b.vx; a.vy = b.vy;
+        b.vx = tvx;  b.vy = tvy;
+        // Sépare légèrement pour éviter le collage
+        const cxA = a.x + a.w / 2, cyA = a.y + a.h / 2;
+        const cxB = b.x + b.w / 2, cyB = b.y + b.h / 2;
+        const dx = cxA - cxB, dy = cyA - cyB;
+        const mag = Math.hypot(dx, dy) || 1;
+        const push = 0.6;
+        a.x += (dx / mag) * push; a.y += (dy / mag) * push;
+        b.x -= (dx / mag) * push; b.y -= (dy / mag) * push;
+      }
     }
-  }, { passive: false });
+  }
+
+  // 3. Applique au DOM (une seule écriture par corps)
+  for (const b of _nueeBodies) {
+    b.el.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg)`;
+  }
+}
+
+function _stopNueePhysics() {
+  if (_galleryRafId) { cancelAnimationFrame(_galleryRafId); _galleryRafId = null; }
+  _nueeBodies = [];
 }
 
 function _bindGalleryEvents() {
