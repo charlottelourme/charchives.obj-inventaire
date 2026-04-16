@@ -2586,13 +2586,12 @@ function _initNueePhysics() {
   _nueeBodies = [];
   const nodes = surface.querySelectorAll('.gallery-item:not(.g-note)');
   nodes.forEach((el) => {
-    // Position aléatoire dans le viewport, sans dépasser les bords
-    const w = 200, h = 200; // dimension de base (ajustée après mesure)
+    const w = 200, h = 200;
     const x = Math.random() * Math.max(10, vw - w);
     const y = Math.random() * Math.max(10, vh - h);
-    // Vélocité lente aléatoire (−0.45 à +0.45 px/frame ≈ 27px/s)
-    const vx = (Math.random() - 0.5) * 0.9;
-    const vy = (Math.random() - 0.5) * 0.9;
+    // Vélocité de base augmentée pour un flux plus ample (−1 à +1 px/frame ≈ 60px/s)
+    const vx = (Math.random() - 0.5) * 2.0;
+    const vy = (Math.random() - 0.5) * 2.0;
     const rot   = parseFloat(el.style.getPropertyValue('--nr')) || 0;
     const scale = parseFloat(el.style.getPropertyValue('--ns')) || 1;
     const body = { el, x, y, vx, vy, w, h, rot, scale, boost: 1 };
