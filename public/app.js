@@ -2451,9 +2451,10 @@ function _drawConGraph(canvas, nodes, links) {
     });
 }
 
-// ── Labels de cluster Constellation — centroide par verbe, Cormorant italique MAJ.
-//    Couleur = textColor du duotone (_verbeActiveColor). Clic → bascule sur le verbe.
-//    Position : au-dessus de l'image la plus haute du cluster (pas sur les images).
+// ── Labels de cluster Constellation — Cormorant italique MAJUSCULES
+//    Double rendu SVG pour effet halo : <text stroke="white" stroke-width="6"> sous
+//    <text fill="darkVerbe">. Les lignes passant derrière semblent s'interrompre autour
+//    des lettres sans rectangle de fond. Clic → bascule sur le verbe.
 function _updateClusterLabels(labelsG, nodes) {
   const groups = new Map();
   for (const n of nodes) {
@@ -2461,55 +2462,72 @@ function _updateClusterLabels(labelsG, nodes) {
     if (!groups.has(n.category)) groups.set(n.category, []);
     groups.get(n.category).push(n);
   }
-  // Pour chaque cluster : centre X = moyenne, Y = min(y) - offset (image la plus haute)
-  const TITLE_OFFSET = 90;  // distance au-dessus de l'image la plus haute
+  const TITLE_OFFSET = 90;
   const clusters = Array.from(groups.entries())
     .filter(([_, arr]) => arr.length >= 1)
     .map(([name, arr]) => {
-      const cx  = arr.reduce((s, n) => s + (n.x || 0), 0) / arr.length;
+      const cx   = arr.reduce((s, n) => s + (n.x || 0), 0) / arr.length;
       const minY = arr.reduce((m, n) => Math.min(m, n.y || 0), Infinity);
-      return { name, x: cx, y: minY - TITLE_OFFSET, count: arr.length };
+      return { name, x: cx, y: minY - TITLE_OFFSET };
     });
 
-  const sel = labelsG.selectAll('text.con-cluster-label').data(clusters, d => d.name);
-
-  sel.enter().append('text')
-    .attr('class', 'con-cluster-label')
-    .style('cursor', 'pointer')
+  // Style typo commun aux deux couches (halo + fill)
+  const applyTypo = (sel) => sel
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
-    // Typo éditoriale — même police que les onglets Intention (Cormorant Garamond italique)
-    // JAMAIS de Cutive Mono sur les titres de verbe.
     .style('font-family', "'Cormorant Garamond', Georgia, serif")
     .style('font-style', 'italic')
     .style('font-size', '22px')
     .style('font-weight', '400')
     .style('letter-spacing', '.02em')
     .style('text-transform', 'uppercase')
-    .style('pointer-events', 'all')
-    .on('click', (e, d) => {
-      e.stopPropagation();
-      state.categoryFilter = d.name;
-      state.attrFilters.subcat = [];
-      if (state.view !== 'grid') setView('grid');
-      buildCategoryFilterBar();
-      buildIndexTrigger();
-      pushBreadcrumb(d.name, () => {
-        state.categoryFilter = d.name;
-        buildCategoryFilterBar();
-        render();
-      });
-      render();
-    })
-    .merge(sel)
-      .attr('x', d => d.x).attr('y', d => d.y)
-      .style('fill', d => {
-        const verbe = getVerbes().find(v => v.name === d.name);
-        return _verbeActiveColor(verbe);
-      })
-      .text(d => d.name);
+    .style('paint-order', 'stroke fill');  // halo dessiné AVANT le fill
 
-  sel.exit().remove();
+  // Couche 1 : HALO — texte blanc épais qui découpe les liens passant derrière.
+  // Unique <text> avec stroke blanc + fill blanc = forme pleine de la lettre épaissie.
+  const bgColor = getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#fafaf8';
+  const haloSel = labelsG.selectAll('text.con-cluster-halo').data(clusters, d => d.name);
+  const haloEnter = haloSel.enter().append('text').attr('class', 'con-cluster-halo')
+    .attr('aria-hidden', 'true')
+    .style('pointer-events', 'none');
+  applyTypo(haloEnter);
+  haloEnter.merge(haloSel)
+    .attr('x', d => d.x).attr('y', d => d.y)
+    .attr('stroke', bgColor)
+    .attr('stroke-width', 8)
+    .attr('stroke-linejoin', 'round')
+    .attr('fill', bgColor)
+    .text(d => d.name);
+  haloSel.exit().remove();
+
+  // Couche 2 : FILL — texte sombre couleur verbe, cliquable
+  const fillSel = labelsG.selectAll('text.con-cluster-label').data(clusters, d => d.name);
+  const fillEnter = fillSel.enter().append('text').attr('class', 'con-cluster-label')
+    .style('cursor', 'pointer')
+    .style('pointer-events', 'all');
+  applyTypo(fillEnter);
+  fillEnter.on('click', (e, d) => {
+    e.stopPropagation();
+    state.categoryFilter = d.name;
+    state.attrFilters.subcat = [];
+    if (state.view !== 'grid') setView('grid');
+    buildCategoryFilterBar();
+    buildIndexTrigger();
+    pushBreadcrumb(d.name, () => {
+      state.categoryFilter = d.name;
+      buildCategoryFilterBar();
+      render();
+    });
+    render();
+  });
+  fillEnter.merge(fillSel)
+    .attr('x', d => d.x).attr('y', d => d.y)
+    .style('fill', d => {
+      const verbe = getVerbes().find(v => v.name === d.name);
+      return _verbeActiveColor(verbe);
+    })
+    .text(d => d.name);
+  fillSel.exit().remove();
 }
 
 // ══ NUÉE — Installation cinétique ═══════════════════════════════════════════
