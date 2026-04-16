@@ -2517,31 +2517,41 @@ function _initGalleryNoteInteractions(grid, items) {
   });
 
   // Drop targets : tous les gallery-item (objets + autres notes)
+  // Indicateur unifié : ligne horizontale au-dessus ou en-dessous de la cible
   grid.querySelectorAll('.gallery-item').forEach(galItem => {
     galItem.addEventListener('dragover', e => {
       if (!_dragNoteId) return;
       if (galItem.dataset.id === _dragNoteId) return;
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-      grid.querySelectorAll('.note-drop-after').forEach(t => t.classList.remove('note-drop-after'));
-      galItem.classList.add('note-drop-after');
+      const rect = galItem.getBoundingClientRect();
+      const isAbove = e.clientY < rect.top + rect.height / 2;
+      grid.querySelectorAll('.note-drop-above, .note-drop-below')
+        .forEach(t => t.classList.remove('note-drop-above', 'note-drop-below'));
+      galItem.classList.add(isAbove ? 'note-drop-above' : 'note-drop-below');
+      galItem.dataset.dropPos = isAbove ? 'above' : 'below';
     });
-    galItem.addEventListener('dragleave', () => galItem.classList.remove('note-drop-after'));
+    galItem.addEventListener('dragleave', () => {
+      galItem.classList.remove('note-drop-above', 'note-drop-below');
+      delete galItem.dataset.dropPos;
+    });
     galItem.addEventListener('drop', async e => {
       if (!_dragNoteId) return;
       if (!e.dataTransfer.types.includes('application/x-note-id')) return;
       e.preventDefault();
-      galItem.classList.remove('note-drop-after');
+      const dropPos = galItem.dataset.dropPos || 'below';
+      galItem.classList.remove('note-drop-above', 'note-drop-below');
+      delete galItem.dataset.dropPos;
 
       const dropTargetId = galItem.dataset.id;
-      // Calcul du nouvel index parmi les objets
       const itemIdx = items.findIndex(c => c.id === dropTargetId);
       let newPos;
       if (itemIdx >= 0 && items[itemIdx]?.type !== 'note') {
-        newPos = itemIdx + 1;
+        newPos = dropPos === 'above' ? itemIdx : itemIdx + 1;
       } else {
         const targetNote = state.collections.find(c => c.id === dropTargetId && c.type === 'note');
-        newPos = targetNote ? (targetNote.notePos ?? 0) + 0.5 : 0;
+        const pos = targetNote?.notePos ?? 0;
+        newPos = dropPos === 'above' ? pos - 0.5 : pos + 0.5;
       }
 
       const note = state.collections.find(c => c.id === _dragNoteId);
