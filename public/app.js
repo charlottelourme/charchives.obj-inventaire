@@ -2219,21 +2219,19 @@ function _drawConGraph(canvas, nodes, links) {
       .attr('fill', '#ffffff')
       .attr('stroke', '#9ca3af')
       .attr('stroke-width', 1);
-    // Astérisque 4 branches — viewBox 24×24 rendu à 10×10 centré (scale 10/24, centre (12,12))
-    const astColor = isBookmarked ? '#18181b' : '#9ca3af';
+    // Croix "+" — 2 branches verticale + horizontale (viewBox 24×24 rendu à 10×10 centré)
+    const astColor = isBookmarked ? '#ffffff' : '#18181b'; // actif = inversé
     const astG = addG.append('g').attr('class', 'con-ast-icon').attr('transform', 'scale(0.4167)');
     const astLines = [
-      [12, 2.5, 12, 21.5],
-      [2.5, 12, 21.5, 12],
-      [5.1, 5.1, 18.9, 18.9],
-      [18.9, 5.1, 5.1, 18.9]
+      [12, 4, 12, 20],   // verticale
+      [4, 12, 20, 12]    // horizontale
     ];
     astLines.forEach(([x1, y1, x2, y2]) => {
       astG.append('line')
         .attr('x1', x1 - 12).attr('y1', y1 - 12)
         .attr('x2', x2 - 12).attr('y2', y2 - 12)
         .attr('stroke', astColor)
-        .attr('stroke-width', 1.4 / 0.4167)  // compenser le scale pour garder 1.4px visuel
+        .attr('stroke-width', 1.4 / 0.4167)
         .attr('stroke-linecap', 'round');
     });
     addG.on('click', async (event) => {
