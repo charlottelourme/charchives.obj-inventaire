@@ -2385,34 +2385,27 @@ function _drawConGraph(canvas, nodes, links) {
     });
 }
 
-// ══ NUÉE — Table de tri éditoriale ═══════════════════════════════════════════
-// Fond blanc pur, cartes éparpillées aléatoirement, chevauchements, rotations
-// légères. Pan & Zoom (drag + wheel). Hover : grayscale-0 + premier plan + se redresse.
+// ══ NUÉE — Installation cinétique ═══════════════════════════════════════════
+// Fond blanc, objets flottants avec vélocité, collisions murs + entre eux.
+// Hover = boost de vitesse (x3), relâche = retour fluide.
+// Moteur : requestAnimationFrame + element.style.transform (aucun state React).
+// Pause automatique quand la fiche produit est ouverte.
 // ══════════════════════════════════════════════════════════════════════════════
 
 let _galleryItems = [];
 let _galleryRafId = null;
-let _nueePan = { x: 0, y: 0, scale: 1 };
-let _nueeDragging = false;
-let _nueeDragStart = null;
+let _nueeBodies = [];      // [{ el, x, y, vx, vy, w, h, rot, boost }]
+let _nueeViewport = null;
 
-// Pose déterministe depuis l'id — positions/angles/échelles stables entre renders
+// Pose déterministe (rotation + scale stables par id, pour look varié)
 function _galleryPose(id) {
   const hash = (seed) => [...(id || 'x')].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, seed);
   const norm = (h) => (Math.abs(h) % 100000) / 100000;
-  const nx = norm(hash(1));
-  const ny = norm(hash(13));
-  const nr = norm(hash(97));
-  const ns = norm(hash(173));
-  // Canvas virtuel — dispersion organique (centré sur 0,0)
-  const x   = (nx - 0.5) * 2600;
-  const y   = (ny - 0.5) * 1800;
-  const rot = (nr - 0.5) * 10;        // −5° à +5°
-  const scale = 0.82 + ns * 0.28;     // 0.82 à 1.10
-  return { x, y, rot, scale };
+  const rot = (norm(hash(97)) - 0.5) * 10;      // −5° à +5°
+  const scale = 0.82 + norm(hash(173)) * 0.28;  // 0.82 à 1.10
+  return { rot, scale };
 }
 
-// Conserve la classe legacy (rétrocompat avec anciennes feuilles de style ajoutées)
 function _gallerySize() { return 'g-md'; }
 
 function _shuffleArray(arr) {
