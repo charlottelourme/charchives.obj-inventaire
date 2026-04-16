@@ -2385,23 +2385,35 @@ function _drawConGraph(canvas, nodes, links) {
     });
 }
 
-// ══ GALERIE INFINIE — Cabinet de Curiosités ══════════════════════════════════
+// ══ NUÉE — Table de tri éditoriale ═══════════════════════════════════════════
+// Fond blanc pur, cartes éparpillées aléatoirement, chevauchements, rotations
+// légères. Pan & Zoom (drag + wheel). Hover : grayscale-0 + premier plan + se redresse.
+// ══════════════════════════════════════════════════════════════════════════════
 
-let _galleryItems = [];   // [{el, id, span, category}]
-let _galleryScrollEl = null;
+let _galleryItems = [];
 let _galleryRafId = null;
+let _nueePan = { x: 0, y: 0, scale: 1 };
+let _nueeDragging = false;
+let _nueeDragStart = null;
 
-// Taille déterministe depuis l'id — 6 niveaux pour max d'irrégularité
-function _gallerySize(id) {
-  const h = [...(id || 'x')].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 0);
-  const n = Math.abs(h) % 12;
-  if (n < 2) return 'g-sz-xs';   // très petit  — 17%
-  if (n < 5) return 'g-sz-sm';   // petit       — 25%
-  if (n < 8) return 'g-sz-md';   // moyen       — 25%
-  if (n < 10) return 'g-sz-ml';  // moyen-large — 17%
-  if (n < 11) return 'g-sz-lg';  // grand       — 8%
-  return 'g-sz-xl';               // très grand  — 8%
+// Pose déterministe depuis l'id — positions/angles/échelles stables entre renders
+function _galleryPose(id) {
+  const hash = (seed) => [...(id || 'x')].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, seed);
+  const norm = (h) => (Math.abs(h) % 100000) / 100000;
+  const nx = norm(hash(1));
+  const ny = norm(hash(13));
+  const nr = norm(hash(97));
+  const ns = norm(hash(173));
+  // Canvas virtuel — dispersion organique (centré sur 0,0)
+  const x   = (nx - 0.5) * 2600;
+  const y   = (ny - 0.5) * 1800;
+  const rot = (nr - 0.5) * 10;        // −5° à +5°
+  const scale = 0.82 + ns * 0.28;     // 0.82 à 1.10
+  return { x, y, rot, scale };
 }
+
+// Conserve la classe legacy (rétrocompat avec anciennes feuilles de style ajoutées)
+function _gallerySize() { return 'g-md'; }
 
 function _shuffleArray(arr) {
   const a = [...arr];
