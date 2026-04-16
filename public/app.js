@@ -2393,6 +2393,39 @@ function _drawConGraph(canvas, nodes, links) {
     if (n.y === undefined) n.y = H / 2 + (Math.random() - 0.5) * 200;
   });
 
+  // Force de répulsion autour des titres de cluster (mode "intention" uniquement) :
+  // les images sont repoussées vers le bas si elles s'approchent de la zone du titre.
+  const TITLE_OFFSET = 90;
+  const TITLE_SHIELD = 70; // rayon de la zone protégée autour du label
+  function titleRepulsion() {
+    if (_conAffinityType !== 'intention') return;
+    // Calcule la position de chaque titre (cx, minY - TITLE_OFFSET)
+    const clusterTitles = new Map();
+    const groups = new Map();
+    for (const n of nodes) {
+      if (!n.category) continue;
+      if (!groups.has(n.category)) groups.set(n.category, []);
+      groups.get(n.category).push(n);
+    }
+    for (const [name, arr] of groups) {
+      const cx = arr.reduce((s, n) => s + (n.x || 0), 0) / arr.length;
+      const minY = arr.reduce((m, n) => Math.min(m, n.y || 0), Infinity);
+      clusterTitles.set(name, { x: cx, y: minY - TITLE_OFFSET });
+    }
+    // Pour chaque nœud, s'il est dans le shield d'un titre, pousse-le hors de cette zone
+    for (const n of nodes) {
+      for (const [, t] of clusterTitles) {
+        const dx = n.x - t.x, dy = n.y - t.y;
+        const d = Math.hypot(dx, dy);
+        if (d < TITLE_SHIELD && d > 0) {
+          const push = (TITLE_SHIELD - d) * 0.28;
+          n.vx += (dx / d) * push;
+          n.vy += (dy / d) * push;
+        }
+      }
+    }
+  }
+
   _conSim = d3.forceSimulation(nodes)
     // Liens courts (80) et forts (0.85) → les objets liés se collent
     .force('link',    d3.forceLink(links).id(d => d.id).distance(80).strength(0.85))
@@ -2401,6 +2434,8 @@ function _drawConGraph(canvas, nodes, links) {
     .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.05))
     // Collision stricte — jamais de superposition totale des images
     .force('collide', d3.forceCollide(R_collide).strength(1))
+    // Protection des titres de cluster (mode "intention")
+    .force('titleShield', titleRepulsion)
     .alphaDecay(0.022)
     .velocityDecay(0.35)
     .on('tick', () => {
