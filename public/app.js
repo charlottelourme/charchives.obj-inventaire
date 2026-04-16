@@ -7094,20 +7094,17 @@ function bindEvents() {
     }, { passive: true });
   })();
 
-  // ── Nuée zoom slider (Dérive) — pilote le scale du pan/zoom ────────────────
+  // ── Nuée : slider = vitesse globale de l'installation cinétique ────────────
   (() => {
     const slider = document.getElementById('nueeZoomSlider');
     if (!slider) return;
-    const sliderToScale = v => {
+    const sliderToSpeed = v => {
       const min = parseFloat(slider.min) || 80;
       const max = parseFloat(slider.max) || 480;
       const ratio = (parseFloat(v) - min) / (max - min);
-      return 0.25 + ratio * 2.75; // range : 0.25 → 3
+      return 0.2 + ratio * 2.3; // 0.2× (lent) → 2.5× (rapide)
     };
-    const apply = v => {
-      _nueePan.scale = sliderToScale(v);
-      _applyNueeTransform();
-    };
+    const apply = v => { _nueeSpeedMultiplier = sliderToSpeed(v); };
     apply(slider.value);
     slider.addEventListener('input', e => apply(e.target.value));
     slider.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
