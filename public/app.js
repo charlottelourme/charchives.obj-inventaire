@@ -3219,52 +3219,8 @@ function openDetail(id) {
   });
   renderBreadcrumbBar();
 
-  // Breadcrumb inside the modal (bottom of info column)
-  _renderDetailBreadcrumb(body);
-
   document.getElementById('detailEditBtn').onclick = () => { closeDetail(); openEdit(id); };
   document.getElementById('detailModal').style.display = 'flex';
-}
-
-function _renderDetailBreadcrumb(body) {
-  // Remove any previous in-modal crumb
-  body.querySelectorAll('.detail-bc-bar').forEach(el => el.remove());
-  if (state.breadcrumb.length < 2) return;
-
-  const bar = document.createElement('div');
-  bar.className = 'detail-bc-bar';
-  const crumbs = state.breadcrumb;
-  const total  = crumbs.length;
-  const hasEllipsis = total > BC_MAX_VISIBLE;
-  const offset  = hasEllipsis ? total - BC_MAX_VISIBLE : 0;
-  const visible = crumbs.slice(offset);
-  let html = hasEllipsis
-    ? `<span class="bc-ellipsis">…</span><span class="bc-sep">›</span>`
-    : '';
-  visible.forEach((item, i) => {
-    const realIdx = offset + i;
-    const isCurrent = realIdx === total - 1;
-    const cls = 'bc-item' + (isCurrent ? ' bc-current' : '');
-    if (i > 0) html += `<span class="bc-sep">›</span>`;
-    html += `<span class="${cls}" data-bc-idx="${realIdx}">${esc(item.label)}</span>`;
-  });
-  bar.innerHTML = html;
-
-  // Bind clicks: navigate back
-  bar.querySelectorAll('.bc-item:not(.bc-current)').forEach(el => {
-    el.addEventListener('click', () => {
-      const idx = parseInt(el.dataset.bcIdx);
-      const item = state.breadcrumb[idx];
-      state.breadcrumb = state.breadcrumb.slice(0, idx + 1);
-      closeDetail();
-      renderBreadcrumbBar();
-      if (item.backAction) item.backAction();
-    });
-  });
-
-  // Append to the info column if it exists, otherwise to body
-  const infoCol = body.querySelector('.portrait-info-col') || body;
-  infoCol.appendChild(bar);
 }
 
 function detailNav(dir) {
