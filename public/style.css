@@ -6440,15 +6440,8 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   top: 0;
   max-height: calc(92vh - 52px - 56px);
 }
-/* Séparateur éthéré remplaçant le border-right solide */
-.portrait-photo-col::after {
-  content: '';
-  position: absolute;
-  right: 0; top: 8%; bottom: 8%;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(45,45,45,.10), transparent);
-  pointer-events: none;
-}
+/* Pas de séparateur vertical entre colonnes — le gap suffit à créer la respiration */
+.portrait-photo-col::after { display: none; }
 .portrait-main-wrap {
   flex: 1;
   overflow: hidden;
