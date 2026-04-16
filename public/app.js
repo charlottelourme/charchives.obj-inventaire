@@ -638,8 +638,8 @@ function buildCategoryFilterBar() {
     btn.dataset.bg = v.bgColor || v.color || '#2D2D2D';
     btn.dataset.fg = v.textColor || '#fff';
     if (isActive) {
-      // Actif : Contraste Pur — couleur noire, aucun trait
-      btn.style.color = '#000';
+      // Actif : pas de couleur inline — la CSS utilise var(--text) qui s'adapte au dark mode
+      btn.style.color = '';
       btn.style.fontWeight = '';
     }
     btn.textContent = v.name;
