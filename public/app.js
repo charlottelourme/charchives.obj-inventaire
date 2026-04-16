@@ -2180,7 +2180,7 @@ function _drawConGraph(canvas, nodes, links) {
     }
 
     // Bouton "Coup de cœur" — unifié avec la Sélection (favoris bookmarks)
-    // Style : cercle fond clair + contour gris + astérisque gris (identique à .sel-ast-wrap)
+    // Design : fond blanc, contour gris, astérisque gris → noir à l'actif (comme .sel-ast-wrap)
     const isBookmarked = !!d.bookmarked;
     const addG = g.append('g')
       .attr('class', 'con-add-btn')
@@ -2189,8 +2189,8 @@ function _drawConGraph(canvas, nodes, links) {
       .style('cursor', 'pointer');
     // r=8.5 → diamètre 17px comme .sel-ast-wrap
     addG.append('circle').attr('r', 8.5)
-      .attr('fill', '#F5F4F1')
-      .attr('stroke', isBookmarked ? '#18181b' : '#9ca3af')
+      .attr('fill', '#ffffff')
+      .attr('stroke', '#9ca3af')
       .attr('stroke-width', 1);
     addG.append('text').attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
       .attr('font-size', '11').attr('font-weight', '400')
