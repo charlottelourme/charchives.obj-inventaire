@@ -2484,7 +2484,7 @@ let _galleryItems = [];
 let _galleryRafId = null;
 let _nueeBodies = [];      // [{ el, x, y, vx, vy, w, h, rot, scale, boost }]
 let _nueeViewport = null;
-let _nueeSpeedMultiplier = 1;
+let _nueeZoom = 1;         // zoom visuel global (piloté par le slider) — appliqué à chaque carte
 
 // Pose déterministe (rotation + scale stables par id, pour look varié)
 function _galleryPose(id) {
