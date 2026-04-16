@@ -1390,8 +1390,8 @@ main { padding: 0; }
   line-height: 1.2;
 }
 .sfb-pill-verbe:hover { color: var(--text); background: none; }
-/* Verbe actif : couleur noire, sans fond ni décoration */
-.sfb-pill-verbe.active { font-weight: 300; text-decoration: none; background: none; color: #000; }
+/* Verbe actif : couleur noire (light) / écru (dark), sans fond ni décoration */
+.sfb-pill-verbe.active { font-weight: 300; text-decoration: none; background: none; color: var(--text); }
 
 /* ══════════════════════════════════════════════════════════════
    BARRE TYPOLOGIES — Flux typographique primaire
