@@ -2849,7 +2849,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .con-aff-btn:hover { color: var(--text); }
 .con-aff-btn.active {
   color: var(--text);
-  text-decoration: underline;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 /* SVG canvas — scrollable pour ne perdre aucune bulle */
