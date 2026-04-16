@@ -6741,20 +6741,26 @@ function renderSearchDropdown() {
     : allTypos;
   if (typoHits.length) groups.push({
     label: 'Typologies',
-    items: typoHits.slice(0, 8).map(t => ({
-      text: t.name, badge: t.verbeName, color: t.color,
-      action: () => {
-        state.typoFilter = t.name;
-        state.categoryFilter = '';
-        state.attrFilters.subcat = [];
-        input.value = '';
-        buildTypologyFilterBar();
-        buildCategoryFilterBar();
-        buildIndexTrigger();
-        document.getElementById('searchDropdown').classList.remove('open');
-        render();
-      }
-    }))
+    // Limite étendue pour afficher un éventail large dès l'ouverture
+    items: typoHits.slice(0, 14).map(t => {
+      const verbe = getVerbes().find(v => v.name === t.verbeName);
+      const dotColor = _verbeActiveColor(verbe);
+      return {
+        text: t.name, badge: t.verbeName,
+        color: t.color, darkColor: dotColor,
+        action: () => {
+          state.typoFilter = t.name;
+          state.categoryFilter = '';
+          state.attrFilters.subcat = [];
+          input.value = '';
+          buildTypologyFilterBar();
+          buildCategoryFilterBar();
+          buildIndexTrigger();
+          document.getElementById('searchDropdown').classList.remove('open');
+          render();
+        }
+      };
+    })
   });
 
   // ── 2. Intentions / Verbes — seulement si requête active ──
