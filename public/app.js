@@ -2627,9 +2627,12 @@ function _initNueePhysics() {
     const w = 200, h = 200;
     const x = Math.random() * Math.max(10, vw - w);
     const y = Math.random() * Math.max(10, vh - h);
-    // Vélocité de base augmentée pour un flux plus ample (−1 à +1 px/frame ≈ 60px/s)
-    const vx = (Math.random() - 0.5) * 2.0;
-    const vy = (Math.random() - 0.5) * 2.0;
+    // Vélocité de base augmentée avec plancher — aucun objet ne reste figé
+    const MIN_V = 0.35;
+    const rawVx = (Math.random() - 0.5) * 2.0;
+    const rawVy = (Math.random() - 0.5) * 2.0;
+    const vx = Math.abs(rawVx) < MIN_V ? (rawVx >= 0 ? MIN_V : -MIN_V) : rawVx;
+    const vy = Math.abs(rawVy) < MIN_V ? (rawVy >= 0 ? MIN_V : -MIN_V) : rawVy;
     const rot   = parseFloat(el.style.getPropertyValue('--nr')) || 0;
     const scale = parseFloat(el.style.getPropertyValue('--ns')) || 1;
     const body = { el, x, y, vx, vy, w, h, rot, scale, boost: 1 };
