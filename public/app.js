@@ -1558,16 +1558,15 @@ function _darken(hex, factor = 0.5) {
   const b = Math.round(parseInt(h.slice(4,6),16) * factor);
   return '#' + [r,g,b].map(x => Math.max(0,Math.min(255,x)).toString(16).padStart(2,'0')).join('');
 }
-// Retourne la couleur la plus sombre/saturée du duo (bgColor, textColor) d'un verbe
-// → textColor si plus sombre que bgColor, sinon dérive une version sombre de bgColor
+// Retourne la couleur "TEXTE" définie dans Paramètres (la plus foncée du duotone
+// renseigné par l'utilisateur). Fallback : dérive une version sombre de bgColor.
 function _verbeActiveColor(verbe) {
   if (!verbe) return '#2D2D2D';
+  // Priorité absolue à textColor s'il est défini (c'est la couleur "TEXTE" des Paramètres)
+  if (verbe.textColor) return verbe.textColor;
   const bg = verbe.bgColor || verbe.color;
-  const tc = verbe.textColor;
-  if (!bg) return tc || '#2D2D2D';
-  // Si textColor existe ET est sensiblement plus sombre → l'utiliser
-  if (tc && _luminance(tc) < _luminance(bg) - 0.05) return tc;
-  // Sinon : dériver une version sombre/saturée de bgColor
+  if (!bg) return '#2D2D2D';
+  // Pas de textColor → dériver une version sombre/saturée de bgColor
   return _darken(bg, 0.48);
 }
 function formatDate(d) {
