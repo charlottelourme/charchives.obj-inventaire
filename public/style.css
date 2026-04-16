@@ -1587,8 +1587,11 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   color: #000;
   font-weight: 700;
 }
-/* Icône astérisque dans cercle — Sélection pill
-   Design : fond clair, contour gris, astérisque gris */
+/* ── Bouton * Sélection — design unifié ─────────────────────────────────────
+   Par défaut : fond blanc, astérisque gris clair
+   Hover      : fond légèrement assombri
+   Actif      : astérisque noir (fond blanc conservé)
+   ─────────────────────────────────────────────────────────────────────────── */
 .sel-ast-wrap {
   display: inline-flex;
   align-items: center;
@@ -1596,7 +1599,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   width: 17px;
   height: 17px;
   border-radius: 50%;
-  background: var(--bg);
+  background: #ffffff;
   border: 1px solid var(--text-3);
   flex-shrink: 0;
   transition: background .2s, border-color .2s;
@@ -1606,9 +1609,17 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   stroke: var(--text-3);
   stroke-width: 1.4;
   stroke-linecap: round;
+  transition: stroke .18s ease;
 }
+/* Hover sur le bouton parent — fond plus sombre */
+.sfb-pill-selection:hover .sel-ast-wrap { background: #ededea; }
+/* État actif : astérisque noir */
+.sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: var(--text); }
+/* Dark mode — transparent avec contour, icône écru à l'actif */
 body.dark-mode .sel-ast-wrap { background: transparent; border-color: var(--text-3); }
+body.dark-mode .sfb-pill-selection:hover .sel-ast-wrap { background: rgba(255,255,255,0.08); }
 body.dark-mode .ast-icon.sel-ast .ast-s { stroke: var(--text-3); }
+body.dark-mode .sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: var(--text); }
 
 /* ── Card status badge (ancien, conservé pour compatibilité) ── */
 .card-status-badge { display: none; }
