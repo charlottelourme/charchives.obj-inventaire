@@ -1828,33 +1828,43 @@ function _initNoteDragDrop(el, items) {
   });
 
   // Drop targets : tous les cards (objets + autres notes)
+  // Indicateur : ligne horizontale au-dessus ou en-dessous selon la position de la souris
   el.querySelectorAll('.card, .card-note').forEach(card => {
     card.addEventListener('dragover', e => {
-      if (!_dragNoteId) return; // pas une note qui est draguée
+      if (!_dragNoteId) return;
       if (card.dataset.id === _dragNoteId) return;
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-      el.querySelectorAll('.note-drop-after').forEach(t => t.classList.remove('note-drop-after'));
-      card.classList.add('note-drop-after');
+      const rect = card.getBoundingClientRect();
+      const isAbove = e.clientY < rect.top + rect.height / 2;
+      el.querySelectorAll('.note-drop-above, .note-drop-below')
+        .forEach(t => t.classList.remove('note-drop-above', 'note-drop-below'));
+      card.classList.add(isAbove ? 'note-drop-above' : 'note-drop-below');
+      card.dataset.dropPos = isAbove ? 'above' : 'below';
     });
-    card.addEventListener('dragleave', () => card.classList.remove('note-drop-after'));
+    card.addEventListener('dragleave', () => {
+      card.classList.remove('note-drop-above', 'note-drop-below');
+      delete card.dataset.dropPos;
+    });
     card.addEventListener('drop', async e => {
       if (!_dragNoteId) return;
       if (!e.dataTransfer.types.includes('application/x-note-id')) return;
       e.preventDefault();
-      card.classList.remove('note-drop-after');
+      const dropPos = card.dataset.dropPos || 'below';
+      card.classList.remove('note-drop-above', 'note-drop-below');
+      delete card.dataset.dropPos;
 
       const dropTargetId = card.dataset.id;
-      // Calcul du nouvel index parmi les objets
       const itemIdx = items.findIndex(c => c.id === dropTargetId);
       let newPos;
       if (itemIdx >= 0) {
-        // Déposé sur un objet → après lui
-        newPos = itemIdx + 1;
+        // Déposé sur un objet — au-dessus = notePos=idx, en-dessous = notePos=idx+1
+        newPos = dropPos === 'above' ? itemIdx : itemIdx + 1;
       } else {
-        // Déposé sur une autre note → reprend sa position +0.5
+        // Déposé sur une autre note — ±0.5 autour de sa position
         const targetNote = state.collections.find(c => c.id === dropTargetId && c.type === 'note');
-        newPos = targetNote ? (targetNote.notePos ?? 0) + 0.5 : 0;
+        const pos = targetNote?.notePos ?? 0;
+        newPos = dropPos === 'above' ? pos - 0.5 : pos + 0.5;
       }
 
       const note = state.collections.find(c => c.id === _dragNoteId);
