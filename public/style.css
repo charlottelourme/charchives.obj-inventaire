@@ -3016,7 +3016,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 }
 
 /* Item — position/transform pilotés entièrement par le moteur physique.
-   AUCUN transform CSS ici pour ne pas lutter avec style.transform inline. */
+   Aucun fond, aucune ombre : l'image <img> repose directement sur le fond global. */
 .gallery-item {
   position: absolute;
   left: 0;
@@ -3027,23 +3027,24 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   cursor: pointer;
   line-height: 0;
   font-size: 0;
+  background: transparent !important;
+  box-shadow: none !important;
   transform-origin: center center;
   will-change: transform, z-index;
-  transition: filter .28s ease, box-shadow .28s ease, z-index 0s;
+  transition: filter .28s ease, z-index 0s;
   break-inside: auto;
-  box-shadow: 0 4px 14px rgba(0,0,0,.06);
 }
 
-/* Hover — feedback VISUEL uniquement (couleur + z-index + ombre).
+/* Hover — feedback VISUEL uniquement (couleur + z-index).
    Le transform n'est PAS touché ici : la physique continue de driver x/y/rot. */
 .gallery-item:not(.g-note):hover {
   z-index: 9999 !important;
   filter: grayscale(0) !important;
-  box-shadow: 0 10px 34px rgba(0,0,0,.22);
 }
 
+/* PNG détouré : aucun fond, aucun padding — comme en Constellation */
 .gallery-item.g-detoured {
-  background: #ffffff;
+  background: transparent !important;
   padding: 0;
 }
 
