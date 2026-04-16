@@ -3470,15 +3470,13 @@ function renderTrios() {
   _renderSavedTrios();
 }
 
-// ── Astérisque "Coup de cœur" — icône unifiée (identique à .sel-ast) ──────
-// 4 branches gravées, taille 10×10, stroke 1.4 round — strictement partagé
-// entre la pill Sélection (index.html), les cartes, la Dérive et la Constellation
+// ── Icône "+" "Coup de cœur" — cross unifiée (identique à .sel-ast) ──────
+// 2 branches (vertical + horizontal), taille 10×10, stroke 1.4 round
+// Partagée entre la pill Sélection, les cartes, la Dérive et la Constellation
 function _asteriskSVG() {
   return `<svg class="ast-icon sel-ast" viewBox="0 0 24 24" width="10" height="10" fill="none" aria-hidden="true">
-    <line class="ast-s" x1="12" y1="2.5" x2="12" y2="21.5"/>
-    <line class="ast-s" x1="2.5" y1="12" x2="21.5" y2="12"/>
-    <line class="ast-s" x1="5.1" y1="5.1" x2="18.9" y2="18.9"/>
-    <line class="ast-s" x1="18.9" y1="5.1" x2="5.1" y2="18.9"/>
+    <line class="ast-s" x1="12" y1="4" x2="12" y2="20"/>
+    <line class="ast-s" x1="4" y1="12" x2="20" y2="12"/>
   </svg>`;
 }
 
