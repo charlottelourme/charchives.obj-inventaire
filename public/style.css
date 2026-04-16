@@ -2973,9 +2973,9 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   font-size: 13px;
 }
 
-/* ══ NUÉE — Table de tri éditoriale ══════════════════════════════════════════
-   Fond blanc pur, cartes éparpillées, chevauchements, rotations aléatoires.
-   Pan (drag) + Zoom (wheel) sur le viewport. Hover : couleur + premier plan.
+/* ══ NUÉE — Installation cinétique ══════════════════════════════════════════
+   Fond blanc pur, objets flottants, collisions, hover = accélération.
+   Transform piloté par requestAnimationFrame (inline style depuis JS).
    ══════════════════════════════════════════════════════════════════════════ */
 
 .gallery-scroll {
@@ -2983,33 +2983,27 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   height: 100%;
   overflow: hidden;
   background: #ffffff;
-  cursor: grab;
   position: relative;
   touch-action: none;
 }
-.gallery-scroll.nuee-grabbing { cursor: grabbing; }
 .gallery-scroll::-webkit-scrollbar { display: none; }
 body.dark-mode .gallery-scroll { background: #ffffff; }
 
-/* Surface pannable — positionnée au centre du viewport, transformée par JS */
+/* Surface — occupe 100% du viewport, aucune transformation CSS */
 .gallery-grid {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 1px;
-  height: 1px;
+  position: relative;
+  width: 100%;
+  height: 100%;
   columns: unset;
   column-count: unset;
   column-gap: 0;
   padding: 0;
   margin: 0;
   background: transparent;
-  transform-origin: 0 0;
-  will-change: transform;
 }
 
-/* Item — positionné en absolu par rapport au centre, rotation + scale aléatoires
-   via variables CSS (--nx, --ny, --nr, --ns) posées par renderGallery() */
+/* Item — position/transform pilotés entièrement par le moteur physique.
+   AUCUN transform CSS ici pour ne pas lutter avec style.transform inline. */
 .gallery-item {
   position: absolute;
   left: 0;
@@ -3020,27 +3014,26 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   cursor: pointer;
   line-height: 0;
   font-size: 0;
-  transform: translate(calc(-50% + var(--nx, 0px)), calc(-50% + var(--ny, 0px))) rotate(var(--nr, 0deg)) scale(var(--ns, 1));
-  transition: transform .28s ease-out, filter .28s ease, z-index 0s;
+  transform-origin: center center;
+  will-change: transform, z-index;
+  transition: filter .28s ease, box-shadow .28s ease, z-index 0s;
   break-inside: auto;
   box-shadow: 0 4px 14px rgba(0,0,0,.06);
 }
 
-/* Hover — couleur d'origine, premier plan, rotation redressée */
+/* Hover — feedback VISUEL uniquement (couleur + z-index + ombre).
+   Le transform n'est PAS touché ici : la physique continue de driver x/y/rot. */
 .gallery-item:not(.g-note):hover {
-  transform: translate(calc(-50% + var(--nx, 0px)), calc(-50% + var(--ny, 0px))) rotate(0deg) scale(1.02);
   z-index: 9999 !important;
   filter: grayscale(0) !important;
   box-shadow: 0 10px 34px rgba(0,0,0,.22);
 }
 
-/* PNG détouré : fond blanc explicite */
 .gallery-item.g-detoured {
   background: #ffffff;
   padding: 0;
 }
 
-/* Image — remplit sa carte sans halo */
 .gallery-item img {
   width: 100%;
   height: auto;
@@ -3050,7 +3043,6 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   user-select: none;
 }
 
-/* Placeholder sans photo */
 .gallery-item .gallery-ph {
   width: 200px;
   height: 200px;
@@ -3061,7 +3053,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   color: var(--text-3);
 }
 
-/* Pas de halo Soft Block dans la Nuée */
+/* Pas de halo Soft Block dans la Nuée (notes exclues) */
 .gallery-item:not(.g-note)::before { display: none !important; }
 
 /* ── Hover : effet table lumineuse supprimé ── */
