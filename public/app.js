@@ -2237,8 +2237,9 @@ function _drawConGraph(canvas, nodes, links) {
       event.stopPropagation();
       await toggleBookmark(d.id);
       const nowBookmarked = !!d.bookmarked;
-      // Astérisque : gris par défaut, noir à l'actif — contour reste gris
-      astG.selectAll('line').attr('stroke', nowBookmarked ? '#18181b' : '#9ca3af');
+      // Actif = inversé : fond noir, "+" blanc
+      addG.select('circle').attr('fill', nowBookmarked ? '#18181b' : '#ffffff');
+      astG.selectAll('line').attr('stroke', nowBookmarked ? '#ffffff' : '#18181b');
       addG.style('opacity', nowBookmarked ? 1 : 0);
     });
 
