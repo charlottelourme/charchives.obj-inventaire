@@ -2780,10 +2780,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   user-select: none;
 }
 .derive-seg-btn.active {
-  color: #000;
+  color: var(--text);
   font-weight: 600;
 }
-.derive-seg-btn:hover:not(.active) { color: #000; }
+.derive-seg-btn:hover:not(.active) { color: var(--text); }
 @media (max-width: 520px) {
   .derive-seg-btn { padding: 5px 10px; font-size: 13px; }
 }
