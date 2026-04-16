@@ -5025,17 +5025,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 .bottom-nav .view-tab:hover { color: var(--text); background: none; }
 .bottom-nav .view-tab.active {
-  color: #000;
+  color: var(--text);
   font-weight: 600;
-  border-top-color: transparent; /* Contraste Pur — pas de trait */
+  border-top-color: transparent;
   border-bottom: none;
-}
-/* Soulignement architectural nav mobile */
-.bottom-nav .view-tab.active {
-  text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
-  text-decoration-color: currentColor;
+  text-decoration: none;
 }
 .bottom-nav .view-tab.active::after { display: none; }
 
