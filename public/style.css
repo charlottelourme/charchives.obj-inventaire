@@ -121,14 +121,20 @@ body.verbe-active .status-filter-bar { background: transparent; }
 body.verbe-active .sfb-label { color: var(--text-3); opacity: 1; }
 /* Pills non-actives : normales */
 body.verbe-active .sfb-pill { color: var(--text-2); opacity: 1; }
-body.verbe-active .sfb-pill:hover { background: var(--tag-bg); color: var(--text); }
+/* Pas de fond rectangulaire au survol d'un verbe — jamais, sous aucune condition */
+body.verbe-active .sfb-pill:hover { background: none !important; color: var(--text); }
 
-/* Verbe actif : pilule colorée (couleurs injectées via JS inline) */
-body.verbe-active .sfb-pill-verbe.active {
+/* Verbe actif : seulement la typographie prend sa couleur identitaire (injectée JS) */
+body.verbe-active .sfb-pill-verbe.active,
+body.verbe-active .sfb-pill-verbe.active:hover,
+body.verbe-active .sfb-pill-verbe:hover {
+  background: none !important;
+  border: none !important;
   opacity: 1;
 }
-/* Pill "Toutes" actif — Point de Galerie */
-body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active {
+/* Pill "Toutes" actif */
+body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active,
+body.verbe-active .sfb-pill:not(.sfb-pill-verbe).active:hover {
   background: transparent !important;
   color: var(--text) !important;
   font-weight: 700;
