@@ -7624,13 +7624,16 @@ body.dark-mode .card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: #f5f5f0;
   color: var(--text-3);
 }
 .con-panier-clear {
-  font-size: 10px;
   border: none; background: none;
   cursor: pointer; color: var(--text-3);
   padding: 2px 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: color .1s;
 }
 .con-panier-clear:hover { color: var(--red); }
+.con-panier-clear .ui-icon { width: 16px; height: 16px; }
 .con-panier-items {
   display: flex;
   flex-wrap: wrap;
