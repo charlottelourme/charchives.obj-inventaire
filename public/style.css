@@ -6802,7 +6802,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   transition: color .2s, border-color .2s;
 }
 .trios-tab-btn:hover { color: var(--text); }
-.trios-tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
+.trios-tab-btn.active { color: var(--text); border-bottom-color: transparent; font-weight: 600; }
 .trios-tab-panel { margin-bottom: 36px; }
 
 /* ── Trios — Mode 1 : Hasard Contrôlé ── */
