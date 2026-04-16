@@ -3458,24 +3458,24 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 
 /* 3. Soft Block — rectangle coloré verbe, flou sur les bords */
+/*    Déborde largement pour fondre les contours, aucune arête nette */
 #detailModal .modal::before {
   content: '';
   position: absolute;
-  inset: -28px;        /* déborde pour que le blur fonde naturellement */
+  inset: -8% -6%;
   background: var(--portrait-verbe-accent, rgba(190, 182, 170, 0.88));
-  filter: blur(18px);
+  filter: blur(52px);
   border-radius: 4px;
   z-index: -1;
-  opacity: 0.88;
+  opacity: 0.92;
   pointer-events: none;
 }
 
-/* 4. Corps de la fiche — semi-opaque pour lisibilité du texte */
+/* 4. Corps — transparent, l'objet et les infos flottent sur le halo verbe */
 #detailModal .modal-body {
   overflow: auto;
-  background: rgba(250, 249, 246, 0.82);
+  background: transparent;
 }
-body.dark-mode #detailModal .modal-body { background: rgba(22, 22, 20, 0.82); }
 
 /* 3. Header flottant — prev/next + fermeture uniquement */
 #detailModal .modal-header {
