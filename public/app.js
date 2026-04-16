@@ -3308,8 +3308,10 @@ function openDetail(id) {
     </div>`;
   }).filter(Boolean).join('');
 
+  // Label dynamique depuis Paramètres (tombe sur "Atmosphère" par défaut si non défini)
+  const universLabel = state.settings.attributeLabels?.univers || 'Atmosphère';
   const universHTML = (c.univers||[]).length
-    ? `<div class="portrait-attr-row"><span class="portrait-attr-label">Atmosphère</span>
+    ? `<div class="portrait-attr-row"><span class="portrait-attr-label">${esc(universLabel)}</span>
         <div class="portrait-attr-pills">${(c.univers||[]).map(u=>`<span class="portrait-attr-pill portrait-pill-univers">${esc(u)}</span>`).join('')}</div>
        </div>` : '';
   const kwHTML = (c.keywords||[]).length
