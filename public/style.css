@@ -3263,17 +3263,21 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* En-tête — même structure que .modal-header */
 .idx-overlay-top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 28px 0;
+  align-items: flex-end;          /* aligne les soulignements entre titre et input */
+  justify-content: flex-start;
+  gap: 28px;
+  padding: 18px 28px 16px;
   flex-shrink: 0;
   position: sticky;
   top: 0;
   background: var(--surface);
   z-index: 1;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 16px;
 }
+/* Bouton fermer repoussé à droite */
+.idx-overlay-top .idx-close-btn { margin-left: auto; }
+/* Wrap de la barre de recherche dans l'overlay — largeur max pour rester compact */
+.idx-overlay-search { flex: 0 1 260px; min-width: 160px; }
 .idx-overlay-title {
   font-family: 'Cutive Mono', monospace;
   font-style: normal !important; /* force l'upright — annule tout héritage italic */
