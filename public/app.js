@@ -2632,20 +2632,22 @@ function _nueeTick() {
 
   const vw = _nueeViewport.clientWidth;
   const vh = _nueeViewport.clientHeight;
+  // Marge hors-champ : l'objet sort complètement avant d'être téléporté en face
+  const M = 200;
 
-  // 1. Avance chaque corps + decay progressif du boost
+  // 1. Avance chaque corps (vitesse affectée UNIQUEMENT par le boost de survol,
+  //    plus par le slider — celui-ci contrôle désormais le zoom, pas la vitesse)
   for (const b of _nueeBodies) {
-    // Decay exponentiel vers 1 (retour fluide après mouseleave)
     if (b.boost > 1) b.boost = Math.max(1, 1 + (b.boost - 1) * 0.94);
 
-    b.x += b.vx * b.boost * _nueeSpeedMultiplier;
-    b.y += b.vy * b.boost * _nueeSpeedMultiplier;
+    b.x += b.vx * b.boost;
+    b.y += b.vy * b.boost;
 
-    // Rebonds sur les bords
-    if (b.x < 0)              { b.x = 0;            b.vx = Math.abs(b.vx); }
-    if (b.y < 0)              { b.y = 0;            b.vy = Math.abs(b.vy); }
-    if (b.x + b.w > vw)       { b.x = vw - b.w;     b.vx = -Math.abs(b.vx); }
-    if (b.y + b.h > vh)       { b.y = vh - b.h;     b.vy = -Math.abs(b.vy); }
+    // Wrapping hors-champ (cascade en cycle fermé / effet Pac-Man)
+    if (b.x + b.w < -M)   b.x = vw + M;        // sort à gauche → réapparaît à droite
+    else if (b.x > vw + M) b.x = -b.w - M;     // sort à droite → réapparaît à gauche
+    if (b.y + b.h < -M)   b.y = vh + M;        // sort en haut → réapparaît en bas
+    else if (b.y > vh + M) b.y = -b.h - M;     // sort en bas → réapparaît en haut
   }
 
   // 2. Collisions AABB entre paires — échange des vélocités
