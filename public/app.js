@@ -4078,32 +4078,80 @@ function _renderSavedTrios() {
         ${photo ? `<img src="${photoUrl(photo)}" alt="">` : `<div class="ts-thumb-placeholder"></div>`}
       </div>`;
     }).join('');
-    const label = new Date(trio.savedAt).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+    const displayName = trio.name || new Date(trio.savedAt).toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
     return `<div class="ts-item" data-trio-id="${esc(trio.id)}">
       <div class="ts-thumbs">${thumbs}</div>
       <div class="ts-meta">
-        <span class="ts-date">${label}</span>
+        <span class="ts-name" data-trio-id="${esc(trio.id)}">${esc(displayName)}</span>
+        <button class="ts-rename-btn" data-trio-id="${esc(trio.id)}" title="Renommer">✎</button>
         <div class="ts-actions">
-          <button class="ts-restore-btn" data-trio-id="${esc(trio.id)}" title="Restaurer dans l'éditeur">Ouvrir</button>
+          <button class="ts-show-btn" data-trio-id="${esc(trio.id)}" title="Afficher en grand">Afficher</button>
+          <button class="ts-restore-btn" data-trio-id="${esc(trio.id)}" title="Charger dans l'éditeur">Éditer</button>
           <button class="ts-delete-btn" data-trio-id="${esc(trio.id)}" title="Supprimer">✕</button>
         </div>
       </div>
     </div>`;
   }).join('');
 
+  // Afficher → ouvre une modale grand format avec les 3 images
+  list.querySelectorAll('.ts-show-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const trio = _savedTrios.find(t => t.id === btn.dataset.trioId);
+      if (!trio) return;
+      const objects = trio.objectIds.map(id => state.collections.find(c => c.id === id)).filter(Boolean);
+      const html = objects.map(obj => {
+        const photo = obj.photos?.[0];
+        return photo ? `<img src="${photoUrl(photo)}" alt="${esc(obj.name||'')}" style="max-height:80vh;max-width:30vw;object-fit:contain">` : '';
+      }).join('');
+      // Simple modale overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.style.display = 'flex';
+      overlay.innerHTML = `<div style="display:flex;gap:24px;align-items:center;justify-content:center;padding:32px;cursor:pointer">${html}</div>`;
+      overlay.addEventListener('click', () => overlay.remove());
+      document.body.appendChild(overlay);
+    });
+  });
+
+  // Éditer → charge dans l'éditeur manuel
   list.querySelectorAll('.ts-restore-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const trio = _savedTrios.find(t => t.id === btn.dataset.trioId);
       if (!trio) return;
       const objects = trio.objectIds.map(id => state.collections.find(c => c.id === id)).filter(Boolean);
       _triosManualSlots = [objects[0]||null, objects[1]||null, objects[2]||null];
-      // Basculer sur l'onglet Manuel
       _triosActiveTab = 'manuel';
       document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'manuel'));
       document.querySelectorAll('.trios-tab-panel').forEach(p => p.style.display = p.id === 'triosPanelManuel' ? '' : 'none');
       _renderTriosManualState();
     });
   });
+
+  // Renommer — transforme le label en input
+  list.querySelectorAll('.ts-rename-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const trio = _savedTrios.find(t => t.id === btn.dataset.trioId);
+      if (!trio) return;
+      const nameEl = btn.parentElement.querySelector('.ts-name');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'ts-rename-input';
+      input.value = trio.name || '';
+      input.placeholder = 'Nom de la sélection…';
+      nameEl.replaceWith(input);
+      input.focus();
+      input.select();
+      const save = () => {
+        trio.name = input.value.trim() || '';
+        _persistSavedTrios();
+        _renderSavedTrios();
+      };
+      input.addEventListener('blur', save);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') save(); });
+    });
+  });
+
   list.querySelectorAll('.ts-delete-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       _savedTrios = _savedTrios.filter(t => t.id !== btn.dataset.trioId);
