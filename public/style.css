@@ -273,7 +273,7 @@ header h1 {
   color: var(--text);
   flex-shrink: 0;
 }
-.header-sep { flex: 1; }
+.header-sep { display: none; /* plus de séparateur expansif — le gap 12px suffit */ }
 
 /* ── View tabs — Contraste Pur : actif = noir #000, inactif = gris ── */
 .view-tabs {
