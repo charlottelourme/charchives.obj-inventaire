@@ -2894,29 +2894,11 @@ function _initGalleryNoteInteractions(grid, items) {
 // Pan+Zoom via D3 (même pattern que Constellation). Persistance localStorage.
 // ══════════════════════════════════════════════════════════════════════════════
 
-// ── Curation locale — 20 décors d'intérieurs immersifs ─────────────────────
-// Pour remplacer par des fichiers locaux : changer les URLs vers /assets/diorama/nom.jpg
+// ── Décors Diorama — ajoutez vos images ici ────────────────────────────────
+// Placez vos fichiers dans /uploads/decors/ puis ajoutez une entrée par image.
+// Exemple : { label: 'Mon salon', url: '/uploads/decors/salon.jpg', credit: '' }
 const DIORAMA_DECORS = [
-  { label: 'Salon bourgeois',         url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1600', credit: 'Unsplash' },
-  { label: 'Cabinet de curiosités',   url: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1600', credit: 'Unsplash' },
-  { label: 'Atelier d\'artiste',      url: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1600', credit: 'Unsplash' },
-  { label: 'Bibliothèque ancienne',   url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1600', credit: 'Unsplash' },
-  { label: 'Galerie d\'art vide',     url: 'https://images.unsplash.com/photo-1577083552431-6e5fd01988ec?w=1600', credit: 'Unsplash' },
-  { label: 'Intérieur Art Déco',      url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600', credit: 'Unsplash' },
-  { label: 'Chambre ancienne',        url: 'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1600', credit: 'Unsplash' },
-  { label: 'Cuisine rustique',        url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1600', credit: 'Unsplash' },
-  { label: 'Terrasse méditerranéenne', url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600', credit: 'Unsplash' },
-  { label: 'Salon haussmannien',      url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600', credit: 'Unsplash' },
-  { label: 'Loft industriel',         url: 'https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=1600', credit: 'Unsplash' },
-  { label: 'Salle à manger vintage',  url: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?w=1600', credit: 'Unsplash' },
-  { label: 'Entrée de manoir',        url: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1600', credit: 'Unsplash' },
-  { label: 'Jardin d\'hiver',         url: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=1600', credit: 'Unsplash' },
-  { label: 'Bureau d\'écriture',      url: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1600', credit: 'Unsplash' },
-  { label: 'Chapelle intérieure',     url: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=1600', credit: 'Unsplash' },
-  { label: 'Couloir de château',      url: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1600', credit: 'Unsplash' },
-  { label: 'Véranda coloniale',       url: 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1600', credit: 'Unsplash' },
-  { label: 'Grenier sous les toits',  url: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1600', credit: 'Unsplash' },
-  { label: 'Terrasse jardin anglais', url: 'https://images.unsplash.com/photo-1598928506311-c55ez633a2a1?w=1600', credit: 'Unsplash' },
+  // ← Ajoutez vos décors ici
 ];
 
 let _dioZoom = null;
