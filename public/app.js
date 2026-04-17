@@ -2932,6 +2932,9 @@ function _dioSave() {
 }
 
 function renderDiorama() {
+  // Injecte la description éditable
+  const dioDescEl = document.getElementById('dioramaDesc');
+  if (dioDescEl) dioDescEl.textContent = MODE_DESCRIPTIONS.diorama || '';
   const decBar  = document.getElementById('dioDecorBar');
   const libList = document.getElementById('dioLibList');
   const scene   = document.getElementById('dioScene');
