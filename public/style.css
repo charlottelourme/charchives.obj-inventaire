@@ -282,14 +282,16 @@ header h1 {
 .header-sep { display: none; /* plus de séparateur expansif — le gap 12px suffit */ }
 
 /* ── View tabs — Contraste Pur : actif = noir #000, inactif = gris ── */
+/* Navigation centrée dans le header via flex-grow */
 .view-tabs {
   display: flex;
   gap: 0;
   background: none;
-  border: none;       /* plus de rectangle autour */
+  border: none;
   padding: 0;
-  flex-shrink: 0;
-  align-self: stretch; /* s'étire sur toute la hauteur du header */
+  flex: 1;                    /* prend l'espace disponible */
+  justify-content: center;   /* centres les onglets */
+  align-self: stretch;
 }
 .view-tab {
   position: relative;              /* contexte de positionnement pour le halo ::before */
