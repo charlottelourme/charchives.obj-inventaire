@@ -929,7 +929,8 @@ function _buildIndexGroups() {
   // Collecter toutes les typologies avec leurs métadonnées verbe
   let allTypos = [];
   getVerbes().forEach(verbe => {
-    const color = verbe.bgColor || verbe.color || '#2D2D2D';
+    // Couleur foncée du duotone (textColor des Paramètres) pour les pastilles
+    const color = _verbeActiveColor(verbe);
     getTypologies(verbe).forEach(t => {
       if (!q || t.toLowerCase().includes(q) || verbe.name.toLowerCase().includes(q)
              || _smartSearchExpand(q).some(term => t.toLowerCase().includes(term))) {
