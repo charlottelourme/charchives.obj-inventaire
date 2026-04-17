@@ -1231,8 +1231,8 @@ function setView(v, _silent = false) {
 
   const views = {
     grid: 'gridWrapper', derive: 'deriveView',
-    trios: 'triosView',  calendar: 'calendarView',
-    catalogue: 'catalogueView', stats: 'statsView'
+    trios: 'triosView',  diorama: 'dioramaView',
+    calendar: 'calendarView', catalogue: 'catalogueView', stats: 'statsView'
   };
   Object.entries(views).forEach(([k, id]) => {
     const el = document.getElementById(id);
