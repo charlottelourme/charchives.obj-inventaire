@@ -2494,8 +2494,8 @@ function _updateClusterLabels(labelsG, nodes) {
     .style('font-size', '22px')
     .style('font-weight', '400')
     .style('letter-spacing', '.02em')
-    .style('text-transform', 'uppercase')
-    .style('paint-order', 'stroke fill');  // halo dessiné AVANT le fill
+    .style('text-transform', 'none')     // casse normale (première lettre maj)
+    .style('paint-order', 'stroke fill');
 
   // Couche 1 : HALO — texte blanc épais qui découpe les liens passant derrière.
   // Unique <text> avec stroke blanc + fill blanc = forme pleine de la lettre épaissie.
