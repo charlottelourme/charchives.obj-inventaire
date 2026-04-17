@@ -7329,6 +7329,7 @@ function bindEvents() {
   });
   document.getElementById('viewDerive').addEventListener('click', () => setView('derive'));
   document.getElementById('viewAtelier').addEventListener('click', () => { _currentTrio = null; setView('trios'); });
+  document.getElementById('viewDiorama').addEventListener('click', () => setView('diorama'));
   document.getElementById('viewCalendar').addEventListener('click', () => setView('calendar'));
   document.getElementById('viewCatalogue').addEventListener('click', () => setView('catalogue'));
   document.getElementById('viewStats').addEventListener('click', () => setView('stats'));
