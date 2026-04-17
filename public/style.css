@@ -5689,7 +5689,7 @@ body.dark-mode .search-bar:focus-within {
 body.dark-mode .search-dropdown {
   background: var(--surface);
   border-color: var(--border);
-  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  box-shadow: none;
 }
 body.dark-mode .search-group + .search-group,
 body.dark-mode .search-index-footer { border-color: var(--border); }
