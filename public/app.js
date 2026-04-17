@@ -4113,6 +4113,9 @@ function _renderTriosManualState() {
 }
 
 function renderTrios() {
+  // Injecte la description éditable
+  const triosDescEl = document.getElementById('triosDesc');
+  if (triosDescEl) triosDescEl.textContent = MODE_DESCRIPTIONS.triptyque || '';
   const result  = document.getElementById('triosResult');
   const empty   = document.getElementById('triosEmpty');
   if (state.collections.length < 3) {
