@@ -8002,9 +8002,10 @@ body.dark-mode .portrait-title { color: var(--text); }
    DIORAMA — Canvas interactif (collage façon "Les Sims")
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Vue globale */
+/* Vue globale — le masquage est géré par l'inline style="display:none" dans le HTML.
+   Quand setView('diorama') retire l'inline, ce display: flex prend le relai. */
 #dioramaView {
-  display: none;
+  display: flex;
   flex-direction: column;
   height: calc(100vh - 52px);
 }
