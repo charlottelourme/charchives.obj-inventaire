@@ -197,6 +197,30 @@
     <div id="catalogueContent" class="catalogue-content"></div>
   </div>
 
+  <!-- ── Diorama — Canvas interactif ── -->
+  <div id="dioramaView" style="display:none">
+    <!-- Barre de décors (scroll horizontal) -->
+    <div class="diorama-decor-bar" id="dioDecorBar"></div>
+    <!-- Layout principal : sidebar + scène -->
+    <div class="diorama-layout">
+      <!-- Bibliothèque d'objets PNG -->
+      <div class="diorama-sidebar" id="dioSidebar">
+        <div class="diorama-sidebar-header">
+          <span class="diorama-sidebar-title">Objets</span>
+          <input type="text" class="diorama-sidebar-search" id="dioSearch" placeholder="Filtrer…" autocomplete="off">
+        </div>
+        <div class="diorama-sidebar-list" id="dioLibList"></div>
+      </div>
+      <!-- Scène (drop zone + pan/zoom D3) -->
+      <div class="diorama-scene-wrap" id="dioSceneWrap">
+        <div class="diorama-scene" id="dioScene">
+          <img class="diorama-backdrop" id="dioBackdrop" alt="" draggable="false">
+          <!-- Items placés sont ajoutés ici dynamiquement -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Trios view ── -->
   <div id="triosView" style="display:none">
     <div class="trios-view">
