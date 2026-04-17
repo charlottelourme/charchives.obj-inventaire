@@ -4184,7 +4184,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   max-height: 96vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 80px rgba(0,0,0,.45);
+  box-shadow: none;
 }
 
 /* Header */
