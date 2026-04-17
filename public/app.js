@@ -1473,7 +1473,9 @@ function _applyGridCols() {
   const min   = parseFloat(slider.min)   || 140;
   const max   = parseFloat(slider.max)   || 480;
   const ratio = (parseFloat(slider.value) - min) / (max - min);
-  const cols  = Math.max(2, Math.round(6 - ratio * 4));
+  // Sur mobile (< 520px), forcer 2 colonnes max pour la lisibilité
+  const isMobile = window.innerWidth < 520;
+  const cols  = isMobile ? 2 : Math.max(2, Math.round(6 - ratio * 4));
   document.documentElement.style.setProperty('--grid-cols', String(cols));
   document.querySelectorAll('#gridView .grid').forEach(g => {
     const cardCount = g.querySelectorAll(':scope > .card').length;
