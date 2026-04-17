@@ -1534,6 +1534,7 @@ function render() {
     if (state.deriveMode==='nuee')    renderGallery(filtered);
     else                              renderConstellation(filtered);
   }
+  else if (state.view==='diorama')     renderDiorama();
   else if (state.view==='trios')      renderTrios();
   else if (state.view==='calendar')   renderCalendar(filtered);
   else if (state.view==='catalogue')  renderCatalogue(filtered);
