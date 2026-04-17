@@ -2896,13 +2896,14 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   align-items: center;
   gap: 2.5rem;
 }
-/* Boutons textuels — Cutive Mono, majuscules, soulignement actif */
+/* Boutons de concept (Intention / Matière / Identité) — police éditoriale */
 .con-aff-btn {
-  font-family: 'Cutive Mono', monospace;
-  font-size: 10px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
   font-weight: 400;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  letter-spacing: .01em;
+  text-transform: none;
   padding: 4px 0;
   border: none;
   border-radius: 0;
