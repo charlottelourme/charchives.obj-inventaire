@@ -8203,6 +8203,34 @@ body.dark-mode .portrait-title { color: var(--text); }
 }
 .dio-selected .dio-handle-rot { display: block; }
 
+/* ── Loading + Crédits ── */
+.diorama-loading {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  padding: 14px 0;
+  letter-spacing: .04em;
+}
+.diorama-credit {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 9px;
+  font-weight: 400;
+  color: rgba(255,255,255,.65);
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(4px);
+  padding: 3px 8px;
+  border-radius: 2px;
+  z-index: 1;
+  pointer-events: none;
+  max-width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ── Responsive mobile ── */
 @media (max-width: 520px) {
   .diorama-sidebar { width: 100%; height: 120px; border-right: none; border-bottom: 1px solid var(--border); }
