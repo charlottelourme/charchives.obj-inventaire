@@ -7549,7 +7549,7 @@ function renderSearchActiveTags() {
   const container=document.getElementById('searchActiveTags');
   container.innerHTML=[...state.activeKeywordFilters].map(kw=>`<span class="search-filter-tag">${esc(kw)}<button data-kw="${esc(kw)}">✕</button></span>`).join('');
   container.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',e=>{ e.stopPropagation(); state.activeKeywordFilters.delete(btn.dataset.kw); renderSearchActiveTags(); renderSearchDropdown(); render(); }));
-  document.getElementById('searchInput').placeholder=state.activeKeywordFilters.size?'':'RECHERCHER...';
+  document.getElementById('searchInput').placeholder=state.activeKeywordFilters.size?'':'Rechercher';
 }
 function setupSearch() {
   const wrap=document.getElementById('searchWrap');
