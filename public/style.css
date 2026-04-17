@@ -15,7 +15,7 @@
   --tag-border: #DEDBD4;
   --radius: 0px;
   --shadow: none;
-  --shadow-lg: 0 4px 24px rgba(45,45,45,.08);
+  --shadow-lg: none;  /* flat design global — pas d'ombre sur les fenêtres */
   font-size: 14px;
   /* ── Zoom masonry — modifié par le slider JS ── */
   --grid-cols: 4;
