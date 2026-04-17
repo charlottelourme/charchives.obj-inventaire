@@ -2650,7 +2650,9 @@ function _initNueePhysics() {
   _nueeBodies = [];
   const nodes = surface.querySelectorAll('.gallery-item:not(.g-note)');
   nodes.forEach((el) => {
-    const w = 200, h = 200;
+    // Taille réduite de moitié sur mobile pour que la nuée fonctionne dans un petit viewport
+    const isMobile = window.innerWidth < 520;
+    const w = isMobile ? 100 : 200, h = isMobile ? 100 : 200;
     const x = Math.random() * Math.max(10, vw - w);
     const y = Math.random() * Math.max(10, vh - h);
     // Vélocité de base augmentée avec plancher — aucun objet ne reste figé
