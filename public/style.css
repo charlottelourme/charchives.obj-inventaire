@@ -2544,7 +2544,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 8px 32px rgba(0,0,0,.13);
+  box-shadow: none;
   padding: 16px 14px 14px;
   width: 256px;
 }
