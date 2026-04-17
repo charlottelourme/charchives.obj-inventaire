@@ -2491,9 +2491,13 @@ body.dark-mode .form-intent-band {
   font-size: 13px;
 }
 .count-label {
-  font-size: 12px;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .08em;
+  text-transform: uppercase;
   color: var(--text-3);
-  margin-right: 4px;
+  margin-right: 8px;
 }
 
 hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
