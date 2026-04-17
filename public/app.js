@@ -2119,6 +2119,14 @@ function _buildConGraph(items, affinityType) {
 }
 
 // ── Main render ───────────────────────────────────────────────────────────────
+// ── Design System helpers ────────────────────────────────────────────────────
+function _sectionHeaderHTML(title, desc) {
+  return `<div class="section-header">
+    <h2 class="section-header-title">${esc(title)}</h2>
+    ${desc ? `<p class="section-header-desc">${esc(desc)}</p>` : ''}
+  </div>`;
+}
+
 function renderConstellation(filtered) {
   const canvas = document.getElementById('conCanvas');
   if (!canvas) return;
