@@ -5588,7 +5588,7 @@ body.dark-mode {
   --tag-bg: #1C1C1A;
   --tag-border: #2E2C28;
   --accent: #F0EDE8;
-  --shadow-lg: 0 4px 24px rgba(0,0,0,.32);
+  --shadow-lg: none;
 }
 
 /* ── Halos en Dark Mode — densifiés pour tenir sur fond noir ── */
