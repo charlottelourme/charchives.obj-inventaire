@@ -3040,6 +3040,49 @@ function renderDiorama() {
   _dioInitZoom(wrap);
 }
 
+function _dioRenderDecorBar(decBar, backdrop, decors) {
+  decors.forEach((d, i) => {
+    const thumb = document.createElement('img');
+    thumb.className = 'diorama-decor-thumb' + (state.diorama.backdrop === d.url || (!state.diorama.backdrop && i === 0) ? ' active' : '');
+    // Lazy loading : utilise le thumbnail Europeana (petit) pour la barre
+    thumb.src = d.thumb || d.url;
+    thumb.loading = 'lazy';
+    thumb.alt = d.label;
+    thumb.title = d.label;
+    thumb.addEventListener('click', () => {
+      state.diorama.backdrop = d.url;
+      state.diorama.backdropCredit = d.credit || '';
+      decBar.querySelectorAll('.diorama-decor-thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      // Charge la haute résolution en fond (lazy)
+      backdrop.src = d.url;
+      _dioUpdateCredits(d.credit || '');
+      _dioSave();
+    });
+    decBar.appendChild(thumb);
+  });
+  // Set initial backdrop
+  if (!state.diorama.backdrop && decors[0]) {
+    state.diorama.backdrop = decors[0].url;
+    state.diorama.backdropCredit = decors[0].credit || '';
+  }
+  backdrop.src = state.diorama.backdrop;
+  _dioUpdateCredits(state.diorama.backdropCredit || '');
+}
+
+function _dioUpdateCredits(text) {
+  const scene = document.getElementById('dioScene');
+  if (!scene) return;
+  let el = scene.querySelector('.diorama-credit');
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'diorama-credit';
+    scene.appendChild(el);
+  }
+  el.textContent = text || '';
+  el.style.display = text ? '' : 'none';
+}
+
 function _dioRenderItems(scene) {
   // Diff-based: add missing, remove stale, update positions
   const existing = new Map();
