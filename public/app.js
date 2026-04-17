@@ -2918,18 +2918,9 @@ function renderDiorama() {
   const backdrop = document.getElementById('dioBackdrop');
   if (!decBar || !scene) return;
 
-  // ── Barre de décors (Europeana API + fallback) ──
-  if (!decBar.children.length || !_dioDecorsLoaded) {
-    // Affiche un loader pendant le fetch
-    if (!_dioDecorsLoaded) {
-      decBar.innerHTML = '<span class="diorama-loading">Chargement des décors…</span>';
-      _dioFetchDecors().then(decors => {
-        decBar.innerHTML = '';
-        _dioRenderDecorBar(decBar, backdrop, decors);
-      });
-    } else {
-      _dioRenderDecorBar(decBar, backdrop, _dioDecors);
-    }
+  // ── Barre de décors (curation locale — 20 images) ──
+  if (!decBar.children.length) {
+    _dioRenderDecorBar(decBar, backdrop, DIORAMA_DECORS);
   }
 
   // ── Sidebar bibliothèque (objets avec PNG) ──
