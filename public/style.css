@@ -3277,7 +3277,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   background: var(--surface);
   border-radius: 0;
   border: 1px solid var(--border);
-  box-shadow: 8px 8px 0 rgba(45,45,45,.12);
+  box-shadow: none;  /* flat design */
   width: 80vw;
   max-width: 920px;
   height: 85vh;
