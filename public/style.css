@@ -8162,8 +8162,9 @@ body.dark-mode .portrait-title { color: var(--text); }
 }
 .diorama-backdrop {
   display: block;
-  width: 1200px;   /* dimensions de base — zoomable */
+  width: auto;
   height: auto;
+  max-width: none;         /* taille naturelle de l'image — le zoom D3 scale tout */
   user-select: none;
   pointer-events: none;
 }
