@@ -404,7 +404,7 @@ header h1 {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0;
-  box-shadow: 0 8px 32px rgba(0,0,0,.10);
+  box-shadow: none;
   z-index: 200;
   max-height: 360px;
   display: none;
@@ -3170,7 +3170,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 0;
-  box-shadow: 0 8px 32px rgba(0,0,0,.10);
+  box-shadow: none;
   z-index: 200;
 }
 .idx-inline-drop::-webkit-scrollbar { display: none; }
