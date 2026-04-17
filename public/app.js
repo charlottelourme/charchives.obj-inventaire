@@ -2874,16 +2874,64 @@ function _initGalleryNoteInteractions(grid, items) {
 // Pan+Zoom via D3 (même pattern que Constellation). Persistance localStorage.
 // ══════════════════════════════════════════════════════════════════════════════
 
-const DIORAMA_DECORS = [
-  { label: 'Salon bourgeois',       url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200' },
-  { label: 'Cabinet de curiosités', url: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200' },
-  { label: 'Atelier d\'artiste',    url: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1200' },
-  { label: 'Bibliothèque',          url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200' },
-  { label: 'Galerie vide',          url: 'https://images.unsplash.com/photo-1577083552431-6e5fd01988ec?w=1200' },
-  { label: 'Intérieur Art Déco',    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200' },
-  { label: 'Chambre ancienne',      url: 'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1200' },
-  { label: 'Cuisine rustique',      url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200' },
+// Fallback statique (affiché si l'API Europeana échoue ou ne renvoie rien)
+const DIORAMA_DECORS_FALLBACK = [
+  { label: 'Salon bourgeois',       url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200', credit: 'Unsplash' },
+  { label: 'Cabinet de curiosités', url: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200', credit: 'Unsplash' },
 ];
+
+// Cache des décors chargés depuis Europeana (rempli par _dioFetchDecors)
+let _dioDecorsLoaded = false;
+let _dioDecors = [];
+
+// ── Europeana API — photographies d'intérieurs historiques ──────────────────
+const EUROPEANA_KEY = 'thyderialthe';
+const EUROPEANA_QUERY = '(interior OR "living room" OR "domestic scene" OR "terrace" OR "garden") AND (photography OR photograph)';
+const EUROPEANA_EXCLUDE = ['painting', 'drawing', 'plan', 'architecture drawing', 'engraving', 'dessin', 'peinture', 'gravure'];
+
+async function _dioFetchDecors() {
+  if (_dioDecorsLoaded) return _dioDecors;
+  try {
+    const params = new URLSearchParams({
+      wskey:  EUROPEANA_KEY,
+      query:  EUROPEANA_QUERY,
+      qf:     'TYPE:IMAGE',
+      reusability: 'open',
+      rows:   '50',
+      media:  'true',
+      profile: 'standard',
+    });
+    const res = await fetch(`https://api.europeana.eu/record/v2/search.json?${params}`);
+    if (!res.ok) throw new Error(`Europeana ${res.status}`);
+    const data = await res.json();
+    const items = (data.items || [])
+      // Filtrer les non-photos (peintures, dessins, gravures…)
+      .filter(item => {
+        const txt = ((item.title?.[0] || '') + ' ' + (item.dcDescription?.[0] || '')).toLowerCase();
+        return !EUROPEANA_EXCLUDE.some(kw => txt.includes(kw));
+      })
+      // Mapper vers notre format
+      .map(item => {
+        const thumb = item.edmPreview?.[0] || '';
+        // Haute résolution : edmIsShownBy si disponible, sinon preview
+        const hires = item.edmIsShownBy?.[0] || thumb;
+        const title = item.title?.[0] || 'Sans titre';
+        const provider = item.dataProvider?.[0] || item.provider?.[0] || '';
+        return { label: title, url: hires, thumb, credit: provider ? `${title} — ${provider}` : title };
+      })
+      // Exclure les résultats sans image
+      .filter(d => d.url && d.thumb);
+
+    _dioDecors = items.length ? items : DIORAMA_DECORS_FALLBACK;
+    _dioDecorsLoaded = true;
+    return _dioDecors;
+  } catch (err) {
+    console.warn('Europeana API failed, using fallback:', err.message);
+    _dioDecors = DIORAMA_DECORS_FALLBACK;
+    _dioDecorsLoaded = true;
+    return _dioDecors;
+  }
+}
 
 let _dioZoom = null;
 let _dioSelectedItem = null;
