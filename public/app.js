@@ -2350,7 +2350,7 @@ function _drawConGraph(canvas, nodes, links) {
   nodeEl.call(drag);
 
   // ── D3 zoom — pan (glisser), zoom (molette / trackpad / slider) ──
-  const INITIAL_SCALE = 0.75;
+  const INITIAL_SCALE = 1.15;  // plus zoomé au chargement (avant 0.75)
   const zoom = d3.zoom()
     .scaleExtent([0.08, 4])
     // Filtre : toujours accepter wheel ; pour mousedown, refuser les nœuds
