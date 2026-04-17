@@ -116,21 +116,25 @@
 
   <!-- ── La Dérive — Galerie + Constellation ── -->
   <div id="deriveView" style="display:none">
-    <div class="section-header" id="deriveSectionHeader">
-      <h2 class="section-header-title">Dérive</h2>
-      <p class="section-header-desc" id="deriveDesc"></p>
-    </div>
-    <!-- Segmented control -->
+    <!-- En-tête unifié : titre + description + sous-modes + outils -->
     <div class="derive-header">
-      <div class="derive-segmented" id="deriveSegmented">
-        <div class="derive-seg-thumb" id="deriveSegThumb"></div>
-        <button class="derive-seg-btn active" data-mode="nuee">Nuée</button>
-        <button class="derive-seg-btn" data-mode="reseau">Constellation</button>
+      <div class="derive-header-left">
+        <h2 class="section-header-title derive-title">Dérive</h2>
+        <p class="section-header-desc" id="deriveDesc"></p>
       </div>
-      <div class="nuee-zoom-wrap" id="nueeZoomWrap">
-        <input type="range" class="card-size-slider" id="nueeZoomSlider" min="80" max="480" value="240" step="20">
+      <div class="derive-header-center">
+        <div class="derive-segmented" id="deriveSegmented">
+          <div class="derive-seg-thumb" id="deriveSegThumb"></div>
+          <button class="derive-seg-btn active" data-mode="nuee">Nuée</button>
+          <button class="derive-seg-btn" data-mode="reseau">Constellation</button>
+        </div>
       </div>
-      <button class="derive-shuffle-btn" id="deriveShuffleBtn" title="Mélanger l'ordre d'affichage">Mélanger</button>
+      <div class="derive-header-right">
+        <div class="nuee-zoom-wrap" id="nueeZoomWrap">
+          <input type="range" class="card-size-slider" id="nueeZoomSlider" min="80" max="480" value="240" step="20">
+        </div>
+        <button class="derive-shuffle-btn" id="deriveShuffleBtn" title="Mélanger">Mélanger</button>
+      </div>
     </div>
     <!-- Pane Nuée — Galerie Masonry -->
     <div class="derive-pane" id="deriveNueePane">
