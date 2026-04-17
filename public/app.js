@@ -1219,8 +1219,8 @@ document.addEventListener('click', e => {
 // ── View switching ─────────────────────────────────────────────────────────────
 const VIEW_LABELS = {
   grid: 'Inventaire', derive: 'Dérive',
-  trios: 'Triptyque',   calendar: 'Calendrier',
-  catalogue: 'Catalogue', stats: 'Stats'
+  trios: 'Triptyque',  diorama: 'Diorama',
+  calendar: 'Calendrier', catalogue: 'Catalogue', stats: 'Stats'
 };
 
 function setView(v, _silent = false) {
