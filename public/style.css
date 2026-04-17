@@ -7996,3 +7996,133 @@ input, select, textarea {
 /* ── Dark mode : Cutive Mono s'éclaircit légèrement ── */
 body.dark-mode .card-name { color: var(--text); text-shadow: none; }
 body.dark-mode .portrait-title { color: var(--text); }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE MOBILE — < 520px (correctifs finaux)
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 520px) {
+
+  /* ── 1. INVENTAIRE : Grille 2 colonnes forcée ────────────────────────── */
+  /* !important pour battre les inline styles de _applyGridCols() */
+  .grid:not(.grid-css) {
+    column-count: 2 !important;
+    -webkit-column-count: 2 !important;
+  }
+  .grid.grid-css {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .grid .card { margin-bottom: 32px; }
+  /* Soft blocks : halos fondus, pas de marges blanches dures */
+  .grid .card::before {
+    inset: -4% -8% -12%;
+    filter: blur(16px);
+    border-radius: 3px;
+  }
+
+  /* ── 2. HEADER : compact, labels réduits, search z-fix ───────────────── */
+  .sfb-label {
+    font-size: 7px !important;
+    min-width: 56px !important;
+    width: 56px !important;
+    letter-spacing: .12em;
+  }
+  .sfb-pill-verbe { font-size: 12px !important; padding: 4px 10px !important; }
+  .sfb-pill-sm { font-size: 8px !important; }
+  /* Barre de recherche : z-index garanti, pas de superposition */
+  .search-wrap {
+    position: relative;
+    z-index: 100;
+  }
+  .search-bar { min-height: 32px; }
+  .search-dropdown {
+    z-index: 200;
+    width: calc(100vw - 28px) !important;
+    max-width: none;
+    left: 0 !important;
+  }
+  /* Toolbar compact */
+  .toolbar { padding: 6px 10px; gap: 4px; }
+  .count-label { font-size: 9px; }
+
+  /* ── 3. FORMULAIRE : compacté + petites bulles couleurs ──────────────── */
+  /* Swatches de couleur (notes, fragments, options) : max 24×24 */
+  .note-swatch,
+  .frag-bg-swatch,
+  .swatch-btn,
+  .color-swatch { width: 24px !important; height: 24px !important; min-width: 24px; }
+  /* Sections du formulaire plus compactes */
+  .field-row { flex-direction: column; gap: 8px; }
+  .field-row-compact { flex-direction: row; gap: 8px; }
+  .field label { font-size: 10px; margin-bottom: 2px; }
+
+  /* ── 4. DÉRIVE NUÉE : images réduites de moitié ──────────────────────── */
+  .gallery-item {
+    width: 100px !important;
+    max-width: 100px !important;
+  }
+  .gallery-item .gallery-ph { width: 100px; height: 100px; }
+
+  /* ── 5. DÉRIVE CONSTELLATION : visible + tactile ─────────────────────── */
+  #deriveReseauPane {
+    display: flex !important;
+    min-height: 400px;
+  }
+  .con-canvas {
+    min-height: 380px;
+    touch-action: none;
+  }
+  .con-toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px;
+  }
+  .con-aff-btn { font-size: 10px; padding: 4px 8px; }
+  .con-zoom-wrap { flex: 1; min-width: 80px; }
+  .derive-segmented { flex-wrap: nowrap; }
+  .derive-seg-btn { font-size: 11px; padding: 6px 10px; white-space: nowrap; }
+
+  /* ── 6. TRIPTYQUE : 3 images côte à côte (scroll horizontal si trop étroit) ── */
+  .trios-grid {
+    grid-template-columns: repeat(3, minmax(140px, 1fr)) !important;
+    grid-template-rows: auto !important;
+    gap: 8px !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 !important;
+  }
+  .trios-grid .trios-slot-wrap:nth-child(1) {
+    grid-column: span 1 !important;
+  }
+  .trios-grid .trios-slot-wrap {
+    scroll-snap-align: start;
+    min-width: 140px;
+  }
+  .trios-grid .trios-slot-wrap > .card {
+    aspect-ratio: 3/4 !important; /* plus compact que 4/5 sur mobile */
+  }
+
+  /* ── 7. ACCESSIBILITÉ : safe-area + padding bas ──────────────────────── */
+  main {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+  }
+  /* Bottom-nav : respecte la safe area */
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Footer modales : ne cache pas les boutons d'action */
+  .modal-footer {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+    z-index: 5;
+  }
+
+  /* ── 8. VERBE PAGE TITLE : compact sur mobile ───────────────────────── */
+  .verbe-page-title { padding: 16px 14px 12px; gap: 10px; }
+  .vpt-name { font-size: clamp(28px, 8vw, 42px) !important; }
+  .vpt-count { font-size: 8px; }
+  .vpt-pill { font-size: 9px; margin: 0 8px 4px 0; }
+}
