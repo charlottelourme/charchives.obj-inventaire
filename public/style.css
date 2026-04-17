@@ -8043,13 +8043,14 @@ body.dark-mode .portrait-title { color: var(--text); }
   margin: 0 0 6px;
 }
 .section-header-desc {
-  font-family: 'Cutive Mono', monospace;
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: .06em;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: .01em;
   color: var(--text-3);
   margin: 0;
-  max-width: 60ch;
+  max-width: 80ch;
 }
 
 /* ── SelectionActionBar : compteur + actions sur une seule ligne ────────── */
