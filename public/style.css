@@ -327,6 +327,7 @@ header h1 {
 .search-wrap {
   position: relative;
   flex-shrink: 0;
+  order: 10;       /* placé à droite dans le header (après les tabs centrés) */
 }
 
 /* Barre principale — identique au champ inline "Rechercher" */
