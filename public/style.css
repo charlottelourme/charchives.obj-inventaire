@@ -3843,6 +3843,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
+  order: 11;       /* après la barre de recherche (order: 10) */
 }
 .btn-icon {
   padding: 5px 9px;
