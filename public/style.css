@@ -6925,11 +6925,12 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   gap: 0;
 }
 .trios-tab-btn {
-  font-family: 'Cutive Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: .01em;
+  text-transform: none;
   padding: 12px 22px;
   background: none;
   border: none;
