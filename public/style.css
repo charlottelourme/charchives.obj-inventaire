@@ -5499,7 +5499,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
 .gs-dropdown {
   position: absolute; top: calc(100% + 3px); left: 0; right: 0;
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 6px; box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  border-radius: 6px; box-shadow: none;
   z-index: 300; max-height: 260px; overflow-y: auto; display: none;
 }
 .gs-dropdown.open { display: block; }
