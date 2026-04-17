@@ -170,6 +170,8 @@ const state = {
   galleryShuffled: false,
   _shuffleOrder: null,  // tableau d'ids mélangés
   gravityMode: false,   // true quand un verbe est actif → canvas orbital
+  // Diorama — canvas interactif (collage façon "Les Sims")
+  diorama: { backdrop: '', items: [], nextZ: 1 },
 };
 
 // ══ THÉSAURUS SÉMANTIQUE — dictionnaire de synonymes / alias ════════════════
