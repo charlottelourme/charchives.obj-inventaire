@@ -585,6 +585,9 @@ async function init(attempt = 0) {
     // Apply site title
     document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'ARCHIVE';
 
+    // Load Diorama state from localStorage
+    _dioLoad();
+
     // Apply dark mode from localStorage
     if (localStorage.getItem('darkMode') === 'true') {
       state.darkMode = true;
