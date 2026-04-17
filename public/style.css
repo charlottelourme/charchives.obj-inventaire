@@ -8022,6 +8022,89 @@ body.dark-mode .portrait-title { color: var(--text); }
 
 
 /* ══════════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM — Composants universels (SectionHeader + SelectionActionBar)
+   Réutilisés par Inventaire, Dérive, Triptyque, Diorama, Constellation.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── SectionHeader : Titre page + consigne ─────────────────────────────── */
+.section-header {
+  padding: 20px 0 12px;
+}
+.section-header-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 300;
+  letter-spacing: -.02em;
+  line-height: 1;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+.section-header-desc {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .06em;
+  color: var(--text-3);
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* ── SelectionActionBar : compteur + actions sur une seule ligne ────────── */
+.selection-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  min-height: 36px;
+  flex-wrap: wrap;
+}
+.sab-counter {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--text-3);
+}
+.sab-counter strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.sab-spacer { flex: 1; }
+.sab-btn {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.sab-btn:hover { color: var(--text); border-color: var(--text); }
+.sab-btn.sab-primary {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.sab-btn.sab-primary:hover { opacity: .85; }
+
+@media (max-width: 520px) {
+  .section-header { padding: 12px 0 8px; }
+  .section-header-title { font-size: 24px; }
+  .section-header-desc { font-size: 9px; }
+  .selection-action-bar { gap: 6px; }
+  .sab-btn { font-size: 9px; padding: 4px 10px; }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
    DIORAMA — Canvas interactif (collage façon "Les Sims")
    ══════════════════════════════════════════════════════════════════════════ */
 
