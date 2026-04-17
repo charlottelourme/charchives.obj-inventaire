@@ -246,7 +246,7 @@ body.verbe-active .search-bar {
 }
 .vpt-pill.active::before { opacity: 1; }
 
-/* ── Header ── */
+/* ── Header — logo à gauche, nav au centre, recherche à droite ── */
 header {
   position: sticky;
   top: 0;
@@ -254,12 +254,18 @@ header {
   background: rgba(250,250,248,.96);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border-light);  /* allégé */
-  padding: 0 24px;
+  border-bottom: 1px solid var(--border-light);
+  /* Centrage + respiration (max 1600px sur grands écrans) */
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  padding: 0 48px;
   height: 52px;
   display: flex;
   align-items: center;
-  gap: 12px;  /* rapproché : titre ↔ recherche ↔ onglets */
+  justify-content: space-between;
+  gap: 16px;
 }
 body.dark-mode header {
   background: rgba(24,24,24,.96);
