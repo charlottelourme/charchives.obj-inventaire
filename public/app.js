@@ -2952,26 +2952,18 @@ function renderDiorama() {
   const backdrop = document.getElementById('dioBackdrop');
   if (!decBar || !scene) return;
 
-  // ── Barre de décors ──
-  if (!decBar.children.length) {
-    DIORAMA_DECORS.forEach((d, i) => {
-      const thumb = document.createElement('img');
-      thumb.className = 'diorama-decor-thumb' + (state.diorama.backdrop === d.url || (!state.diorama.backdrop && i === 0) ? ' active' : '');
-      thumb.src = d.url;
-      thumb.alt = d.label;
-      thumb.title = d.label;
-      thumb.addEventListener('click', () => {
-        state.diorama.backdrop = d.url;
-        decBar.querySelectorAll('.diorama-decor-thumb').forEach(t => t.classList.remove('active'));
-        thumb.classList.add('active');
-        backdrop.src = d.url;
-        _dioSave();
+  // ── Barre de décors (Europeana API + fallback) ──
+  if (!decBar.children.length || !_dioDecorsLoaded) {
+    // Affiche un loader pendant le fetch
+    if (!_dioDecorsLoaded) {
+      decBar.innerHTML = '<span class="diorama-loading">Chargement des décors…</span>';
+      _dioFetchDecors().then(decors => {
+        decBar.innerHTML = '';
+        _dioRenderDecorBar(decBar, backdrop, decors);
       });
-      decBar.appendChild(thumb);
-    });
-    // Set initial backdrop
-    if (!state.diorama.backdrop) state.diorama.backdrop = DIORAMA_DECORS[0]?.url || '';
-    backdrop.src = state.diorama.backdrop;
+    } else {
+      _dioRenderDecorBar(decBar, backdrop, _dioDecors);
+    }
   }
 
   // ── Sidebar bibliothèque (objets avec PNG) ──
