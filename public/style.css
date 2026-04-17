@@ -8046,7 +8046,7 @@ body.dark-mode .portrait-title { color: var(--text); }
 
 /* ── SectionHeader : Titre page + consigne ─────────────────────────────── */
 .section-header {
-  padding: 20px 0 12px;
+  padding: 20px 48px 12px;
 }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
