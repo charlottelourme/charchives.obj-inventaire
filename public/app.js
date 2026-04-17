@@ -1242,8 +1242,8 @@ function setView(v, _silent = false) {
   document.querySelectorAll('.view-tab').forEach(btn => btn.classList.remove('active'));
   const tabs = {
     grid: 'viewInventaire', derive: 'viewDerive',
-    trios: 'viewAtelier',   calendar: 'viewCalendar',
-    catalogue: 'viewCatalogue', stats: 'viewStats'
+    trios: 'viewAtelier',   diorama: 'viewDiorama',
+    calendar: 'viewCalendar', catalogue: 'viewCatalogue', stats: 'viewStats'
   };
   const tabEl = document.getElementById(tabs[v]);
   if (tabEl) tabEl.classList.add('active');
