@@ -2119,6 +2119,15 @@ function _buildConGraph(items, affinityType) {
 }
 
 // ── Main render ───────────────────────────────────────────────────────────────
+// ── Design System — Descriptions éditables des modes ─────────────────────────
+// Modifie ces textes librement : ils apparaissent sous le titre de chaque vue.
+const MODE_DESCRIPTIONS = {
+  nuee:          'Les objets dérivent en apesanteur. Survolez pour les accélérer.',
+  constellation: 'Vos objets reliés par leurs intentions, matières ou identités.',
+  triptyque:     'Composez des trios d\'objets — par le hasard ou par vos propres règles.',
+  diorama:       'Glissez vos objets sur la scène pour créer une composition.',
+};
+
 // ── Design System helpers ────────────────────────────────────────────────────
 function _sectionHeaderHTML(title, desc) {
   return `<div class="section-header">
