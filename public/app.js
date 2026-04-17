@@ -3185,9 +3185,21 @@ function _dioDistFromCenter(el, e) {
 
 function _dioInitZoom(wrap) {
   if (!window.d3 || _dioZoom) return;
-  const scene = document.getElementById('dioScene');
+  const scene   = document.getElementById('dioScene');
+  const bdrop   = document.getElementById('dioBackdrop');
+
+  // Calcule le zoom minimum pour que le décor couvre 100% du viewport (style cover)
+  function minScale() {
+    const vw = wrap.clientWidth  || 800;
+    const vh = wrap.clientHeight || 600;
+    const iw = bdrop?.naturalWidth  || 1200;
+    const ih = bdrop?.naturalHeight || 800;
+    // cover = max(vw/iw, vh/ih) → le plus petit zoom autorisé
+    return Math.max(vw / iw, vh / ih, 0.3);
+  }
+
   _dioZoom = d3.zoom()
-    .scaleExtent([0.15, 4])
+    .scaleExtent([0.3, 4])  // sera contraint dynamiquement dans on('zoom')
     .filter(event => {
       if (event.type === 'wheel') return true;
       if (event.type === 'touchstart') return true;
@@ -3198,10 +3210,39 @@ function _dioInitZoom(wrap) {
       return !event.ctrlKey;
     })
     .on('zoom', event => {
-      const { x, y, k } = event.transform;
+      let { x, y, k } = event.transform;
+      const ms = minScale();
+      k = Math.max(k, ms);
+
+      // Contraintes de pan : le décor ne sort jamais du viewport
+      const vw = wrap.clientWidth;
+      const vh = wrap.clientHeight;
+      const iw = (bdrop?.naturalWidth  || 1200) * k;
+      const ih = (bdrop?.naturalHeight || 800)  * k;
+      // x doit rester entre -(iw - vw) et 0 (le décor couvre toujours le viewport)
+      x = Math.min(0, Math.max(x, vw - iw));
+      y = Math.min(0, Math.max(y, vh - ih));
+
       scene.style.transform = `translate(${x}px, ${y}px) scale(${k})`;
+      // Synchronise le transform D3 réel pour que le prochain événement parte du bon état
+      event.transform.x = x;
+      event.transform.y = y;
+      event.transform.k = k;
     });
   d3.select(wrap).call(_dioZoom);
+
+  // Quand le décor change d'image, recalcule et applique le minScale initial
+  bdrop?.addEventListener('load', () => {
+    const ms = minScale();
+    const vw = wrap.clientWidth;
+    const vh = wrap.clientHeight;
+    d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.translate(0, 0).scale(ms));
+  });
+  // Applique le zoom initial si l'image est déjà chargée
+  if (bdrop?.complete && bdrop.naturalWidth) {
+    const ms = minScale();
+    d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.translate(0, 0).scale(ms));
+  }
 }
 
 function _initGalleryParallax() {
