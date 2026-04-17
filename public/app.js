@@ -2863,6 +2863,303 @@ function _initGalleryNoteInteractions(grid, items) {
   });
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// DIORAMA — Canvas interactif façon "Les Sims"
+// L'utilisateur glisse des PNG détourés de sa bibliothèque sur des décors
+// d'intérieurs historiques. Manipulation : move, resize, rotate, z-index.
+// Pan+Zoom via D3 (même pattern que Constellation). Persistance localStorage.
+// ══════════════════════════════════════════════════════════════════════════════
+
+const DIORAMA_DECORS = [
+  { label: 'Salon bourgeois',       url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200' },
+  { label: 'Cabinet de curiosités', url: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200' },
+  { label: 'Atelier d\'artiste',    url: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1200' },
+  { label: 'Bibliothèque',          url: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200' },
+  { label: 'Galerie vide',          url: 'https://images.unsplash.com/photo-1577083552431-6e5fd01988ec?w=1200' },
+  { label: 'Intérieur Art Déco',    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200' },
+  { label: 'Chambre ancienne',      url: 'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=1200' },
+  { label: 'Cuisine rustique',      url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200' },
+];
+
+let _dioZoom = null;
+let _dioSelectedItem = null;
+
+function _dioLoad() {
+  try { const s = localStorage.getItem('charchives_diorama'); if (s) state.diorama = JSON.parse(s); }
+  catch(e) { /* ignore */ }
+}
+function _dioSave() {
+  try { localStorage.setItem('charchives_diorama', JSON.stringify(state.diorama)); }
+  catch(e) { /* ignore */ }
+}
+
+function renderDiorama() {
+  const decBar  = document.getElementById('dioDecorBar');
+  const libList = document.getElementById('dioLibList');
+  const scene   = document.getElementById('dioScene');
+  const backdrop = document.getElementById('dioBackdrop');
+  if (!decBar || !scene) return;
+
+  // ── Barre de décors ──
+  if (!decBar.children.length) {
+    DIORAMA_DECORS.forEach((d, i) => {
+      const thumb = document.createElement('img');
+      thumb.className = 'diorama-decor-thumb' + (state.diorama.backdrop === d.url || (!state.diorama.backdrop && i === 0) ? ' active' : '');
+      thumb.src = d.url;
+      thumb.alt = d.label;
+      thumb.title = d.label;
+      thumb.addEventListener('click', () => {
+        state.diorama.backdrop = d.url;
+        decBar.querySelectorAll('.diorama-decor-thumb').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        backdrop.src = d.url;
+        _dioSave();
+      });
+      decBar.appendChild(thumb);
+    });
+    // Set initial backdrop
+    if (!state.diorama.backdrop) state.diorama.backdrop = DIORAMA_DECORS[0]?.url || '';
+    backdrop.src = state.diorama.backdrop;
+  }
+
+  // ── Sidebar bibliothèque (objets avec PNG) ──
+  const pngItems = state.collections.filter(c =>
+    c.type !== 'note' && c.type !== 'fragment' &&
+    c.photos?.[0] && (c.photos[0].toLowerCase().endsWith('.png') || c.imageMode === 'cutout')
+  );
+  libList.innerHTML = '';
+  const searchQ = (document.getElementById('dioSearch')?.value || '').toLowerCase().trim();
+  const filtered = searchQ ? pngItems.filter(c => (c.name||'').toLowerCase().includes(searchQ)) : pngItems;
+  filtered.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'diorama-lib-item';
+    el.draggable = true;
+    el.innerHTML = `<img src="${photoUrl(c.photos[0])}" alt="${esc(c.name||'')}"><div class="dio-lib-name">${esc(c.name||'')}</div>`;
+    el.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', c.id);
+      e.dataTransfer.effectAllowed = 'copy';
+      requestAnimationFrame(() => el.classList.add('dragging'));
+    });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    libList.appendChild(el);
+  });
+
+  // Recherche live
+  const searchInput = document.getElementById('dioSearch');
+  if (searchInput && !searchInput.dataset.bound) {
+    searchInput.dataset.bound = '1';
+    searchInput.addEventListener('input', () => renderDiorama());
+  }
+
+  // ── Rendu items placés ──
+  _dioRenderItems(scene);
+
+  // ── Drop zone ──
+  const wrap = document.getElementById('dioSceneWrap');
+  if (wrap && !wrap.dataset.dropBound) {
+    wrap.dataset.dropBound = '1';
+    wrap.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; wrap.classList.add('drag-over'); });
+    wrap.addEventListener('dragleave', () => wrap.classList.remove('drag-over'));
+    wrap.addEventListener('drop', e => {
+      e.preventDefault();
+      wrap.classList.remove('drag-over');
+      const colId = e.dataTransfer.getData('text/plain');
+      if (!colId) return;
+      // Convert screen coords → scene-local (D3 zoom inverse transform)
+      const rect = wrap.getBoundingClientRect();
+      let sx = e.clientX - rect.left;
+      let sy = e.clientY - rect.top;
+      if (_dioZoom) {
+        const t = d3.zoomTransform(wrap);
+        const inv = t.invert([sx, sy]);
+        sx = inv[0]; sy = inv[1];
+      }
+      state.diorama.items.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        collectionId: colId,
+        x: sx - 60, y: sy - 60,
+        scale: 1, rotation: 0,
+        zIndex: state.diorama.nextZ++
+      });
+      _dioSave();
+      _dioRenderItems(scene);
+    });
+    // Deselect on scene click
+    wrap.addEventListener('pointerdown', e => {
+      if (!e.target.closest('.diorama-item')) {
+        _dioDeselectAll(scene);
+      }
+    });
+  }
+
+  // ── D3 zoom ──
+  _dioInitZoom(wrap);
+}
+
+function _dioRenderItems(scene) {
+  // Diff-based: add missing, remove stale, update positions
+  const existing = new Map();
+  scene.querySelectorAll('.diorama-item').forEach(el => existing.set(el.dataset.dioId, el));
+
+  state.diorama.items.forEach(item => {
+    const col = state.collections.find(c => c.id === item.collectionId);
+    if (!col || !col.photos?.[0]) return;
+    let el = existing.get(item.id);
+    if (!el) {
+      // Create new
+      el = document.createElement('div');
+      el.className = 'diorama-item';
+      el.dataset.dioId = item.id;
+      el.innerHTML = `
+        <img src="${photoUrl(col.photos[0])}" alt="${esc(col.name||'')}" draggable="false">
+        <div class="dio-handle dio-handle-nw"></div>
+        <div class="dio-handle dio-handle-ne"></div>
+        <div class="dio-handle dio-handle-sw"></div>
+        <div class="dio-handle dio-handle-se"></div>
+        <div class="dio-handle-rot"></div>`;
+      scene.appendChild(el);
+      _dioMakeMovable(el, item);
+      _dioMakeResizable(el, item);
+      _dioMakeRotatable(el, item);
+      el.addEventListener('pointerdown', e => {
+        if (e.target.closest('.dio-handle, .dio-handle-rot')) return;
+        item.zIndex = state.diorama.nextZ++;
+        el.style.zIndex = item.zIndex;
+        _dioSelectItem(scene, el);
+        _dioSave();
+      });
+      // Double-click = remove
+      el.addEventListener('dblclick', e => {
+        e.stopPropagation();
+        state.diorama.items = state.diorama.items.filter(i => i.id !== item.id);
+        el.remove();
+        _dioSave();
+      });
+    }
+    // Update transform
+    el.style.left = item.x + 'px';
+    el.style.top = item.y + 'px';
+    el.style.width = Math.round(120 * item.scale) + 'px';
+    el.style.transform = `rotate(${item.rotation}deg)`;
+    el.style.zIndex = item.zIndex;
+    existing.delete(item.id);
+  });
+  // Remove stale
+  existing.forEach(el => el.remove());
+}
+
+function _dioSelectItem(scene, el) {
+  scene.querySelectorAll('.diorama-item').forEach(i => i.classList.remove('dio-selected'));
+  el.classList.add('dio-selected');
+  _dioSelectedItem = el;
+}
+function _dioDeselectAll(scene) {
+  scene.querySelectorAll('.diorama-item').forEach(i => i.classList.remove('dio-selected'));
+  _dioSelectedItem = null;
+}
+
+function _dioMakeMovable(el, item) {
+  let startX, startY, origX, origY;
+  el.addEventListener('pointerdown', e => {
+    if (e.target.closest('.dio-handle, .dio-handle-rot')) return;
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    startX = e.clientX; startY = e.clientY;
+    origX = item.x; origY = item.y;
+    const zoomK = _dioZoom ? d3.zoomTransform(document.getElementById('dioSceneWrap')).k : 1;
+    const onMove = ev => {
+      item.x = origX + (ev.clientX - startX) / zoomK;
+      item.y = origY + (ev.clientY - startY) / zoomK;
+      el.style.left = item.x + 'px';
+      el.style.top = item.y + 'px';
+    };
+    const onUp = () => {
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerup', onUp);
+      _dioSave();
+    };
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerup', onUp);
+  });
+}
+
+function _dioMakeResizable(el, item) {
+  el.querySelectorAll('.dio-handle').forEach(handle => {
+    handle.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      handle.setPointerCapture(e.pointerId);
+      const startDist = _dioDistFromCenter(el, e);
+      const origScale = item.scale;
+      const onMove = ev => {
+        const dist = _dioDistFromCenter(el, ev);
+        item.scale = Math.max(0.15, Math.min(5, origScale * (dist / startDist)));
+        el.style.width = Math.round(120 * item.scale) + 'px';
+      };
+      const onUp = () => {
+        handle.removeEventListener('pointermove', onMove);
+        handle.removeEventListener('pointerup', onUp);
+        _dioSave();
+      };
+      handle.addEventListener('pointermove', onMove);
+      handle.addEventListener('pointerup', onUp);
+    });
+  });
+}
+
+function _dioMakeRotatable(el, item) {
+  const rotHandle = el.querySelector('.dio-handle-rot');
+  if (!rotHandle) return;
+  rotHandle.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    rotHandle.setPointerCapture(e.pointerId);
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+    const origRot = item.rotation;
+    const onMove = ev => {
+      const angle = Math.atan2(ev.clientY - cy, ev.clientX - cx) * (180 / Math.PI);
+      item.rotation = origRot + (angle - startAngle);
+      el.style.transform = `rotate(${item.rotation}deg)`;
+    };
+    const onUp = () => {
+      rotHandle.removeEventListener('pointermove', onMove);
+      rotHandle.removeEventListener('pointerup', onUp);
+      _dioSave();
+    };
+    rotHandle.addEventListener('pointermove', onMove);
+    rotHandle.addEventListener('pointerup', onUp);
+  });
+}
+
+function _dioDistFromCenter(el, e) {
+  const r = el.getBoundingClientRect();
+  return Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+}
+
+function _dioInitZoom(wrap) {
+  if (!window.d3 || _dioZoom) return;
+  const scene = document.getElementById('dioScene');
+  _dioZoom = d3.zoom()
+    .scaleExtent([0.15, 4])
+    .filter(event => {
+      if (event.type === 'wheel') return true;
+      if (event.type === 'touchstart') return true;
+      if (event.type === 'mousedown') {
+        if (event.button !== 0) return false;
+        if (event.target.closest('.diorama-item')) return false;
+      }
+      return !event.ctrlKey;
+    })
+    .on('zoom', event => {
+      const { x, y, k } = event.transform;
+      scene.style.transform = `translate(${x}px, ${y}px) scale(${k})`;
+    });
+  d3.select(wrap).call(_dioZoom);
+}
+
 function _initGalleryParallax() {
   // Parallax désactivé en mode colonnes masonry — translateY crée des marges visibles
   return;
