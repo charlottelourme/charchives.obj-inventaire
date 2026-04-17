@@ -1850,7 +1850,7 @@ body.dark-mode .sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: #18
   max-width: 680px;
   max-height: 92vh;
   overflow-y: auto;
-  box-shadow: 8px 8px 0 rgba(45,45,45,.15);
+  box-shadow: none;  /* flat design — pas d'ombre portée */
 }
 .modal-lg {
   max-width: 80vw; width: 80vw;
