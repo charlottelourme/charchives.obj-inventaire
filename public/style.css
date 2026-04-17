@@ -7999,6 +7999,220 @@ body.dark-mode .portrait-title { color: var(--text); }
 
 
 /* ══════════════════════════════════════════════════════════════════════════
+   DIORAMA — Canvas interactif (collage façon "Les Sims")
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Vue globale */
+#dioramaView {
+  display: none;
+  flex-direction: column;
+  height: calc(100vh - 52px);
+}
+
+/* ── Barre de décors (scroll horizontal de thumbnails) ── */
+.diorama-decor-bar {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg);
+}
+.diorama-decor-bar::-webkit-scrollbar { display: none; }
+.diorama-decor-thumb {
+  width: 80px;
+  height: 52px;
+  border-radius: 3px;
+  object-fit: cover;
+  cursor: pointer;
+  opacity: .55;
+  transition: opacity .18s, outline-color .18s;
+  flex-shrink: 0;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.diorama-decor-thumb:hover { opacity: .85; }
+.diorama-decor-thumb.active {
+  opacity: 1;
+  outline-color: var(--text);
+}
+
+/* ── Layout principal : sidebar + scène ── */
+.diorama-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Sidebar bibliothèque ── */
+.diorama-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+.diorama-sidebar-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.diorama-sidebar-title {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--text-3);
+}
+.diorama-sidebar-search {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  padding: 4px 0;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  outline: none;
+}
+.diorama-sidebar-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+}
+.diorama-lib-item {
+  width: calc(50% - 3px);
+  cursor: grab;
+  border-radius: 3px;
+  overflow: hidden;
+  transition: opacity .15s;
+  background: transparent;
+}
+.diorama-lib-item:active { cursor: grabbing; }
+.diorama-lib-item.dragging { opacity: .3; }
+.diorama-lib-item img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+  background: var(--tag-bg);
+  pointer-events: none;
+}
+.diorama-lib-item .dio-lib-name {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 8px;
+  color: var(--text-3);
+  padding: 2px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Scène (drop zone + D3 zoom) ── */
+.diorama-scene-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #1a1a1a;
+  touch-action: none;
+  cursor: grab;
+}
+.diorama-scene-wrap.drag-over {
+  outline: 2px dashed var(--text-2);
+  outline-offset: -4px;
+}
+.diorama-scene-wrap:active { cursor: grabbing; }
+.diorama-scene {
+  position: relative;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.diorama-backdrop {
+  display: block;
+  width: 1200px;   /* dimensions de base — zoomable */
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── Items placés sur la scène ── */
+.diorama-item {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform-origin: center center;
+}
+.diorama-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  background: transparent;
+}
+/* Sélection */
+.diorama-item.dio-selected {
+  outline: 1px dashed rgba(255,255,255,.5);
+  outline-offset: 4px;
+}
+/* Handles de resize (visibles uniquement sur l'item sélectionné) */
+.dio-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border: 1.5px solid #333;
+  border-radius: 50%;
+  cursor: nwse-resize;
+  z-index: 10;
+  display: none;
+  pointer-events: all;
+}
+.dio-selected .dio-handle { display: block; }
+.dio-handle-nw { top: -5px;  left: -5px;  cursor: nwse-resize; }
+.dio-handle-ne { top: -5px;  right: -5px; cursor: nesw-resize; }
+.dio-handle-sw { bottom: -5px; left: -5px;  cursor: nesw-resize; }
+.dio-handle-se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+/* Handle de rotation */
+.dio-handle-rot {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border: 1.5px solid #333;
+  border-radius: 50%;
+  cursor: grab;
+  z-index: 10;
+  display: none;
+  pointer-events: all;
+}
+.dio-selected .dio-handle-rot { display: block; }
+
+/* ── Responsive mobile ── */
+@media (max-width: 520px) {
+  .diorama-sidebar { width: 100%; height: 120px; border-right: none; border-bottom: 1px solid var(--border); }
+  .diorama-layout { flex-direction: column; }
+  .diorama-sidebar-list { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; }
+  .diorama-lib-item { width: 60px; flex-shrink: 0; }
+  .diorama-decor-thumb { width: 56px; height: 36px; }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
    RESPONSIVE MOBILE — < 520px (correctifs finaux)
    ══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 520px) {
