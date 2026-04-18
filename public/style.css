@@ -8380,21 +8380,27 @@ body.dark-mode .portrait-title { color: var(--text); }
    ══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 520px) {
 
-  /* ── 1. INVENTAIRE : Grille 2 colonnes forcée ────────────────────────── */
-  /* !important pour battre les inline styles de _applyGridCols() */
+  /* ── 1. INVENTAIRE : Grille 2 colonnes, PLEINE LARGEUR ─────────────── */
+  /* Main sans padding latéral sur mobile — la grille prend tout l'écran */
+  main {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
   .grid:not(.grid-css) {
     column-count: 2 !important;
     -webkit-column-count: 2 !important;
+    column-gap: 4px !important;        /* gap minimal — les Soft Blocks fusionnent */
+    padding: 4px 0 calc(96px + env(safe-area-inset-bottom)) !important;
   }
   .grid.grid-css {
     grid-template-columns: repeat(2, 1fr) !important;
+    gap: 4px !important;
   }
-  .grid .card { margin-bottom: 32px; }
-  /* Soft blocks : halos fondus, pas de marges blanches dures */
+  .grid .card { margin-bottom: 16px; }
+  /* Soft blocks fusionnés — se touchent entre colonnes */
   .grid .card::before {
-    inset: -4% -8% -12%;
+    inset: -4% -12% -12%;
     filter: blur(16px);
-    border-radius: 3px;
   }
 
   /* ── 2. HEADER : compact, labels réduits, search z-fix ───────────────── */
