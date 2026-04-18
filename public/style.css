@@ -8466,12 +8466,27 @@ body.dark-mode .portrait-title { color: var(--text); }
   .field-row-compact { flex-direction: row; gap: 8px; }
   .field label { font-size: 10px; margin-bottom: 2px; }
 
-  /* ── 4. DÉRIVE NUÉE : images réduites de moitié ──────────────────────── */
+  /* ── 4. DÉRIVE NUÉE : petites images + touch fix ─────────────────────── */
   .gallery-item {
-    width: 100px !important;
-    max-width: 100px !important;
+    width: 80px !important;
+    max-width: 80px !important;
   }
-  .gallery-item .gallery-ph { width: 100px; height: 100px; }
+  .gallery-item .gallery-ph { width: 80px; height: 80px; }
+  .gallery-scroll { touch-action: none; }  /* empêche le scroll navigateur sur le canvas */
+
+  /* ── 4b. SECTION HEADER responsive ──────────────────────────────────── */
+  .section-header { padding: 10px 10px 6px !important; }
+  .section-header-title { font-size: 20px !important; }
+  .section-header-desc { font-size: 12px !important; }
+  .derive-header {
+    grid-template-columns: 1fr !important;
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+  .derive-header-left { flex-direction: row; align-items: baseline; gap: 8px; }
+  .derive-title { font-size: 16px !important; }
+  .derive-header-center { justify-content: flex-start; }
+  .derive-header-right { justify-content: flex-start; gap: 8px; }
 
   /* ── 5. DÉRIVE CONSTELLATION : visible + tactile ─────────────────────── */
   #deriveReseauPane {
