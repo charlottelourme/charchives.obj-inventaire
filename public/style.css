@@ -8073,9 +8073,16 @@ body.dark-mode .portrait-title { color: var(--text); }
    Réutilisés par Inventaire, Dérive, Triptyque, Diorama, Constellation.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* ── SectionHeader : Titre page + consigne ─────────────────────────────── */
+/* ── SectionHeader : Cartouche d'archive (fond grisé + bordure basse) ── */
 .section-header {
-  padding: 20px 48px 12px;
+  background: var(--tag-bg);        /* gris très léger — #F5F4F1 */
+  border-bottom: 1px solid var(--border-light);
+  padding: 24px 48px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
 }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -8088,14 +8095,18 @@ body.dark-mode .portrait-title { color: var(--text); }
   margin: 0 0 6px;
 }
 .section-header-desc {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-size: 14px;
-  font-weight: 300;
-  letter-spacing: .01em;
+  font-family: 'Cutive Mono', monospace;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .03em;
   color: var(--text-3);
   margin: 0;
   max-width: 80ch;
+}
+body.dark-mode .section-header {
+  background: var(--surface);
+  border-bottom-color: var(--border);
 }
 
 /* ── SelectionActionBar : compteur + actions sur une seule ligne ────────── */
