@@ -1531,8 +1531,11 @@ function render() {
 
   const filtered = getFiltered();
   state.detailList = filtered;
-  document.getElementById('countLabel').textContent =
-    `${filtered.length} objet${filtered.length!==1?'s':''}`;
+  const countText = `${filtered.length} objet${filtered.length!==1?'s':''}`;
+  document.getElementById('countLabel').textContent = countText;
+  // Cartouche Inventaire : description = compteur
+  const invDesc = document.getElementById('inventaireDesc');
+  if (invDesc) invDesc.textContent = countText;
 
   if (state.view==='grid') {
     exitGravityMode();
