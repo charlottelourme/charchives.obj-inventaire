@@ -2764,8 +2764,10 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   align-items: center;
   gap: 16px;
   padding: 14px 48px 10px;
-  background: var(--tag-bg);         /* cartouche grisé — comme SectionHeader */
+  background: var(--tag-bg);
   border-bottom: 1px solid var(--border-light);
+  /* Pleine largeur (sort du conteneur fixed) */
+  width: 100%;
 }
 body.dark-mode .derive-header { background: var(--surface); }
 .derive-header-left {
