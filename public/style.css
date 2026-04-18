@@ -8484,10 +8484,10 @@ body.dark-mode .section-header {
   .gallery-item .gallery-ph { width: 80px; height: 80px; }
   .gallery-scroll { touch-action: none; }  /* empêche le scroll navigateur sur le canvas */
 
-  /* ── 4b. SECTION HEADER responsive ──────────────────────────────────── */
-  .section-header { padding: 10px 10px 6px !important; }
+  /* ── 4b. SECTION HEADER cartouche responsive ─────────────────────────── */
+  .section-header { padding: 14px 12px 10px !important; }
   .section-header-title { font-size: 20px !important; }
-  .section-header-desc { font-size: 12px !important; }
+  .section-header-desc { font-size: 10px !important; }
   .derive-header {
     grid-template-columns: 1fr !important;
     padding: 8px 10px !important;
