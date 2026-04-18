@@ -8073,15 +8073,20 @@ body.dark-mode .portrait-title { color: var(--text); }
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── SectionHeader : Cartouche d'archive (fond grisé + bordure basse) ── */
+/* Pleine largeur : sort du max-width du parent via un trick de marge négative */
 .section-header {
-  background: var(--tag-bg);        /* gris très léger — #F5F4F1 */
+  background: var(--tag-bg);
   border-bottom: 1px solid var(--border-light);
   padding: 24px 48px 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  width: 100%;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
 }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
