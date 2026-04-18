@@ -2125,6 +2125,7 @@ function _buildConGraph(items, affinityType) {
 // ── Design System — Descriptions éditables des modes ─────────────────────────
 // Modifie ces textes librement : ils apparaissent sous le titre de chaque vue.
 const MODE_DESCRIPTIONS = {
+  inventaire:    '',  // dynamique : "{N} objets" — rempli dans render()
   nuee:          'Les objets dérivent en apesanteur. Survolez pour les accélérer.',
   constellation: 'Vos objets reliés par leurs intentions, matières ou identités.',
   triptyque:     'Composez des trios d\'objets — par le hasard ou par vos propres règles.',
