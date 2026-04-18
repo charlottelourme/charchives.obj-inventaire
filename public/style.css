@@ -8403,29 +8403,35 @@ body.dark-mode .portrait-title { color: var(--text); }
     filter: blur(16px);
   }
 
-  /* ── 2. HEADER : compact, labels réduits, search z-fix ───────────────── */
+  /* ── 2. HEADER : très compact, aligné à gauche ──────────────────────── */
+  header {
+    padding: 0 10px !important;
+    height: 44px !important;
+    gap: 6px !important;
+  }
+  header h1 { font-size: 12px !important; letter-spacing: .1em !important; }
+  .view-tabs { gap: 0 !important; }
+  .view-tab { font-size: 13px !important; padding: 0 8px !important; }
+  .header-actions { gap: 3px !important; }
+  .header-actions .btn-primary { font-size: 9px !important; padding: 4px 8px !important; }
+  .header-actions .btn-ghost { font-size: 10px !important; padding: 4px !important; }
   .sfb-label {
     font-size: 7px !important;
-    min-width: 56px !important;
-    width: 56px !important;
-    letter-spacing: .12em;
+    min-width: 48px !important;
+    width: 48px !important;
   }
-  .sfb-pill-verbe { font-size: 12px !important; padding: 4px 10px !important; }
+  .sfb-pill-verbe { font-size: 11px !important; padding: 4px 8px !important; }
   .sfb-pill-sm { font-size: 8px !important; }
-  /* Barre de recherche : z-index garanti, pas de superposition */
-  .search-wrap {
-    position: relative;
-    z-index: 100;
-  }
-  .search-bar { min-height: 32px; }
+  .search-wrap { position: relative; z-index: 100; }
+  .search-bar { min-height: 28px; max-width: 100% !important; }
+  .search-input-inner { font-size: 12px !important; }
   .search-dropdown {
     z-index: 200;
-    width: calc(100vw - 28px) !important;
+    width: calc(100vw - 20px) !important;
     max-width: none;
     left: 0 !important;
   }
-  /* Toolbar compact */
-  .toolbar { padding: 6px 10px; gap: 4px; }
+  .toolbar { padding: 6px 8px; gap: 4px; }
   .count-label { font-size: 9px; }
 
   /* ── 3. FORMULAIRE : compacté + petites bulles couleurs ──────────────── */
