@@ -1,9 +1,12 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ══ BRUTALISME — angles droits partout (sauf pastilles couleur) ══════════ */
-*:not(.note-swatch):not(.frag-bg-swatch):not(.swatch-btn):not(.color-swatch):not(.sfb-dot-sm):not(.portrait-status-dot):not(.card-status-dot):not(.idx-dd-dot):not(.vpt-pill::before):not(.dio-handle):not(.dio-handle-rot):not(.sel-ast-wrap):not(.card-bookmark-btn):not(.con-cluster-halo) {
-  border-radius: 0 !important;
-}
+/* ══ BRUTALISME — angles droits partout ══════════════════════════════════ */
+* { border-radius: 0 !important; }
+/* Exceptions : les éléments qui DOIVENT rester ronds */
+.note-swatch, .frag-bg-swatch, .swatch-btn, .color-swatch,
+.sfb-dot-sm, .portrait-status-dot, .card-status-dot, .idx-dd-dot,
+.dio-handle, .dio-handle-rot, .sel-ast-wrap, .card-bookmark-btn,
+.con-add-btn circle { border-radius: 50% !important; }
 
 :root {
   --bg: #FAFAF8;
