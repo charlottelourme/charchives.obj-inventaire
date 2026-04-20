@@ -1533,9 +1533,9 @@ function render() {
   state.detailList = filtered;
   const countText = `${filtered.length} objet${filtered.length!==1?'s':''}`;
   document.getElementById('countLabel').textContent = countText;
-  // Cartouche Inventaire : description = compteur
+  // Cartouche Inventaire : description fixe (pas le compteur — il est déjà dans la toolbar)
   const invDesc = document.getElementById('inventaireDesc');
-  if (invDesc) invDesc.textContent = countText;
+  if (invDesc && !invDesc.textContent) invDesc.textContent = MODE_DESCRIPTIONS.inventaire;
 
   if (state.view==='grid') {
     exitGravityMode();
