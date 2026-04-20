@@ -2128,11 +2128,11 @@ function _buildConGraph(items, affinityType) {
 // ── Design System — Descriptions éditables des modes ─────────────────────────
 // Modifie ces textes librement : ils apparaissent sous le titre de chaque vue.
 const MODE_DESCRIPTIONS = {
-  inventaire:    '',  // dynamique : "{N} objets" — rempli dans render()
-  nuee:          'Les objets dérivent en apesanteur. Survolez pour les accélérer.',
-  constellation: 'Vos objets reliés par leurs intentions, matières ou identités.',
-  triptyque:     'Composez des trios d\'objets — par le hasard ou par vos propres règles.',
-  diorama:       'Glissez vos objets sur la scène pour créer une composition.',
+  inventaire:    'Exploration des gisements et du patrimoine archivé.',
+  nuee:          'Navigation cinétique et exploration des liens entre les objets.',
+  constellation: 'Navigation cinétique et exploration des liens entre les objets.',
+  triptyque:     'Sélection et composition de trois objets en regard.',
+  diorama:       'Mise en scène d\'objets dans des intérieurs d\'archives.',
 };
 
 // ── Design System helpers ────────────────────────────────────────────────────
