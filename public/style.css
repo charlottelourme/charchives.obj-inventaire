@@ -8492,9 +8492,9 @@ body.dark-mode .section-header {
   .gallery-scroll { touch-action: none; }  /* empêche le scroll navigateur sur le canvas */
 
   /* ── 4b. SECTION HEADER cartouche responsive ─────────────────────────── */
-  .section-header { padding: 14px 12px 10px !important; }
-  .section-header-title { font-size: 20px !important; }
-  .section-header-desc { font-size: 10px !important; }
+  .section-header { padding: 12px 14px 10px !important; }
+  .section-header-title { font-size: 22px !important; }
+  .section-header-desc { font-size: 10px !important; line-height: 1.5; }
   .derive-header {
     grid-template-columns: 1fr !important;
     padding: 8px 10px !important;
