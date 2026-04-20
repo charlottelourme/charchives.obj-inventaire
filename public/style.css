@@ -8101,11 +8101,11 @@ body.dark-mode .portrait-title { color: var(--text); }
   margin: 0 0 6px;
 }
 .section-header-desc {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-size: 15px;
-  font-weight: 300;
-  letter-spacing: .01em;
+  font-family: 'Cutive Mono', monospace;
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: .02em;
   color: var(--text-3);
   margin: 0;
   max-width: 80ch;
