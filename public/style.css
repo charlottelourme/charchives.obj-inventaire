@@ -8125,7 +8125,7 @@ body.dark-mode .portrait-title { color: var(--text); }
 .section-header {
   background: #F5F4F1;             /* opaque strict */
   border-bottom: 1px solid var(--border-light);
-  padding: 18px 48px 14px;          /* remonté — gain d'espace vertical */
+  padding: 18px 24px 14px;          /* padding latéral réduit — aligne à gauche */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
