@@ -6518,15 +6518,20 @@ function smAccordion(key, title, content, defaultOpen, editable = false) {
 
 function smTriosTabsHTML(draft) {
   const labels = draft.triosTabLabels || {};
+  const hidden = draft.triosTabHidden || {};
   return `<div class="sm-trios-tabs">
-    <p class="sm-trios-hint">Renomme les 3 onglets de la vue Triptyque.</p>
+    <p class="sm-trios-hint">Renomme, masque ou supprime les 3 onglets de la vue Triptyque.</p>
     ${TRIOS_TAB_KEYS.map((key, i) => `
-      <div class="sm-field-row">
+      <div class="sm-field-row sm-trios-row">
         <label class="sm-trios-tab-label">Onglet ${i+1}</label>
         <input type="text" class="sm-input sm-trios-input"
           data-trios-key="${key}"
           value="${esc(labels[key] || TRIOS_TAB_DEFAULTS[i])}"
           placeholder="${esc(TRIOS_TAB_DEFAULTS[i])}">
+        <label class="sm-trios-toggle">
+          <input type="checkbox" class="sm-trios-hide" data-trios-hide="${key}" ${hidden[key] ? 'checked' : ''}>
+          <span>Masquer</span>
+        </label>
       </div>`).join('')}
   </div>`;
 }
