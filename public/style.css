@@ -529,8 +529,9 @@ main {
   background: var(--surface);
   border: 1px solid var(--border-light);
   border-radius: 0;
-  padding: 6px 14px;
-  font-size: 11px;
+  padding: 3px 10px;
+  height: 28px;
+  font-size: 12px;
   font-family: 'Cutive Mono', monospace;
   font-weight: 500;
   letter-spacing: .04em;
