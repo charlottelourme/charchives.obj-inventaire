@@ -275,9 +275,7 @@ header {
   justify-content: space-between;
   gap: 16px;
 }
-body.dark-mode header {
-  background: rgba(24,24,24,.96);
-}
+body.dark-mode header { background: var(--bg); }
 header h1 {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 16px;
