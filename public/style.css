@@ -8157,23 +8157,23 @@ body.dark-mode .portrait-title { color: var(--text); }
    Réutilisés par Inventaire, Dérive, Triptyque, Diorama, Constellation.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* ── SectionHeader : Cartouche d'archive (opaque + bordure basse) ── */
+/* ── SectionHeader : masqué par défaut (bandeaux retirés) ─────────────────
+   Les vues n'ont plus de bandeau de titre/description visible. L'édition
+   via Paramètres > Textes de l'interface reste fonctionnelle (données
+   conservées en localStorage) pour une réactivation future. */
+#inventaireSectionHeader,
+#triosSectionHeader,
+#dioramaSectionHeader { display: none !important; }
+
+/* Paramètres conserve son propre section-header (modale) — styles neutres */
 .section-header {
-  background: #F5F4F1;             /* opaque strict */
-  border-bottom: 1px solid var(--border-light);
-  padding: 18px 24px 14px;          /* padding latéral réduit — aligne à gauche */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
   box-sizing: border-box;
-  z-index: 1;
 }
-body.dark-mode .section-header { background: #1F1F1C; }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
