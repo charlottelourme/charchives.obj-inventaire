@@ -8973,16 +8973,11 @@ body.dark-mode .section-header {
     opacity: 0.92;
   }
 
-  /* ── 2. HEADER : compact + safe-area iOS ─────────────────────────────── */
-  header {
-    /* La safe-area est absorbée par le padding-top — pas de "jour" au scroll */
-    padding: calc(env(safe-area-inset-top) + 6px) 0 0 !important;
-    min-height: calc(44px + env(safe-area-inset-top)) !important;
-    height: auto !important;
-    gap: 6px !important;
-  }
+  /* ── 2. HEADER : le padding/bg sont gérés dans la règle mobile plus haut ─
+        Ici on se contente de compenser la hauteur du header 3-lignes sur main */
   html, body { padding-top: 0 !important; }
-  body { padding-top: calc(90px + env(safe-area-inset-top)) !important; }
+  /* 3 lignes : title(~36) + tabs(~34) + search(~42) = ~112px + safe-area */
+  body { padding-top: calc(116px + env(safe-area-inset-top)) !important; }
   header h1 { font-size: 12px !important; letter-spacing: .1em !important; }
   .view-tabs { gap: 0 !important; }
   .view-tab { font-size: 13px !important; padding: 0 8px !important; }
