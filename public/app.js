@@ -1560,6 +1560,7 @@ function applyVerbePageTheme() {
   }
   document.body.classList.remove('verbe-active');
   ['--page-verbe-bg','--page-verbe-text','--page-verbe-main',
+   '--page-verbe-strong','--page-verbe-mid',
    '--page-verbe-soft','--page-verbe-soft-dk','--page-verbe-typo']
     .forEach(k => root.style.removeProperty(k));
 }
