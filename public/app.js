@@ -34,14 +34,15 @@ function _savePageDescOverrides(overrides) {
 }
 function updatePageDescription(key, newText) {
   const overrides = _loadPageDescOverrides();
-  const trimmed = (newText || '').trim();
-  if (trimmed && trimmed !== PAGE_DESCRIPTIONS_DEFAULTS[key]) {
-    overrides[key] = trimmed;
-  } else {
-    delete overrides[key];  // revient au défaut si vide ou identique
-  }
+  // Garde toujours la valeur saisie (même vide = description masquée explicite)
+  overrides[key] = (newText || '').trim();
   _savePageDescOverrides(overrides);
-  // Rafraîchit les bandeaux visibles
+  _refreshAllSectionHeaders();
+}
+function resetPageDescription(key) {
+  const overrides = _loadPageDescOverrides();
+  delete overrides[key];   // retire l'override → fallback sur le défaut
+  _savePageDescOverrides(overrides);
   _refreshAllSectionHeaders();
 }
 function _refreshAllSectionHeaders() {
