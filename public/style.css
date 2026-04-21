@@ -5683,17 +5683,17 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
    DARK MODE — Palette abyssale, halos lumineux
 ══════════════════════════════════════════════════════════════ */
 body.dark-mode {
-  --bg: #111111;              /* Noir profond */
-  --surface: #1A1A1A;
-  --border: #333330;          /* gris anthracite visible */
-  --border-light: #222220;
-  --border-strong: #555550;
-  --text: #F0EDE8;            /* Blanc cassé doux */
-  --text-2: #A09890;          /* secondaire lisible */
-  --text-3: #908880;          /* tertiaire — was #585450, trop sombre */
-  --tag-bg: #1C1C1A;
-  --tag-border: #2E2C28;
-  --accent: #F0EDE8;
+  --bg: #0a0a0a;              /* Noir profond (zinc-950-like) */
+  --surface: #18181B;          /* surface un ton au-dessus (zinc-900) */
+  --border: #27272A;          /* zinc-800 — bordure discrète */
+  --border-light: #1F1F22;
+  --border-strong: #3F3F46;   /* zinc-700 pour contours contrastés */
+  --text: #F4F4F5;            /* zinc-100 — titres, blanc cassé doux */
+  --text-2: #D4D4D8;          /* zinc-300 — corps de texte */
+  --text-3: #A1A1AA;          /* zinc-400 — descriptions, labels discrets */
+  --tag-bg: #27272A;           /* zinc-800 — fond des chips/pills */
+  --tag-border: #3F3F46;
+  --accent: #F4F4F5;
   --shadow-lg: none;
 }
 
