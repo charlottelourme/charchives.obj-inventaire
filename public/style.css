@@ -8475,7 +8475,17 @@ body.dark-mode .section-header {
 .toolbar-strate::-webkit-scrollbar { display: none; }
 body.dark-mode .toolbar-strate { border-bottom-color: var(--border); }
 @media (max-width: 520px) {
-  .toolbar-strate { padding: 14px 16px 10px !important; gap: 12px; }
+  .toolbar-strate { padding: 12px 14px !important; gap: 10px; }
+  /* Select "Trier par" : hauteur alignée sur la barre de recherche (~40px) */
+  .toolbar-strate select.status-filter,
+  .toolbar-strate .status-filter {
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 28px 0 12px !important;
+    font-size: 14px !important;
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border-light) !important;
+  }
 }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
