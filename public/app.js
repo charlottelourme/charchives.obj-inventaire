@@ -6703,9 +6703,40 @@ function renderSettingsModal() {
     ${smAccordion('univers', smGetCurrentLabel(draft, 'univers'), smListHTML(draft.univers || [], 'univers'), false, true)}
     ${smAccordion('locations', smGetCurrentLabel(draft, 'locations'), smListHTML(draft.locations || [], 'locations'), false, true)}
     ${smAccordion('trios', 'Onglets Triptyque', smTriosTabsHTML(draft), false, false)}
+    ${smAccordion('pagedescs', 'Textes de l\'interface', smPageDescsHTML(), false, false)}
     ${smAccordion('thesaurus', 'Dictionnaire de recherche', smThesaurusHTML(), false, false)}
   </div>`;
   bindSmModal();
+  bindSmPageDescs();
+}
+
+// ── Textes des bandeaux — éditeur dans les paramètres ─────────────────────
+function smPageDescsHTML() {
+  const overrides = _loadPageDescOverrides();
+  const fields = [
+    { key: 'inventaire',    label: 'Inventaire' },
+    { key: 'nuee',          label: 'Dérive — Nuée' },
+    { key: 'constellation', label: 'Dérive — Constellation' },
+    { key: 'triptyque',     label: 'Triptyque' },
+    { key: 'diorama',       label: 'Diorama' },
+  ];
+  return `<div class="sm-pagedescs">
+    <p class="sm-pagedescs-hint">Personnalisez les descriptions qui apparaissent sous chaque titre de page. Laissez vide pour restaurer le texte par défaut.</p>
+    ${fields.map(({ key, label }) => `
+      <div class="sm-pagedesc-row">
+        <label class="sm-pagedesc-label">${esc(label)}</label>
+        <textarea class="sm-pagedesc-input" data-pd-key="${key}" rows="2" placeholder="${esc(PAGE_DESCRIPTIONS_DEFAULTS[key] || '')}">${esc(overrides[key] || '')}</textarea>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function bindSmPageDescs() {
+  document.querySelectorAll('.sm-pagedesc-input').forEach(input => {
+    input.addEventListener('input', e => {
+      updatePageDescription(e.target.dataset.pdKey, e.target.value);
+    });
+  });
 }
 
 function _bindThesDelBtns(container) {
