@@ -6843,6 +6843,13 @@ function bindSmModal() {
       draft.triosTabLabels[inp.dataset.triosKey] = inp.value;
     });
   });
+  // Masquer un onglet Triptyque
+  body.querySelectorAll('.sm-trios-hide').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (!draft.triosTabHidden) draft.triosTabHidden = {};
+      draft.triosTabHidden[cb.dataset.triosHide] = cb.checked;
+    });
+  });
 
   // ── Drag & Drop pour listes simples (sm-list rows) ──
   let _smDragSrc = null, _smDragKey = null, _smDragI = null;
