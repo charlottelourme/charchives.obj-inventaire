@@ -3131,34 +3131,101 @@ function renderDiorama() {
   _dioInitZoom(wrap);
 }
 
-function _dioRenderDecorBar(decBar, backdrop, decors) {
-  decors.forEach((d, i) => {
-    const thumb = document.createElement('img');
-    thumb.className = 'diorama-decor-thumb' + (state.diorama.backdrop === d.url || (!state.diorama.backdrop && i === 0) ? ' active' : '');
-    // Lazy loading : utilise le thumbnail Europeana (petit) pour la barre
-    thumb.src = d.thumb || d.url;
-    thumb.loading = 'lazy';
-    thumb.alt = d.label;
-    thumb.title = d.label;
-    thumb.addEventListener('click', () => {
-      state.diorama.backdrop = d.url;
-      state.diorama.backdropCredit = d.credit || '';
-      decBar.querySelectorAll('.diorama-decor-thumb').forEach(t => t.classList.remove('active'));
-      thumb.classList.add('active');
-      // Charge la haute résolution en fond (lazy)
-      backdrop.src = d.url;
-      _dioUpdateCredits(d.credit || '');
-      _dioSave();
-    });
-    decBar.appendChild(thumb);
-  });
-  // Set initial backdrop
-  if (!state.diorama.backdrop && decors[0]) {
-    state.diorama.backdrop = decors[0].url;
-    state.diorama.backdropCredit = decors[0].credit || '';
+async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
+  // Charge tous les slots depuis IndexedDB
+  let slots = [];
+  try { slots = await _dioSlotsAll(); } catch (e) { console.warn('IDB load failed:', e); }
+  const slotMap = new Map(slots.map(s => [s.id, s]));
+
+  // Construit la grille 20 slots + bouton "Tester un fond (temporaire)"
+  decBar.innerHTML = '';
+  decBar.classList.add('diorama-slot-grid');
+
+  for (let i = 0; i < DIO_SLOT_COUNT; i++) {
+    const id = `slot${i + 1}`;
+    const slot = slotMap.get(id);
+    const cell = document.createElement('div');
+    cell.className = 'dio-slot' + (slot ? ' filled' : ' empty');
+    cell.dataset.slotId = id;
+
+    if (slot && slot.blob) {
+      const url = _dioSlotURL(id, slot.blob);
+      cell.innerHTML = `
+        <img class="dio-slot-thumb" src="${url}" alt="${id}">
+        <span class="dio-slot-label">SLOT ${i + 1}</span>
+        <button class="dio-slot-del" title="Supprimer ce fond">×</button>`;
+      // Clic = sélectionne comme fond courant
+      cell.querySelector('.dio-slot-thumb').addEventListener('click', () => {
+        _dioApplyBackdrop(url, `Slot ${i + 1}`, backdrop);
+        decBar.querySelectorAll('.dio-slot').forEach(c => c.classList.remove('active'));
+        cell.classList.add('active');
+      });
+      // Supprime le slot
+      cell.querySelector('.dio-slot-del').addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!confirm(`Supprimer le fond du slot ${i + 1} ?`)) return;
+        await _dioSlotDelete(id);
+        if (_dioSlotURLs.has(id)) { URL.revokeObjectURL(_dioSlotURLs.get(id)); _dioSlotURLs.delete(id); }
+        _dioToast(`Slot ${i + 1} vidé`);
+        _dioRenderDecorBar(decBar, backdrop);
+      });
+    } else {
+      cell.innerHTML = `
+        <label class="dio-slot-add" title="Ajouter un fond à ce slot">
+          <span class="dio-slot-plus">+</span>
+          <span class="dio-slot-label">SLOT ${i + 1}</span>
+          <input type="file" accept="image/*" class="dio-slot-input" hidden>
+        </label>`;
+      const input = cell.querySelector('.dio-slot-input');
+      input.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+          await _dioSlotPut(id, file);
+          _dioToast(`Image sauvegardée dans le slot ${i + 1}`);
+          _dioRenderDecorBar(decBar, backdrop);
+        } catch (err) {
+          console.warn('IDB save failed:', err);
+          alert('Impossible de sauvegarder : ' + err.message);
+        }
+      });
+    }
+    decBar.appendChild(cell);
   }
-  backdrop.src = state.diorama.backdrop;
-  _dioUpdateCredits(state.diorama.backdropCredit || '');
+
+  // Bouton "Tester un fond (temporaire)" — séparé, design inversé
+  const tempLabel = document.createElement('label');
+  tempLabel.className = 'dio-temp-btn';
+  tempLabel.innerHTML = `
+    <span>TESTER UN FOND (TEMPORAIRE)</span>
+    <input type="file" accept="image/*" class="dio-temp-input" hidden>`;
+  tempLabel.querySelector('.dio-temp-input').addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    // Révoque l'ancienne URL temporaire si existante
+    if (_dioTempURL) URL.revokeObjectURL(_dioTempURL);
+    _dioTempURL = URL.createObjectURL(file);
+    _dioApplyBackdrop(_dioTempURL, 'Fond temporaire', backdrop);
+    decBar.querySelectorAll('.dio-slot').forEach(c => c.classList.remove('active'));
+    tempLabel.classList.add('active');
+    _dioToast('Fond temporaire appliqué (non sauvegardé)');
+  });
+  decBar.appendChild(tempLabel);
+
+  // Applique le fond courant s'il était déjà sélectionné
+  if (state.diorama.backdrop) {
+    backdrop.src = state.diorama.backdrop;
+    _dioUpdateCredits(state.diorama.backdropCredit || '');
+  }
+}
+
+// Applique une URL comme fond du Diorama + persiste la sélection (pas le fichier)
+function _dioApplyBackdrop(url, credit, backdropEl) {
+  state.diorama.backdrop = url;
+  state.diorama.backdropCredit = credit || '';
+  if (backdropEl) backdropEl.src = url;
+  _dioUpdateCredits(credit || '');
+  _dioSave();
 }
 
 function _dioUpdateCredits(text) {
