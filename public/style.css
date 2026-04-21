@@ -5599,16 +5599,24 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   .grid .card-thumb-area img,
   .grid .card-body { position: relative !important; z-index: 2 !important; }
   .card-thumb-area { width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
-  /* PNG détourés : jamais de mix-blend-multiply (masquerait le canal alpha) ;
-     léger padding intérieur pour que l'objet ne touche pas les bords du bloc. */
+  /* PNG détourés : JAMAIS de mix-blend-mode (tue le canal alpha sur iOS).
+     Padding intérieur réduit pour que le fond coloré soit plus présent. */
   .grid .card-thumb-area img,
   .grid .card .card-thumb {
     mix-blend-mode: normal !important;
     background: transparent !important;
     object-fit: contain !important;
-    padding: 6px !important;
+    padding: 2px !important;            /* ultra-compact : le halo domine */
     z-index: 10 !important;
     position: relative !important;
+  }
+  /* Card-body : marges réduites pour densifier */
+  .grid .card-body { padding: 5px 8px 9px !important; margin-top: 6px !important; }
+  /* Card-thumb-area : occupe toute la largeur sans marges résiduelles */
+  .grid .card-thumb-area {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   /* Halo réduit sur petite largeur — inset dynamique */
   .grid .card::before {
