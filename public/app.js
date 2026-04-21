@@ -1,8 +1,10 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// PAGE_DESCRIPTIONS — textes éditables des bandeaux de chaque page.
-// Modifiez ces chaînes pour mettre à jour les descriptions partout dans le site.
+// PAGE_DESCRIPTIONS — textes par défaut des bandeaux de chaque page.
+// L'utilisateur peut surcharger ces valeurs depuis la vue Paramètres ; les
+// overrides sont stockés dans localStorage (clé : "charchives_pageDescriptions")
+// et surchargent les défauts via pageDesc(key).
 // ══════════════════════════════════════════════════════════════════════════════
-const PAGE_DESCRIPTIONS = {
+const PAGE_DESCRIPTIONS_DEFAULTS = {
   inventaire:    'Exploration des gisements et du patrimoine archivé.',
   derive:        'Navigation cinétique et exploration des liens entre les objets.',
   nuee:          'Les objets dérivent en apesanteur. Survolez pour les accélérer.',
@@ -11,6 +13,44 @@ const PAGE_DESCRIPTIONS = {
   diorama:       'Mise en scène d\'objets dans des intérieurs d\'archives.',
   parametres:    'Gérez vos catégories, typologies et duotones.',
 };
+// Proxy rétrocompat : PAGE_DESCRIPTIONS.xxx retourne l'override utilisateur si défini
+const PAGE_DESCRIPTIONS = new Proxy({}, {
+  get(_, key) { return pageDesc(key); }
+});
+function pageDesc(key) {
+  const overrides = _loadPageDescOverrides();
+  return (overrides[key] ?? PAGE_DESCRIPTIONS_DEFAULTS[key]) || '';
+}
+function _loadPageDescOverrides() {
+  try { return JSON.parse(localStorage.getItem('charchives_pageDescriptions') || '{}'); }
+  catch(e) { return {}; }
+}
+function _savePageDescOverrides(overrides) {
+  try { localStorage.setItem('charchives_pageDescriptions', JSON.stringify(overrides)); }
+  catch(e) { /* ignore */ }
+}
+function updatePageDescription(key, newText) {
+  const overrides = _loadPageDescOverrides();
+  const trimmed = (newText || '').trim();
+  if (trimmed && trimmed !== PAGE_DESCRIPTIONS_DEFAULTS[key]) {
+    overrides[key] = trimmed;
+  } else {
+    delete overrides[key];  // revient au défaut si vide ou identique
+  }
+  _savePageDescOverrides(overrides);
+  // Rafraîchit les bandeaux visibles
+  _refreshAllSectionHeaders();
+}
+function _refreshAllSectionHeaders() {
+  const invDesc  = document.getElementById('inventaireDesc');
+  const derDesc  = document.getElementById('deriveDesc');
+  const triDesc  = document.getElementById('triosDesc');
+  const dioDesc  = document.getElementById('dioramaDesc');
+  if (invDesc) invDesc.textContent = pageDesc('inventaire');
+  if (derDesc) derDesc.textContent = pageDesc(state.deriveMode === 'reseau' ? 'constellation' : 'nuee');
+  if (triDesc) triDesc.textContent = pageDesc('triptyque');
+  if (dioDesc) dioDesc.textContent = pageDesc('diorama');
+}
 
 // ── Static attribute definitions ──────────────────────────────────────────────
 const ATTRIBUTES_DEF = {
