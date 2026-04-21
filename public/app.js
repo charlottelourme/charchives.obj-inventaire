@@ -2139,16 +2139,6 @@ function _buildConGraph(items, affinityType) {
 }
 
 // ── Main render ───────────────────────────────────────────────────────────────
-// ── Design System — Descriptions éditables des modes ─────────────────────────
-// Modifie ces textes librement : ils apparaissent sous le titre de chaque vue.
-const MODE_DESCRIPTIONS = {
-  inventaire:    'Exploration des gisements et du patrimoine archivé.',
-  nuee:          'Navigation cinétique et exploration des liens entre les objets.',
-  constellation: 'Navigation cinétique et exploration des liens entre les objets.',
-  triptyque:     'Sélection et composition de trois objets en regard.',
-  diorama:       'Mise en scène d\'objets dans des intérieurs d\'archives.',
-};
-
 // ── Design System helpers ────────────────────────────────────────────────────
 function _sectionHeaderHTML(title, desc) {
   return `<div class="section-header">
