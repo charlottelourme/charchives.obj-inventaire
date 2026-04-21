@@ -5485,15 +5485,16 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   .toolbar { flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
   .toolbar-right { width: 100%; justify-content: flex-end; }
 
-  /* Barre statuts/verbes : label passe à la ligne, pills en scroll horizontal */
+  /* Barre statuts/verbes : label passe à la ligne, pills en scroll horizontal
+     Aligné à 14px gauche — même colonne verticale que le logo CHARCHIVES */
   .status-filter-bar {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;              /* permet au label de se placer au-dessus */
+    flex-wrap: wrap;
     align-items: center;
     border-bottom: none;
-    padding: 6px 10px;
-    gap: 4px;
+    padding: 6px 14px !important;    /* ← ferrage strict à 14px comme le logo */
+    gap: 6px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
