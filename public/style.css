@@ -2775,9 +2775,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 body.dark-mode .derive-header { background: var(--surface); }
 .derive-header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  display: none;   /* bandeau Dérive retiré — seuls les onglets Nuée/Constellation restent */
 }
 .derive-title {
   font-size: 22px !important;
