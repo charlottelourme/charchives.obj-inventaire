@@ -8268,7 +8268,7 @@ body.dark-mode .section-header {
   height: calc(100vh - 52px);
 }
 
-/* ── Barre de décors (scroll horizontal de thumbnails) ── */
+/* ── Grille de 20 slots persistés + bouton temporaire ── */
 .diorama-decor-bar {
   display: flex;
   gap: 10px;
@@ -8278,7 +8278,135 @@ body.dark-mode .section-header {
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   background: var(--bg);
+  align-items: stretch;
 }
+.diorama-decor-bar.diorama-slot-grid { gap: 8px; }
+.dio-slot {
+  position: relative;
+  width: 88px;
+  height: 64px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 0;              /* angles 90° — brutalisme */
+  background: var(--tag-bg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .12s;
+}
+.dio-slot.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+.dio-slot.filled { background: var(--bg); }
+.dio-slot.active { outline: 2px solid var(--text); outline-offset: -1px; }
+.dio-slot:hover { border-color: var(--text-3); }
+.dio-slot-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+}
+.dio-slot-label {
+  position: absolute;
+  bottom: 2px;
+  left: 4px;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: rgba(255,255,255,.88);
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+  pointer-events: none;
+}
+.dio-slot.empty .dio-slot-label {
+  color: var(--text-3);
+  text-shadow: none;
+  position: static;
+  margin-top: 2px;
+}
+.dio-slot-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  color: var(--text-3);
+}
+.dio-slot-plus {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 300;
+}
+.dio-slot-del {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 0;
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .12s;
+  padding: 0;
+}
+.dio-slot:hover .dio-slot-del { opacity: 1; }
+
+/* Bouton import temporaire — design inversé (contour noir, fond blanc) */
+.dio-temp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  height: 64px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--text);
+  border-radius: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Cutive Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background .12s, color .12s;
+  white-space: nowrap;
+}
+.dio-temp-btn:hover { background: var(--text); color: var(--bg); }
+.dio-temp-btn.active { background: var(--text); color: var(--bg); }
+
+/* Toast notification — brutalisme */
+.dio-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--text);
+  color: var(--bg);
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  padding: 10px 20px;
+  border-radius: 0;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s, transform .18s;
+}
+.dio-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .diorama-decor-bar::-webkit-scrollbar { display: none; }
 .diorama-decor-thumb {
   width: 80px;
