@@ -5413,14 +5413,15 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     margin-left: auto;
   }
 
-  /* ── LIGNE 2 : Navigation onglets (Cutive Mono, discret) ─────────────── */
+  /* ── LIGNE 2 : Navigation sérif italique, première lettre en majuscule ── */
   .view-tabs {
     order: 3;
     width: 100% !important;
     flex-basis: 100% !important;
     display: flex;
-    gap: 14px;
-    padding: 6px 14px 8px;
+    justify-content: flex-start;
+    gap: 24px;
+    padding: 8px 14px 10px !important;   /* ferré à 14px — aligné sur le logo */
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
@@ -5429,16 +5430,16 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   .view-tabs::-webkit-scrollbar { display: none; }
   .view-tab {
     padding: 0 !important;
-    font-family: 'Cutive Mono', monospace !important;
-    font-style: normal !important;
-    font-size: 10px !important;
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-style: italic !important;
+    font-size: 16px !important;
     font-weight: 400 !important;
-    letter-spacing: .12em !important;
-    text-transform: uppercase !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;     /* première lettre en maj seulement (valeur HTML telle quelle) */
     color: var(--text-3) !important;
     white-space: nowrap;
     flex-shrink: 0;
-    min-height: 22px;
+    min-height: 24px;
     display: inline-flex;
     align-items: center;
     background: transparent !important;
@@ -5446,7 +5447,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
   .view-tab.active {
     color: var(--text) !important;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
   }
 
   /* ── LIGNE 3 : Barre de recherche pleine largeur ─────────────────────── */
