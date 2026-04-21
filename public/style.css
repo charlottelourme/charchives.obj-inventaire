@@ -420,11 +420,11 @@ html::before {
   left: 0;
   right: 0;
   height: env(safe-area-inset-top);
-  background: var(--bg);
-  z-index: 999;
+  background: #ffffff;                  /* blanc pur — aucune transparence possible */
+  z-index: 1001;                        /* au-dessus du header pour couvrir tout jour */
   pointer-events: none;
 }
-html:has(body.dark-mode)::before { background: var(--bg); }
+html:has(body.dark-mode)::before { background: #0d0d0c; }
 body.dark-mode header { background: var(--bg); }
 header h1 {
   font-family: 'Cormorant Garamond', Georgia, serif;
