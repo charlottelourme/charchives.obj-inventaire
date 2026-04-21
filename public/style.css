@@ -2851,10 +2851,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* ── Content panes ── */
 .derive-pane {
   position: relative;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: calc(100vh - 52px - 200px);  /* viewport moins header global + strates 2+3 */
+  min-height: 480px;
   overflow: hidden;
   opacity: 1;
   transition: opacity .28s ease;
