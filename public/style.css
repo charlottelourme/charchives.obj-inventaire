@@ -6988,11 +6988,10 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   padding: 60px 0;
 }
 
-/* ── Trios — Tabs navigation ── */
+/* ── Trios — Tabs navigation (fusionné avec toolbar-strate) ── */
 .trios-tabs-nav {
   display: flex;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 36px;
+  margin-bottom: 0;
   gap: 0;
 }
 .trios-tab-btn {
