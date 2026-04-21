@@ -118,21 +118,50 @@ body.verbe-active .vpt-count {
   transition: color 0.5s ease-in-out;
 }
 
-/* ── Typographie teintée — adopte la couleur de l'intention active ── */
-body.verbe-active .count-label,
-body.verbe-active .sfb-label,
-body.verbe-active .section-header-desc,
-body.verbe-active .vpt-count,
-body.verbe-active .toolbar-strate .count-label {
-  color: var(--page-verbe-typo, var(--text-3)) !important;
-  opacity: 0.85;
+/* ── Typographie teintée — TOUS les textes adoptent la couleur FONCÉE (textColor) ── */
+body.verbe-active:not(.dark-mode),
+body.verbe-active:not(.dark-mode) h1,
+body.verbe-active:not(.dark-mode) h2,
+body.verbe-active:not(.dark-mode) h3,
+body.verbe-active:not(.dark-mode) p,
+body.verbe-active:not(.dark-mode) span,
+body.verbe-active:not(.dark-mode) button,
+body.verbe-active:not(.dark-mode) label,
+body.verbe-active:not(.dark-mode) a,
+body.verbe-active:not(.dark-mode) .count-label,
+body.verbe-active:not(.dark-mode) .sfb-label,
+body.verbe-active:not(.dark-mode) .sfb-pill,
+body.verbe-active:not(.dark-mode) .sfb-pill-sm,
+body.verbe-active:not(.dark-mode) .sfb-pill-verbe,
+body.verbe-active:not(.dark-mode) .section-header-desc,
+body.verbe-active:not(.dark-mode) .section-header-title,
+body.verbe-active:not(.dark-mode) .vpt-name,
+body.verbe-active:not(.dark-mode) .vpt-count,
+body.verbe-active:not(.dark-mode) .vpt-pill,
+body.verbe-active:not(.dark-mode) .card-name,
+body.verbe-active:not(.dark-mode) .card-desc,
+body.verbe-active:not(.dark-mode) .card-verbe-label,
+body.verbe-active:not(.dark-mode) .card-typo-label,
+body.verbe-active:not(.dark-mode) .card-meta-row,
+body.verbe-active:not(.dark-mode) .breadcrumb,
+body.verbe-active:not(.dark-mode) .breadcrumb-item,
+body.verbe-active:not(.dark-mode) .toolbar-strate,
+body.verbe-active:not(.dark-mode) .toolbar-strate *,
+body.verbe-active:not(.dark-mode) #siteTitle,
+body.verbe-active:not(.dark-mode) .view-tab {
+  color: var(--page-verbe-typo, var(--text)) !important;
 }
-body.verbe-active .card-name,
-body.verbe-active .card-verbe-label,
-body.verbe-active .card-typo-label,
-body.verbe-active .card-meta-row {
-  color: var(--page-verbe-typo, var(--text-2));
+/* Titre actif (tab actif) : gras pour rester discriminant */
+body.verbe-active:not(.dark-mode) .view-tab.active,
+body.verbe-active:not(.dark-mode) .sfb-pill.active,
+body.verbe-active:not(.dark-mode) .sfb-pill-sm.active,
+body.verbe-active:not(.dark-mode) .vpt-pill.active {
+  color: var(--page-verbe-typo, var(--text)) !important;
+  font-weight: 600;
 }
+/* Éléments strictement neutres (icônes/boutons blancs) restent inchangés */
+body.verbe-active:not(.dark-mode) .btn-primary,
+body.verbe-active:not(.dark-mode) .btn-primary * { color: #fff !important; }
 /* Dark mode : PAS de teinte colorée — retour aux couleurs neutres du dark mode */
 body.dark-mode.verbe-active .count-label,
 body.dark-mode.verbe-active .sfb-label,
