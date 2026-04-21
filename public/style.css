@@ -8067,6 +8067,47 @@ body.dark-mode .card-name { color: var(--text); text-shadow: none; }
 body.dark-mode .portrait-title { color: var(--text); }
 
 
+/* ── Paramètres : éditeur des textes de bandeaux ─────────────────────────── */
+.sm-pagedescs { padding: 4px 0; }
+.sm-pagedescs-hint {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text-3);
+  margin: 0 0 14px;
+  line-height: 1.45;
+}
+.sm-pagedesc-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.sm-pagedesc-label {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--text-3);
+}
+.sm-pagedesc-input {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--text);
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 0;            /* angles 90° — brutalisme */
+  background: var(--bg);
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color .12s;
+}
+.sm-pagedesc-input:focus { outline: none; border-color: var(--text); }
+
+
 /* ══════════════════════════════════════════════════════════════════════════
    DESIGN SYSTEM — Composants universels (SectionHeader + SelectionActionBar)
    Réutilisés par Inventaire, Dérive, Triptyque, Diorama, Constellation.
