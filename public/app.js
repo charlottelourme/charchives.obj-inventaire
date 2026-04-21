@@ -1514,21 +1514,50 @@ function applySortTo(items) {
   });
 }
 
+// Convertit un hex en RGB pour composer des rgba() avec alpha dynamique
+function _hexToRgb(hex) {
+  if (!hex) return null;
+  const h = hex.replace('#','');
+  if (h.length < 6) return null;
+  return {
+    r: parseInt(h.slice(0,2),16),
+    g: parseInt(h.slice(2,4),16),
+    b: parseInt(h.slice(4,6),16)
+  };
+}
+function _toRgbaStr(hex, alpha) {
+  const c = _hexToRgb(hex);
+  if (!c) return `rgba(45,45,45,${alpha})`;
+  return `rgba(${c.r},${c.g},${c.b},${alpha})`;
+}
+
 function applyVerbePageTheme() {
+  const root = document.documentElement;
   if (state.view === 'grid' && state.categoryFilter) {
     const verbe = getVerbes().find(v => v.name === state.categoryFilter);
     if (verbe) {
-      // Fond teinté ~18% d'opacité — transparent et élégant, en unité avec le halo des cartes
-      document.documentElement.style.setProperty('--page-verbe-bg',   (verbe.bgColor || '#2D2D2D') + '2E');
-      // --page-verbe-text = couleur saturée du verbe → utilisée comme accent sur fond clair
-      document.documentElement.style.setProperty('--page-verbe-text', verbe.bgColor   || '#2D2D2D');
+      // Couleur de base (bgColor du duotone) et couleur de texte saturée
+      const mainColor = verbe.bgColor || '#2D2D2D';
+      const textTint = _verbeActiveColor(verbe);   // version foncée/saturée — lisible sur fond clair
+      // Variantes pour le dégradé de fond
+      const bgSoftLight = _toRgbaStr(mainColor, 0.22);   // dégradé clair (haut de page)
+      const bgSoftDark  = _toRgbaStr(mainColor, 0.45);   // dégradé sombre (dark mode)
+      // Tint typographique — légèrement assourdi pour rester lisible
+      const typoTint    = textTint;
+      root.style.setProperty('--page-verbe-bg',      mainColor + '2E');
+      root.style.setProperty('--page-verbe-text',    mainColor);
+      root.style.setProperty('--page-verbe-main',    mainColor);
+      root.style.setProperty('--page-verbe-soft',    bgSoftLight);
+      root.style.setProperty('--page-verbe-soft-dk', bgSoftDark);
+      root.style.setProperty('--page-verbe-typo',    typoTint);
       document.body.classList.add('verbe-active');
       return;
     }
   }
   document.body.classList.remove('verbe-active');
-  document.documentElement.style.removeProperty('--page-verbe-bg');
-  document.documentElement.style.removeProperty('--page-verbe-text');
+  ['--page-verbe-bg','--page-verbe-text','--page-verbe-main',
+   '--page-verbe-soft','--page-verbe-soft-dk','--page-verbe-typo']
+    .forEach(k => root.style.removeProperty(k));
 }
 
 // ── Applique le bon layout sur chaque .grid selon le nombre d'objets ──
