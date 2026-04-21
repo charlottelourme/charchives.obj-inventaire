@@ -84,13 +84,16 @@ body.verbe-active {
   background: linear-gradient(
     to bottom,
     var(--page-verbe-soft, rgba(45,45,45,0)) 0%,
-    var(--page-verbe-soft, rgba(45,45,45,0)) 12%,
-    var(--bg) 55%,
+    var(--page-verbe-soft, rgba(45,45,45,0)) 18%,
+    var(--bg) 70%,
     var(--bg) 100%
-  );
-  background-attachment: fixed;
+  ) !important;
+  background-attachment: fixed !important;
+  background-color: transparent !important;
   transition: background 0.7s ease-in-out, color 0.5s ease-in-out;
 }
+/* Html root : pas de fond concurrent, laisse le body piloter */
+html:has(body.verbe-active) { background: transparent; }
 /* Dark mode : dégradé plus dense, du teinté vers le noir profond */
 body.dark-mode.verbe-active {
   background: linear-gradient(
