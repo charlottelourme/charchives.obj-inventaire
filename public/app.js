@@ -1339,7 +1339,7 @@ function _applyDeriveMode(mode, skipRender = false) {
   state.deriveMode = mode;
   // Mise à jour de la description selon le sous-mode
   const descEl = document.getElementById('deriveDesc');
-  if (descEl) descEl.textContent = MODE_DESCRIPTIONS[mode === 'reseau' ? 'constellation' : 'nuee'] || '';
+  if (descEl) descEl.textContent = pageDesc(mode === 'reseau' ? 'constellation' : 'nuee');
   // Toggle panes with fade
   const nuee   = document.getElementById('deriveNueePane');
   const reseau = document.getElementById('deriveReseauPane');
