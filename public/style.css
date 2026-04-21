@@ -5357,15 +5357,19 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
 
   /* ══════════════════════════════════════
-     GRILLE MOBILE — 2 colonnes fixes, bord à bord (0 marge)
+     GRILLE MOBILE — 2 colonnes fixes, bord à bord (0 marge, 0 gouttière)
   ══════════════════════════════════════ */
   main, #mainArea, #gridWrapper { padding-left: 0 !important; padding-right: 0 !important; }
   .grid {
-    column-count: 2;
-    column-gap: 0;
-    padding: 0 0 calc(96px + env(safe-area-inset-bottom));
+    column-count: 2 !important;
+    column-gap: 0 !important;
+    -webkit-column-gap: 0 !important;
+    padding: 0 0 calc(96px + env(safe-area-inset-bottom)) !important;
   }
-  .grid .card { margin-bottom: 0; }
+  .grid .card { margin-bottom: 0 !important; }
+  /* Halos qui débordent créaient des espaces blancs : neutralisés sur mobile */
+  .grid .card::before { left: 0 !important; right: 0 !important; }
+  .card-thumb-area { width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
   /* Halo réduit sur petite largeur — inset dynamique */
   .grid .card::before {
     filter: blur(20px);
