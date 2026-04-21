@@ -3141,6 +3141,8 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
   decBar.innerHTML = '';
   decBar.classList.add('diorama-slot-grid');
 
+  let firstFilledUrl = null, firstFilledId = null;
+
   for (let i = 0; i < DIO_SLOT_COUNT; i++) {
     const id = `slot${i + 1}`;
     const slot = slotMap.get(id);
@@ -3150,14 +3152,17 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
 
     if (slot && slot.blob) {
       const url = _dioSlotURL(id, slot.blob);
+      if (!firstFilledUrl) { firstFilledUrl = url; firstFilledId = id; }
+      const isActive = state.diorama.backdropSlotId === id;
+      if (isActive) cell.classList.add('active');
       cell.innerHTML = `
         <img class="dio-slot-thumb" src="${url}" alt="${id}">
         <span class="dio-slot-label">SLOT ${i + 1}</span>
         <button class="dio-slot-del" title="Supprimer ce fond">×</button>`;
-      // Clic = sélectionne comme fond courant
       cell.querySelector('.dio-slot-thumb').addEventListener('click', () => {
+        state.diorama.backdropSlotId = id;
         _dioApplyBackdrop(url, `Slot ${i + 1}`, backdrop);
-        decBar.querySelectorAll('.dio-slot').forEach(c => c.classList.remove('active'));
+        decBar.querySelectorAll('.dio-slot, .dio-temp-btn').forEach(c => c.classList.remove('active'));
         cell.classList.add('active');
       });
       // Supprime le slot
