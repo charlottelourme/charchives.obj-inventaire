@@ -5364,6 +5364,16 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   .grid .card-thumb-area img,
   .grid .card-body { position: relative !important; z-index: 2 !important; }
   .card-thumb-area { width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
+  /* Fonds blancs des JPEG → fondus sur le halo coloré derrière via mix-blend-multiply */
+  .grid .card-thumb-area img,
+  .grid .card .card-thumb {
+    mix-blend-mode: multiply;
+    background: transparent !important;
+  }
+  body.dark-mode .grid .card-thumb-area img,
+  body.dark-mode .grid .card .card-thumb {
+    mix-blend-mode: normal;
+  }
   /* Halo réduit sur petite largeur — inset dynamique */
   .grid .card::before {
     filter: blur(20px);
