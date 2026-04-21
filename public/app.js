@@ -6714,13 +6714,18 @@ function smPageDescsHTML() {
     { key: 'diorama',       label: 'Diorama' },
   ];
   return `<div class="sm-pagedescs">
-    <p class="sm-pagedescs-hint">Personnalisez les descriptions qui apparaissent sous chaque titre de page. Laissez vide pour restaurer le texte par défaut.</p>
-    ${fields.map(({ key, label }) => `
-      <div class="sm-pagedesc-row">
-        <label class="sm-pagedesc-label">${esc(label)}</label>
-        <textarea class="sm-pagedesc-input" data-pd-key="${key}" rows="2" placeholder="${esc(PAGE_DESCRIPTIONS_DEFAULTS[key] || '')}">${esc(overrides[key] || '')}</textarea>
-      </div>
-    `).join('')}
+    <p class="sm-pagedescs-hint">Personnalisez les descriptions qui apparaissent sous chaque titre de page. Laissez vide pour masquer complètement la description. Utilisez <em>Réinitialiser</em> pour restaurer le texte par défaut.</p>
+    ${fields.map(({ key, label }) => {
+      const hasOverride = Object.prototype.hasOwnProperty.call(overrides, key);
+      const value = hasOverride ? overrides[key] : '';
+      return `<div class="sm-pagedesc-row">
+        <div class="sm-pagedesc-head">
+          <label class="sm-pagedesc-label">${esc(label)}</label>
+          <button type="button" class="sm-pagedesc-reset" data-pd-reset="${key}" ${hasOverride ? '' : 'disabled'} title="Restaurer le texte par défaut">↺ Réinitialiser</button>
+        </div>
+        <textarea class="sm-pagedesc-input" data-pd-key="${key}" rows="2" placeholder="${esc(PAGE_DESCRIPTIONS_DEFAULTS[key] || '')}">${esc(value)}</textarea>
+      </div>`;
+    }).join('')}
   </div>`;
 }
 
@@ -6728,6 +6733,19 @@ function bindSmPageDescs() {
   document.querySelectorAll('.sm-pagedesc-input').forEach(input => {
     input.addEventListener('input', e => {
       updatePageDescription(e.target.dataset.pdKey, e.target.value);
+      // Active le bouton reset dès qu'on tape
+      const resetBtn = e.target.closest('.sm-pagedesc-row')?.querySelector('.sm-pagedesc-reset');
+      if (resetBtn) resetBtn.disabled = false;
+    });
+  });
+  document.querySelectorAll('.sm-pagedesc-reset').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const key = e.target.dataset.pdReset;
+      resetPageDescription(key);
+      const row = e.target.closest('.sm-pagedesc-row');
+      const input = row?.querySelector('.sm-pagedesc-input');
+      if (input) input.value = '';
+      btn.disabled = true;
     });
   });
 }
