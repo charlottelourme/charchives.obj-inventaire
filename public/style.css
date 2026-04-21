@@ -171,10 +171,25 @@ body.verbe-active .view-tab.active {
 /* Dark mode : halo plus sombre pour ressortir sur fond noir */
 body.dark-mode .view-tab:hover { color: #fff; }
 
-/* Toolbar + grid : transparents */
+/* Toolbar + grid : TOTALEMENT transparents — laisse transparaître le dégradé du body */
+body.verbe-active main,
+body.verbe-active #mainArea,
+body.verbe-active #gridWrapper,
 body.verbe-active .toolbar,
-body.verbe-active #gridWrapper {
-  background: transparent;
+body.verbe-active .toolbar-strate,
+body.verbe-active .derive-header,
+body.verbe-active .trios-tabs-nav,
+body.verbe-active .diorama-decor-bar,
+body.verbe-active .status-filter-bar,
+body.verbe-active .typo-filter-bar,
+body.verbe-active .attr-filter-bar,
+body.verbe-active #subcategoryFilterBar,
+body.verbe-active #typologyFilterBar,
+body.verbe-active #statusFilterBar,
+body.verbe-active #attrFilterBar,
+body.verbe-active #categoryFilterBar {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 /* Count label : gris discret */
 body.verbe-active .count-label {
