@@ -113,12 +113,45 @@ body.verbe-active .vpt-count {
   transition: color 0.5s ease-in-out;
 }
 
+/* ── Typographie teintée — adopte la couleur de l'intention active ── */
+body.verbe-active .count-label,
+body.verbe-active .sfb-label,
+body.verbe-active .section-header-desc,
+body.verbe-active .vpt-count,
+body.verbe-active .toolbar-strate .count-label {
+  color: var(--page-verbe-typo, var(--text-3)) !important;
+  opacity: 0.85;
+}
+body.verbe-active .card-name,
+body.verbe-active .card-verbe-label,
+body.verbe-active .card-typo-label,
+body.verbe-active .card-meta-row {
+  color: var(--page-verbe-typo, var(--text-2));
+}
+/* Dark mode : éclaircit la teinte pour qu'elle "vibre" sur fond sombre */
+body.dark-mode.verbe-active .count-label,
+body.dark-mode.verbe-active .sfb-label,
+body.dark-mode.verbe-active .section-header-desc,
+body.dark-mode.verbe-active .vpt-count,
+body.dark-mode.verbe-active .card-name,
+body.dark-mode.verbe-active .card-verbe-label,
+body.dark-mode.verbe-active .card-typo-label,
+body.dark-mode.verbe-active .card-meta-row {
+  color: var(--page-verbe-main, var(--text-2)) !important;
+  opacity: 0.92;
+  filter: brightness(1.45) saturate(1.2);
+}
+
 /* Header : verre dépoli blanc — fond clair teinté → header reste neutre */
 body.verbe-active header {
   background: rgba(250,250,248,.82);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom-color: var(--border-light);
+}
+body.dark-mode.verbe-active header {
+  background: rgba(10,10,10,.82);
+  border-bottom-color: var(--border);
 }
 /* Titre et boutons header : couleurs normales (fond clair teinté) */
 body.verbe-active header h1,
