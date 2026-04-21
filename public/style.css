@@ -797,7 +797,7 @@ body.verbe-active .card {
   box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 18px rgba(0,0,0,0.03);
 }
 body.dark-mode.verbe-active .card {
-  box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 22px rgba(0,0,0,0.25);
+  box-shadow: none;   /* dark mode : pas d'ombre — cartes plates sur fond uni */
 }
 /* Assure que l'image reste AU-DESSUS du halo dégradé, même sur mobile */
 .card > * { position: relative; z-index: 1; }
