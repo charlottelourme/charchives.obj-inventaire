@@ -8218,11 +8218,11 @@ body.dark-mode .section-header {
 }
 
 /* ── STRATE 3 : ToolBar universelle ────────────────────────────────────
-   Se colle sous le SectionHeader. Contient filtres OU barre de sélection.
-   Padding latéral aligné sur la Strate 2. */
+   Se colle directement sous le Header global (SectionHeader supprimé).
+   Padding haut légèrement plus généreux pour aérer. */
 .toolbar-strate {
   width: 100%;
-  padding: 12px 32px;
+  padding: 20px 32px 14px;
   background: var(--bg);
   border-bottom: 1px solid #e4e4e7;
   display: flex;
@@ -8237,7 +8237,7 @@ body.dark-mode .section-header {
 .toolbar-strate::-webkit-scrollbar { display: none; }
 body.dark-mode .toolbar-strate { border-bottom-color: var(--border); }
 @media (max-width: 520px) {
-  .toolbar-strate { padding: 10px 16px !important; gap: 12px; }
+  .toolbar-strate { padding: 14px 16px 10px !important; gap: 12px; }
 }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
