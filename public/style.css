@@ -5717,12 +5717,19 @@ body.dark-mode .portrait-halo {
   opacity: 0.65;
 }
 
-/* ── Glassmorphism adapté au dark ── */
+/* ── Header dark — opaque strict, pas de transparence ── */
 body.dark-mode header {
-  background: rgba(17,17,17,0.90) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--bg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom-color: var(--border);
 }
+body.dark-mode header > *,
+body.dark-mode .search-wrap,
+body.dark-mode .search-bar { background: var(--bg); }
+body.dark-mode .search-bar { border-color: var(--border); }
+body.dark-mode .search-input-inner { color: var(--text); }
+body.dark-mode .search-input-inner::placeholder { color: var(--text-3); }
 /* Dark mode — backdrop sombre léger, modal transparent (Soft Block halo verbe seul) */
 body.dark-mode #detailModal.modal-overlay {
   background: rgba(8, 7, 6, 0.45) !important;
