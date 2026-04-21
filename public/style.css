@@ -6865,22 +6865,15 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
     font-size: 22px;
     margin-bottom: 16px;
   }
+  /* Vis-à-vis forcé : 3 colonnes strictes même sur mobile */
   .trios-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto auto;
-    gap: 8px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
     padding: 0;
   }
-  /* 1ère carte : pleine largeur */
-  .trios-grid .trios-slot-wrap:nth-child(1) {
-    grid-column: 1 / -1;
-  }
-  /* 2ème et 3ème : côte à côte */
-  .trios-grid .trios-slot-wrap:nth-child(2),
-  .trios-grid .trios-slot-wrap:nth-child(3) {
-    grid-column: span 1;
-  }
+  .trios-grid .trios-slot-wrap { grid-column: span 1; max-width: 100%; }
+  .trios-grid .trios-slot-wrap > .card { aspect-ratio: 3/4 !important; width: 100%; max-width: 100%; }
   /* Cartes plus compactes */
   .trios-grid .card {
     font-size: 11px;
