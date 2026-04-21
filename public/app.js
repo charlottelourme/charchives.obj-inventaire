@@ -3217,10 +3217,20 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
   });
   decBar.appendChild(tempLabel);
 
-  // Applique le fond courant s'il était déjà sélectionné
-  if (state.diorama.backdrop) {
-    backdrop.src = state.diorama.backdrop;
-    _dioUpdateCredits(state.diorama.backdropCredit || '');
+  // Applique le fond initial : slot actif précédent > premier slot rempli > rien
+  const activeSlot = state.diorama.backdropSlotId;
+  if (activeSlot && slotMap.has(activeSlot)) {
+    const url = _dioSlotURL(activeSlot, slotMap.get(activeSlot).blob);
+    _dioApplyBackdrop(url, `Slot ${activeSlot.replace('slot', '')}`, backdrop);
+  } else if (firstFilledUrl) {
+    state.diorama.backdropSlotId = firstFilledId;
+    _dioApplyBackdrop(firstFilledUrl, `Slot ${firstFilledId.replace('slot', '')}`, backdrop);
+    decBar.querySelector(`[data-slot-id="${firstFilledId}"]`)?.classList.add('active');
+  } else {
+    // Aucun slot rempli — fond vide, message dans le canvas
+    state.diorama.backdropSlotId = null;
+    backdrop.removeAttribute('src');
+    _dioUpdateCredits('');
   }
 }
 
