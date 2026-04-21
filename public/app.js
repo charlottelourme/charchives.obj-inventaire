@@ -1,3 +1,17 @@
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE_DESCRIPTIONS — textes éditables des bandeaux de chaque page.
+// Modifiez ces chaînes pour mettre à jour les descriptions partout dans le site.
+// ══════════════════════════════════════════════════════════════════════════════
+const PAGE_DESCRIPTIONS = {
+  inventaire:    'Exploration des gisements et du patrimoine archivé.',
+  derive:        'Navigation cinétique et exploration des liens entre les objets.',
+  nuee:          'Les objets dérivent en apesanteur. Survolez pour les accélérer.',
+  constellation: 'Vos objets reliés par leurs intentions, matières ou identités.',
+  triptyque:     'Sélection et composition de trois objets en regard.',
+  diorama:       'Mise en scène d\'objets dans des intérieurs d\'archives.',
+  parametres:    'Gérez vos catégories, typologies et duotones.',
+};
+
 // ── Static attribute definitions ──────────────────────────────────────────────
 const ATTRIBUTES_DEF = {
   matieres: {
