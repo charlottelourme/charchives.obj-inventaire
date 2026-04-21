@@ -8915,8 +8915,24 @@ body.dark-mode .section-header {
   }
   .sfb-pill-verbe { font-size: 11px !important; padding: 4px 8px !important; }
   .sfb-pill-sm { font-size: 8px !important; }
-  .search-wrap { position: relative; z-index: 100; }
-  .search-bar { min-height: 28px; max-width: 100% !important; }
+  .search-wrap {
+    position: relative;
+    z-index: 100;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 0 !important;
+    margin: 4px 0 0 !important;
+  }
+  .search-bar {
+    min-height: 28px;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 8px 14px !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
   .search-input-inner { font-size: 12px !important; }
   .search-dropdown {
     z-index: 200;
