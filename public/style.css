@@ -2756,24 +2756,29 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   overflow: hidden;
 }
 
-/* ── Header Dérive — grille 3 colonnes : titre | sous-modes | outils ── */
+/* ── Header Dérive — barre compacte : sous-modes centrés + outils à droite ── */
 .derive-header {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   z-index: 10;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 16px;
-  padding: 14px 48px 10px;
-  background: var(--tag-bg);
+  padding: 8px 24px;
+  background: var(--bg);
   border-bottom: 1px solid var(--border-light);
-  /* Pleine largeur (sort du conteneur fixed) */
   width: 100%;
 }
-body.dark-mode .derive-header { background: var(--surface); }
+body.dark-mode .derive-header { background: var(--bg); }
+.derive-header-right {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+}
 .derive-header-left {
   display: none;   /* bandeau Dérive retiré — seuls les onglets Nuée/Constellation restent */
 }
