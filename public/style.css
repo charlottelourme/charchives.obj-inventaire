@@ -388,8 +388,7 @@ html::before {
   z-index: 999;
   pointer-events: none;
 }
-body.dark-mode::before,
-body.dark-mode html::before { background: var(--bg); }
+html:has(body.dark-mode)::before { background: var(--bg); }
 body.dark-mode header { background: var(--bg); }
 header h1 {
   font-family: 'Cormorant Garamond', Georgia, serif;
