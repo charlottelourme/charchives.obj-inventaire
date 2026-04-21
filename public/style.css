@@ -696,9 +696,13 @@ main {
   overflow: visible;    /* le halo peut déborder vers le bas et les côtés */
   cursor: pointer;
   position: relative;
-  isolation: isolate;   /* contexte d'empilement pour le ::before */
+  z-index: 0;
+  isolation: isolate;   /* crée un contexte d'empilement pour le ::before (z-index: -1) */
   transition: transform .38s cubic-bezier(.22,.68,0,1.1);
 }
+/* Assure que l'image reste AU-DESSUS du halo dégradé, même sur mobile */
+.card > * { position: relative; z-index: 1; }
+.card::before { z-index: -1 !important; }
 
 /* ── Halo Soft Block ───────────────────────────────────────────────────────
    Bloc de couleur dense aux bords légèrement adoucis.
