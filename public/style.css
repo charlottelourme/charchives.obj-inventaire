@@ -99,11 +99,12 @@ body.dark-mode.verbe-active {
   background: linear-gradient(
     to bottom,
     var(--page-verbe-soft-dk, rgba(45,45,45,0)) 0%,
-    var(--page-verbe-soft-dk, rgba(45,45,45,0)) 10%,
-    var(--bg) 60%,
+    var(--page-verbe-soft-dk, rgba(45,45,45,0)) 15%,
+    var(--bg) 70%,
     #050505 100%
-  );
-  background-attachment: fixed;
+  ) !important;
+  background-attachment: fixed !important;
+  background-color: transparent !important;
 }
 /* Transition douce sur tous les textes qui adoptent la teinte */
 body.verbe-active,
