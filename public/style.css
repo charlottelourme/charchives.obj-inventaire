@@ -5541,15 +5541,16 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   .grid .card-thumb-area img,
   .grid .card-body { position: relative !important; z-index: 2 !important; }
   .card-thumb-area { width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
-  /* Fonds blancs des JPEG → fondus sur le halo coloré derrière via mix-blend-multiply */
+  /* PNG détourés avec canal alpha : mix-blend-multiply les faisait disparaître sur
+     mobile. On revient à normal et on s'assure que l'image reste bien visible au
+     premier plan (z-index > halo). object-contain pour ne pas rogner les objets. */
   .grid .card-thumb-area img,
   .grid .card .card-thumb {
-    mix-blend-mode: multiply;
+    mix-blend-mode: normal !important;
     background: transparent !important;
-  }
-  body.dark-mode .grid .card-thumb-area img,
-  body.dark-mode .grid .card .card-thumb {
-    mix-blend-mode: normal;
+    object-fit: contain !important;
+    z-index: 10 !important;
+    position: relative !important;
   }
   /* Halo réduit sur petite largeur — inset dynamique */
   .grid .card::before {
