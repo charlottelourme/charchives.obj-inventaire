@@ -746,6 +746,7 @@ main {
 /* Thumb area — rétrécie à 85% pour l'asymétrie éditoriale */
 .card-thumb-area {
   position: relative;
+  z-index: 2;           /* au-dessus du halo ::before (z-index: -1) */
   overflow: hidden;
   background: transparent;
   width: 85%;           /* image plus étroite que le texte */
