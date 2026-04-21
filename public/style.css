@@ -2747,13 +2747,16 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
    LA DÉRIVE — Vue immersive (Nuée + Réseau)
 ══════════════════════════════════════════════════════════════ */
 #deriveView {
-  position: fixed;
-  inset: 0;
-  top: 52px;       /* sous le header */
-  bottom: 44px;    /* au-dessus du bottom-nav */
-  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 52px);
   background: var(--bg);
-  overflow: hidden;
+}
+/* Le canvas/galerie vit sous la toolbar-strate */
+#deriveView .derive-pane-host {
+  position: relative;
+  flex: 1;
+  min-height: 500px;
 }
 
 /* .derive-header hérite désormais de .toolbar-strate (Strate 3) */
