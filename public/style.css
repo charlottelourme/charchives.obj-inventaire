@@ -8986,7 +8986,8 @@ body.dark-mode .section-header {
   .idx-inline-input {
     font-size: 16px !important;
   }
-  .search-input-inner { font-size: 12px !important; }
+  /* 16px impératif sur iOS pour bloquer le zoom auto au focus */
+  .search-input-inner { font-size: 16px !important; }
   .search-dropdown {
     z-index: 200;
     width: calc(100vw - 20px) !important;
