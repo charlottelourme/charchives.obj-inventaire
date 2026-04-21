@@ -2941,12 +2941,94 @@ function _initGalleryNoteInteractions(grid, items) {
 // Pan+Zoom via D3 (même pattern que Constellation). Persistance localStorage.
 // ══════════════════════════════════════════════════════════════════════════════
 
-// ── Décors Diorama — ajoutez vos images ici ────────────────────────────────
-// Placez vos fichiers dans /uploads/decors/ puis ajoutez une entrée par image.
-// Exemple : { label: 'Mon salon', url: '/uploads/decors/salon.jpg', credit: '' }
-const DIORAMA_DECORS = [
-  // ← Ajoutez vos décors ici
-];
+// ══════════════════════════════════════════════════════════════════════════
+// DIORAMA — Gestionnaire de collection persistante (IndexedDB)
+// 20 slots sauvegardés + 1 fond temporaire (URL.createObjectURL, non persisté).
+// ══════════════════════════════════════════════════════════════════════════
+const DIO_SLOT_COUNT = 20;
+const DIO_DB_NAME = 'charchives_diorama_db';
+const DIO_DB_VERSION = 1;
+const DIO_STORE = 'slots';
+let _dioDB = null;
+const _dioSlotURLs = new Map();   // id → objectURL (libéré au déchargement)
+let _dioTempURL = null;            // URL du fond temporaire courant
+
+function _dioOpenDB() {
+  if (_dioDB) return Promise.resolve(_dioDB);
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DIO_DB_NAME, DIO_DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(DIO_STORE)) {
+        db.createObjectStore(DIO_STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = () => { _dioDB = req.result; resolve(_dioDB); };
+    req.onerror = () => reject(req.error);
+  });
+}
+async function _dioSlotPut(id, blob) {
+  const db = await _dioOpenDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DIO_STORE, 'readwrite');
+    tx.objectStore(DIO_STORE).put({ id, blob, savedAt: Date.now() });
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function _dioSlotGet(id) {
+  const db = await _dioOpenDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DIO_STORE, 'readonly');
+    const req = tx.objectStore(DIO_STORE).get(id);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function _dioSlotDelete(id) {
+  const db = await _dioOpenDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DIO_STORE, 'readwrite');
+    tx.objectStore(DIO_STORE).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function _dioSlotsAll() {
+  const db = await _dioOpenDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(DIO_STORE, 'readonly');
+    const req = tx.objectStore(DIO_STORE).getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// Fabrique un objectURL pour un blob stocké, en le cachant le temps de la session
+function _dioSlotURL(id, blob) {
+  if (_dioSlotURLs.has(id)) return _dioSlotURLs.get(id);
+  const url = URL.createObjectURL(blob);
+  _dioSlotURLs.set(id, url);
+  return url;
+}
+
+// Petite notification toast (design brutalisme, éphémère)
+function _dioToast(msg) {
+  let t = document.getElementById('dioToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'dioToast';
+    t.className = 'dio-toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._hideTimer);
+  t._hideTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// Compat : legacy code référencait DIORAMA_DECORS (sélecteur statique). Conservé vide.
+const DIORAMA_DECORS = [];
 
 let _dioZoom = null;
 let _dioSelectedItem = null;
