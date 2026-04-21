@@ -80,27 +80,25 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
    puis s'estompe vers le neutre. La typographie adopte une version
    saturée de cette couleur (--page-verbe-typo) pour créer une unité.
    ══════════════════════════════════════════════════════════════════════════ */
-/* Dégradé FRANC via pseudo-élément fixe — plus robuste que background-attachment:fixed
-   Couleur CLAIRE (bgColor du duotone) pleine en haut → blanc en bas */
-body.verbe-active {
-  background: transparent !important;
-  background-color: transparent !important;
-}
-body.verbe-active:not(.dark-mode)::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
+/* Dégradé FRANC : appliqué directement sur body en mode verbe (pas de pseudo-élément
+   qui pourrait être masqué par un z-index quelconque). Forcé à couvrir tout le body. */
+body.verbe-active:not(.dark-mode) {
+  background-color: var(--page-verbe-strong, #ffffff) !important;
+  background-image: linear-gradient(
     to bottom,
     var(--page-verbe-strong, #ffffff) 0%,
     var(--page-verbe-strong, #ffffff) 30%,
     var(--page-verbe-mid, rgba(255,255,255,0.5)) 65%,
     #ffffff 100%
-  );
-  pointer-events: none;
-  transition: opacity 0.6s ease-in-out;
+  ) !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100vh !important;
+  background-attachment: scroll !important;
+  background-position: top center !important;
+  transition: background-color 0.6s ease-in-out;
 }
+/* html transparent pour laisser le body piloter le fond en mode verbe */
+html:has(body.verbe-active:not(.dark-mode)) { background: transparent; }
 /* Neutralise les halos colorés sur les cartes en mode verbe : la couleur vit
    désormais sur le fond de page, pas derrière chaque carte (pas de dédoublement) */
 body.verbe-active .card::before {
