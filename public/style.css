@@ -2871,7 +2871,7 @@ body.dark-mode .derive-header { background: var(--bg); }
 /* ── Content panes ── */
 .derive-pane {
   position: absolute;
-  top: 72px;   /* below derive-header (titre + desc + nav) */
+  top: 44px;   /* below derive-header (compact) */
   left: 0;
   right: 0;
   bottom: 0;
