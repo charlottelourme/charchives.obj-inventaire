@@ -81,12 +81,12 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
    saturée de cette couleur (--page-verbe-typo) pour créer une unité.
    ══════════════════════════════════════════════════════════════════════════ */
 body.verbe-active {
+  /* Dégradé FRANC : blanc en haut → couleur pleine (lightColor) en bas */
   background: linear-gradient(
     to bottom,
-    var(--page-verbe-strong, rgba(45,45,45,0)) 0%,
-    var(--page-verbe-mid, rgba(45,45,45,0)) 45%,
-    var(--page-verbe-soft, rgba(45,45,45,0)) 75%,
-    #ffffff 100%
+    #ffffff 0%,
+    var(--page-verbe-mid, rgba(255,255,255,0)) 55%,
+    var(--page-verbe-strong, #ffffff) 100%
   ) !important;
   background-attachment: fixed !important;
   background-color: transparent !important;
