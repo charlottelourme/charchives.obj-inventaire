@@ -770,7 +770,15 @@ main {
   position: relative;
   z-index: 0;
   isolation: isolate;   /* crée un contexte d'empilement pour le ::before (z-index: -1) */
-  transition: transform .38s cubic-bezier(.22,.68,0,1.1);
+  transition: transform .38s cubic-bezier(.22,.68,0,1.1), box-shadow .4s ease;
+}
+/* Détachement subtil en mode verbe : ombre douce pour que les cartes ne fondent pas
+   dans le dégradé coloré du fond de page */
+body.verbe-active .card {
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 18px rgba(0,0,0,0.03);
+}
+body.dark-mode.verbe-active .card {
+  box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 22px rgba(0,0,0,0.25);
 }
 /* Assure que l'image reste AU-DESSUS du halo dégradé, même sur mobile */
 .card > * { position: relative; z-index: 1; }
