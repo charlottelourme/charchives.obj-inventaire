@@ -5229,8 +5229,11 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     padding-bottom: 8px;
   }
   .header-sep { display: none; }
-  .search-wrap { order: 3; width: 100%; }
-  .search-bar { max-width: 100%; min-width: 0; }
+  /* Barre de recherche : 2ème ligne, pleine largeur, fine et élégante */
+  .search-wrap { order: 3; width: 100%; margin-top: 4px; margin-bottom: 6px; }
+  .search-bar { max-width: 100%; min-width: 0; padding: 3px 4px; }
+  .search-input-inner { font-size: 13px; }
+  .search-input-inner::placeholder { font-size: 13px; }
   .view-tabs {
     order: 2;
     overflow-x: auto;
