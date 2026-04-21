@@ -3210,6 +3210,7 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
     // Révoque l'ancienne URL temporaire si existante
     if (_dioTempURL) URL.revokeObjectURL(_dioTempURL);
     _dioTempURL = URL.createObjectURL(file);
+    state.diorama.backdropSlotId = null;  // fond temporaire = pas de slot
     _dioApplyBackdrop(_dioTempURL, 'Fond temporaire', backdrop);
     decBar.querySelectorAll('.dio-slot').forEach(c => c.classList.remove('active'));
     tempLabel.classList.add('active');
