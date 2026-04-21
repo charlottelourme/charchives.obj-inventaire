@@ -5344,11 +5344,12 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
 
   /* ══════════════════════════════════════
-     GRILLE MOBILE — 2 colonnes fixes, fonds fondus (gap 0)
+     GRILLE MOBILE — 2 colonnes fixes, bord à bord (0 marge)
   ══════════════════════════════════════ */
+  main, #mainArea, #gridWrapper { padding-left: 0 !important; padding-right: 0 !important; }
   .grid {
     column-count: 2;
-    column-gap: 0;                   /* fonds qui se touchent */
+    column-gap: 0;
     padding: 0 0 calc(96px + env(safe-area-inset-bottom));
   }
   .grid .card { margin-bottom: 0; }
