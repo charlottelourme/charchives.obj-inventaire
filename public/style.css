@@ -8106,6 +8106,12 @@ body.dark-mode .portrait-title { color: var(--text); }
   gap: 4px;
   margin-bottom: 14px;
 }
+.sm-pagedesc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
 .sm-pagedesc-label {
   font-family: 'Cutive Mono', monospace;
   font-size: 9px;
@@ -8114,6 +8120,21 @@ body.dark-mode .portrait-title { color: var(--text); }
   letter-spacing: .12em;
   color: var(--text-3);
 }
+.sm-pagedesc-reset {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  border-radius: 0;
+  transition: color .12s, border-color .12s;
+}
+.sm-pagedesc-reset:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
+.sm-pagedesc-reset:disabled { opacity: .35; cursor: not-allowed; }
 .sm-pagedesc-input {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
