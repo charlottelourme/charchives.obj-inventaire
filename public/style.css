@@ -5411,8 +5411,9 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     margin: 0 !important;
     box-sizing: border-box;
   }
-  .search-input-inner { font-size: 13px; width: 100%; }
-  .search-input-inner::placeholder { font-size: 13px; }
+  /* 16px minimum impératif sur iOS — sinon zoom auto au focus */
+  .search-input-inner { font-size: 16px !important; width: 100%; }
+  .search-input-inner::placeholder { font-size: 14px; }
   .view-tabs {
     order: 2;
     overflow-x: auto;
