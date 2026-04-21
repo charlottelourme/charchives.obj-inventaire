@@ -152,7 +152,9 @@ body.verbe-active header {
   border-bottom-color: var(--border-light);
 }
 body.dark-mode.verbe-active header {
-  background: rgba(10,10,10,.82);
+  background: var(--bg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-bottom-color: var(--border);
 }
 /* Titre et boutons header : couleurs normales (fond clair teinté) */
