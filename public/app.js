@@ -3052,9 +3052,9 @@ function renderDiorama() {
   const backdrop = document.getElementById('dioBackdrop');
   if (!decBar || !scene) return;
 
-  // ── Barre de décors (curation locale — 20 images) ──
+  // ── Gestionnaire de collection (20 slots persistés IndexedDB) ──
   if (!decBar.children.length) {
-    _dioRenderDecorBar(decBar, backdrop, DIORAMA_DECORS);
+    _dioRenderDecorBar(decBar, backdrop);
   }
 
   // ── Sidebar bibliothèque (objets avec PNG) ──
