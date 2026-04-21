@@ -4148,6 +4148,21 @@ function renderTrios() {
   // Injecte la description éditable
   const triosDescEl = document.getElementById('triosDesc');
   if (triosDescEl) triosDescEl.textContent = PAGE_DESCRIPTIONS.triptyque || '';
+  // Applique la visibilité des onglets (Paramètres > Onglets Triptyque > Masquer)
+  _syncTriosTabLabels();
+  // Si l'onglet actif est masqué, bascule sur le premier visible
+  const tabIdxMap = { hasard: 0, regles: 1, manuel: 2 };
+  const activeIdx = tabIdxMap[_triosActiveTab];
+  if (activeIdx != null && isTriosTabHidden(activeIdx)) {
+    const firstVisible = ['hasard', 'regles', 'manuel'].find((t, i) => !isTriosTabHidden(i));
+    if (firstVisible) {
+      _triosActiveTab = firstVisible;
+      document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === firstVisible));
+      document.getElementById('triosPanelHashard').style.display = firstVisible === 'hasard' ? '' : 'none';
+      document.getElementById('triosPanelRegles').style.display  = firstVisible === 'regles' ? '' : 'none';
+      document.getElementById('triosPanelManuel').style.display  = firstVisible === 'manuel' ? '' : 'none';
+    }
+  }
   const result  = document.getElementById('triosResult');
   const empty   = document.getElementById('triosEmpty');
   if (state.collections.length < 3) {
