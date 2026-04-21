@@ -19,7 +19,10 @@ const PAGE_DESCRIPTIONS = new Proxy({}, {
 });
 function pageDesc(key) {
   const overrides = _loadPageDescOverrides();
-  return (overrides[key] ?? PAGE_DESCRIPTIONS_DEFAULTS[key]) || '';
+  // Si l'utilisateur a posé un override (même vide), on le respecte strictement.
+  // Seule absence de clé = fallback sur le défaut.
+  if (Object.prototype.hasOwnProperty.call(overrides, key)) return overrides[key] || '';
+  return PAGE_DESCRIPTIONS_DEFAULTS[key] || '';
 }
 function _loadPageDescOverrides() {
   try { return JSON.parse(localStorage.getItem('charchives_pageDescriptions') || '{}'); }
