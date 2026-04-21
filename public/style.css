@@ -2779,9 +2779,8 @@ body.dark-mode .derive-header { background: var(--bg); }
   top: 50%;
   transform: translateY(-50%);
 }
-.derive-header-left {
-  display: none;   /* bandeau Dérive retiré — seuls les onglets Nuée/Constellation restent */
-}
+/* Ancienne colonne gauche du derive-header — désactivée, strate 2 dédiée */
+.derive-header-left { display: none; }
 .derive-title {
   font-size: 22px !important;
   margin: 0 !important;
