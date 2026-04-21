@@ -6386,9 +6386,16 @@ function getTriosTabLabel(idx) {
   return (state.settings.triosTabLabels?.[key]) || TRIOS_TAB_DEFAULTS[idx];
 }
 
+function isTriosTabHidden(idx) {
+  const key = TRIOS_TAB_KEYS[idx];
+  return !!(state.settings.triosTabHidden?.[key]);
+}
+
 function _syncTriosTabLabels() {
   document.querySelectorAll('.trios-tab-btn').forEach((btn, i) => {
     btn.textContent = getTriosTabLabel(i);
+    // Masquer l'onglet si marqué hidden dans Paramètres
+    btn.style.display = isTriosTabHidden(i) ? 'none' : '';
   });
 }
 
