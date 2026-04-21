@@ -5501,7 +5501,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
   .status-filter-bar::-webkit-scrollbar { display: none; }
   .sfb-label {
-    flex-basis: 100%;              /* label prend toute la largeur → force saut de ligne */
+    flex-basis: 100%;
     width: 100%;
     font-size: 9px;
     color: var(--text-3);
@@ -5510,6 +5510,21 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     position: static;
     background: transparent;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  /* Chevron : suggère que le label agit comme un dropdown (au clic) */
+  .sfb-label::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-right: 1px solid var(--text-3);
+    border-bottom: 1px solid var(--text-3);
+    transform: rotate(45deg);
+    margin-left: 3px;
+    margin-bottom: 1px;
   }
   /* Pills restent en ligne, scrollables horizontalement */
   .status-filter-bar > .sfb-pill { flex-shrink: 0; white-space: nowrap; }
