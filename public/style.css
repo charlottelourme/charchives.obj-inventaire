@@ -8962,15 +8962,27 @@ body.dark-mode .section-header {
     width: 100% !important;
   }
   .grid .card { margin-bottom: 0 !important; }
-  /* Halos contenus strictement dans les bords de la carte — pas de fuite latérale */
+  /* ── Halo doux Desktop-like : blur plus diffus, opacité modérée, légère
+        extension verticale pour un fondu élégant (mais sans fuite latérale) */
   .grid .card::before {
-    top: 0 !important;
-    bottom: 0 !important;
+    top: -2% !important;
+    bottom: -4% !important;
     left: 0 !important;
     right: 0 !important;
-    inset: 0 !important;
-    filter: blur(16px);
-    opacity: 0.92;
+    filter: blur(24px) !important;
+    opacity: 0.75 !important;
+  }
+  /* Voile blanc doux en haut de chaque carte — même esthétique que Desktop */
+  .grid .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.35) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  body.dark-mode .grid .card::after {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 45%);
   }
 
   /* ── 2. HEADER : le padding/bg sont gérés dans la règle mobile plus haut ─
