@@ -119,25 +119,23 @@
 
   <!-- ── La Dérive — Galerie + Constellation ── -->
   <div id="deriveView" style="display:none">
-    <!-- En-tête unifié : titre + description + sous-modes + outils -->
-    <div class="derive-header">
-      <div class="derive-header-left">
-        <h2 class="section-header-title derive-title">Dérive</h2>
-        <p class="section-header-desc" id="deriveDesc"></p>
+    <!-- STRATE 2 : Cartouche titre + description -->
+    <div class="section-header" id="deriveSectionHeader">
+      <h2 class="section-header-title">Dérive</h2>
+      <p class="section-header-desc" id="deriveDesc"></p>
+    </div>
+    <!-- STRATE 3 : ToolBar universelle (sous-modes + outils) -->
+    <div class="toolbar-strate derive-header">
+      <div class="derive-segmented" id="deriveSegmented">
+        <div class="derive-seg-thumb" id="deriveSegThumb"></div>
+        <button class="derive-seg-btn active" data-mode="nuee">Nuée</button>
+        <button class="derive-seg-btn" data-mode="reseau">Constellation</button>
       </div>
-      <div class="derive-header-center">
-        <div class="derive-segmented" id="deriveSegmented">
-          <div class="derive-seg-thumb" id="deriveSegThumb"></div>
-          <button class="derive-seg-btn active" data-mode="nuee">Nuée</button>
-          <button class="derive-seg-btn" data-mode="reseau">Constellation</button>
-        </div>
+      <div class="toolbar-gap" style="flex:1"></div>
+      <div class="nuee-zoom-wrap" id="nueeZoomWrap">
+        <input type="range" class="card-size-slider" id="nueeZoomSlider" min="80" max="480" value="240" step="20">
       </div>
-      <div class="derive-header-right">
-        <div class="nuee-zoom-wrap" id="nueeZoomWrap">
-          <input type="range" class="card-size-slider" id="nueeZoomSlider" min="80" max="480" value="240" step="20">
-        </div>
-        <button class="derive-shuffle-btn" id="deriveShuffleBtn" title="Mélanger">Mélanger</button>
-      </div>
+      <button class="derive-shuffle-btn" id="deriveShuffleBtn" title="Mélanger">Mélanger</button>
     </div>
     <!-- Pane Nuée — Galerie Masonry -->
     <div class="derive-pane" id="deriveNueePane">
