@@ -8075,6 +8075,21 @@ body.dark-mode .card-name { color: var(--text); text-shadow: none; }
 body.dark-mode .portrait-title { color: var(--text); }
 
 
+/* ── Paramètres : ligne onglet Triptyque avec toggle Masquer ─────────────── */
+.sm-trios-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sm-trios-row .sm-trios-input { flex: 1; min-width: 180px; }
+.sm-trios-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 10px;
+  color: var(--text-3);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.sm-trios-toggle input { margin: 0; }
+
 /* ── Paramètres : éditeur des textes de bandeaux ─────────────────────────── */
 .sm-pagedescs { padding: 4px 0; }
 .sm-pagedescs-hint {
