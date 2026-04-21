@@ -1549,7 +1549,7 @@ function render() {
   document.getElementById('countLabel').textContent = countText;
   // Cartouche Inventaire : description fixe (pas le compteur — il est déjà dans la toolbar)
   const invDesc = document.getElementById('inventaireDesc');
-  if (invDesc && !invDesc.textContent) invDesc.textContent = MODE_DESCRIPTIONS.inventaire;
+  if (invDesc && !invDesc.textContent) invDesc.textContent = PAGE_DESCRIPTIONS.inventaire;
 
   if (state.view==='grid') {
     exitGravityMode();
@@ -2924,7 +2924,7 @@ function _dioSave() {
 function renderDiorama() {
   // Injecte la description éditable
   const dioDescEl = document.getElementById('dioramaDesc');
-  if (dioDescEl) dioDescEl.textContent = MODE_DESCRIPTIONS.diorama || '';
+  if (dioDescEl) dioDescEl.textContent = PAGE_DESCRIPTIONS.diorama || '';
   const decBar  = document.getElementById('dioDecorBar');
   const libList = document.getElementById('dioLibList');
   const scene   = document.getElementById('dioScene');
@@ -4108,7 +4108,7 @@ function _renderTriosManualState() {
 function renderTrios() {
   // Injecte la description éditable
   const triosDescEl = document.getElementById('triosDesc');
-  if (triosDescEl) triosDescEl.textContent = MODE_DESCRIPTIONS.triptyque || '';
+  if (triosDescEl) triosDescEl.textContent = PAGE_DESCRIPTIONS.triptyque || '';
   const result  = document.getElementById('triosResult');
   const empty   = document.getElementById('triosEmpty');
   if (state.collections.length < 3) {
