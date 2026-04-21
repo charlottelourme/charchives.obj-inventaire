@@ -74,9 +74,43 @@ body.dark-mode .trios-grid img { filter: none !important; }
 body.dark-mode .card-note::before,
 body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
 
-/* ── Thème verbe actif — fond neutre (monochrome) ── */
+/* ══════════════════════════════════════════════════════════════════════════
+   THÈME VERBE ACTIF — Thématisation dynamique
+   Le fond infuse la couleur de l'intention active en haut de page
+   puis s'estompe vers le neutre. La typographie adopte une version
+   saturée de cette couleur (--page-verbe-typo) pour créer une unité.
+   ══════════════════════════════════════════════════════════════════════════ */
 body.verbe-active {
-  background-color: var(--bg); /* pas de teinte colorée — fond identique au mode neutre */
+  background: linear-gradient(
+    to bottom,
+    var(--page-verbe-soft, rgba(45,45,45,0)) 0%,
+    var(--page-verbe-soft, rgba(45,45,45,0)) 12%,
+    var(--bg) 55%,
+    var(--bg) 100%
+  );
+  background-attachment: fixed;
+  transition: background 0.7s ease-in-out, color 0.5s ease-in-out;
+}
+/* Dark mode : dégradé plus dense, du teinté vers le noir profond */
+body.dark-mode.verbe-active {
+  background: linear-gradient(
+    to bottom,
+    var(--page-verbe-soft-dk, rgba(45,45,45,0)) 0%,
+    var(--page-verbe-soft-dk, rgba(45,45,45,0)) 10%,
+    var(--bg) 60%,
+    #050505 100%
+  );
+  background-attachment: fixed;
+}
+/* Transition douce sur tous les textes qui adoptent la teinte */
+body.verbe-active,
+body.verbe-active .card-name,
+body.verbe-active .card-meta-row,
+body.verbe-active .count-label,
+body.verbe-active .section-header-desc,
+body.verbe-active .sfb-label,
+body.verbe-active .vpt-count {
+  transition: color 0.5s ease-in-out;
 }
 
 /* Header : verre dépoli blanc — fond clair teinté → header reste neutre */
