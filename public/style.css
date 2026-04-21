@@ -2756,29 +2756,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   overflow: hidden;
 }
 
-/* ── Header Dérive — barre compacte : sous-modes centrés + outils à droite ── */
-.derive-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  padding: 8px 24px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border-light);
-  width: 100%;
-}
-body.dark-mode .derive-header { background: var(--bg); }
-.derive-header-right {
-  position: absolute;
-  right: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-}
+/* .derive-header hérite désormais de .toolbar-strate (Strate 3) */
 /* Ancienne colonne gauche du derive-header — désactivée, strate 2 dédiée */
 .derive-header-left { display: none; }
 .derive-title {
