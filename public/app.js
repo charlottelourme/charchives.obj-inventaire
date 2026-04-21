@@ -1536,24 +1536,21 @@ function applyVerbePageTheme() {
   if (state.view === 'grid' && state.categoryFilter) {
     const verbe = getVerbes().find(v => v.name === state.categoryFilter);
     if (verbe) {
-      // Couleur de base (bgColor du duotone) et couleur de texte saturée
-      const mainColor = verbe.bgColor || '#2D2D2D';
-      const textTint = _verbeActiveColor(verbe);   // version foncée/saturée — lisible sur fond clair
-      // Variantes pour le dégradé de fond — progression fort → moyen → doux → blanc
-      const bgStrong    = _toRgbaStr(mainColor, 0.62);   // haut de page : couleur bien marquée
-      const bgMid       = _toRgbaStr(mainColor, 0.34);   // milieu : transition
-      const bgSoftLight = _toRgbaStr(mainColor, 0.12);   // bas : très dilué
-      const bgSoftDark  = _toRgbaStr(mainColor, 0.45);   // dark mode (non utilisé sur v193+)
-      // Tint typographique — légèrement assourdi pour rester lisible
-      const typoTint    = textTint;
-      root.style.setProperty('--page-verbe-bg',      mainColor + '2E');
-      root.style.setProperty('--page-verbe-text',    mainColor);
-      root.style.setProperty('--page-verbe-main',    mainColor);
-      root.style.setProperty('--page-verbe-strong', bgStrong);
+      // Duotone : bgColor = couleur CLAIRE (fond), textColor = couleur FONCÉE (texte)
+      const lightColor = verbe.bgColor   || '#E8E4DE';   // couleur "FOND" du duotone
+      const darkColor  = verbe.textColor || _verbeActiveColor(verbe); // couleur "TEXTE"
+      // Variantes dégradé : la couleur CLAIRE est utilisée pleine puissance (100%)
+      // au bas de page, s'estompe vers blanc au sommet (référence Appeal To Heaven, version plus franche)
+      const bgSolid  = lightColor;                     // couleur pleine
+      const bgMid    = _toRgbaStr(lightColor, 0.55);   // milieu : demi-teinte
+      root.style.setProperty('--page-verbe-bg',      lightColor + '2E');
+      root.style.setProperty('--page-verbe-text',    darkColor);
+      root.style.setProperty('--page-verbe-main',    lightColor);
+      root.style.setProperty('--page-verbe-strong', bgSolid);
       root.style.setProperty('--page-verbe-mid',    bgMid);
-      root.style.setProperty('--page-verbe-soft',    bgSoftLight);
-      root.style.setProperty('--page-verbe-soft-dk', bgSoftDark);
-      root.style.setProperty('--page-verbe-typo',    typoTint);
+      root.style.setProperty('--page-verbe-soft',    _toRgbaStr(lightColor, 0.18));
+      root.style.setProperty('--page-verbe-soft-dk', _toRgbaStr(lightColor, 0.45));
+      root.style.setProperty('--page-verbe-typo',    darkColor);
       document.body.classList.add('verbe-active');
       return;
     }
