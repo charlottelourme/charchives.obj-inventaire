@@ -5525,13 +5525,10 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     /* padding hérité de .status-filter-bar mobile */
   }
   #subcategoryFilterBar::-webkit-scrollbar { display: none; }
-  .idx-trigger-hint { font-size: 12px; } /* réduit sur mobile */
-  .status-filter-bar-sm {
-    padding-left: calc(8px + 72px); /* gutter mobile + label-w mobile */
-  }
-  #attrFilterBar {
-    padding-left: calc(8px + 72px);
-  }
+  .idx-trigger-hint { font-size: 12px; }
+  /* Ferrage strict 14px — tous les filtres alignés sur la colonne du logo */
+  .status-filter-bar-sm { padding-left: 14px !important; }
+  #attrFilterBar { padding-left: 14px !important; }
 
   /* ══════════════════════════════════════
      FILTRES : FOND OPAQUE + UNITÉ VISUELLE
