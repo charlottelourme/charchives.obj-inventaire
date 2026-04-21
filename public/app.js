@@ -2734,27 +2734,33 @@ function _nueeTick() {
   const detail = document.getElementById('detailModal');
   if (detail && detail.style.display !== 'none' && detail.style.display !== '') return;
 
-  // Dimensions lues fraîchement à chaque tick — gère automatiquement le redimensionnement
   const vw = _nueeViewport.clientWidth  || window.innerWidth;
   const vh = _nueeViewport.clientHeight || window.innerHeight;
-  const M  = 150;  // marge de sécurité hors-champ
+  const cx = vw / 2;
+  const cy = vh / 2;
 
-  // 1. Avance chaque corps (vitesse affectée uniquement par le boost de survol)
+  // 1. Avance chaque corps + murs stricts + rappel doux vers le centre
   for (const b of _nueeBodies) {
     if (b.boost > 1) b.boost = Math.max(1, 1 + (b.boost - 1) * 0.94);
 
     b.x += b.vx * b.boost;
     b.y += b.vy * b.boost;
 
-    // Wrapping strict (spec utilisateur) — on agit sur l'objet-réf, pas une copie.
-    // Sortie par la droite : x > vw + M  → téléporte à gauche (x = -M)
-    if (b.x > vw + M)       b.x = -M;
-    // Sortie par la gauche : x < -M     → téléporte à droite (x = vw + M)
-    else if (b.x < -M)      b.x = vw + M;
-    // Sortie par le bas : y > vh + M    → téléporte en haut (y = -M)
-    if (b.y > vh + M)       b.y = -M;
-    // Sortie par le haut : y < -M       → téléporte en bas (y = vh + M)
-    else if (b.y < -M)      b.y = vh + M;
+    // MURS : rebond strict sur les 4 bords du viewport (jamais hors-champ)
+    if (b.x < 0)             { b.x = 0;           b.vx = Math.abs(b.vx); }
+    if (b.y < 0)             { b.y = 0;           b.vy = Math.abs(b.vy); }
+    if (b.x + b.w > vw)      { b.x = vw - b.w;    b.vx = -Math.abs(b.vx); }
+    if (b.y + b.h > vh)      { b.y = vh - b.h;    b.vy = -Math.abs(b.vy); }
+
+    // GRAVITÉ CENTRALE : rappel très doux vers le milieu de l'écran
+    const bcx = b.x + b.w / 2;
+    const bcy = b.y + b.h / 2;
+    b.vx += (cx - bcx) * 0.00012;
+    b.vy += (cy - bcy) * 0.00012;
+
+    // Amortissement : évite que les objets accélèrent indéfiniment après boosts
+    b.vx *= 0.998;
+    b.vy *= 0.998;
   }
 
   // 2. Collisions AABB entre paires — échange des vélocités
