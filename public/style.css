@@ -5336,14 +5336,14 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
 
   /* ══════════════════════════════════════
-     GRILLE MOBILE — 2 colonnes fixes
+     GRILLE MOBILE — 2 colonnes fixes, fonds fondus (gap 0)
   ══════════════════════════════════════ */
   .grid {
     column-count: 2;
-    column-gap: 12px;
-    padding: 8px 10px calc(96px + env(safe-area-inset-bottom));
+    column-gap: 0;                   /* fonds qui se touchent */
+    padding: 0 0 calc(96px + env(safe-area-inset-bottom));
   }
-  .grid .card { margin-bottom: 40px; }
+  .grid .card { margin-bottom: 0; }
   /* Halo réduit sur petite largeur — inset dynamique */
   .grid .card::before {
     filter: blur(20px);
