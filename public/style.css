@@ -94,17 +94,11 @@ body.verbe-active {
 }
 /* Html root : pas de fond concurrent, laisse le body piloter */
 html:has(body.verbe-active) { background: transparent; }
-/* Dark mode : dégradé plus dense, du teinté vers le noir profond */
+/* Dark mode : PAS de dégradé coloré — retour au fond neutre uni */
 body.dark-mode.verbe-active {
-  background: linear-gradient(
-    to bottom,
-    var(--page-verbe-soft-dk, rgba(45,45,45,0)) 0%,
-    var(--page-verbe-soft-dk, rgba(45,45,45,0)) 15%,
-    var(--bg) 70%,
-    #050505 100%
-  ) !important;
-  background-attachment: fixed !important;
-  background-color: transparent !important;
+  background: var(--bg) !important;
+  background-image: none !important;
+  background-color: var(--bg) !important;
 }
 /* Transition douce sur tous les textes qui adoptent la teinte */
 body.verbe-active,
