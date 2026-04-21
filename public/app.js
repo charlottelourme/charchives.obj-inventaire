@@ -1539,14 +1539,18 @@ function applyVerbePageTheme() {
       // Couleur de base (bgColor du duotone) et couleur de texte saturée
       const mainColor = verbe.bgColor || '#2D2D2D';
       const textTint = _verbeActiveColor(verbe);   // version foncée/saturée — lisible sur fond clair
-      // Variantes pour le dégradé de fond
-      const bgSoftLight = _toRgbaStr(mainColor, 0.22);   // dégradé clair (haut de page)
-      const bgSoftDark  = _toRgbaStr(mainColor, 0.45);   // dégradé sombre (dark mode)
+      // Variantes pour le dégradé de fond — progression fort → moyen → doux → blanc
+      const bgStrong    = _toRgbaStr(mainColor, 0.62);   // haut de page : couleur bien marquée
+      const bgMid       = _toRgbaStr(mainColor, 0.34);   // milieu : transition
+      const bgSoftLight = _toRgbaStr(mainColor, 0.12);   // bas : très dilué
+      const bgSoftDark  = _toRgbaStr(mainColor, 0.45);   // dark mode (non utilisé sur v193+)
       // Tint typographique — légèrement assourdi pour rester lisible
       const typoTint    = textTint;
       root.style.setProperty('--page-verbe-bg',      mainColor + '2E');
       root.style.setProperty('--page-verbe-text',    mainColor);
       root.style.setProperty('--page-verbe-main',    mainColor);
+      root.style.setProperty('--page-verbe-strong', bgStrong);
+      root.style.setProperty('--page-verbe-mid',    bgMid);
       root.style.setProperty('--page-verbe-soft',    bgSoftLight);
       root.style.setProperty('--page-verbe-soft-dk', bgSoftDark);
       root.style.setProperty('--page-verbe-typo',    typoTint);
