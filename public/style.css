@@ -5368,7 +5368,16 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   }
   .grid .card { margin-bottom: 0 !important; }
   /* Halos qui débordent créaient des espaces blancs : neutralisés sur mobile */
-  .grid .card::before { left: 0 !important; right: 0 !important; }
+  .grid .card::before { left: 0 !important; right: 0 !important; z-index: -1 !important; }
+  /* Carte : contexte d'empilement strict, image toujours au-dessus du halo */
+  .grid .card {
+    position: relative !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+  }
+  .grid .card-thumb-area,
+  .grid .card-thumb-area img,
+  .grid .card-body { position: relative !important; z-index: 2 !important; }
   .card-thumb-area { width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
   /* Halo réduit sur petite largeur — inset dynamique */
   .grid .card::before {
