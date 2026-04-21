@@ -28,7 +28,7 @@
   /* ── Zoom masonry — modifié par le slider JS ── */
   --grid-cols: 4;
   /* ── Grille des filtres — alignement vertical strict ── */
-  --filter-gutter: clamp(20px, 3.5vw, 60px); /* marge gauche de toutes les barres */
+  --filter-gutter: 12px; /* marge gauche réduite — aligne près du bord */
   --label-w: 96px;  /* largeur fixe de la colonne "INTENTION" / "OBJETS" */
 }
 
