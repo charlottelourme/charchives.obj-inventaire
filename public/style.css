@@ -8197,22 +8197,70 @@ body.dark-mode .portrait-title { color: var(--text); }
    Réutilisés par Inventaire, Dérive, Triptyque, Diorama, Constellation.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* ── SectionHeader : masqué par défaut (bandeaux retirés) ─────────────────
-   Les vues n'ont plus de bandeau de titre/description visible. L'édition
-   via Paramètres > Textes de l'interface reste fonctionnelle (données
-   conservées en localStorage) pour une réactivation future. */
-#inventaireSectionHeader,
-#triosSectionHeader,
-#dioramaSectionHeader { display: none !important; }
-
-/* Paramètres conserve son propre section-header (modale) — styles neutres */
+/* ── STRATE 2 : SectionHeader (cartouche titre + description) ───────────
+   Desktop : padding 32px | Mobile : 16px | Fond gris léger (dark: zinc-900)
+   Bordure basse unique. Aucun autre élément dans cette strate. */
 .section-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
   width: 100%;
+  padding: 32px 32px 24px;
+  background: #fafaf8;
+  border-bottom: 1px solid #e4e4e7;   /* zinc-200 */
   box-sizing: border-box;
+}
+body.dark-mode .section-header {
+  background: var(--surface);          /* zinc-900 */
+  border-bottom-color: var(--border);  /* zinc-800 */
+}
+.section-header-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: clamp(26px, 3.5vw, 36px);
+  font-weight: 300;
+  letter-spacing: -.02em;
+  line-height: 1;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+.section-header-desc {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .03em;
+  color: var(--text-3);
+  margin: 0;
+  max-width: 80ch;
+}
+@media (max-width: 520px) {
+  .section-header { padding: 16px 16px 14px !important; }
+  .section-header-title { font-size: 20px !important; }
+  .section-header-desc { font-size: 11px !important; }
+}
+
+/* ── STRATE 3 : ToolBar universelle ────────────────────────────────────
+   Se colle sous le SectionHeader. Contient filtres OU barre de sélection.
+   Padding latéral aligné sur la Strate 2. */
+.toolbar-strate {
+  width: 100%;
+  padding: 12px 32px;
+  background: var(--bg);
+  border-bottom: 1px solid #e4e4e7;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  box-sizing: border-box;
+}
+.toolbar-strate::-webkit-scrollbar { display: none; }
+body.dark-mode .toolbar-strate { border-bottom-color: var(--border); }
+@media (max-width: 520px) {
+  .toolbar-strate { padding: 10px 16px !important; gap: 12px; }
 }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
