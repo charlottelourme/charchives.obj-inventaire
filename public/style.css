@@ -126,18 +126,22 @@ body.verbe-active .card-typo-label,
 body.verbe-active .card-meta-row {
   color: var(--page-verbe-typo, var(--text-2));
 }
-/* Dark mode : éclaircit la teinte pour qu'elle "vibre" sur fond sombre */
+/* Dark mode : PAS de teinte colorée — retour aux couleurs neutres du dark mode */
 body.dark-mode.verbe-active .count-label,
 body.dark-mode.verbe-active .sfb-label,
 body.dark-mode.verbe-active .section-header-desc,
-body.dark-mode.verbe-active .vpt-count,
+body.dark-mode.verbe-active .vpt-count {
+  color: var(--text-3) !important;
+  opacity: 1;
+  filter: none;
+}
 body.dark-mode.verbe-active .card-name,
 body.dark-mode.verbe-active .card-verbe-label,
 body.dark-mode.verbe-active .card-typo-label,
 body.dark-mode.verbe-active .card-meta-row {
-  color: var(--page-verbe-main, var(--text-2)) !important;
-  opacity: 0.92;
-  filter: brightness(1.45) saturate(1.2);
+  color: var(--text-2) !important;
+  opacity: 1;
+  filter: none;
 }
 
 /* Header : verre dépoli blanc — fond clair teinté → header reste neutre */
