@@ -326,7 +326,7 @@ header h1 {
 .view-tab:hover { color: #000; }
 .view-tab.active {
   color: #18181b;
-  font-weight: 500;
+  font-weight: 700;
   text-decoration: none;
 }
 /* ══ Omnibar — composant de recherche unifié ══════════════════════════════ */
