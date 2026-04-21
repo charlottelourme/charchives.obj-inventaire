@@ -83,14 +83,19 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
 body.verbe-active {
   background: linear-gradient(
     to bottom,
-    var(--page-verbe-soft, rgba(45,45,45,0)) 0%,
-    var(--page-verbe-soft, rgba(45,45,45,0)) 18%,
-    var(--bg) 70%,
-    var(--bg) 100%
+    var(--page-verbe-strong, rgba(45,45,45,0)) 0%,
+    var(--page-verbe-mid, rgba(45,45,45,0)) 45%,
+    var(--page-verbe-soft, rgba(45,45,45,0)) 75%,
+    #ffffff 100%
   ) !important;
   background-attachment: fixed !important;
   background-color: transparent !important;
   transition: background 0.7s ease-in-out, color 0.5s ease-in-out;
+}
+/* Neutralise les halos colorés sur les cartes en mode verbe : la couleur vit
+   désormais sur le fond de page, pas derrière chaque carte (pas de dédoublement) */
+body.verbe-active .card::before {
+  opacity: 0 !important;
 }
 /* Html root : pas de fond concurrent, laisse le body piloter */
 html:has(body.verbe-active) { background: transparent; }
