@@ -5500,31 +5500,47 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     scrollbar-width: none;
   }
   .status-filter-bar::-webkit-scrollbar { display: none; }
+  /* ── ACCORDION INTENTIONS (MOBILE) ──────────────────────────────────── */
   .sfb-label {
     flex-basis: 100%;
     width: 100%;
-    font-size: 9px;
+    font-size: 10px !important;
+    letter-spacing: .16em !important;
+    text-transform: uppercase;
     color: var(--text-3);
-    margin-bottom: 2px;
-    padding: 0;
+    margin-bottom: 0;
+    padding: 8px 0 !important;
     position: static;
     background: transparent;
     flex-shrink: 0;
-    display: inline-flex;
+    display: inline-flex !important;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
   }
-  /* Chevron : suggère que le label agit comme un dropdown (au clic) */
+  /* Chevron rotatif : ▶ quand fermé, ▼ quand ouvert */
   .sfb-label::after {
     content: '';
     display: inline-block;
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-right: 1px solid var(--text-3);
     border-bottom: 1px solid var(--text-3);
     transform: rotate(45deg);
-    margin-left: 3px;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
+    transition: transform 0.22s ease;
+  }
+  /* État collapsed : les pills Intention se cachent */
+  .status-filter-bar.collapsed > .sfb-pill { display: none !important; }
+  .status-filter-bar.collapsed .sfb-label::after { transform: rotate(-45deg); margin-bottom: -1px; }
+  /* Animation douce à l'ouverture */
+  .status-filter-bar:not(.collapsed) > .sfb-pill {
+    animation: sfbUnfold 0.28s ease both;
+  }
+  @keyframes sfbUnfold {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
   /* Pills restent en ligne, scrollables horizontalement */
   .status-filter-bar > .sfb-pill { flex-shrink: 0; white-space: nowrap; }
