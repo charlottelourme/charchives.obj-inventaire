@@ -5505,20 +5505,24 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     margin-left: auto;
   }
 
-  /* ── LIGNE 2 : Navigation sérif italique, pleine largeur justify-between ── */
+  /* ── LIGNE 2 : Navigation sérif italique, 1er mot aligné STRICTEMENT avec le C de CHARCHIVES ── */
   .view-tabs {
     order: 3;
     width: 100% !important;
     flex-basis: 100% !important;
     display: flex;
-    justify-content: space-between;       /* 4 onglets répartis sur toute la largeur */
+    justify-content: space-between;
     gap: 8px;
-    padding: 8px 14px 10px !important;    /* aligné à 14px — colonne du logo */
-    overflow-x: auto;
+    padding: 8px 14px 10px !important;
+    margin: 0 !important;
+    overflow: visible;                    /* pas de scroll → tout tient en largeur */
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
     border-top: 1px solid var(--border-light);
+    box-sizing: border-box;
   }
+  /* Premier onglet : zéro padding gauche → bord à 14px (colonne logo) */
+  .view-tabs > .view-tab:first-child { padding-left: 0 !important; margin-left: 0 !important; }
+  .view-tabs > .view-tab:last-child  { padding-right: 0 !important; margin-right: 0 !important; }
   .view-tabs::-webkit-scrollbar { display: none; }
   .view-tab {
     padding: 0 !important;
