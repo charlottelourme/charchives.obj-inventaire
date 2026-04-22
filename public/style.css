@@ -8509,6 +8509,23 @@ body.dark-mode .toolbar-strate { border-bottom-color: var(--border); }
     background-color: var(--surface) !important;
     border: 1px solid var(--border-light) !important;
   }
+  /* ── Jauge zoom : SUPPRIMÉE sur mobile (pas pertinent au doigt) ────── */
+  .toolbar .card-size-slider,
+  .toolbar-right,
+  .toolbar-slider-sep,
+  #nueeZoomWrap,
+  #conZoomWrap,
+  .nuee-zoom-wrap { display: none !important; }
+  /* ── Barre de recherche (ligne 3 du header) : plus compacte, alignée visuellement sur la nav italique du dessus ── */
+  header .search-bar {
+    padding: 6px 14px !important;
+    min-height: 36px !important;
+  }
+  header .search-input-inner::placeholder {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-3);
+  }
 }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
