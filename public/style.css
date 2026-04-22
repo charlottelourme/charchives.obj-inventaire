@@ -129,17 +129,28 @@ body.dark-mode #bgLayers .bg-grain {
 body { background: transparent !important; }
 html { background: #ffffff; }
 html:has(body.dark-mode) { background: rgb(9, 9, 11); }
-/* Neutralise les halos colorés sur les cartes en mode verbe : la couleur vit
-   désormais sur le fond de page (vignette radiale), pas derrière chaque carte */
-body.verbe-active .card::before {
+/* ══ NETTOYAGE CARTES EN MODE VERBE ══
+   Maximum de spécificité pour battre les règles mobiles (.grid .card::before
+   dans @media). Les halos individuels sont TUÉS — la vignette globale suffit. */
+body.verbe-active .card::before,
+body.verbe-active .grid .card::before,
+body.verbe-active .card::after,
+body.verbe-active .grid .card::after {
   opacity: 0 !important;
+  background: none !important;
+  background-image: none !important;
+  display: none !important;
 }
-/* Cartes 100% transparentes en mode verbe — les objets flottent sur la vignette */
+/* Cartes 100% transparentes — AUCUN fond, bordure ou ombre individuelle */
 body.verbe-active .card,
+body.verbe-active .grid .card,
 body.verbe-active .card-body,
 body.verbe-active .card-thumb-area {
   background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
   border: none !important;
+  box-shadow: none !important;
 }
 /* Le contenu (grille + cartes) passe AU-DESSUS des 2 calques de fond
    (radial z:-1 + grain z:0) — z:10 pour marge de sécurité */
