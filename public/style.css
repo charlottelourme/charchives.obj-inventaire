@@ -9421,25 +9421,30 @@ body.dark-mode .section-header {
     max-width: 100% !important;
   }
   /* ── CARTES MOBILE : couleur PERMANENTE (pas de hover tactile) ──────────
-        Le ::after crée un rectangle plein de la couleur de l'intention,
-        visible EN PERMANENCE (pas besoin de survol). */
-  .grid .card::before {
-    display: none !important;     /* halo flou désactivé — on utilise ::after plein */
+        Le ::before est tué (on désactive le rectangle gris desktop) ;
+        le ::after porte la couleur de l'intention en permanence. */
+  body:not(.dark-mode) .grid .card::before,
+  body.dark-mode .grid .card::before,
+  body:not(.verbe-active) .grid .card::before {
+    display: none !important;
     content: none !important;
+    background: none !important;
   }
-  .grid .card::after {
+  .grid .card::after,
+  body:not(.dark-mode) .grid .card::after,
+  body.dark-mode .grid .card::after {
     content: '' !important;
     display: block !important;
     position: absolute !important;
     inset: 0 !important;
-    background: var(--verbe-accent, #E4E4E7) !important;  /* couleur intention (ou zinc-200 fallback) */
-    z-index: -1 !important;        /* derrière l'image, devant le fond */
+    background: var(--verbe-accent, #E4E4E7) !important;
+    z-index: -1 !important;
     opacity: 1 !important;
     border-radius: 0 !important;
     pointer-events: none;
   }
   body.dark-mode .grid .card::after {
-    background: var(--verbe-accent, #27272A) !important;  /* zinc-800 fallback en sombre */
+    background: var(--verbe-accent, #27272A) !important;
   }
   /* Images mobile : simples, sans blend-mode ni filtre (sinon disparaissent) */
   .grid .card-thumb-area img,
