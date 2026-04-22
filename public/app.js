@@ -798,7 +798,7 @@ function buildAttrFilterBar() {
     bar.style.display = 'none';
   } else {
     bar.style.display = '';
-    buildMultiFilter('filterStylesWrap',   'origine',  'Origine', ATTRIBUTES_DEF.origine.options);
+    buildMultiFilter('filterStylesWrap',   'origine',  'Identité', ATTRIBUTES_DEF.origine.options);
     buildMultiFilter('filterMatieresWrap', 'matieres', 'Matière', ATTRIBUTES_DEF.matieres.options);
     // État supprimé de l'interface
     buildMultiFilter('filterCouleursWrap', 'couleurs', 'Couleur', state.settings.colors||[]);
