@@ -8545,6 +8545,24 @@ function pushBreadcrumb(label, backAction) {
   state.breadcrumb.push({ label, backAction });
   if (state.breadcrumb.length > BC_MAX_HISTORY) state.breadcrumb.shift();
   renderBreadcrumbBar();
+  renderMobileFooterNav();
+}
+
+// ── Footer mobile : fil d'Ariane compact + bouton Retour ─────────────────
+function renderMobileFooterNav() {
+  const bc = document.getElementById('mfnBreadcrumb');
+  if (!bc) return;
+  const crumbs = state.breadcrumb || [];
+  if (crumbs.length === 0) {
+    bc.innerHTML = '<span class="mfn-item">Inventaire</span>';
+    return;
+  }
+  // Derniers 3 items, séparés par ›
+  const visible = crumbs.slice(-3);
+  bc.innerHTML = visible.map((c, i) =>
+    (i > 0 ? '<span class="mfn-sep">›</span>' : '') +
+    `<span class="mfn-item">${esc(c.label)}</span>`
+  ).join('');
 }
 
 function renderBreadcrumbBar() {
