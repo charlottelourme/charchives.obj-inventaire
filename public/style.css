@@ -5627,11 +5627,18 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     margin-bottom: 2px;
     transition: transform 0.22s ease;
   }
-  /* État collapsed : les pills Intention se cachent */
-  .status-filter-bar.collapsed > .sfb-pill { display: none !important; }
+  /* État collapsed : cache les pills (barre Intention) ET le trigger + input (barre Objets) */
+  .status-filter-bar.collapsed > .sfb-pill,
+  .status-filter-bar.collapsed > .idx-trigger-btn,
+  .status-filter-bar.collapsed > .idx-inline-wrap,
+  .status-filter-bar.collapsed > .idx-active-chip {
+    display: none !important;
+  }
   .status-filter-bar.collapsed .sfb-label::after { transform: rotate(-45deg); margin-bottom: -1px; }
   /* Animation douce à l'ouverture */
-  .status-filter-bar:not(.collapsed) > .sfb-pill {
+  .status-filter-bar:not(.collapsed) > .sfb-pill,
+  .status-filter-bar:not(.collapsed) > .idx-trigger-btn,
+  .status-filter-bar:not(.collapsed) > .idx-inline-wrap {
     animation: sfbUnfold 0.28s ease both;
   }
   @keyframes sfbUnfold {
