@@ -5413,15 +5413,15 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     margin-left: auto;
   }
 
-  /* ── LIGNE 2 : Navigation sérif italique, première lettre en majuscule ── */
+  /* ── LIGNE 2 : Navigation sérif italique, pleine largeur justify-between ── */
   .view-tabs {
     order: 3;
     width: 100% !important;
     flex-basis: 100% !important;
     display: flex;
-    justify-content: flex-start;
-    gap: 24px;
-    padding: 8px 14px 10px !important;   /* ferré à 14px — aligné sur le logo */
+    justify-content: space-between;       /* 4 onglets répartis sur toute la largeur */
+    gap: 8px;
+    padding: 8px 14px 10px !important;    /* aligné à 14px — colonne du logo */
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
