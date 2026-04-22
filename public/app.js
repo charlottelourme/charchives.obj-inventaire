@@ -7804,7 +7804,7 @@ function renderSearchDropdown() {
   if (q) {
     const attrGroups = [
       { key:'matieres',    label:'Matière', options: ATTRIBUTES_DEF.matieres.options },
-      { key:'origine',     label:'Origine', options: ATTRIBUTES_DEF.origine.options },
+      { key:'origine',     label:'Identité', options: ATTRIBUTES_DEF.origine.options },
       { key:'etat_traces', label:'État',    options: ATTRIBUTES_DEF.etat_traces.options },
       { key:'couleurs',    label:'Couleur', options: state.settings.colors||[] },
     ];
