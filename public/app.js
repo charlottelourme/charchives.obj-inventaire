@@ -669,6 +669,7 @@ async function init(attempt = 0) {
     render();
     bindEvents();
     _syncTriosTabLabels();
+    renderMobileFooterNav();
 
   } catch (err) {
     const isRetryable = err.type === 'starting' || err.type === 'network' || err.status === 503 || err.status === 502;
