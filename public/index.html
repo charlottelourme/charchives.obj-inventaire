@@ -817,6 +817,15 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script src="app.js"></script>
+<!-- ── Mobile Footer Navigation : breadcrumb + retour ─────────────────── -->
+<nav id="mobileFooterNav" class="mobile-footer-nav" aria-label="Navigation de pied de page">
+  <button class="mfn-back" id="mfnBackBtn" aria-label="Page précédente">
+    <svg class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <span>Retour</span>
+  </button>
+  <div class="mfn-breadcrumb" id="mfnBreadcrumb"></div>
+</nav>
+
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
