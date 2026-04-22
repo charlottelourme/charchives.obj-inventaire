@@ -6383,6 +6383,8 @@ function toggleDarkMode() {
   document.body.classList.toggle('dark-mode', state.darkMode);
   document.getElementById('darkModeBtn').textContent = state.darkMode ? '◐' : '◑';
   localStorage.setItem('darkMode', state.darkMode);
+  // Re-applique la couche radiale (pour que endColor suive le thème courant)
+  applyVerbePageTheme();
 }
 
 // ── Stats ──────────────────────────────────────────────────────────────────────
