@@ -81,62 +81,52 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
    saturée de cette couleur (--page-verbe-typo) pour créer une unité.
    ══════════════════════════════════════════════════════════════════════════ */
 /* ══════════════════════════════════════════════════════════════════════════
-   THÉMATISATION VERBE — Vignette radiale douce + grain de papier subtil
-   Référence : ambiance "Journal d'Aligre" — atmosphère éditoriale, feutrée.
+   THÉMATISATION VERBE — Sandwich de 3 calques fixes
+   Structure : #bgLayers > .bg-base + .bg-radial + .bg-grain
+   Couleurs injectées en HEX direct via style inline depuis app.js.
    ══════════════════════════════════════════════════════════════════════════ */
-
-/* ── Calque 1 : DÉGRADÉ RADIAL (derrière tout, z:-1) ──────────────────────
-      Très doux — la couleur n'est qu'à ~15% au centre, fond en dessous. */
-body.verbe-active::after {
-  content: '';
+#bgLayers {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
   z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(
-    circle at 50% 40%,
-    var(--page-verbe-soft, rgba(230,225,215,0.15)) 0%,
-    rgba(255,255,255,1) 70%
-  );
-  transition: background 0.6s ease-in-out;
 }
-/* Dark mode : même radial mais se fond vers zinc-950 au lieu du blanc */
-body.dark-mode.verbe-active::after {
-  background: radial-gradient(
-    circle at 50% 40%,
-    var(--page-verbe-soft-dk, rgba(40,40,40,0.25)) 0%,
-    rgb(9, 9, 11) 70%
-  );
-}
-/* Le body lui-même reste transparent pour laisser voir les 2 calques */
-body.verbe-active {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* ── Calque 2 : GRAIN PAPIER (au-dessus du radial, z:0, ~3% d'opacité) ───
-      SVG fractalNoise sans feColorMatrix — vraie texture papier douce.
-      mix-blend-multiply en clair / overlay en sombre pour rester discret. */
-body.verbe-active::before {
-  content: '';
-  position: fixed;
+#bgLayers > div {
+  position: absolute;
   inset: 0;
-  z-index: 0;
-  pointer-events: none;
+}
+/* Calque 1 : base — blanc en clair, zinc-950 en sombre */
+#bgLayers .bg-base {
+  background: #ffffff;
+  transition: background 0.4s ease;
+}
+body.dark-mode #bgLayers .bg-base { background: rgb(9, 9, 11); }
+
+/* Calque 2 : vignette radiale — pilotée par style inline depuis JS */
+#bgLayers .bg-radial {
+  opacity: 0;
+  transition: opacity 0.7s ease-in-out, background 0.7s ease-in-out;
+}
+body.verbe-active #bgLayers .bg-radial { opacity: 1; }
+
+/* Calque 3 : grain papier — SVG fractalNoise (baseFrequency 0.65, numOctaves 3) */
+#bgLayers .bg-grain {
   opacity: 0.03;
   mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  background-repeat: repeat;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
-body.dark-mode.verbe-active::before {
+body.dark-mode #bgLayers .bg-grain {
   mix-blend-mode: overlay;
   opacity: 0.05;
 }
 
-/* html transparent pour laisser le body piloter le fond en mode verbe */
-html:has(body.verbe-active) { background: transparent; }
+/* Body : transparent en tout temps (le fond est piloté par #bgLayers) */
+body { background: transparent !important; }
+html { background: #ffffff; }
+html:has(body.dark-mode) { background: rgb(9, 9, 11); }
 /* Neutralise les halos colorés sur les cartes en mode verbe : la couleur vit
    désormais sur le fond de page (vignette radiale), pas derrière chaque carte */
 body.verbe-active .card::before {
