@@ -6395,13 +6395,8 @@ function setupKeywordInput() {
 function toggleDarkMode() {
   state.darkMode = !state.darkMode;
   document.body.classList.toggle('dark-mode', state.darkMode);
-  // Icône cercle scindé (Contrast) — inversion de la moitié remplie selon le mode
   const btn = document.getElementById('darkModeBtn');
-  if (btn) {
-    btn.innerHTML = state.darkMode
-      ? '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3 A9 9 0 0 1 12 21 Z" fill="currentColor"/></svg>'
-      : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor"/></svg>';
-  }
+  if (btn) btn.textContent = state.darkMode ? '◐' : '◑';
   localStorage.setItem('darkMode', state.darkMode);
   applyVerbePageTheme();
 }
