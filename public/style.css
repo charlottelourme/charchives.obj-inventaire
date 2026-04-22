@@ -6055,18 +6055,23 @@ body.dark-mode {
   --shadow-lg: none;
 }
 
-/* ── Halos en Dark Mode — radial gradient qui fond vers le fond page ──
-   Plus de rectangle visible : les bords sont totalement transparents. */
+/* ── Cartes en Dark Mode : rectangle plein gris par défaut, couleur au hover ──
+   Forme nette, bords droits (pas de halo flou), fond uniforme de la carte. */
 body.dark-mode .card::before {
-  background: radial-gradient(ellipse at center,
-    var(--verbe-accent, rgba(155,150,145,0.65)) 0%,
-    rgba(155,150,145,0.35) 40%,
-    transparent 75%);
-  filter: blur(24px);
-  opacity: 0.85;
+  background: #27272A !important;          /* zinc-800 — neutre par défaut */
+  filter: none !important;                  /* pas de flou : rectangle net */
+  border-radius: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  opacity: 1 !important;
+  transition: background 0.3s ease;
 }
+/* Au survol : la couleur de l'intention remplace le gris (rectangle plein coloré) */
 body.dark-mode .card:hover::before {
-  opacity: 1;
+  background: var(--verbe-accent, #3F3F46) !important;
+  opacity: 1 !important;
 }
 body.dark-mode .portrait-halo {
   background: radial-gradient(ellipse at center,
