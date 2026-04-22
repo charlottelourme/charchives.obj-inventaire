@@ -62,6 +62,15 @@
         <option value="price-asc">Prix croissant</option>
         <option value="price-desc">Prix décroissant</option>
       </select>
+      <!-- Dropdown Statut : remplace la barre de pills sur mobile & desktop -->
+      <select class="status-filter" id="statusSelect">
+        <option value="">Tous les statuts</option>
+        <option value="Disponible">Disponible</option>
+        <option value="Vendu">Vendu</option>
+        <option value="Pas à vendre">Pas à vendre</option>
+        <option value="Brouillon">Brouillon</option>
+        <option value="__selection__">Sélection</option>
+      </select>
       <div class="toolbar-gap" style="flex:1"></div>
       <div class="toolbar-right">
         <input type="range" id="cardSizeSlider" class="card-size-slider" min="140" max="480" value="260" step="10">
