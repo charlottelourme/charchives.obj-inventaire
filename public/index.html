@@ -851,6 +851,21 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script src="app.js"></script>
+<!-- ── Mobile Hamburger Drawer : menu des actions secondaires ── -->
+<div id="hamburgerDrawer" class="hamburger-drawer" hidden>
+  <div class="hd-overlay" id="hdOverlay"></div>
+  <div class="hd-panel">
+    <button class="hd-close" id="hdClose" aria-label="Fermer le menu">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
+    <button class="hd-item" id="hdAddBtn">+ Ajouter un objet</button>
+    <button class="hd-item" id="hdNoteBtn">Ajouter une note</button>
+    <button class="hd-item" id="hdSettingsBtn">Paramètres</button>
+    <button class="hd-item" id="hdDarkBtn">Mode sombre</button>
+    <button class="hd-item" id="hdAboutBtn">À propos</button>
+  </div>
+</div>
+
 <!-- ── Mobile Footer Navigation : flèche retour + breadcrumb serif + dark mode ── -->
 <nav id="mobileFooterNav" class="mobile-footer-nav" aria-label="Navigation de pied de page">
   <button class="mfn-back" id="mfnBackBtn" aria-label="Page précédente">
