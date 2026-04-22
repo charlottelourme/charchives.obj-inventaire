@@ -636,9 +636,20 @@ header h1 {
 }
 /* ══ Omnibar — composant de recherche unifié ══════════════════════════════ */
 .search-wrap {
+  /* Quand révélée (data-collapsed="0"), s'affiche comme une bande pleine largeur
+     entre la Ligne 1 et la Navigation, avec padding aligné sur le logo */
   position: relative;
   flex-shrink: 0;
-  order: 10;       /* placé à droite dans le header (après les tabs centrés) */
+  width: 100%;
+  padding: 10px 32px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-light);
+  box-sizing: border-box;
+  animation: searchRevealDesktop 0.22s ease both;
+}
+@keyframes searchRevealDesktop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Barre principale — identique au champ inline "Rechercher" */
