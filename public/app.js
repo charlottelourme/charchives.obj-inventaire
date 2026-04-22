@@ -7932,9 +7932,26 @@ function setupSearch() {
 function bindEvents() {
   // Header
   document.getElementById('newBtn').addEventListener('click', openNew);
-  document.getElementById('fabBtn').addEventListener('click', openNew);
+  document.getElementById('fabBtn')?.addEventListener('click', openNew);
   document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
   document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+
+  // ── Mobile Footer : bouton Retour → remonte d'un cran dans le breadcrumb ──
+  document.getElementById('mfnBackBtn')?.addEventListener('click', () => {
+    const crumbs = state.breadcrumb || [];
+    if (crumbs.length < 2) {
+      // Aucun historique → retour à l'Inventaire par défaut
+      state.categoryFilter = '';
+      setView('grid', true);
+      return;
+    }
+    // Retirer l'élément courant et exécuter l'action du précédent
+    crumbs.pop();
+    const prev = crumbs[crumbs.length - 1];
+    if (prev && typeof prev.backAction === 'function') prev.backAction();
+    renderBreadcrumbBar();
+    renderMobileFooterNav();
+  });
 
   // ── Note Modal — Intercalaires narratifs ──
   document.getElementById('noteBtn').addEventListener('click', () => openNoteModal(null));
