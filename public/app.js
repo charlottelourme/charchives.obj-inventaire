@@ -1594,16 +1594,18 @@ function applyVerbePageTheme() {
       const lightColor = verbe.bgColor   || '#E8E4DE';
       const darkColor  = verbe.textColor || _verbeActiveColor(verbe);
 
-      // ── Injection DIRECTE du radial gradient — syntaxe CSS 100% valide.
-      //    Centre : couleur de l'intention en rgba strict (opacité 0.8).
-      //    Angles : #d4d4d8 (zinc-300) en clair → vignette bien visible sur base blanche.
-      //              #09090b (zinc-950) en sombre.
+      // ── DOUBLE DÉGRADÉ LINÉAIRE (contreforme) ──
+      //    La couleur de l'intention est intense sur les bords gauche et droit
+      //    de la page, et fond vers le centre (transparent), laissant la zone
+      //    centrale propre pour la lecture des objets.
+      //    En clair : bords colorés → centre blanc/transparent (base blanche dessous)
+      //    En sombre : bords colorés → centre noir/transparent (zinc-950 dessous)
       if (radialLayer) {
         const isDark = document.body.classList.contains('dark-mode');
-        const centerColor = _toRgbaStr(lightColor, 0.8);   // rgba strict
-        const edgeColor   = isDark ? '#09090b' : '#d4d4d8';
+        // Intensité plus forte en dark (besoin de contraste sur fond noir)
+        const edgeColor = isDark ? _toRgbaStr(lightColor, 0.45) : _toRgbaStr(lightColor, 0.85);
         radialLayer.style.background =
-          `radial-gradient(circle at 50% 40%, ${centerColor} 0%, ${edgeColor} 100%)`;
+          `linear-gradient(to right, ${edgeColor} 0%, transparent 22%, transparent 78%, ${edgeColor} 100%)`;
       }
 
       // Variables typographiques (toujours utiles pour les textes teintés)
