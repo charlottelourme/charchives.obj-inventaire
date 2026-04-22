@@ -178,6 +178,17 @@ body.verbe-active .card-thumb-area {
   border: none !important;
   box-shadow: none !important;
 }
+/* Mix-blend-multiply sur les images d'objets en mode verbe (light uniquement)
+   → les fonds blancs des JPEG fusionnent avec la vignette derrière */
+body.verbe-active:not(.dark-mode) .card .card-thumb,
+body.verbe-active:not(.dark-mode) .card-thumb-area img {
+  mix-blend-mode: multiply;
+}
+/* Dark mode : on garde les images en normal (multiply les ferait noir) */
+body.verbe-active.dark-mode .card .card-thumb,
+body.verbe-active.dark-mode .card-thumb-area img {
+  mix-blend-mode: normal;
+}
 /* Le contenu (grille + cartes) passe AU-DESSUS des 2 calques de fond
    (radial z:-1 + grain z:0) — z:10 pour marge de sécurité */
 body.verbe-active main,
