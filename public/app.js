@@ -7996,6 +7996,21 @@ function bindEvents() {
 
   // Sort & size
   document.getElementById('sortSelect').addEventListener('change',e=>{ state.sortBy=e.target.value; render(); });
+  // ── Dropdown Statut (remplace la barre de pills) ───────────────────────
+  const statusSel = document.getElementById('statusSelect');
+  if (statusSel) {
+    statusSel.addEventListener('change', e => {
+      const v = e.target.value;
+      if (v === '__selection__') {
+        state.bookmarkFilter = true;
+        state.statusFilter = '';
+      } else {
+        state.bookmarkFilter = false;
+        state.statusFilter = v;
+      }
+      render();
+    });
+  }
   (() => {
     const slider = document.getElementById('cardSizeSlider');
     if (!slider) return;
