@@ -105,12 +105,14 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
 }
 body.dark-mode #bgLayers .bg-base { background: rgb(9, 9, 11); }
 
-/* Calque 2 : vignette radiale — pilotée par style inline depuis JS */
+/* Calque 2 : dégradé latéral — pilotée par style inline depuis JS
+      Défaut : invisible ; visible dès qu'une Intention est sélectionnée */
 #bgLayers .bg-radial {
   opacity: 0;
-  transition: opacity 0.7s ease-in-out, background 0.7s ease-in-out;
+  transition: opacity 0.7s ease-in-out;
+  z-index: 1;                          /* au-dessus du .bg-base */
 }
-body.verbe-active #bgLayers .bg-radial { opacity: 1; }
+body.verbe-active #bgLayers .bg-radial { opacity: 1 !important; }
 
 /* Calque 3 : grain papier INTENSIFIÉ — SVG fractalNoise baseFrequency 0.8
       Spec utilisateur : opacity 0.08, numOctaves 3, grain visible et palpable. */
