@@ -6147,11 +6147,12 @@ body.dark-mode {
   --shadow-lg: none;
 }
 
-/* ── Cartes en Dark Mode : rectangle plein gris par défaut, couleur au hover ──
-   Forme nette, bords droits (pas de halo flou), fond uniforme de la carte. */
-body.dark-mode .card::before {
-  background: #27272A !important;          /* zinc-800 — neutre par défaut */
-  filter: none !important;                  /* pas de flou : rectangle net */
+/* ══ DESKTOP : Cartes avec rectangle gris plein par défaut, couleur au hover ══
+   Same logique en light et dark mode — seule la teinte de gris change.
+   Forme nette (border-radius:0), bords droits, pas de blur. */
+.card::before {
+  /* Surcharge du rectangle/halo d'origine — on impose un rectangle net */
+  filter: none !important;
   border-radius: 0 !important;
   top: 0 !important;
   bottom: 0 !important;
@@ -6160,10 +6161,19 @@ body.dark-mode .card::before {
   opacity: 1 !important;
   transition: background 0.3s ease;
 }
-/* Au survol : la couleur de l'intention remplace le gris (rectangle plein coloré) */
+/* Light mode : gris neutre (zinc-100) par défaut */
+body:not(.dark-mode) .card::before {
+  background: #F4F4F5 !important;
+}
+body:not(.dark-mode) .card:hover::before {
+  background: var(--verbe-accent, #E4E4E7) !important;
+}
+/* Dark mode : zinc-800 neutre par défaut */
+body.dark-mode .card::before {
+  background: #27272A !important;
+}
 body.dark-mode .card:hover::before {
   background: var(--verbe-accent, #3F3F46) !important;
-  opacity: 1 !important;
 }
 body.dark-mode .portrait-halo {
   background: radial-gradient(ellipse at center,
