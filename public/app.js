@@ -1568,28 +1568,42 @@ function _toRgbaStr(hex, alpha) {
 
 function applyVerbePageTheme() {
   const root = document.documentElement;
+  const radialLayer = document.querySelector('#bgLayers .bg-radial');
+
   if (state.view === 'grid' && state.categoryFilter) {
     const verbe = getVerbes().find(v => v.name === state.categoryFilter);
     if (verbe) {
       // Duotone : bgColor = couleur CLAIRE (fond), textColor = couleur FONCÉE (texte)
-      const lightColor = verbe.bgColor   || '#E8E4DE';   // couleur "FOND" du duotone
-      const darkColor  = verbe.textColor || _verbeActiveColor(verbe); // couleur "TEXTE"
-      // Variantes pour le dégradé RADIAL (vignette) — opacités plus délicates
-      // pour préserver la douceur éditoriale (réf. Journal d'Aligre)
-      const bgStrong = _toRgbaStr(lightColor, 0.68);   // centre de la vignette
-      const bgMid    = _toRgbaStr(lightColor, 0.30);   // zone intermédiaire
-      root.style.setProperty('--page-verbe-bg',      lightColor + '2E');
-      root.style.setProperty('--page-verbe-text',    darkColor);
-      root.style.setProperty('--page-verbe-main',    lightColor);
-      root.style.setProperty('--page-verbe-strong', bgStrong);
-      root.style.setProperty('--page-verbe-mid',    bgMid);
-      root.style.setProperty('--page-verbe-soft',    _toRgbaStr(lightColor, 0.12));
-      root.style.setProperty('--page-verbe-soft-dk', _toRgbaStr(lightColor, 0.45));
-      root.style.setProperty('--page-verbe-typo',    darkColor);
+      const lightColor = verbe.bgColor   || '#E8E4DE';
+      const darkColor  = verbe.textColor || _verbeActiveColor(verbe);
+
+      // ── Injection DIRECTE du radial gradient en HEX sur le calque dédié.
+      //    En light mode : couleur pleine au centre → transparent à 70% (base blanche derrière).
+      //    En dark mode  : couleur pleine au centre → transparent à 70% (base zinc-950 derrière).
+      if (radialLayer) {
+        const isDark = document.body.classList.contains('dark-mode');
+        const endColor = isDark ? 'rgba(9,9,11,0)' : 'rgba(255,255,255,0)';
+        radialLayer.style.background =
+          `radial-gradient(circle at 50% 40%, ${lightColor} 0%, ${endColor} 70%)`;
+      }
+
+      // Variables typographiques (toujours utiles pour les textes teintés)
+      root.style.setProperty('--page-verbe-main', lightColor);
+      root.style.setProperty('--page-verbe-typo', darkColor);
+      root.style.setProperty('--page-verbe-text', darkColor);
+      root.style.setProperty('--page-verbe-bg',   lightColor + '2E');
+      // Alias conservés pour rétrocompatibilité (autres règles CSS)
+      root.style.setProperty('--page-verbe-strong', lightColor);
+      root.style.setProperty('--page-verbe-mid',    lightColor);
+      root.style.setProperty('--page-verbe-soft',   lightColor);
+      root.style.setProperty('--page-verbe-soft-dk', lightColor);
+
       document.body.classList.add('verbe-active');
       return;
     }
   }
+  // Désactivation : reset de la couche radiale + classe
+  if (radialLayer) radialLayer.style.background = '';
   document.body.classList.remove('verbe-active');
   ['--page-verbe-bg','--page-verbe-text','--page-verbe-main',
    '--page-verbe-strong','--page-verbe-mid',
