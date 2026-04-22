@@ -155,29 +155,8 @@ main,
   background: transparent !important;
   background-color: transparent !important;
 }
-/* ══ NETTOYAGE CARTES EN MODE VERBE ══
-   Maximum de spécificité pour battre les règles mobiles (.grid .card::before
-   dans @media). Les halos individuels sont TUÉS — la vignette globale suffit. */
-body.verbe-active .card::before,
-body.verbe-active .grid .card::before,
-body.verbe-active .card::after,
-body.verbe-active .grid .card::after {
-  opacity: 0 !important;
-  background: none !important;
-  background-image: none !important;
-  display: none !important;
-}
-/* Cartes 100% transparentes — AUCUN fond, bordure ou ombre individuelle */
-body.verbe-active .card,
-body.verbe-active .grid .card,
-body.verbe-active .card-body,
-body.verbe-active .card-thumb-area {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  border: none !important;
-  box-shadow: none !important;
-}
+/* ── Mode verbe actif : les halos colorés des cartes restent visibles ──
+   (On ne tue PLUS les ::before — les halos Soft Block restent l'identité visuelle). */
 /* Mix-blend-multiply sur les images d'objets en mode verbe (light uniquement)
    → les fonds blancs des JPEG fusionnent avec la vignette derrière */
 body.verbe-active:not(.dark-mode) .card .card-thumb,
