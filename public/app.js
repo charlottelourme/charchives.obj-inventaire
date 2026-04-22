@@ -1578,12 +1578,13 @@ function applyVerbePageTheme() {
       const darkColor  = verbe.textColor || _verbeActiveColor(verbe);
 
       // ── Injection DIRECTE du radial gradient — syntaxe CSS 100% valide.
-      //    Centre : couleur de l'intention en rgba strict (opacité 0.8 pour douceur).
-      //    Angles : #d6d3d1 (stone-300) en clair, #09090b (zinc-950) en sombre.
+      //    Centre : couleur de l'intention en rgba strict (opacité 0.8).
+      //    Angles : #d4d4d8 (zinc-300) en clair → vignette bien visible sur base blanche.
+      //              #09090b (zinc-950) en sombre.
       if (radialLayer) {
         const isDark = document.body.classList.contains('dark-mode');
-        const centerColor = _toRgbaStr(lightColor, 0.8);   // rgba strict — jamais de HEX8/Tailwind
-        const edgeColor   = isDark ? '#09090b' : '#d6d3d1';
+        const centerColor = _toRgbaStr(lightColor, 0.8);   // rgba strict
+        const edgeColor   = isDark ? '#09090b' : '#d4d4d8';
         radialLayer.style.background =
           `radial-gradient(circle at 50% 40%, ${centerColor} 0%, ${edgeColor} 100%)`;
       }
