@@ -8711,16 +8711,18 @@ body.dark-mode .toolbar-strate { border-bottom-color: var(--border); }
   #nueeZoomWrap,
   #conZoomWrap,
   .nuee-zoom-wrap { display: none !important; }
-  /* ── Barre de recherche (ligne 3 du header) : plus compacte, alignée visuellement sur la nav italique du dessus ── */
+  /* ── Barre de recherche (ligne 3 du header) : compacte, NON-italique ── */
   header .search-bar {
     padding: 6px 14px !important;
     min-height: 36px !important;
   }
+  header .search-input-inner,
   header .search-input-inner::placeholder {
-    font-size: 13px;
-    font-style: italic;
+    font-style: normal !important;   /* pas d'italique sur l'input mobile */
+    font-family: 'Cutive Mono', monospace;
     color: var(--text-3);
   }
+  header .search-input-inner::placeholder { font-size: 13px; }
 }
 .section-header-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
