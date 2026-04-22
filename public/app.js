@@ -8045,6 +8045,20 @@ function bindEvents() {
   // Dark mode toggle dans le footer mobile
   document.getElementById('mfnDarkBtn')?.addEventListener('click', toggleDarkMode);
 
+  // ── Hamburger Drawer (mobile) ──────────────────────────────────────────
+  const drawer = document.getElementById('hamburgerDrawer');
+  const openDrawer = () => { if (drawer) drawer.hidden = false; };
+  const closeDrawer = () => { if (drawer) drawer.hidden = true; };
+  document.getElementById('hamburgerBtn')?.addEventListener('click', openDrawer);
+  document.getElementById('hdClose')?.addEventListener('click', closeDrawer);
+  document.getElementById('hdOverlay')?.addEventListener('click', closeDrawer);
+  // Délégation : chaque action du drawer redirige vers sa fonction + ferme le drawer
+  document.getElementById('hdAddBtn')?.addEventListener('click', () => { closeDrawer(); openNew(); });
+  document.getElementById('hdNoteBtn')?.addEventListener('click', () => { closeDrawer(); openNoteModal(null); });
+  document.getElementById('hdSettingsBtn')?.addEventListener('click', () => { closeDrawer(); openSettingsModal(); });
+  document.getElementById('hdDarkBtn')?.addEventListener('click', () => { closeDrawer(); toggleDarkMode(); });
+  document.getElementById('hdAboutBtn')?.addEventListener('click', () => { closeDrawer(); /* A propos : à implémenter */ alert('Charchives · Archive d\'objets brocante'); });
+
   // ── Note Modal — Intercalaires narratifs ──
   document.getElementById('noteBtn').addEventListener('click', () => openNoteModal(null));
   document.getElementById('noteModalClose').addEventListener('click', closeNoteModal);
