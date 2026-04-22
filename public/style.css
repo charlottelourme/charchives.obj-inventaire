@@ -8697,6 +8697,68 @@ body.dark-mode .section-header {
 #statusFilterBar { display: none !important; }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   HAMBURGER DRAWER MOBILE — ouvre les actions secondaires
+   (Ajouter, Note, Paramètres, Dark mode, À propos)
+   ══════════════════════════════════════════════════════════════════════════ */
+.hamburger-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  justify-content: flex-end;
+}
+.hamburger-drawer[hidden] { display: none; }
+.hd-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.45);
+  animation: hdFadeIn 0.22s ease both;
+}
+.hd-panel {
+  position: relative;
+  width: 78%;
+  max-width: 320px;
+  background: #ffffff;
+  padding: calc(env(safe-area-inset-top) + 20px) 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  animation: hdSlideIn 0.28s ease both;
+  border-left: 1px solid var(--border-light);
+}
+body.dark-mode .hd-panel {
+  background: #0d0d0c;
+  border-left-color: var(--border);
+}
+.hd-close {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 12px);
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--text-2);
+}
+.hd-item {
+  background: none;
+  border: none;
+  padding: 14px 0;
+  text-align: left;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-light);
+}
+.hd-item:last-child { border-bottom: none; }
+.hd-item:hover { background: var(--surface); }
+body.dark-mode .hd-item { border-bottom-color: var(--border); }
+@keyframes hdFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hdSlideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+/* ══════════════════════════════════════════════════════════════════════════
    FOOTER NAVIGATION MOBILE — bandeau fixé en bas avec fil d'Ariane + retour
    Visible uniquement sous 520px ; desktop : caché.
    ══════════════════════════════════════════════════════════════════════════ */
