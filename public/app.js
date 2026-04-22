@@ -873,7 +873,7 @@ function buildIndexTrigger() {
     : '';
 
   bar.innerHTML = `
-    <span class="sfb-label">Objets</span>
+    <span class="sfb-label sfb-label-clickable" id="sfbObjetsLabel" role="button" tabindex="0" style="cursor:pointer;">Objets</span>
     <button class="idx-trigger-btn" id="idxTriggerBtn">
       <em class="idx-trigger-hint">Typologies</em>
     </button>
@@ -885,6 +885,14 @@ function buildIndexTrigger() {
   `;
 
   document.getElementById('idxTriggerBtn')?.addEventListener('click', openIndexOverlay);
+  // ── Clic sur le mot "Objets" = ouvre l'index complet des catégories ──
+  const objetsLabel = document.getElementById('sfbObjetsLabel');
+  if (objetsLabel) {
+    objetsLabel.addEventListener('click', openIndexOverlay);
+    objetsLabel.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openIndexOverlay(); }
+    });
+  }
   // Effacer le filtre typo actif
   document.getElementById('idxClearTypoBtn')?.addEventListener('click', () => {
     state.typoFilter = '';
