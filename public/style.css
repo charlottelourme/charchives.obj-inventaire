@@ -8494,6 +8494,69 @@ body.dark-mode .section-header {
   .section-header-desc { font-size: 11px !important; }
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   FOOTER NAVIGATION MOBILE — bandeau fixé en bas avec fil d'Ariane + retour
+   Visible uniquement sous 520px ; desktop : caché.
+   ══════════════════════════════════════════════════════════════════════════ */
+.mobile-footer-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background: #ffffff;
+  border-top: 1px solid var(--border-light);
+  padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+  align-items: center;
+  gap: 12px;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+}
+body.dark-mode .mobile-footer-nav {
+  background: var(--bg);
+  border-top-color: var(--border);
+  color: var(--text-3);
+}
+.mfn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--text-2);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.mfn-back:hover { color: var(--text); }
+.mfn-breadcrumb {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.mfn-breadcrumb::-webkit-scrollbar { display: none; }
+.mfn-breadcrumb .mfn-sep { opacity: 0.5; margin: 0 6px; }
+.mfn-breadcrumb .mfn-item { color: var(--text-2); }
+.mfn-breadcrumb .mfn-item:last-child { color: var(--text); font-weight: 500; }
+
+@media (max-width: 520px) {
+  .mobile-footer-nav { display: flex; }
+  /* Ajoute un padding-bottom sur le body pour que le footer ne cache pas le contenu */
+  body { padding-bottom: calc(48px + env(safe-area-inset-bottom)) !important; }
+}
+
 /* ── STRATE 3 : ToolBar universelle ────────────────────────────────────
    Se colle directement sous le Header global (SectionHeader supprimé).
    Padding haut légèrement plus généreux pour aérer. */
