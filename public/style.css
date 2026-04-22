@@ -6161,34 +6161,11 @@ body.dark-mode {
   --shadow-lg: none;
 }
 
-/* ══ DESKTOP : Cartes avec rectangle gris plein par défaut, couleur au hover ══
-   Same logique en light et dark mode — seule la teinte de gris change.
-   Forme nette (border-radius:0), bords droits, pas de blur. */
-.card::before {
-  /* Surcharge du rectangle/halo d'origine — on impose un rectangle net */
-  filter: none !important;
-  border-radius: 0 !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  opacity: 1 !important;
-  transition: background 0.3s ease;
-}
-/* Light mode : gris neutre (zinc-100) par défaut */
-body:not(.dark-mode) .card::before {
-  background: #F4F4F5 !important;
-}
-body:not(.dark-mode) .card:hover::before {
-  background: var(--verbe-accent, #E4E4E7) !important;
-}
-/* Dark mode : zinc-800 neutre par défaut */
-body.dark-mode .card::before {
-  background: #27272A !important;
-}
-body.dark-mode .card:hover::before {
-  background: var(--verbe-accent, #3F3F46) !important;
-}
+/* ── RESTAURATION : halos Soft Block originaux (colorés, blurrés, éditoriaux) ──
+   Les cartes retrouvent leur identité : halo coloré doux derrière l'image,
+   typique de l'esthétique Charchives. Pas de rectangle plein — c'est un HALO. */
+/* (Règles intentionnellement retirées : on laisse .card::before garder son
+    styling d'origine défini plus bas dans la CSS, sans override ici.) */
 body.dark-mode .portrait-halo {
   background: radial-gradient(ellipse at center,
     rgba(150,145,140,0.55) 0%,
