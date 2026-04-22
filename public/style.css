@@ -8824,14 +8824,15 @@ body.dark-mode .mobile-footer-nav {
   body { padding-bottom: calc(48px + env(safe-area-inset-bottom)) !important; }
 }
 
-/* ── STRATE 3 : ToolBar universelle ────────────────────────────────────
-   Se colle directement sous le Header global (SectionHeader supprimé).
-   Padding haut légèrement plus généreux pour aérer. */
+/* ── STRATE 3 : ToolBar universelle (Ligne 3 du header visuel) ─────────
+   Contient : compteur + filtres "Intention / Statut / Trier" (Mono uppercase).
+   Bordure basse PLEINE LARGEUR (100vw) pour séparer du contenu. */
 .toolbar-strate {
-  width: 100%;
-  padding: 20px 32px 14px;
-  background: var(--bg);
-  border-bottom: 1px solid #e4e4e7;
+  width: 100vw;
+  max-width: 100vw;
+  padding: 14px 32px;
+  background: transparent;
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -8840,6 +8841,13 @@ body.dark-mode .mobile-footer-nav {
   overflow-x: auto;
   scrollbar-width: none;
   box-sizing: border-box;
+}
+/* Labels + selects de filtres en Mono uppercase strict */
+.toolbar-strate select.status-filter {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
 }
 .toolbar-strate::-webkit-scrollbar { display: none; }
 body.dark-mode .toolbar-strate { border-bottom-color: var(--border); }
