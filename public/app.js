@@ -1595,12 +1595,10 @@ function applyVerbePageTheme() {
       const darkColor  = verbe.textColor || _verbeActiveColor(verbe);
 
       // ── DOUBLE DÉGRADÉ LINÉAIRE (contreforme — bords colorés) ──
-      //    Syntaxe CSS 100% valide : rgba() strict, stops 15%/85%, opacité 1.0
-      //    pour que la couleur soit clairement visible sur les bords.
       if (radialLayer) {
-        const edgeColor = _toRgbaStr(lightColor, 1.0);  // couleur pleine, 100% opaque
+        const edgeColor = _toRgbaStr(lightColor, 1.0);   // pleine opacité
         radialLayer.style.background =
-          `linear-gradient(to right, ${edgeColor} 0%, transparent 15%, transparent 85%, ${edgeColor} 100%)`;
+          `linear-gradient(to right, ${edgeColor} 0%, ${edgeColor} 8%, transparent 25%, transparent 75%, ${edgeColor} 92%, ${edgeColor} 100%)`;
       }
 
       // Variables typographiques (toujours utiles pour les textes teintés)
