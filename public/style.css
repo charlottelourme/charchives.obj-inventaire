@@ -157,17 +157,7 @@ main,
 }
 /* ── Mode verbe actif : les halos colorés des cartes restent visibles ──
    (On ne tue PLUS les ::before — les halos Soft Block restent l'identité visuelle). */
-/* Mix-blend-multiply sur les images d'objets en mode verbe (light uniquement)
-   → les fonds blancs des JPEG fusionnent avec la vignette derrière */
-body.verbe-active:not(.dark-mode) .card .card-thumb,
-body.verbe-active:not(.dark-mode) .card-thumb-area img {
-  mix-blend-mode: multiply;
-}
-/* Dark mode : on garde les images en normal (multiply les ferait noir) */
-body.verbe-active.dark-mode .card .card-thumb,
-body.verbe-active.dark-mode .card-thumb-area img {
-  mix-blend-mode: normal;
-}
+/* Plus de mix-blend-mode — les images gardent leur rendu naturel */
 /* Le contenu (grille + cartes) passe AU-DESSUS des 2 calques de fond
    (radial z:-1 + grain z:0) — z:10 pour marge de sécurité */
 body.verbe-active main,
