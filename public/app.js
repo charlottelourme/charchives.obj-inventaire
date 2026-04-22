@@ -7963,22 +7963,46 @@ function bindEvents() {
   document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
   document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
 
-  // ── Mobile Footer : bouton Retour → remonte d'un cran dans le breadcrumb ──
+  // ── Mobile Footer : bouton Retour ──────────────────────────────────────
+  // Priorité d'action :
+  //   1. Si une modale/fiche objet est ouverte → la fermer (retour à la grille)
+  //   2. Sinon, remonter d'un cran dans le breadcrumb et exécuter backAction
+  //   3. Sinon, retour à l'Inventaire (état initial)
   document.getElementById('mfnBackBtn')?.addEventListener('click', () => {
+    // (1) Modale détail objet ouverte ?
+    const detail = document.getElementById('detailModal');
+    if (detail && detail.style.display && detail.style.display !== 'none') {
+      if (typeof closeDetail === 'function') { closeDetail(); return; }
+    }
+    // (2) Modale d'édition ouverte ?
+    const edit = document.getElementById('editModal');
+    if (edit && edit.style.display && edit.style.display !== 'none') {
+      if (typeof closeEdit === 'function') { closeEdit(); return; }
+    }
+    // (3) Overlay Typologies ouvert ?
+    const idx = document.getElementById('indexOverlay');
+    if (idx && idx.style.display && idx.style.display !== 'none') {
+      if (typeof closeIndexOverlay === 'function') { closeIndexOverlay(); return; }
+      idx.style.display = 'none'; return;
+    }
+    // (4) Breadcrumb : pop d'un cran
     const crumbs = state.breadcrumb || [];
-    if (crumbs.length < 2) {
-      // Aucun historique → retour à l'Inventaire par défaut
-      state.categoryFilter = '';
-      setView('grid', true);
+    if (crumbs.length >= 2) {
+      crumbs.pop();
+      const prev = crumbs[crumbs.length - 1];
+      if (prev && typeof prev.backAction === 'function') prev.backAction();
+      renderBreadcrumbBar();
+      renderMobileFooterNav();
       return;
     }
-    // Retirer l'élément courant et exécuter l'action du précédent
-    crumbs.pop();
-    const prev = crumbs[crumbs.length - 1];
-    if (prev && typeof prev.backAction === 'function') prev.backAction();
-    renderBreadcrumbBar();
-    renderMobileFooterNav();
+    // (5) Fallback : retour Inventaire neutre
+    state.categoryFilter = '';
+    state.attrFilters.subcat = [];
+    if (typeof setView === 'function') setView('grid', true);
+    else window.location.hash = '';
   });
+  // Dark mode toggle dans le footer mobile
+  document.getElementById('mfnDarkBtn')?.addEventListener('click', toggleDarkMode);
 
   // ── Note Modal — Intercalaires narratifs ──
   document.getElementById('noteBtn').addEventListener('click', () => openNoteModal(null));
