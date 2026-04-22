@@ -1577,21 +1577,15 @@ function applyVerbePageTheme() {
       const lightColor = verbe.bgColor   || '#E8E4DE';
       const darkColor  = verbe.textColor || _verbeActiveColor(verbe);
 
-      // ── Injection DIRECTE du radial gradient en HEX sur le calque dédié.
-      //    Centre : couleur pleine (lightColor). Angles : charbon profond en clair,
-      //    zinc-950 en sombre. Effet vignette dramatique et immersif.
+      // ── Injection DIRECTE du radial gradient — syntaxe CSS 100% valide.
+      //    Centre : couleur de l'intention en rgba strict (opacité 0.8 pour douceur).
+      //    Angles : #d6d3d1 (stone-300) en clair, #09090b (zinc-950) en sombre.
       if (radialLayer) {
         const isDark = document.body.classList.contains('dark-mode');
-        // Teinte périphérique : charbon chaud (#1C1917 = stone-900) en clair,
-        // zinc-950 (#09090B) en sombre. Le dégradé passe par une zone intermédiaire
-        // avant de plonger dans l'obscurité pour donner de la profondeur.
-        const edgeColor = isDark ? '#09090B' : '#1C1917';
-        const midColor  = _toRgbaStr(lightColor, 0.35);  // transition douce
+        const centerColor = _toRgbaStr(lightColor, 0.8);   // rgba strict — jamais de HEX8/Tailwind
+        const edgeColor   = isDark ? '#09090b' : '#d6d3d1';
         radialLayer.style.background =
-          `radial-gradient(circle at 50% 40%,
-             ${lightColor} 0%,
-             ${midColor} 35%,
-             ${edgeColor} 100%)`;
+          `radial-gradient(circle at 50% 40%, ${centerColor} 0%, ${edgeColor} 100%)`;
       }
 
       // Variables typographiques (toujours utiles pour les textes teintés)
