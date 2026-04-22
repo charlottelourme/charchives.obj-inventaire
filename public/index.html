@@ -26,37 +26,12 @@
 </div>
 
 <header>
-  <!-- ── LIGNE 1 : Logo (sérif) à gauche + Utilitaires (mono uppercase) à droite ── -->
-  <div class="header-row-1">
-    <h1 id="siteTitle">ARCHIVE</h1>
-    <div class="header-utils">
-      <button class="hu-btn" id="searchToggleBtn" aria-label="Rechercher" title="Rechercher">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="hu-icon"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span class="hu-label">Rechercher</span>
-      </button>
-      <button class="hu-btn hu-about" id="aboutBtn">A propos</button>
-      <button class="hu-btn hu-icon-btn" id="settingsBtn" title="Paramètres" aria-label="Paramètres">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-      <button class="hu-btn hu-icon-btn" id="darkModeBtn" title="Mode sombre" aria-label="Mode sombre">
-        <!-- Cercle scindé (icône Contrast) — moitié gauche pleine, moitié droite vide -->
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor"/></svg>
-      </button>
-      <button class="hu-btn hu-ghost" id="noteBtn" title="Ajouter une note intercalaire">Note</button>
-      <button class="hu-btn hu-primary" id="newBtn">+ Ajouter un objet</button>
-      <!-- Bouton menu hamburger mobile (ouvre un drawer avec les mêmes utilitaires) -->
-      <button class="hu-btn hu-hamburger" id="hamburgerBtn" aria-label="Menu" title="Menu">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- ── Barre de recherche (MASQUÉE par défaut, toggle au clic sur Rechercher) ── -->
-  <div class="search-wrap" id="searchWrap" data-collapsed="1">
+  <!-- ── LIGNE 1 : Logo + Navigation + Search + Actions (layout simple, tout sur une ligne) ── -->
+  <h1 id="siteTitle">ARCHIVE</h1>
+  <div class="search-wrap" id="searchWrap">
     <div class="search-bar" id="searchBar">
       <div class="search-active-tags" id="searchActiveTags"></div>
       <input class="search-input-inner" type="text" id="searchInput" placeholder="Rechercher" autocomplete="off" spellcheck="false">
-      <button class="search-close-btn" id="searchCloseBtn" aria-label="Fermer la recherche"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
     </div>
     <div class="search-dropdown" id="searchDropdown">
       <div class="search-dd-results" id="searchKwList"></div>
@@ -65,13 +40,17 @@
       </div>
     </div>
   </div>
-
-  <!-- ── LIGNE 2 : Navigation principale (sérif italique) ── -->
   <div class="view-tabs">
     <button class="view-tab font-concept active" id="viewInventaire">Inventaire</button>
     <button class="view-tab font-concept" id="viewDerive">Dérive</button>
     <button class="view-tab font-concept" id="viewAtelier">Triptyque</button>
     <button class="view-tab font-concept" id="viewDiorama">Diorama</button>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-icon-only" id="settingsBtn" title="Paramètres">⚙</button>
+    <button class="btn btn-ghost btn-icon-only" id="darkModeBtn" title="Mode sombre">◑</button>
+    <button class="btn btn-ghost btn-note" id="noteBtn" title="Ajouter une note intercalaire">Note</button>
+    <button class="btn btn-primary" id="newBtn">+ Ajouter un objet</button>
   </div>
 </header>
 
