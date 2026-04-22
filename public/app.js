@@ -874,7 +874,7 @@ function buildIndexTrigger() {
     : '';
 
   bar.innerHTML = `
-    <span class="sfb-label sfb-label-clickable" id="sfbObjetsLabel" role="button" tabindex="0" style="cursor:pointer;">Objets</span>
+    <span class="sfb-label sfb-label-clickable" id="sfbObjetsLabel" data-accordion-trigger="1" role="button" tabindex="0" style="cursor:pointer;">Objets</span>
     <button class="idx-trigger-btn" id="idxTriggerBtn">
       <em class="idx-trigger-hint">Typologies</em>
     </button>
@@ -886,12 +886,29 @@ function buildIndexTrigger() {
   `;
 
   document.getElementById('idxTriggerBtn')?.addEventListener('click', openIndexOverlay);
-  // ── Clic sur le mot "Objets" = ouvre l'index complet des catégories ──
+
+  // ── Accordion "Objets" (mobile) ─────────────────────────────────────────
+  //   État initial : collapsed sur mobile (on ne montre que le label)
+  //   Au 1er clic : expand (révèle le bouton Typologies + input de recherche)
+  //   Au 2e clic : si déjà ouvert → ouvre l'overlay complet des typologies
   const objetsLabel = document.getElementById('sfbObjetsLabel');
   if (objetsLabel) {
-    objetsLabel.addEventListener('click', openIndexOverlay);
+    const isMobile = window.matchMedia && window.matchMedia('(max-width: 520px)').matches;
+    if (isMobile && !bar.dataset.userOpened) bar.classList.add('collapsed');
+    objetsLabel.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isMob = window.matchMedia && window.matchMedia('(max-width: 520px)').matches;
+      if (!isMob) { openIndexOverlay(); return; }
+      // Mobile : si fermé → ouvrir l'accordion ; si ouvert → ouvrir l'overlay
+      if (bar.classList.contains('collapsed')) {
+        bar.classList.remove('collapsed');
+        bar.dataset.userOpened = '1';
+      } else {
+        openIndexOverlay();
+      }
+    });
     objetsLabel.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openIndexOverlay(); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); objetsLabel.click(); }
     });
   }
   // Effacer le filtre typo actif
