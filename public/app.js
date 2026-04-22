@@ -6920,6 +6920,46 @@ function smColorListHTML(arr, draft) {
     </div>`;
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// PALETTE "MATIÈRES BRUTES" — 7 duotones éditoriaux
+// Nuance CLAIRE (bgColor) : couleur de fond / bordures de pages Intentions
+// Nuance SOMBRE (textColor) : couleur du texte, garantit la lisibilité
+// ══════════════════════════════════════════════════════════════════════════
+const PALETTE_MATIERES_BRUTES = [
+  { name: 'Ocre',      light: '#F5E6D3', dark: '#B05B3F', note: 'Terre cuite / Argile' },
+  { name: 'Sauge',     light: '#E3E8E3', dark: '#556B58', note: 'Verre dépoli / Botanique' },
+  { name: 'Indigo',    light: '#E1E6EB', dark: '#2A3F54', note: 'Encre / Cyanotype' },
+  { name: 'Plâtre',    light: '#F3E8E4', dark: '#9A6A61', note: 'Céramique / Peau' },
+  { name: 'Safran',    light: '#F7EFE1', dark: '#C49A52', note: 'Papier vieilli / Or' },
+  { name: 'Ardoise',   light: '#E5E5E7', dark: '#4A4D59', note: 'Métal / Pierre' },
+  { name: 'Améthyste', light: '#E8E2E6', dark: '#6B4C5A', note: 'Cuir / Velours' }
+];
+
+// Applique la palette Matières Brutes sur les 7 premiers verbes du draft
+function _applyMatieresBrutesPalette() {
+  if (!state.settingsDraft) return;
+  const verbes = state.settingsDraft.verbes || [];
+  if (verbes.length === 0) {
+    alert('Aucune intention définie. Créez d\'abord des intentions.');
+    return;
+  }
+  const n = Math.min(verbes.length, PALETTE_MATIERES_BRUTES.length);
+  for (let i = 0; i < n; i++) {
+    verbes[i].bgColor   = PALETTE_MATIERES_BRUTES[i].light;
+    verbes[i].textColor = PALETTE_MATIERES_BRUTES[i].dark;
+    verbes[i].color     = PALETTE_MATIERES_BRUTES[i].light; // rétrocompat
+  }
+  // Re-render le panneau Intentions
+  const accBody = document.querySelector('[data-section="verbes"] .sm-acc-body, .sm-verbe-block')?.parentElement?.parentElement;
+  const listEl = document.getElementById('sm-verbes-list');
+  if (listEl && listEl.parentElement) {
+    listEl.parentElement.innerHTML = smVerbesHTML(state.settingsDraft);
+    // Ré-attacher les listeners du panneau
+    if (typeof bindSmVerbes === 'function') bindSmVerbes();
+  }
+  alert(`Palette "Matières Brutes" appliquée sur ${n} intention${n > 1 ? 's' : ''}. Cliquez sur "Enregistrer" pour persister.`);
+}
+
 function smVerbesHTML(draft) {
   const verbes = draft.verbes || [];
   const blocks = verbes.map((v, i) => {
