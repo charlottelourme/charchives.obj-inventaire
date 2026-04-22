@@ -1574,16 +1574,16 @@ function applyVerbePageTheme() {
       // Duotone : bgColor = couleur CLAIRE (fond), textColor = couleur FONCÉE (texte)
       const lightColor = verbe.bgColor   || '#E8E4DE';   // couleur "FOND" du duotone
       const darkColor  = verbe.textColor || _verbeActiveColor(verbe); // couleur "TEXTE"
-      // Variantes dégradé : la couleur CLAIRE est utilisée pleine puissance (100%)
-      // au bas de page, s'estompe vers blanc au sommet (référence Appeal To Heaven, version plus franche)
-      const bgSolid  = lightColor;                     // couleur pleine
-      const bgMid    = _toRgbaStr(lightColor, 0.55);   // milieu : demi-teinte
+      // Variantes pour le dégradé RADIAL (vignette) — opacités plus délicates
+      // pour préserver la douceur éditoriale (réf. Journal d'Aligre)
+      const bgStrong = _toRgbaStr(lightColor, 0.68);   // centre de la vignette
+      const bgMid    = _toRgbaStr(lightColor, 0.30);   // zone intermédiaire
       root.style.setProperty('--page-verbe-bg',      lightColor + '2E');
       root.style.setProperty('--page-verbe-text',    darkColor);
       root.style.setProperty('--page-verbe-main',    lightColor);
-      root.style.setProperty('--page-verbe-strong', bgSolid);
+      root.style.setProperty('--page-verbe-strong', bgStrong);
       root.style.setProperty('--page-verbe-mid',    bgMid);
-      root.style.setProperty('--page-verbe-soft',    _toRgbaStr(lightColor, 0.18));
+      root.style.setProperty('--page-verbe-soft',    _toRgbaStr(lightColor, 0.12));
       root.style.setProperty('--page-verbe-soft-dk', _toRgbaStr(lightColor, 0.45));
       root.style.setProperty('--page-verbe-typo',    darkColor);
       document.body.classList.add('verbe-active');
