@@ -7960,8 +7960,30 @@ function setupSearch() {
   const bar=document.getElementById('searchBar');
   const input=document.getElementById('searchInput');
   const dropdown=document.getElementById('searchDropdown');
+  const toggleBtn=document.getElementById('searchToggleBtn');
+  const closeBtn=document.getElementById('searchCloseBtn');
   const open=()=>{ renderSearchDropdown(); dropdown.classList.add('open'); };
   const close=()=>dropdown.classList.remove('open');
+  // ── Toggle barre entière : révélée/masquée au clic sur "Rechercher" ──
+  const revealSearch = () => {
+    wrap.setAttribute('data-collapsed', '0');
+    setTimeout(() => input.focus(), 100);
+  };
+  const hideSearch = () => {
+    wrap.setAttribute('data-collapsed', '1');
+    close();
+    input.value = '';
+  };
+  toggleBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isCollapsed = wrap.getAttribute('data-collapsed') === '1';
+    if (isCollapsed) revealSearch(); else hideSearch();
+  });
+  closeBtn?.addEventListener('click', (e) => { e.stopPropagation(); hideSearch(); });
+  // Échap ferme la barre
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && wrap.getAttribute('data-collapsed') === '0') hideSearch();
+  });
   bar.addEventListener('click',()=>input.focus());
   input.addEventListener('focus',open);
   input.addEventListener('input',()=>{ renderSearchDropdown(); render(); });
