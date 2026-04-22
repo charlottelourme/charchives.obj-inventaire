@@ -7007,6 +7007,14 @@ function smVerbesHTML(draft) {
       <span class="sm-color-label">Texte</span>
       <input type="color" id="sm-new-verbe-fg" value="#ffffff" class="sm-color-picker">
       <button class="btn btn-ghost btn-sm" id="sm-add-verbe-btn">+ Ajouter</button>
+    </div>
+    <!-- Bouton palette Matières Brutes : applique 7 duotones éditoriaux -->
+    <div class="sm-palette-row" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-light);display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span style="font-family:'Cutive Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">Palette prédéfinie</span>
+      <button class="btn btn-ghost btn-sm" id="sm-apply-matieres-brutes" title="Applique 7 duotones éditoriaux : Ocre, Sauge, Indigo, Plâtre, Safran, Ardoise, Améthyste">Appliquer « Matières Brutes »</button>
+      <div style="display:flex;gap:4px;margin-left:8px">
+        ${PALETTE_MATIERES_BRUTES.map(p => `<span title="${p.name} — ${p.note}" style="display:inline-block;width:18px;height:18px;background:${p.light};border:1px solid ${p.dark};position:relative"><span style="position:absolute;right:0;bottom:0;width:8px;height:8px;background:${p.dark}"></span></span>`).join('')}
+      </div>
     </div>`;
 }
 
