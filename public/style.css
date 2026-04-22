@@ -124,9 +124,23 @@ body.verbe-active:not(.dark-mode)::before {
 /* html transparent pour laisser le body piloter le fond en mode verbe */
 html:has(body.verbe-active:not(.dark-mode)) { background: transparent; }
 /* Neutralise les halos colorés sur les cartes en mode verbe : la couleur vit
-   désormais sur le fond de page, pas derrière chaque carte (pas de dédoublement) */
+   désormais sur le fond de page (vignette radiale), pas derrière chaque carte */
 body.verbe-active .card::before {
   opacity: 0 !important;
+}
+/* Cartes 100% transparentes en mode verbe — les objets flottent sur la vignette */
+body.verbe-active .card,
+body.verbe-active .card-body,
+body.verbe-active .card-thumb-area {
+  background: transparent !important;
+  border: none !important;
+}
+/* Le contenu (grille + cartes) doit passer AU-DESSUS du grain (z-index:1) */
+body.verbe-active:not(.dark-mode) main,
+body.verbe-active:not(.dark-mode) #mainArea,
+body.verbe-active:not(.dark-mode) header {
+  position: relative;
+  z-index: 2;
 }
 /* Html root : pas de fond concurrent, laisse le body piloter */
 html:has(body.verbe-active) { background: transparent; }
