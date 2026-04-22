@@ -8615,35 +8615,38 @@ body.dark-mode .mobile-footer-nav {
   border-top-color: var(--border);
   color: var(--text-3);
 }
-.mfn-back {
+.mfn-back,
+.mfn-darkmode {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
   background: none;
   border: none;
-  padding: 4px 0;
-  font-family: 'Cutive Mono', monospace;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .12em;
+  padding: 4px;
   color: var(--text-2);
   cursor: pointer;
   flex-shrink: 0;
+  width: 32px;
+  height: 32px;
 }
-.mfn-back:hover { color: var(--text); }
+.mfn-back:hover,
+.mfn-darkmode:hover { color: var(--text); }
 .mfn-breadcrumb {
   flex: 1;
   min-width: 0;
   overflow-x: auto;
   white-space: nowrap;
   scrollbar-width: none;
-  font-size: 10px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  /* Typographie éditoriale — sérif italique (cohérence avec titres d'intentions) */
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--text-3);
 }
 .mfn-breadcrumb::-webkit-scrollbar { display: none; }
-.mfn-breadcrumb .mfn-sep { opacity: 0.5; margin: 0 6px; }
+.mfn-breadcrumb .mfn-sep { opacity: 0.5; margin: 0 6px; font-style: normal; }
 .mfn-breadcrumb .mfn-item { color: var(--text-2); }
 .mfn-breadcrumb .mfn-item:last-child { color: var(--text); font-weight: 500; }
 
