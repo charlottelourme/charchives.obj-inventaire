@@ -479,25 +479,85 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;                 /* extrême — toujours au-dessus de tout */
+  z-index: 1000;
   background: var(--bg);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border-bottom: 1px solid var(--border-light);
-  /* Plein viewport, bord à bord */
   width: 100vw;
   max-width: 100vw;
   margin: 0;
-  /* Safe area iOS : mange l'encoche / barre d'état */
-  padding: env(safe-area-inset-top) 48px 0;
-  min-height: calc(52px + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) 0 0;
   height: auto;
+  /* Flexbox vertical — 2 lignes empilées (header-row-1 + view-tabs) */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+/* ── LIGNE 1 : Logo (gauche) + Utilitaires (droite) ─────────────────── */
+.header-row-1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  padding: 0 32px;
+  height: 52px;
+  border-bottom: 1px solid var(--border-light);
   box-sizing: border-box;
 }
+.header-utils {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+/* Boutons utilitaires : Mono uppercase, petits, alignés à droite */
+.hu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  transition: color 0.15s ease;
+}
+.hu-btn:hover { color: var(--text); }
+.hu-btn .hu-icon { display: inline-block; vertical-align: middle; }
+.hu-btn.hu-icon-btn {
+  padding: 6px;
+  font-size: 14px;
+  letter-spacing: 0;
+  color: var(--text-2);
+}
+.hu-btn.hu-ghost {
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+}
+.hu-btn.hu-ghost:hover { background: var(--surface); }
+.hu-btn.hu-primary {
+  padding: 7px 14px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 500;
+}
+.hu-btn.hu-primary:hover { opacity: 0.85; }
+.hu-btn.hu-hamburger { display: none; }   /* visible seulement sur mobile */
+.hu-about { /* même style que .hu-btn de base */ }
+
+/* Search wrap : MASQUÉE par défaut, révélée au clic sur "Rechercher" */
+.search-wrap[data-collapsed="1"] { display: none !important; }
+.search-close-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 2px; color: var(--text-3);
+  display: inline-flex; align-items: center;
+}
+.search-close-btn:hover { color: var(--text); }
 /* Compensation de la hauteur du header fixed + safe area */
 body { padding-top: calc(52px + env(safe-area-inset-top)); }
 @media (max-width: 520px) {
