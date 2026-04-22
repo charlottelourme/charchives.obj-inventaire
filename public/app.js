@@ -687,7 +687,23 @@ async function init(attempt = 0) {
 function buildCategoryFilterBar() {
   const bar = document.getElementById('categoryFilterBar');
   const verbes = getVerbes();
-  bar.innerHTML = '<span class="sfb-label">Intention</span>';
+  // Label dynamique : "Intention" ou "Intention : Porter" si un verbe est sélectionné
+  const activeLbl = state.categoryFilter
+    ? `Intention : <em style="font-style:italic;color:var(--text);text-transform:none;letter-spacing:0;">${esc(state.categoryFilter)}</em>`
+    : 'Intention';
+  bar.innerHTML = `<span class="sfb-label" data-accordion-trigger="1">${activeLbl}</span>`;
+  // Par défaut, sur mobile, la barre est "collapsed" si aucune intention active,
+  // et "expanded" si une intention est déjà sélectionnée (pour que l'utilisateur
+  // puisse voir quelle est son choix et le changer). Le toggle au clic est géré plus bas.
+  if (window.matchMedia && window.matchMedia('(max-width: 520px)').matches) {
+    if (!state.categoryFilter && !bar.dataset.userOpened) {
+      bar.classList.add('collapsed');
+    } else {
+      bar.classList.remove('collapsed');
+    }
+  } else {
+    bar.classList.remove('collapsed');
+  }
   const all = document.createElement('button');
   all.className = 'sfb-pill' + (state.categoryFilter === '' ? ' active' : '');
   all.dataset.cat = '';
