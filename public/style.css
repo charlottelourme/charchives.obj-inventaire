@@ -129,6 +129,32 @@ body.dark-mode #bgLayers .bg-grain {
 body { background: transparent !important; }
 html { background: #ffffff; }
 html:has(body.dark-mode) { background: rgb(9, 9, 11); }
+
+/* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
+      Tous les conteneurs intermédiaires (main, grid, toolbars, filtres)
+      passent en transparent pour laisser voir #bgLayers derrière.
+      Seul le <header> reste opaque — c'est la barre de navigation. */
+main,
+#mainArea,
+#gridWrapper,
+.toolbar,
+.toolbar-strate,
+.derive-header,
+.trios-tabs-nav,
+.diorama-decor-bar,
+.status-filter-bar,
+.typo-filter-bar,
+.attr-filter-bar,
+#subcategoryFilterBar,
+#typologyFilterBar,
+#statusFilterBar,
+#attrFilterBar,
+#categoryFilterBar,
+.grid,
+#gridView {
+  background: transparent !important;
+  background-color: transparent !important;
+}
 /* ══ NETTOYAGE CARTES EN MODE VERBE ══
    Maximum de spécificité pour battre les règles mobiles (.grid .card::before
    dans @media). Les halos individuels sont TUÉS — la vignette globale suffit. */
