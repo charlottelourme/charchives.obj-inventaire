@@ -9433,8 +9433,8 @@ body.dark-mode .section-header {
   /* ── 2. HEADER : le padding/bg sont gérés dans la règle mobile plus haut ─
         Ici on se contente de compenser la hauteur du header 3-lignes sur main */
   html, body { padding-top: 0 !important; }
-  /* 3 lignes : title(~36) + tabs(~34) + search(~42) = ~112px + safe-area */
-  body { padding-top: calc(116px + env(safe-area-inset-top)) !important; }
+  /* 2 lignes : title(44) + nav(40) = 84 + safe-area */
+  body { padding-top: calc(84px + env(safe-area-inset-top)) !important; }
   header h1 { font-size: 12px !important; letter-spacing: .1em !important; }
   .view-tabs { gap: 0 !important; }
   .view-tab { font-size: 13px !important; padding: 0 8px !important; }
