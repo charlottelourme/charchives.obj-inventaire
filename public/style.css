@@ -8494,6 +8494,10 @@ body.dark-mode .section-header {
   .section-header-desc { font-size: 11px !important; }
 }
 
+/* ── Barre pills Statut : DÉSACTIVÉE — remplacée par le dropdown #statusSelect ──
+      On conserve l'élément dans le DOM (logique JS éventuelle) mais masqué en CSS. */
+#statusFilterBar { display: none !important; }
+
 /* ══════════════════════════════════════════════════════════════════════════
    FOOTER NAVIGATION MOBILE — bandeau fixé en bas avec fil d'Ariane + retour
    Visible uniquement sous 520px ; desktop : caché.
