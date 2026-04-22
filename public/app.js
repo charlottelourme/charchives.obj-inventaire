@@ -766,6 +766,16 @@ function buildCategoryFilterBar() {
       render();
     });
   });
+  // ── Accordion toggle (mobile) : clic sur le label "Intention" ouvre/ferme les pills
+  const labelEl = bar.querySelector('.sfb-label[data-accordion-trigger]');
+  if (labelEl) {
+    labelEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!window.matchMedia || !window.matchMedia('(max-width: 520px)').matches) return;
+      bar.classList.toggle('collapsed');
+      bar.dataset.userOpened = bar.classList.contains('collapsed') ? '' : '1';
+    });
+  }
   buildIndexTrigger();
   buildAttrFilterBar();
 }
