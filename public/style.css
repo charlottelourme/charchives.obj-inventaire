@@ -81,48 +81,62 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
    saturée de cette couleur (--page-verbe-typo) pour créer une unité.
    ══════════════════════════════════════════════════════════════════════════ */
 /* ══════════════════════════════════════════════════════════════════════════
-   THÉMATISATION VERBE — Vignette radiale + grain de papier
-   Référence : ambiance "Journal d'Aligre" — atmosphère éditoriale, douce,
-   légèrement texturée (sensation papier).
-   NOTE : n'est JAMAIS appliqué en dark mode (conserve le look éditorial brut).
+   THÉMATISATION VERBE — Vignette radiale douce + grain de papier subtil
+   Référence : ambiance "Journal d'Aligre" — atmosphère éditoriale, feutrée.
    ══════════════════════════════════════════════════════════════════════════ */
-body.verbe-active:not(.dark-mode) {
-  background-color: #ffffff !important;
-  /* Dégradé radial (vignette) : couleur au centre → blanc aux bords.
-     Centré horizontalement, légèrement en haut pour être derrière les objets. */
-  background-image:
-    radial-gradient(
-      ellipse 85% 75% at 50% 38%,
-      var(--page-verbe-strong, rgba(230,225,215,0.85)) 0%,
-      var(--page-verbe-mid, rgba(230,225,215,0.35)) 45%,
-      rgba(255,255,255,0) 78%,
-      #ffffff 100%
-    ) !important;
-  background-repeat: no-repeat !important;
-  background-size: 100% 100vh !important;
-  background-attachment: fixed !important;
-  background-position: center top !important;
-  transition: background-color 0.6s ease-in-out;
-  position: relative;
-}
-/* ── Grain de papier : overlay SVG (noise fractal) ────────────────────────
-      Pseudo-élément sur body, fixed, pointer-events:none, ~4% d'opacité.
-      Monochrome → fonctionne autant sur fond clair que sombre (mais on le
-      limite au light mode verbe-active conformément à la directive). */
-body.verbe-active:not(.dark-mode)::before {
+
+/* ── Calque 1 : DÉGRADÉ RADIAL (derrière tout, z:-1) ──────────────────────
+      Très doux — la couleur n'est qu'à ~15% au centre, fond en dessous. */
+body.verbe-active::after {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: -1;
   pointer-events: none;
-  opacity: 0.045;
+  background: radial-gradient(
+    circle at 50% 40%,
+    var(--page-verbe-soft, rgba(230,225,215,0.15)) 0%,
+    rgba(255,255,255,1) 70%
+  );
+  transition: background 0.6s ease-in-out;
+}
+/* Dark mode : même radial mais se fond vers zinc-950 au lieu du blanc */
+body.dark-mode.verbe-active::after {
+  background: radial-gradient(
+    circle at 50% 40%,
+    var(--page-verbe-soft-dk, rgba(40,40,40,0.25)) 0%,
+    rgb(9, 9, 11) 70%
+  );
+}
+/* Le body lui-même reste transparent pour laisser voir les 2 calques */
+body.verbe-active {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* ── Calque 2 : GRAIN PAPIER (au-dessus du radial, z:0, ~3% d'opacité) ───
+      SVG fractalNoise sans feColorMatrix — vraie texture papier douce.
+      mix-blend-multiply en clair / overlay en sombre pour rester discret. */
+body.verbe-active::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.03;
   mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.85 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
   background-repeat: repeat;
 }
+body.dark-mode.verbe-active::before {
+  mix-blend-mode: overlay;
+  opacity: 0.05;
+}
+
 /* html transparent pour laisser le body piloter le fond en mode verbe */
-html:has(body.verbe-active:not(.dark-mode)) { background: transparent; }
+html:has(body.verbe-active) { background: transparent; }
 /* Neutralise les halos colorés sur les cartes en mode verbe : la couleur vit
    désormais sur le fond de page (vignette radiale), pas derrière chaque carte */
 body.verbe-active .card::before {
