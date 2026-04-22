@@ -135,10 +135,9 @@ body.verbe-active .card-thumb-area {
   background: transparent !important;
   border: none !important;
 }
-/* Le contenu (grille + cartes) doit passer AU-DESSUS du grain (z-index:1) */
+/* Le contenu (grille + cartes) passe AU-DESSUS du grain (z-index:1) */
 body.verbe-active:not(.dark-mode) main,
-body.verbe-active:not(.dark-mode) #mainArea,
-body.verbe-active:not(.dark-mode) header {
+body.verbe-active:not(.dark-mode) #mainArea {
   position: relative;
   z-index: 2;
 }
