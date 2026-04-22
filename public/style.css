@@ -592,15 +592,18 @@ header h1 {
 /* ── View tabs — Contraste Pur : actif = noir #000, inactif = gris ── */
 /* Navigation centrée dans le header via flex-grow */
 .view-tabs {
+  /* ── LIGNE 2 : navigation sérif italique, ferrée à gauche (colonne du logo) ── */
   display: flex;
-  gap: 0;
+  gap: 32px;
   background: none;
   border: none;
-  padding: 0;
-  flex: 1;                    /* prend l'espace disponible */
-  justify-content: center;   /* centres les onglets */
-  align-self: stretch;
+  padding: 10px 32px;           /* aligné strict sur le logo (32px) */
+  width: 100%;
+  justify-content: flex-start;  /* ferré à gauche — plus de centrage */
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--border-light);
 }
+.view-tabs > .view-tab:first-child { padding-left: 0; }
 .view-tab {
   position: relative;              /* contexte de positionnement pour le halo ::before */
   background: transparent !important;
