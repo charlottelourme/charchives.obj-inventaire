@@ -8676,17 +8676,34 @@ body.dark-mode .mobile-footer-nav {
 .toolbar-strate::-webkit-scrollbar { display: none; }
 body.dark-mode .toolbar-strate { border-bottom-color: var(--border); }
 @media (max-width: 520px) {
-  .toolbar-strate { padding: 12px 14px !important; gap: 10px; }
-  /* Select "Trier par" : hauteur alignée sur la barre de recherche (~40px) */
-  .toolbar-strate select.status-filter,
-  .toolbar-strate .status-filter {
-    height: 40px !important;
-    min-height: 40px !important;
-    padding: 0 28px 0 12px !important;
-    font-size: 14px !important;
+  /* Toolbar : ligne unique compacte avec les 2 selects "Trier" + "Statut" ── */
+  .toolbar-strate,
+  .toolbar.toolbar-strate {
+    padding: 10px 14px !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+  }
+  .toolbar-strate .count-label {
+    font-size: 9px !important;
+    letter-spacing: .08em !important;
+    flex-shrink: 0;
+  }
+  /* Selects compacts : 2 dropdowns tiennent côte à côte sur une ligne */
+  .toolbar-strate select.status-filter {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 22px 0 8px !important;
+    font-size: 11px !important;
+    letter-spacing: .02em !important;
     background-color: var(--surface) !important;
     border: 1px solid var(--border-light) !important;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 48%;
   }
+  /* Le gap flex-1 disparaît sur mobile pour ne pas pousser les selects hors écran */
+  .toolbar-strate .toolbar-gap { display: none !important; }
   /* ── Jauge zoom : SUPPRIMÉE sur mobile (pas pertinent au doigt) ────── */
   .toolbar .card-size-slider,
   .toolbar-right,
