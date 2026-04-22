@@ -5528,11 +5528,10 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   /* ══════════════════════════════════════
      HEADER — opaque strict, z-index fort, aucun chevauchement
   ══════════════════════════════════════ */
-  /* ══ HEADER MOBILE — 3 lignes distinctes ═════════════════════════════════
-     Ligne 1 : Logo (gauche) + Actions (droite)
-     Ligne 2 : Navigation onglets (Cutive Mono, discret)
-     Ligne 3 : Barre de recherche pleine largeur
-     Tout est opaque blanc pour éviter toute fuite visuelle au scroll. */
+  /* ══ HEADER MOBILE — Ultra-compact ═══════════════════════════════════════
+     Ligne 1 : Logo (gauche) + Loupe + Hamburger (droite)
+     Ligne 2 : Navigation onglets (sérif italique, justify-between)
+     La recherche s'ouvre en bannière au clic sur la loupe. */
   header {
     position: fixed !important;
     top: 0; left: 0; right: 0;
