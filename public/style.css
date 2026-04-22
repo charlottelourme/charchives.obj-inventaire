@@ -149,11 +149,12 @@ body.verbe-active .card-thumb-area {
   background: transparent !important;
   border: none !important;
 }
-/* Le contenu (grille + cartes) passe AU-DESSUS du grain (z-index:1) */
-body.verbe-active:not(.dark-mode) main,
-body.verbe-active:not(.dark-mode) #mainArea {
+/* Le contenu (grille + cartes) passe AU-DESSUS des 2 calques de fond
+   (radial z:-1 + grain z:0) — z:10 pour marge de sécurité */
+body.verbe-active main,
+body.verbe-active #mainArea {
   position: relative;
-  z-index: 2;
+  z-index: 10;
 }
 /* Html root : pas de fond concurrent, laisse le body piloter */
 html:has(body.verbe-active) { background: transparent; }
