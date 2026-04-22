@@ -7355,6 +7355,18 @@ function bindSmModal() {
     });
     renderSettingsModal();
   });
+  // ── Bouton "Appliquer palette Matières Brutes" ──
+  body.querySelector('#sm-apply-matieres-brutes')?.addEventListener('click', () => {
+    if (!confirm('Appliquer la palette « Matières Brutes » sur les 7 premières intentions ?\n\nLes couleurs actuelles seront écrasées (vous pourrez encore les modifier avant d\'enregistrer).')) return;
+    const verbes = draft.verbes || [];
+    const n = Math.min(verbes.length, PALETTE_MATIERES_BRUTES.length);
+    for (let i = 0; i < n; i++) {
+      verbes[i].bgColor   = PALETTE_MATIERES_BRUTES[i].light;
+      verbes[i].textColor = PALETTE_MATIERES_BRUTES[i].dark;
+      verbes[i].color     = PALETTE_MATIERES_BRUTES[i].light;
+    }
+    renderSettingsModal();
+  });
 
   // ── Typologies ──
   body.querySelectorAll('.sm-typo-input').forEach(inp => {
