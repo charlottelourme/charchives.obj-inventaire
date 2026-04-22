@@ -158,11 +158,11 @@ body.verbe-active #mainArea {
 }
 /* Html root : pas de fond concurrent, laisse le body piloter */
 html:has(body.verbe-active) { background: transparent; }
-/* Dark mode : PAS de dégradé coloré — retour au fond neutre uni */
+/* Dark mode : body transparent — le radial ::after pilote le fond vers zinc-950 */
 body.dark-mode.verbe-active {
-  background: var(--bg) !important;
+  background: transparent !important;
   background-image: none !important;
-  background-color: var(--bg) !important;
+  background-color: transparent !important;
 }
 /* Transition douce sur tous les textes qui adoptent la teinte */
 body.verbe-active,
