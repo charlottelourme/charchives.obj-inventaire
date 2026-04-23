@@ -8755,6 +8755,82 @@ function pushBreadcrumb(label, backAction) {
   renderMobileFooterNav();
 }
 
+// ── Rendu du Bottom Sheet des filtres (mobile) ────────────────────────────
+function _renderFiltersSheet() {
+  const fsBody = document.getElementById('fsBody');
+  if (!fsBody) return;
+  const verbes = getVerbes();
+  const currentCat = state.categoryFilter || '';
+  const currentStatus = state.statusFilter || '';
+  const currentSort = state.sortBy || 'chrono-desc';
+
+  fsBody.innerHTML = `
+    <div class="fs-section">
+      <span class="fs-section-title">Intention</span>
+      <div class="fs-pills" id="fsIntentionPills">
+        <button class="fs-pill ${!currentCat ? 'active' : ''}" data-cat="">Toutes</button>
+        ${verbes.map(v => `<button class="fs-pill ${currentCat===v.name?'active':''}" data-cat="${esc(v.name)}">${esc(v.name)}</button>`).join('')}
+      </div>
+    </div>
+    <div class="fs-section">
+      <span class="fs-section-title">Statut</span>
+      <div class="fs-pills" id="fsStatusPills">
+        <button class="fs-pill ${!currentStatus?'active':''}" data-status="">Tous</button>
+        <button class="fs-pill ${currentStatus==='Disponible'?'active':''}" data-status="Disponible">Disponible</button>
+        <button class="fs-pill ${currentStatus==='Vendu'?'active':''}" data-status="Vendu">Vendu</button>
+        <button class="fs-pill ${currentStatus==='Pas à vendre'?'active':''}" data-status="Pas à vendre">Pas à vendre</button>
+        <button class="fs-pill ${currentStatus==='Brouillon'?'active':''}" data-status="Brouillon">Brouillon</button>
+      </div>
+    </div>
+    <div class="fs-section">
+      <span class="fs-section-title">Trier par</span>
+      <select class="fs-select" id="fsSortSelect">
+        <option value="chrono-desc" ${currentSort==='chrono-desc'?'selected':''}>Plus récent</option>
+        <option value="chrono" ${currentSort==='chrono'?'selected':''}>Plus ancien</option>
+        <option value="alpha" ${currentSort==='alpha'?'selected':''}>Alphabétique</option>
+        <option value="category" ${currentSort==='category'?'selected':''}>Par intention</option>
+        <option value="price-asc" ${currentSort==='price-asc'?'selected':''}>Prix croissant</option>
+        <option value="price-desc" ${currentSort==='price-desc'?'selected':''}>Prix décroissant</option>
+      </select>
+    </div>
+  `;
+
+  // Handlers — Intention pills
+  fsBody.querySelectorAll('#fsIntentionPills .fs-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.categoryFilter = btn.dataset.cat;
+      buildCategoryFilterBar();
+      buildIndexTrigger();
+      buildAttrFilterBar();
+      render();
+      _renderFiltersSheet();
+    });
+  });
+  // Status pills
+  fsBody.querySelectorAll('#fsStatusPills .fs-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.statusFilter = btn.dataset.status;
+      state.bookmarkFilter = false;
+      render();
+      _renderFiltersSheet();
+    });
+  });
+  // Sort select
+  document.getElementById('fsSortSelect')?.addEventListener('change', e => {
+    state.sortBy = e.target.value;
+    render();
+  });
+}
+
+// ── Update du compteur mobile (appelé à chaque render) ────────────────────
+function _updateMobileActionBar() {
+  const countEl = document.getElementById('mabCount');
+  const gridCount = document.getElementById('countLabel');
+  if (countEl && gridCount) {
+    countEl.textContent = gridCount.textContent || '0 objets';
+  }
+}
+
 // ── Footer mobile : fil d'Ariane compact + bouton Retour ─────────────────
 function renderMobileFooterNav() {
   const bc = document.getElementById('mfnBreadcrumb');
