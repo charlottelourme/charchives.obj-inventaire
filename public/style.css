@@ -9659,20 +9659,27 @@ body.dark-mode .section-header {
     width: 100% !important;
     max-width: 100vw !important;
   }
-  /* Cartes : halo coloré permanent via ::before (couleur de l'intention) */
+  /* Cartes mobile : nappe radiale désaturée permanente (esthétique "gravure") */
   .grid .card::before {
     display: block !important;
     content: '' !important;
     position: absolute !important;
     inset: 0 !important;
-    background: var(--verbe-accent, #E4E4E7) !important;
-    filter: none !important;
+    background: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.72) 0%,
+      var(--verbe-accent, #E4E4E7) 60%,
+      var(--verbe-accent, #D4D4D8) 100%) !important;
+    filter: saturate(0.75) !important;
     border-radius: 0 !important;
     opacity: 1 !important;
     z-index: -1 !important;
   }
   body.dark-mode .grid .card::before {
-    background: var(--verbe-accent, #27272A) !important;
+    background: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.05) 0%,
+      var(--verbe-accent, #3F3F46) 60%,
+      var(--verbe-accent, #27272A) 100%) !important;
+    filter: saturate(0.8) !important;
   }
   /* Cartes : zéro margin/padding/border, bord à bord physique */
   .grid .card {
