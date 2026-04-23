@@ -945,9 +945,14 @@ body.dark-mode.verbe-active .card {
   transition: opacity .38s ease;
 }
 
-/* ══ DESKTOP (hover-capable) : rectangle gris par défaut, couleur au survol ══ */
+/* ══ CARTES — Logique conditionnelle par contexte ═══════════════════════════
+   1. Desktop Inventaire (pas de verbe actif) : gris par défaut, couleur au hover
+   2. Desktop pages Intentions (verbe actif) : couleur TOUJOURS, pas de gris
+   3. Mobile : couleur TOUJOURS (aucun hover tactile) — géré dans @media max-520 */
+
+/* ── 1. DESKTOP INVENTAIRE (sans verbe actif) : gris neutre par défaut ── */
 @media (hover: hover) and (min-width: 521px) {
-  .card::before {
+  body:not(.verbe-active) .card::before {
     background: #F4F4F5 !important;        /* zinc-100 */
     filter: none !important;
     border-radius: 0 !important;
@@ -958,13 +963,29 @@ body.dark-mode.verbe-active .card {
     opacity: 1 !important;
     transition: background 0.3s ease !important;
   }
-  body.dark-mode .card::before {
-    background: #27272A !important;         /* zinc-800 */
+  body.dark-mode:not(.verbe-active) .card::before {
+    background: #27272A !important;         /* zinc-800 — contraste correct sur fond noir */
   }
-  .card:hover::before {
+  /* Au survol : halo prend la couleur de l'intention de la carte */
+  body:not(.verbe-active) .card:hover::before {
     background: var(--verbe-accent, #E4E4E7) !important;
   }
-  body.dark-mode .card:hover::before {
+  body.dark-mode:not(.verbe-active) .card:hover::before {
+    background: var(--verbe-accent, #3F3F46) !important;
+  }
+}
+
+/* ── 2. DESKTOP PAGES INTENTIONS (verbe actif) : couleur permanente ── */
+@media (min-width: 521px) {
+  body.verbe-active .card::before {
+    background: var(--verbe-accent, #E4E4E7) !important;
+    filter: none !important;
+    border-radius: 0 !important;
+    top: 0 !important; bottom: 0 !important;
+    left: 0 !important; right: 0 !important;
+    opacity: 1 !important;
+  }
+  body.dark-mode.verbe-active .card::before {
     background: var(--verbe-accent, #3F3F46) !important;
   }
 }
