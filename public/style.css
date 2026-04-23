@@ -5461,13 +5461,15 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     padding: env(safe-area-inset-top) 0 0 !important;
     height: auto;
     min-height: calc(52px + env(safe-area-inset-top));
-    flex-direction: column !important;
-    align-items: stretch;
+    display: flex !important;
+    flex-wrap: wrap !important;          /* logo + actions ligne 1, nav + search lignes suivantes */
+    align-items: center;
     gap: 0 !important;
     background: #ffffff !important;
     backdrop-filter: none !important;
     z-index: 1000 !important;
   }
+  body.dark-mode header { background: #0d0d0c !important; }
   /* Ligne 1 mobile : Logo (gauche) + Loupe + Hamburger (droite uniquement) */
   .header-row-1 {
     padding: 0 14px !important;
