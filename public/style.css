@@ -945,48 +945,92 @@ body.dark-mode.verbe-active .card {
   transition: opacity .38s ease;
 }
 
-/* ══ CARTES — Logique conditionnelle par contexte ═══════════════════════════
-   1. Desktop Inventaire (pas de verbe actif) : gris par défaut, couleur au hover
-   2. Desktop pages Intentions (verbe actif) : couleur TOUJOURS, pas de gris
-   3. Mobile : couleur TOUJOURS (aucun hover tactile) — géré dans @media max-520 */
+/* ══ CARTES — Nappes texturées contenues (esthétique "gravure ancienne") ══
+   Chaque carte = un rectangle avec dégradé radial contenu + grain SVG.
+   Couleurs désaturées pour effet pigmentaire/poussiéreux (vieux papier). */
 
-/* ── 1. DESKTOP INVENTAIRE (sans verbe actif) : gris neutre par défaut ── */
+/* Base : halo TOTALEMENT contenu dans le rectangle de la carte */
+.card::before {
+  filter: none !important;
+  border-radius: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  opacity: 1 !important;
+  transition: background 0.35s ease !important;
+}
+
+/* Grain texturé sur chaque carte via ::after — SVG fractalNoise contenu */
+.card {
+  overflow: hidden !important;           /* important : contient tout à l'intérieur */
+}
+.card .card-thumb-area,
+.card > * {
+  position: relative;
+  z-index: 2;
+}
+.card .card-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='cn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23cn)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+body.dark-mode .card .card-grain {
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+}
+
+/* ── 1. DESKTOP INVENTAIRE (sans verbe actif) : nappe grise désaturée texturée ── */
 @media (hover: hover) and (min-width: 521px) {
   body:not(.verbe-active) .card::before {
-    background: #F4F4F5 !important;        /* zinc-100 */
-    filter: none !important;
-    border-radius: 0 !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    opacity: 1 !important;
-    transition: background 0.3s ease !important;
+    background: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.9) 0%,
+      rgba(244,244,245,1) 55%,
+      rgba(228,228,231,1) 100%) !important;   /* dégradé gris très subtil */
   }
   body.dark-mode:not(.verbe-active) .card::before {
-    background: #27272A !important;         /* zinc-800 — contraste correct sur fond noir */
+    background: radial-gradient(circle at 50% 45%,
+      rgba(63,63,70,0.95) 0%,
+      rgba(39,39,42,1) 55%,
+      rgba(24,24,27,1) 100%) !important;
   }
-  /* Au survol : halo prend la couleur de l'intention de la carte */
+  /* Au survol : nappe teintée de l'intention, dégradé radial désaturé */
   body:not(.verbe-active) .card:hover::before {
-    background: var(--verbe-accent, #E4E4E7) !important;
+    background: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.72) 0%,
+      var(--verbe-accent, #E4E4E7) 60%,
+      var(--verbe-accent, #D4D4D8) 100%) !important;
+    filter: saturate(0.75) !important;        /* désaturation pigmentaire */
   }
   body.dark-mode:not(.verbe-active) .card:hover::before {
-    background: var(--verbe-accent, #3F3F46) !important;
+    background: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.05) 0%,
+      var(--verbe-accent, #3F3F46) 60%,
+      var(--verbe-accent, #27272A) 100%) !important;
+    filter: saturate(0.8) !important;
   }
 }
 
-/* ── 2. DESKTOP PAGES INTENTIONS (verbe actif) : couleur permanente ── */
+/* ── 2. DESKTOP PAGES INTENTIONS (verbe actif) : nappe colorée permanente ── */
 @media (min-width: 521px) {
   body.verbe-active .card::before {
-    background: var(--verbe-accent, #E4E4E7) !important;
-    filter: none !important;
-    border-radius: 0 !important;
-    top: 0 !important; bottom: 0 !important;
-    left: 0 !important; right: 0 !important;
-    opacity: 1 !important;
+    background: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.72) 0%,
+      var(--verbe-accent, #E4E4E7) 60%,
+      var(--verbe-accent, #D4D4D8) 100%) !important;
+    filter: saturate(0.75) !important;
   }
   body.dark-mode.verbe-active .card::before {
-    background: var(--verbe-accent, #3F3F46) !important;
+    background: radial-gradient(circle at 50% 45%,
+      rgba(255,255,255,0.05) 0%,
+      var(--verbe-accent, #3F3F46) 60%,
+      var(--verbe-accent, #27272A) 100%) !important;
+    filter: saturate(0.8) !important;
   }
 }
 
