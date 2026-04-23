@@ -6117,6 +6117,52 @@ body.dark-mode {
   --shadow-lg: none;
 }
 
+/* ══ DARK MODE — Forçage de lisibilité sur tous les textes du chrome ══════
+   Tout texte qui pourrait rester sombre (hérité d'un override !important)
+   est forcé en gris clair zinc-200/300 pour garantir la lisibilité. */
+body.dark-mode h1,
+body.dark-mode header h1,
+body.dark-mode #siteTitle,
+body.dark-mode .view-tab,
+body.dark-mode .count-label,
+body.dark-mode .mab-count,
+body.dark-mode .mab-filter-btn,
+body.dark-mode .sfb-label,
+body.dark-mode .sfb-pill,
+body.dark-mode .derive-seg-btn,
+body.dark-mode .trios-tab-btn,
+body.dark-mode .con-aff-btn,
+body.dark-mode .btn-ghost,
+body.dark-mode .btn-icon-only,
+body.dark-mode .hd-item,
+body.dark-mode .mfn-back,
+body.dark-mode .mfn-breadcrumb,
+body.dark-mode .mfn-item,
+body.dark-mode .fs-title,
+body.dark-mode .fs-section-title,
+body.dark-mode .fs-pill,
+body.dark-mode .card-name,
+body.dark-mode .card-verbe-label,
+body.dark-mode .card-meta-row,
+body.dark-mode .toolbar-strate select {
+  color: #E4E4E7 !important;          /* zinc-200 */
+}
+/* Textes actifs (titre courant, onglet actif) : blanc plus vif */
+body.dark-mode .view-tab.active,
+body.dark-mode .derive-seg-btn.active,
+body.dark-mode .trios-tab-btn.active,
+body.dark-mode .con-aff-btn.active,
+body.dark-mode .sfb-pill.active,
+body.dark-mode .fs-pill.active {
+  color: #FAFAFA !important;          /* zinc-50 — contraste maximum */
+}
+/* Bouton primaire en dark : reste blanc sur fond noir inverse */
+body.dark-mode .btn-primary,
+body.dark-mode .hu-primary {
+  background: #F4F4F5 !important;
+  color: #0a0a0a !important;
+}
+
 /* ── RESTAURATION : halos Soft Block originaux (colorés, blurrés, éditoriaux) ──
    Les cartes retrouvent leur identité : halo coloré doux derrière l'image,
    typique de l'esthétique Charchives. Pas de rectangle plein — c'est un HALO. */
