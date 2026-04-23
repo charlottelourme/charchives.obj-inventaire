@@ -838,6 +838,21 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script src="app.js"></script>
+<!-- ── Mobile Filters Bottom Sheet : tiroir de filtres remontant du bas ── -->
+<div id="filtersSheet" class="filters-sheet" hidden>
+  <div class="fs-overlay" id="fsOverlay"></div>
+  <div class="fs-panel">
+    <div class="fs-handle"></div>
+    <div class="fs-header">
+      <span class="fs-title">Filtres</span>
+      <button class="fs-close" id="fsClose" aria-label="Fermer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    </div>
+    <div class="fs-body" id="fsBody">
+      <!-- Rempli dynamiquement depuis app.js (accordéons Intention/Identité/Statut/Trier) -->
+    </div>
+  </div>
+</div>
+
 <!-- ── Mobile Hamburger Drawer : menu des actions secondaires ── -->
 <div id="hamburgerDrawer" class="hamburger-drawer" hidden>
   <div class="hd-overlay" id="hdOverlay"></div>
