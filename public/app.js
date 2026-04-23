@@ -8098,6 +8098,22 @@ function bindEvents() {
   // Dark mode toggle dans le footer mobile
   document.getElementById('mfnDarkBtn')?.addEventListener('click', toggleDarkMode);
 
+  // ── Mobile Action Bar : bouton "+ Filtres" → bottom sheet ──────────────
+  const mabFilterBtn = document.getElementById('mabFilterBtn');
+  const filtersSheet = document.getElementById('filtersSheet');
+  const fsClose = document.getElementById('fsClose');
+  const fsOverlay = document.getElementById('fsOverlay');
+  const fsBody = document.getElementById('fsBody');
+  const openFiltersSheet = () => {
+    if (!filtersSheet) return;
+    _renderFiltersSheet();
+    filtersSheet.hidden = false;
+  };
+  const closeFiltersSheet = () => { if (filtersSheet) filtersSheet.hidden = true; };
+  mabFilterBtn?.addEventListener('click', openFiltersSheet);
+  fsClose?.addEventListener('click', closeFiltersSheet);
+  fsOverlay?.addEventListener('click', closeFiltersSheet);
+
   // ── Hamburger Drawer (mobile) ──────────────────────────────────────────
   const drawer = document.getElementById('hamburgerDrawer');
   const openDrawer = () => { if (drawer) drawer.hidden = false; };
