@@ -9325,31 +9325,42 @@ body.dark-mode .section-header {
     width: 100% !important;
     max-width: 100vw !important;
   }
-  /* Grille CSS columns : ZÉRO gouttière forcée */
+  /* Grille CSS columns : petit gap de 4px pour aérer + padding 4px */
   .grid,
   .grid:not(.grid-css) {
     column-count: 2 !important;
     -webkit-column-count: 2 !important;
-    column-gap: 0 !important;
-    -webkit-column-gap: 0 !important;
+    column-gap: 4px !important;
+    -webkit-column-gap: 4px !important;
     column-rule: none !important;
-    padding: 0 !important;
-    padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+    padding: 4px 4px calc(96px + env(safe-area-inset-bottom)) !important;
     margin: 0 !important;
-    width: 100vw !important;
+    width: 100% !important;
     max-width: 100vw !important;
   }
-  /* Grille CSS Grid (peu d'objets) : zéro gap */
+  /* Grille CSS Grid (peu d'objets) : gap 4px */
   .grid.grid-css {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0 !important;
-    column-gap: 0 !important;
-    row-gap: 0 !important;
-    padding: 0 !important;
-    padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+    gap: 4px !important;
+    padding: 4px 4px calc(96px + env(safe-area-inset-bottom)) !important;
     margin: 0 !important;
-    width: 100vw !important;
+    width: 100% !important;
     max-width: 100vw !important;
+  }
+  /* Cartes : halo coloré permanent via ::before (couleur de l'intention) */
+  .grid .card::before {
+    display: block !important;
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: var(--verbe-accent, #E4E4E7) !important;
+    filter: none !important;
+    border-radius: 0 !important;
+    opacity: 1 !important;
+    z-index: -1 !important;
+  }
+  body.dark-mode .grid .card::before {
+    background: var(--verbe-accent, #27272A) !important;
   }
   /* Cartes : zéro margin/padding/border, bord à bord physique */
   .grid .card {
