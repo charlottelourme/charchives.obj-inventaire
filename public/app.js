@@ -1918,6 +1918,7 @@ function cardHTML(c) {
   <div class="card" data-id="${c.id}"${accentStyle}>
     <div class="card-thumb-area${thumbAreaMod}">
       <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">${_asteriskSVG()}</button>
+      <div class="card-grain" aria-hidden="true"></div>
       ${photo
         ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="" loading="lazy" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=\\'card-thumb-placeholder\\'>◻</div>')">`
         : `<div class="card-thumb-placeholder">◻</div>`}
