@@ -8754,18 +8754,17 @@ body.dark-mode .derive-header,
 body.dark-mode .trios-tabs-nav,
 body.dark-mode .diorama-decor-bar { border-bottom-color: var(--border); }
 
-/* ── .sub-nav-item : onglets/boutons dans les bandeaux ────────────────────
-      Typographie Mono uppercase, petite taille, tracking aéré.
-      États : inactif (gris clair), actif (noir + indicateur point).
-      Appliqué sur : .derive-seg-btn, .trios-tab-btn, .count-label,
-                     labels des filtres, boutons utilitaires */
-.toolbar-strate .count-label,
+/* ── Onglets des bandeaux secondaires : Nuée/Constellation, Collisions/Affinités/Assemblage
+      Typographie : Cormorant Garamond italique (sérif éditoriale)
+      Casse : valeur HTML telle quelle (première lettre en maj uniquement)
+      États : gris par défaut, noir à l'actif — pas d'indicateur point. */
 .derive-seg-btn,
 .trios-tab-btn {
-  font-family: 'Cutive Mono', monospace !important;
-  font-size: 11px !important;
-  letter-spacing: .14em !important;
-  text-transform: uppercase !important;
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-style: italic !important;
+  font-size: 16px !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
   font-weight: 400 !important;
   color: var(--text-3) !important;
   background: none !important;
@@ -8782,23 +8781,23 @@ body.dark-mode .diorama-decor-bar { border-bottom-color: var(--border); }
 .derive-seg-btn:hover,
 .trios-tab-btn:hover { color: var(--text-2) !important; }
 
-/* État actif : noir + petit point indicateur sous l'onglet */
+/* État actif : noir — SANS indicateur point */
 .derive-seg-btn.active,
 .trios-tab-btn.active {
   color: var(--text) !important;
   font-weight: 500 !important;
 }
+/* Annule tout ancien point indicateur */
 .derive-seg-btn.active::after,
-.trios-tab-btn.active::after {
-  content: '';
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 3px;
-  background: var(--text);
-  border-radius: 50%;
+.trios-tab-btn.active::after { display: none !important; content: none !important; }
+
+/* ── Compteur (12 objets) reste en Mono : c'est de la donnée, pas de la navigation */
+.toolbar-strate .count-label {
+  font-family: 'Cutive Mono', monospace !important;
+  font-size: 11px !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  color: var(--text-3) !important;
 }
 
 /* Selects (Trier / Statut) : Mono uppercase cohérent */
