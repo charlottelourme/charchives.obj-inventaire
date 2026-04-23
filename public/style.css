@@ -5499,28 +5499,46 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   header > *, .search-wrap, .search-bar { background: #ffffff; }
   .header-sep { display: none; }
 
-  /* ── LIGNE 1 : Titre + Actions ──────────────────────────────────────── */
+  /* ── LIGNE 1 : Logo (gauche) + Header actions (droite) ─────────────── */
   header > h1#siteTitle {
     order: 1;
     flex: 1 1 auto;
-    padding: 8px 14px;
+    padding: 6px 14px;
+    height: 40px;
     font-size: 13px !important;
     letter-spacing: .14em !important;
     text-transform: uppercase;
-    display: flex;
+    display: flex !important;
     align-items: center;
     margin: 0;
+    color: #1A1A1A !important;
   }
+  body.dark-mode header > h1#siteTitle { color: #F4F4F5 !important; }
+
   .header-actions {
     order: 2;
-    padding: 4px 10px;
-    display: flex;
+    padding: 0 8px;
+    height: 40px;
+    display: flex !important;
     align-items: center;
-    gap: 4px;
-    margin-left: auto;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  /* Sur mobile : garde +Ajouter, ⚙ et ◑ — masque Note (accessible via menu/drawer) */
+  .header-actions .btn-note { display: none !important; }
+  .header-actions .btn-primary {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    height: 28px;
+  }
+  .header-actions .btn-icon-only {
+    font-size: 14px !important;
+    padding: 4px 6px !important;
+    width: 28px;
+    height: 28px;
   }
 
-  /* ── LIGNE 2 : Navigation sérif italique, 1er mot aligné STRICTEMENT avec le C de CHARCHIVES ── */
+  /* ── LIGNE 2 : Navigation sérif italique (100% width, force saut de ligne) ─ */
   .view-tabs {
     order: 3;
     width: 100% !important;
@@ -5530,7 +5548,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     gap: 8px;
     padding: 8px 14px 10px !important;
     margin: 0 !important;
-    overflow: visible;                    /* pas de scroll → tout tient en largeur */
+    overflow: visible;
     scrollbar-width: none;
     border-top: 1px solid var(--border-light);
     box-sizing: border-box;
