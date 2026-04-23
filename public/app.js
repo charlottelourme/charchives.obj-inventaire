@@ -1685,6 +1685,8 @@ function render() {
   state.detailList = filtered;
   const countText = `${filtered.length} objet${filtered.length!==1?'s':''}`;
   document.getElementById('countLabel').textContent = countText;
+  const mabCountEl = document.getElementById('mabCount');
+  if (mabCountEl) mabCountEl.textContent = countText;
   // Cartouche Inventaire : description fixe (pas le compteur — il est déjà dans la toolbar)
   const invDesc = document.getElementById('inventaireDesc');
   if (invDesc && !invDesc.textContent) invDesc.textContent = PAGE_DESCRIPTIONS.inventaire;
