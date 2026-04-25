@@ -8415,6 +8415,9 @@ function bindEvents() {
     });
   });
 
+  // Bouton "+ Ajouter une note" sur le Journal (anciennement Dérive)
+  document.getElementById('journalAddNoteBtn')?.addEventListener('click', () => openNoteModal(null));
+
   // Bouton "Tirer une composition" (Aléatoire) ─ pioche dans la sélection
   document.getElementById('triosAleatoireBtn')?.addEventListener('click', () => {
     const trio = _generateAleatoireTrio();
