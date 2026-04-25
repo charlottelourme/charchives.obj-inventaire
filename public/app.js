@@ -8459,8 +8459,8 @@ function bindEvents() {
     });
   });
 
-  // Mode 3 — Recherche inventaire
-  document.getElementById('triosInvSearch').addEventListener('input', _renderInventoryStrip);
+  // Mode 3 — Recherche inventaire (input retiré : l'Assemblage utilise désormais la sélection)
+  document.getElementById('triosInvSearch')?.addEventListener('input', _renderInventoryStrip);
 
   // Mode 3 — Sauvegarder composition (localStorage)
   document.getElementById('triosSaveBtn').addEventListener('click', () => {
