@@ -3161,6 +3161,49 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   pointer-events: none;
 }
 
+/* ── TRIPTYQUE : empty state pour Assemblage / Aléatoire (selection vide) ── */
+.trios-empty-selection {
+  padding: 60px 32px;
+  text-align: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--text-2);
+  max-width: 480px;
+  margin: 0 auto;
+}
+.trios-empty-selection p { margin: 0 0 8px; }
+.trios-empty-hint {
+  font-family: 'Cutive Mono', monospace !important;
+  font-style: normal !important;
+  font-size: 11px !important;
+  letter-spacing: .08em;
+  color: var(--text-3);
+  margin-top: 16px !important;
+}
+.trios-selection-info {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.trios-aleatoire-controls {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.trios-aleatoire-desc {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--text-2);
+  text-align: center;
+  margin: 0;
+}
+
 /* ── JOURNAL : page renommée depuis Dérive — moodboard statique ──────── */
 .journal-label {
   font-family: 'Cormorant Garamond', Georgia, serif;
