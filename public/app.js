@@ -4416,13 +4416,14 @@ function renderTrios() {
   const tabIdxMap = { hasard: 0, regles: 1, manuel: 2 };
   const activeIdx = tabIdxMap[_triosActiveTab];
   if (activeIdx != null && isTriosTabHidden(activeIdx)) {
-    const firstVisible = ['hasard', 'regles', 'manuel'].find((t, i) => !isTriosTabHidden(i));
+    const firstVisible = ['hasard', 'regles', 'manuel', 'aleatoire'].find((t, i) => !isTriosTabHidden(i));
     if (firstVisible) {
       _triosActiveTab = firstVisible;
       document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === firstVisible));
-      document.getElementById('triosPanelHashard').style.display = firstVisible === 'hasard' ? '' : 'none';
-      document.getElementById('triosPanelRegles').style.display  = firstVisible === 'regles' ? '' : 'none';
-      document.getElementById('triosPanelManuel').style.display  = firstVisible === 'manuel' ? '' : 'none';
+      document.getElementById('triosPanelHashard').style.display    = firstVisible === 'hasard'    ? '' : 'none';
+      document.getElementById('triosPanelRegles').style.display     = firstVisible === 'regles'    ? '' : 'none';
+      document.getElementById('triosPanelManuel').style.display     = firstVisible === 'manuel'    ? '' : 'none';
+      document.getElementById('triosPanelAleatoire').style.display  = firstVisible === 'aleatoire' ? '' : 'none';
     }
   }
   const result  = document.getElementById('triosResult');
@@ -4439,10 +4440,46 @@ function renderTrios() {
   } else if (_triosActiveTab === 'regles') {
     if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
     else result.style.display = 'none';
+  } else if (_triosActiveTab === 'aleatoire') {
+    _renderTriosAleatoireState();
   } else {
     _renderTriosManualState();
   }
   _renderSavedTrios();
+}
+
+// ── Onglet Aléatoire : pioche 3 objets dans la sélection (bookmarked) ─────
+function _renderTriosAleatoireState() {
+  const selected = state.collections.filter(c => c.bookmarked);
+  const emptyEl = document.getElementById('triosAleatoireEmpty');
+  const result  = document.getElementById('triosResult');
+  if (selected.length < 3) {
+    if (emptyEl) emptyEl.style.display = '';
+    if (result)  result.style.display  = 'none';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  // Garde le _currentTrio si déjà généré pour cette session
+  if (_currentTrio && _currentTrio._fromAleatoire) {
+    _setTriosLinkBar(_currentTrio);
+    _renderTriosCards(_currentTrio.objects);
+    if (result) result.style.display = '';
+  } else if (result) {
+    result.style.display = 'none';
+  }
+}
+
+// Génère un trio aléatoire depuis la sélection
+function _generateAleatoireTrio() {
+  const selected = state.collections.filter(c => c.bookmarked);
+  if (selected.length < 3) return null;
+  const shuffled = [...selected].sort(() => Math.random() - 0.5);
+  return {
+    objects: shuffled.slice(0, 3),
+    rule: 'aleatoire',
+    label: 'Composition aléatoire',
+    _fromAleatoire: true
+  };
 }
 
 // ── Icône "+" "Coup de cœur" — cross unifiée (identique à .sel-ast) ──────
