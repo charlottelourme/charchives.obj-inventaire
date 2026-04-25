@@ -3156,11 +3156,29 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   transition: opacity .28s ease;
 }
 .derive-pane-hidden {
-  display: none !important;      /* suppression totale du flux — corrige le bug
-                                    "Intention/Matière/Identité" qui flottait en bas */
+  display: none !important;
   opacity: 0;
   pointer-events: none;
 }
+
+/* ── JOURNAL : page renommée depuis Dérive — moodboard statique ──────── */
+.journal-label {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--text);
+}
+/* Masque la sous-navigation Nuée/Constellation et le pane Constellation */
+#deriveView #deriveReseauPane,
+#deriveView .derive-segmented,
+#deriveView .nuee-zoom-wrap,
+#deriveView .derive-shuffle-btn { display: none !important; }
+/* Galerie Journal : statique, pas d'animation flottante */
+#deriveView #galleryGrid {
+  animation: none !important;
+  transform: none !important;
+}
+.gallery-item.g-floating { animation: none !important; }
 
 /* Gallery scroll fills pane */
 .derive-pane .gallery-scroll {
