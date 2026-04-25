@@ -4355,14 +4355,23 @@ function _renderTriosCards(objects) {
   }
 }
 
-// Inventaire miniature (mode 3)
+// Inventaire miniature (Assemblage) — limité à la sélection (bookmarked)
 function _renderInventoryStrip() {
   const strip = document.getElementById('triosInventoryStrip');
   if (!strip) return;
-  const q = (document.getElementById('triosInvSearch')?.value || '').toLowerCase().trim();
-  const items = state.collections.filter(c =>
-    !q || (c.name||'').toLowerCase().includes(q) || (c.category||'').toLowerCase().includes(q)
-  );
+  // Source : uniquement les objets sélectionnés via "+" (bookmarked)
+  const selected = state.collections.filter(c => c.bookmarked);
+  const emptyEl = document.getElementById('triosEmptySelection');
+  const infoEl  = document.getElementById('triosSelectionInfo');
+  if (selected.length === 0) {
+    strip.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = '';
+    if (infoEl)  infoEl.textContent = '';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (infoEl)  infoEl.textContent = `${selected.length} objet${selected.length > 1 ? 's' : ''} dans la sélection`;
+  const items = selected;
   strip.innerHTML = items.map(c => {
     const img = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
     const inSlot = _triosManualSlots.some(s => s?.id === c.id);
