@@ -257,24 +257,39 @@
         </div>
       </div>
 
-      <!-- Panel : Règles d'Art -->
+      <!-- Panel : Affinités (anciennement Règles d'Art) -->
       <div class="trios-tab-panel" id="triosPanelRegles" style="display:none">
         <div class="trios-rules-pills">
           <button class="trios-rule-pill" data-rule="monochrome">Monochrome</button>
           <button class="trios-rule-pill" data-rule="epoque">Même Époque</button>
           <button class="trios-rule-pill" data-rule="matiere">Même Matière</button>
-          <button class="trios-rule-pill" data-rule="clash">Clash Visuel</button>
         </div>
         <div class="trios-rule-desc" id="triosRuleDesc"></div>
       </div>
 
-      <!-- Panel : Éditeur Manuel -->
+      <!-- Panel : Assemblage (anciennement Éditeur Manuel) — utilise la sélection (objets bookmarked) -->
       <div class="trios-tab-panel" id="triosPanelManuel" style="display:none">
         <div class="trios-manual-header">
-          <input type="text" class="trios-inv-search" id="triosInvSearch" placeholder="Chercher un objet…">
+          <span class="trios-selection-info" id="triosSelectionInfo"></span>
           <button class="trios-save-btn" id="triosSaveBtn">Sauvegarder la composition</button>
         </div>
         <div class="trios-inventory-strip" id="triosInventoryStrip"></div>
+        <div class="trios-empty-selection" id="triosEmptySelection" style="display:none">
+          <p>Aucun objet dans votre sélection.</p>
+          <p class="trios-empty-hint">Ajoutez des objets depuis l'Inventaire en cliquant sur le « + » de chaque carte.</p>
+        </div>
+      </div>
+
+      <!-- Panel : Aléatoire — pioche dans la sélection pour des compositions surprises -->
+      <div class="trios-tab-panel" id="triosPanelAleatoire" style="display:none">
+        <div class="trios-aleatoire-controls">
+          <p class="trios-aleatoire-desc">Compositions tirées au hasard parmi votre sélection d'objets.</p>
+          <button class="trios-compose-btn" id="triosAleatoireBtn">Tirer une composition</button>
+        </div>
+        <div class="trios-empty-selection" id="triosAleatoireEmpty" style="display:none">
+          <p>Aucun objet dans votre sélection.</p>
+          <p class="trios-empty-hint">Ajoutez des objets depuis l'Inventaire en cliquant sur le « + » de chaque carte pour pouvoir les piocher au hasard.</p>
+        </div>
       </div>
 
       <!-- Lien narratif -->
