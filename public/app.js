@@ -8396,21 +8396,33 @@ function bindEvents() {
   // Init thumb position once fonts are loaded (needs layout)
   requestAnimationFrame(() => requestAnimationFrame(_updateDeriveThumb));
 
-  // Trios — tab switching
+  // Trios — tab switching (4 onglets : Collisions / Affinités / Assemblage / Aléatoire)
   document.querySelectorAll('.trios-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       _triosActiveTab = btn.dataset.tab;
       _currentTrio = null;
       document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
-      document.getElementById('triosPanelHashard').style.display = _triosActiveTab === 'hasard'  ? '' : 'none';
-      document.getElementById('triosPanelRegles').style.display  = _triosActiveTab === 'regles'  ? '' : 'none';
-      document.getElementById('triosPanelManuel').style.display  = _triosActiveTab === 'manuel'  ? '' : 'none';
-      if (_triosActiveTab !== 'manuel') {
+      document.getElementById('triosPanelHashard').style.display    = _triosActiveTab === 'hasard'    ? '' : 'none';
+      document.getElementById('triosPanelRegles').style.display     = _triosActiveTab === 'regles'    ? '' : 'none';
+      document.getElementById('triosPanelManuel').style.display     = _triosActiveTab === 'manuel'    ? '' : 'none';
+      const aleaPanel = document.getElementById('triosPanelAleatoire');
+      if (aleaPanel) aleaPanel.style.display = _triosActiveTab === 'aleatoire' ? '' : 'none';
+      if (_triosActiveTab !== 'manuel' && _triosActiveTab !== 'aleatoire') {
         document.getElementById('triosResult').style.display = 'none';
         document.getElementById('triosLinkBar').innerHTML = '';
       }
       renderTrios();
     });
+  });
+
+  // Bouton "Tirer une composition" (Aléatoire) ─ pioche dans la sélection
+  document.getElementById('triosAleatoireBtn')?.addEventListener('click', () => {
+    const trio = _generateAleatoireTrio();
+    if (!trio) return;
+    _currentTrio = trio;
+    _setTriosLinkBar(trio);
+    _renderTriosCards(trio.objects);
+    document.getElementById('triosResult').style.display = '';
   });
 
   // Mode 1 — Composer
