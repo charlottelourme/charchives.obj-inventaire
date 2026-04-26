@@ -4342,78 +4342,114 @@ function _tagLabel(t) {
   return parts[parts.length-1];
 }
 
-function _generateTrio() {
-  const cols = state.collections;
-  if (cols.length < 3) return null;
-  for (let attempt = 0; attempt < 30; attempt++) {
-    const seed = cols[Math.floor(Math.random() * cols.length)];
-    const seedFp = _fingerprint(seed);
-    if (seedFp.size === 0) continue;
-    const candidates = cols
-      .filter(c => c.id !== seed.id)
-      .map(c => ({ obj: c, shared: _sharedTags(seedFp, _fingerprint(c)) }))
-      .filter(x => x.shared.length > 0);
-    if (candidates.length < 2) continue;
-    const pool = [...candidates].sort(() => Math.random() - 0.5).slice(0, Math.min(10, candidates.length));
-    pool.sort((a, b) => b.shared.length - a.shared.length);
-    const [c2, c3] = pool;
-    const fp2 = _fingerprint(c2.obj), fp3 = _fingerprint(c3.obj);
-    const triCommon = [...seedFp].filter(t => fp2.has(t) && fp3.has(t));
-    const linkTags = (triCommon.length > 0 ? triCommon : c2.shared).slice(0, 3).map(_tagLabel);
-    return { objects: [seed, c2.obj, c3.obj], linkTags: [...new Set(linkTags)].filter(Boolean) };
+// Helper central : construit un trio depuis un pool en respectant les slots verrouillés.
+// - prevObjects / locked : si fournis, les slots verrouillés (locked[i] === true) gardent prevObjects[i].
+// - pickStrategy(available, n) : optionnelle, choisit `n` objets parmi `available`. Défaut = shuffle.
+function _fillTrioWithLocks(pool, prevObjects, locked, pickStrategy) {
+  const result = [null, null, null];
+  const usedIds = new Set();
+  if (prevObjects && locked) {
+    for (let i = 0; i < 3; i++) {
+      if (locked[i] && prevObjects[i]) {
+        result[i] = prevObjects[i];
+        usedIds.add(prevObjects[i].id);
+      }
+    }
   }
-  // Fallback aléatoire
-  const shuffled = [...cols].sort(() => Math.random() - 0.5);
-  return { objects: shuffled.slice(0, 3), linkTags: [] };
+  const needed = result.filter(r => !r).length;
+  if (needed === 0) return result.slice();
+  const available = pool.filter(c => !usedIds.has(c.id));
+  if (available.length < needed) return null;
+  const picks = pickStrategy
+    ? pickStrategy(available, needed)
+    : [...available].sort(() => Math.random() - 0.5).slice(0, needed);
+  if (!picks || picks.length < needed) return null;
+  let pi = 0;
+  for (let i = 0; i < 3; i++) {
+    if (!result[i]) result[i] = picks[pi++];
+  }
+  return result;
+}
+
+function _generateTrio(prevObjects, locked) {
+  const cols = state.collections.filter(c => c.type !== 'note' && c.type !== 'journal-photo');
+  if (cols.length < 3) return null;
+
+  // Stratégie : seed + (n-1) objets les plus affins (top 10 mélangé)
+  const seedAffinityPick = (available, needed) => {
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const seed = available[Math.floor(Math.random() * available.length)];
+      const seedFp = _fingerprint(seed);
+      if (seedFp.size === 0) continue;
+      const others = available.filter(c => c.id !== seed.id);
+      if (others.length < needed - 1) continue;
+      const candidates = others
+        .map(c => ({ obj: c, shared: _sharedTags(seedFp, _fingerprint(c)) }))
+        .filter(x => x.shared.length > 0);
+      if (candidates.length < needed - 1) continue;
+      candidates.sort((a, b) => b.shared.length - a.shared.length);
+      const top = candidates.slice(0, Math.min(10, candidates.length));
+      const shuffled = [...top].sort(() => Math.random() - 0.5).slice(0, needed - 1);
+      return [seed, ...shuffled.map(c => c.obj)];
+    }
+    return [...available].sort(() => Math.random() - 0.5).slice(0, needed);
+  };
+
+  const objects = _fillTrioWithLocks(cols, prevObjects, locked, seedAffinityPick);
+  if (!objects) return null;
+  const fp = objects.map(_fingerprint);
+  const triCommon = [...fp[0]].filter(t => fp[1].has(t) && fp[2].has(t));
+  const linkTags = triCommon.slice(0, 3).map(_tagLabel).filter(Boolean);
+  return { objects, linkTags: [...new Set(linkTags)] };
 }
 
 // ── Trios helpers ─────────────────────────────────────────────────────────────
 
-// Mode 1 : filtres aléatoires
-function _generateTrioFiltered(matiere, teinte, intention) {
+// Mode Collisions : filtres aléatoires (préserve les slots verrouillés)
+function _generateTrioFiltered(matiere, teinte, intention, prevObjects, locked) {
   const pool = state.collections.filter(c => {
-    if (matiere   && !(c.attributes?.matieres||[]).includes(matiere))   return false;
+    if (c.type === 'note' || c.type === 'journal-photo')                 return false;
+    if (matiere   && !(c.attributes?.matieres||[]).includes(matiere))    return false;
     if (teinte    && !(c.attributes?.couleurs||[]).includes(teinte))     return false;
     if (intention && c.category !== intention)                           return false;
     return true;
   });
-  if (pool.length < 3) return null;
-  const objects = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
+  const objects = _fillTrioWithLocks(pool, prevObjects, locked);
+  if (!objects) return null;
   const fp = objects.map(_fingerprint);
   const common = [...fp[0]].filter(t => fp[1].has(t) && fp[2].has(t));
-  return { objects, linkTags: common.slice(0, 3).map(_tagLabel).filter(Boolean) };
+  return {
+    objects,
+    linkTags: common.slice(0, 3).map(_tagLabel).filter(Boolean),
+    _matiere: matiere || '',
+    _teinte: teinte || '',
+    _intention: intention || ''
+  };
 }
 
-// Mode 2 : règles d'art
-function _generateTrioByRule(rule) {
-  const cols = state.collections;
+// Mode Affinités : règle + valeur précise (ou aléatoire si value vide)
+function _generateTrioByRule(rule, value, prevObjects, locked) {
+  const cols = state.collections.filter(c => c.type !== 'note' && c.type !== 'journal-photo');
   const _buildMap = getter => {
     const map = {};
     cols.forEach(c => (getter(c)||[]).forEach(v => { if (!map[v]) map[v]=[]; map[v].push(c); }));
     return map;
   };
-  const _pickFromMap = (map, label) => {
-    const keys = Object.keys(map).filter(k => map[k].length >= 3).sort(() => Math.random() - 0.5);
-    if (!keys.length) return null;
-    const key = keys[0];
-    const objects = [...map[key]].sort(() => Math.random() - 0.5).slice(0, 3);
-    return { objects, linkTags: [key], ruleLabel: `${label} — ${key}` };
+  const _pick = (map, label) => {
+    let key = value || '';
+    if (!key || !map[key] || map[key].length < 3) {
+      const keys = Object.keys(map).filter(k => map[k].length >= 3).sort(() => Math.random() - 0.5);
+      if (!keys.length) return null;
+      key = keys[0];
+    }
+    const objects = _fillTrioWithLocks(map[key], prevObjects, locked);
+    if (!objects) return null;
+    return { objects, linkTags: [key], ruleLabel: `${label} — ${key}`, _rule: rule, _ruleValue: key };
   };
   switch (rule) {
-    case 'monochrome': return _pickFromMap(_buildMap(c => c.attributes?.couleurs), 'Monochrome');
-    case 'epoque':     return _pickFromMap(_buildMap(c => c.attributes?.origine),  'Même Époque');
-    case 'matiere':    return _pickFromMap(_buildMap(c => c.attributes?.matieres), 'Même Matière');
-    case 'clash': {
-      const byVerbe = {};
-      cols.forEach(c => { if (c.category) { if (!byVerbe[c.category]) byVerbe[c.category]=[]; byVerbe[c.category].push(c); } });
-      const cats = Object.keys(byVerbe).sort(() => Math.random() - 0.5);
-      if (cats.length < 3) { // fallback: 3 objets aléatoires
-        const objects = [...cols].sort(() => Math.random() - 0.5).slice(0, 3);
-        return { objects, linkTags: ['contraste'], ruleLabel: 'Clash Visuel' };
-      }
-      const objects = cats.slice(0, 3).map(cat => byVerbe[cat][Math.floor(Math.random()*byVerbe[cat].length)]);
-      return { objects, linkTags: ['contraste', 'dialogue'], ruleLabel: 'Clash Visuel' };
-    }
+    case 'monochrome': return _pick(_buildMap(c => c.attributes?.couleurs), 'Monochrome');
+    case 'epoque':     return _pick(_buildMap(c => c.attributes?.origine),  'Même Époque');
+    case 'matiere':    return _pick(_buildMap(c => c.attributes?.matieres), 'Même Matière');
     default: return null;
   }
 }
