@@ -8577,6 +8577,21 @@ function bindEvents() {
     });
   });
 
+  // Toggle Vue Inventaire (Grille / Constellation)
+  document.querySelectorAll('#inventoryViewToggle .ivt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.mode;
+      if (state.inventoryMode === mode) return;
+      state.inventoryMode = mode;
+      document.querySelectorAll('#inventoryViewToggle .ivt-btn').forEach(b =>
+        b.classList.toggle('active', b.dataset.mode === mode));
+      // Réinitialise gridView pour repartir propre entre les deux vues
+      const el = document.getElementById('gridView');
+      if (el) el.classList.remove('inv-constellation-mode', 'grid', 'grid-css');
+      render();
+    });
+  });
+
   // Bouton "+ Ajouter une note" sur le Journal (anciennement Dérive)
   document.getElementById('journalAddNoteBtn')?.addEventListener('click', () => openNoteModal(null));
 
