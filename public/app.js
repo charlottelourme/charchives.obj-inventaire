@@ -224,7 +224,8 @@ const state = {
   activeExpoFilter: null,
   _formType: 'item',
   editFragmentBg: '#1a1a1a',
-  deriveMode: 'nuee',   // 'nuee' | 'reseau'
+  deriveMode: 'nuee',   // 'nuee' | 'reseau' (legacy)
+  inventoryMode: 'grid', // 'grid' | 'constellation' — toggle dans Inventaire
   galleryShuffled: false,
   _shuffleOrder: null,  // tableau d'ids mélangés
   gravityMode: false,   // true quand un verbe est actif → canvas orbital
