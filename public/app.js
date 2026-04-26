@@ -2794,24 +2794,48 @@ function renderJournal(filtered) {
           <div class="journal-note-text">${text}</div>
         </div>`;
     } else {
-      // Photo d'objet : image pleine largeur, légende discrète au survol
+      // Photo : pleine largeur de la colonne. Si c'est une photo de contexte (journal-photo),
+      // pas de légende. Si c'est un objet d'inventaire, afficher son nom en caption.
       const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
       if (!src) return;
+      const isContext = c.type === 'journal-photo';
+      item.classList.add(isContext ? 'journal-photo-ctx' : 'journal-photo-obj');
+      const removeBtn = isContext
+        ? `<button class="journal-remove-btn" data-id="${c.id}" title="Retirer du Journal" aria-label="Retirer">×</button>`
+        : '';
       item.innerHTML = `
+        ${removeBtn}
         <img src="${src}" alt="${esc(c.name || '')}" loading="lazy" draggable="false">
-        ${c.name ? `<div class="journal-caption">${esc(c.name)}</div>` : ''}`;
+        ${(!isContext && c.name) ? `<div class="journal-caption">${esc(c.name)}</div>` : ''}`;
     }
     grid.appendChild(item);
   });
 
   // Bind clic : ouvre la note (édition) ou la fiche objet
   grid.querySelectorAll('.journal-item').forEach(el => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (e) => {
+      // Ignore si on a cliqué sur le bouton de suppression
+      if (e.target.closest('.journal-remove-btn')) return;
       const id = el.dataset.id;
       const obj = state.collections.find(c => c.id === id);
       if (!obj) return;
       if (obj.type === 'note') openNoteModal(id);
+      else if (obj.type === 'journal-photo') return;        // photo de contexte : pas de fiche
       else if (typeof openDetail === 'function') openDetail(id);
+    });
+  });
+
+  // Bouton "×" sur les photos de contexte → suppression
+  grid.querySelectorAll('.journal-remove-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      if (!confirm('Retirer cette photo du Journal ?')) return;
+      try {
+        await api.del(`/api/collections/${id}`);
+        state.collections = state.collections.filter(c => c.id !== id);
+        render();
+      } catch (err) { console.error('Delete journal-photo failed:', err); }
     });
   });
 }
