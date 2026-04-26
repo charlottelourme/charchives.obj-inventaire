@@ -2780,7 +2780,7 @@ function renderJournal(filtered) {
     if (c.type === 'note') {
       // Note : post-it stylé Cormorant italique
       const bg = c.backgroundColor || '#fbe7bc';
-      const isDark = _isDarkBg(bg);
+      const isDark = _luminance(bg) < 0.5;
       const text = (c.content || c.textContent || '').replace(/\n/g, '<br>');
       item.classList.add('journal-note');
       item.innerHTML = `
