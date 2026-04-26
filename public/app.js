@@ -1763,6 +1763,43 @@ function formatRelativeDate(isoStr) {
 }
 
 // ── Grid ───────────────────────────────────────────────────────────────────────
+// ══ INVENTAIRE — Vue Constellation ════════════════════════════════════════
+// Affiche UNIQUEMENT les images détourées (PNG transparents) en grille dense
+// organique. Aucun fond, aucune carte, aucun texte. Clic → fiche objet.
+function renderInventoryConstellation(items) {
+  const el = document.getElementById('gridView');
+  if (!el) return;
+  // Filtre : objets avec photo détourée (PNG transparent ou _detour_)
+  // À défaut : on prend la 1ère photo si disponible (constellation tolérante)
+  const visible = items.filter(c => c.photos && c.photos.length > 0);
+  if (!visible.length) {
+    el.innerHTML = '<div class="empty-state grid-empty">Aucun objet à afficher.</div>';
+    return;
+  }
+  // Tri : objets détourés en priorité (PNG transparent)
+  visible.sort((a, b) => {
+    const aDet = (a.photos[0] || '').toLowerCase().includes('.png') || (a.photos[0] || '').includes('detour');
+    const bDet = (b.photos[0] || '').toLowerCase().includes('.png') || (b.photos[0] || '').includes('detour');
+    return (bDet ? 1 : 0) - (aDet ? 1 : 0);
+  });
+  el.classList.add('inv-constellation-mode');
+  el.classList.remove('grid-css');
+  el.innerHTML = visible.map(c => {
+    const src = photoUrl(c.photos[0]);
+    const isDetoured = (c.photos[0] || '').toLowerCase().includes('.png') || (c.photos[0] || '').includes('detour');
+    return `<div class="inv-con-item${isDetoured ? ' detoured' : ''}" data-id="${esc(c.id)}" title="${esc(c.name || '')}">
+      <img src="${src}" alt="${esc(c.name || '')}" loading="lazy" draggable="false">
+    </div>`;
+  }).join('');
+  // Clic → fiche détail
+  el.querySelectorAll('.inv-con-item').forEach(it => {
+    it.addEventListener('click', () => {
+      const id = it.dataset.id;
+      if (typeof openDetail === 'function') openDetail(id);
+    });
+  });
+}
+
 function renderGrid(items) {
   const el = document.getElementById('gridView');
 
