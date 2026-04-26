@@ -4651,15 +4651,16 @@ function _renderTriosAleatoireState() {
   }
 }
 
-// Génère un trio aléatoire depuis les objets "Disponible" de l'Inventaire
-function _generateAleatoireTrio() {
+// Génère un trio aléatoire depuis les objets "Disponible" de l'Inventaire (préserve les verrouillés)
+function _generateAleatoireTrio(prevObjects, locked) {
   const pool = state.collections.filter(c =>
     c.type !== 'note' && c.type !== 'journal-photo' && c.itemStatus === 'Disponible'
   );
   if (pool.length < 3) return null;
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const objects = _fillTrioWithLocks(pool, prevObjects, locked);
+  if (!objects) return null;
   return {
-    objects: shuffled.slice(0, 3),
+    objects,
     rule: 'aleatoire',
     label: 'Composition aléatoire',
     _fromAleatoire: true
