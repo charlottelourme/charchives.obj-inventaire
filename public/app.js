@@ -1929,6 +1929,13 @@ function cardHTML(c) {
       </div>` : ''}
       <div class="card-drop-hint">Déposer les photos ici</div>
     </div>
+    <!-- Toggle Journal : entre l'image et le corps de la carte, aligné à droite -->
+    <div class="card-journal-row">
+      <button class="card-journal-toggle${c.inJournal ? ' on' : ''}" data-id="${c.id}" title="${c.inJournal ? 'Retirer du Journal' : 'Ajouter au Journal'}" onclick="event.stopPropagation();toggleJournal('${c.id}')" aria-label="Toggle Journal" role="switch" aria-checked="${c.inJournal ? 'true' : 'false'}">
+        <span class="cjt-label">Journal</span>
+        <span class="cjt-track"><span class="cjt-thumb"></span></span>
+      </button>
+    </div>
     <div class="card-body">
       ${metaRow}
       <div class="card-name">${esc(c.name)}</div>
