@@ -2746,6 +2746,70 @@ function _shuffleArray(arr) {
   return a;
 }
 
+// ══ JOURNAL — Moodboard statique (Tumblr-like) ═══════════════════════════
+// Mélange photos d'objets + notes en masonry CSS columns. Aucune animation.
+function renderJournal(filtered) {
+  const grid = document.getElementById('galleryGrid');
+  if (!grid) return;
+
+  // Stop toute physique en cours (héritée de l'ancienne Nuée)
+  _galleryItems = [];
+  if (_galleryRafId) { cancelAnimationFrame(_galleryRafId); _galleryRafId = null; }
+
+  // Source : tous les objets avec photo + toutes les notes (les notes sont
+  // exclusives au Journal selon la nouvelle architecture)
+  const source = filtered || state.collections;
+  const items = source.filter(c => c.type === 'note' || (c.photos && c.photos.length > 0));
+
+  // Tri par date de création décroissante (plus récent en premier)
+  items.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+  if (!items.length) {
+    grid.innerHTML = '<div class="gallery-empty">Aucun élément dans le Journal pour le moment.</div>';
+    return;
+  }
+
+  grid.classList.add('journal-mode');
+  grid.innerHTML = '';
+
+  items.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'journal-item';
+    item.dataset.id = c.id;
+
+    if (c.type === 'note') {
+      // Note : post-it stylé Cormorant italique
+      const bg = c.backgroundColor || '#fbe7bc';
+      const isDark = _isDarkBg(bg);
+      const text = (c.content || c.textContent || '').replace(/\n/g, '<br>');
+      item.classList.add('journal-note');
+      item.innerHTML = `
+        <div class="journal-note-inner" style="background:${bg};color:${isDark ? '#F4F4F5' : '#1A1A1A'}">
+          <div class="journal-note-text">${text}</div>
+        </div>`;
+    } else {
+      // Photo d'objet : image pleine largeur, légende discrète au survol
+      const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
+      if (!src) return;
+      item.innerHTML = `
+        <img src="${src}" alt="${esc(c.name || '')}" loading="lazy" draggable="false">
+        ${c.name ? `<div class="journal-caption">${esc(c.name)}</div>` : ''}`;
+    }
+    grid.appendChild(item);
+  });
+
+  // Bind clic : ouvre la note (édition) ou la fiche objet
+  grid.querySelectorAll('.journal-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const obj = state.collections.find(c => c.id === id);
+      if (!obj) return;
+      if (obj.type === 'note') openNoteModal(id);
+      else if (typeof openDetail === 'function') openDetail(id);
+    });
+  });
+}
+
 function renderGallery(filtered) {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
