@@ -6833,8 +6833,9 @@ function isTriosTabHidden(idx) {
 
 function _syncTriosTabLabels() {
   document.querySelectorAll('.trios-tab-btn').forEach((btn, i) => {
-    btn.textContent = getTriosTabLabel(i);
-    // Masquer l'onglet si marqué hidden dans Paramètres
+    const label = getTriosTabLabel(i);
+    // Ne pas écraser le HTML si pas de label défini (préserve "Aléatoire" écrit en dur)
+    if (label) btn.textContent = label;
     btn.style.display = isTriosTabHidden(i) ? 'none' : '';
   });
 }
