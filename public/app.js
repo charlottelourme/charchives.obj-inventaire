@@ -1918,10 +1918,6 @@ function cardHTML(c) {
   <div class="card" data-id="${c.id}"${accentStyle}>
     <div class="card-thumb-area${thumbAreaMod}">
       <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">${_asteriskSVG()}</button>
-      <button class="card-journal-toggle${c.inJournal ? ' on' : ''}" data-id="${c.id}" title="${c.inJournal ? 'Retirer du Journal' : 'Ajouter au Journal'}" onclick="event.stopPropagation();toggleJournal('${c.id}')" aria-label="Toggle Journal" role="switch" aria-checked="${c.inJournal ? 'true' : 'false'}">
-        <span class="cjt-label">Journal</span>
-        <span class="cjt-track"><span class="cjt-thumb"></span></span>
-      </button>
       <div class="card-grain" aria-hidden="true"></div>
       ${photo
         ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="" loading="lazy" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=\\'card-thumb-placeholder\\'>◻</div>')">`
