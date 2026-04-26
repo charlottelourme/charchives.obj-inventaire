@@ -1918,7 +1918,10 @@ function cardHTML(c) {
   <div class="card" data-id="${c.id}"${accentStyle}>
     <div class="card-thumb-area${thumbAreaMod}">
       <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">${_asteriskSVG()}</button>
-      <button class="card-journal-btn${c.inJournal ? ' active' : ''}" data-id="${c.id}" title="${c.inJournal ? 'Retirer du Journal' : 'Ajouter au Journal'}" onclick="event.stopPropagation();toggleJournal('${c.id}')" aria-label="Toggle Journal"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><polyline points="15 4 15 9 20 9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></button>
+      <button class="card-journal-toggle${c.inJournal ? ' on' : ''}" data-id="${c.id}" title="${c.inJournal ? 'Retirer du Journal' : 'Ajouter au Journal'}" onclick="event.stopPropagation();toggleJournal('${c.id}')" aria-label="Toggle Journal" role="switch" aria-checked="${c.inJournal ? 'true' : 'false'}">
+        <span class="cjt-label">Journal</span>
+        <span class="cjt-track"><span class="cjt-thumb"></span></span>
+      </button>
       <div class="card-grain" aria-hidden="true"></div>
       ${photo
         ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="" loading="lazy" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=\\'card-thumb-placeholder\\'>◻</div>')">`
