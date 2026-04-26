@@ -956,11 +956,11 @@ body.dark-mode.verbe-active .card {
 .card::before {
   content: '';
   position: absolute !important;
-  top: -8px !important;
-  bottom: -16px !important;
-  left: -4% !important;
-  right: -4% !important;
-  filter: blur(20px) !important;          /* fondu généreux */
+  top: -14px !important;
+  bottom: -26px !important;
+  left: -7% !important;
+  right: -7% !important;
+  filter: blur(30px) !important;          /* fondu élargi — bords plus diffus */
   border-radius: 4px !important;
   opacity: 0.85 !important;
   z-index: -1 !important;
