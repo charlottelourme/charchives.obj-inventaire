@@ -3219,14 +3219,21 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 #deriveView .nuee-zoom-wrap,
 #deriveView .derive-shuffle-btn { display: none !important; }
 
+/* Pane Nuée → Journal : libère hauteur fixe pour scroll naturel */
+#deriveView #deriveNueePane {
+  height: auto !important;
+  min-height: calc(100vh - 220px) !important;
+  overflow: visible !important;
+}
 /* Conteneur scroll : retire toute interaction de physique */
 #deriveView #galleryScroll {
-  overflow-y: auto !important;
+  overflow-y: visible !important;
   overflow-x: hidden !important;
   cursor: default !important;
   touch-action: auto !important;
   height: auto !important;
   min-height: calc(100vh - 200px);
+  position: static !important;
 }
 /* Grille Journal : CSS columns masonry, statique */
 #deriveView #galleryGrid.journal-mode {
@@ -3234,6 +3241,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   position: static !important;
   width: 100% !important;
   height: auto !important;
+  min-height: 0 !important;
   padding: 32px;
   column-count: 4;
   column-gap: 20px;
