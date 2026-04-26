@@ -4708,6 +4708,7 @@ function _renderTriosManualState() {
   bar.innerHTML = filled.length === 3
     ? `<span class="trios-link-pre">Composition manuelle</span>`
     : `<span class="trios-link-pre" style="color:var(--text-3)">${filled.length}/3 objets placés</span>`;
+  _renderTriosActions();
 }
 
 function renderTrios() {
@@ -4717,7 +4718,7 @@ function renderTrios() {
   // Applique la visibilité des onglets (Paramètres > Onglets Triptyque > Masquer)
   _syncTriosTabLabels();
   // Si l'onglet actif est masqué, bascule sur le premier visible
-  const tabIdxMap = { hasard: 0, regles: 1, manuel: 2 };
+  const tabIdxMap = { hasard: 0, regles: 1, manuel: 2, aleatoire: 3 };
   const activeIdx = tabIdxMap[_triosActiveTab];
   if (activeIdx != null && isTriosTabHidden(activeIdx)) {
     const firstVisible = ['hasard', 'regles', 'manuel', 'aleatoire'].find((t, i) => !isTriosTabHidden(i));
@@ -4733,7 +4734,7 @@ function renderTrios() {
   const result  = document.getElementById('triosResult');
   const empty   = document.getElementById('triosEmpty');
   if (state.collections.length < 3) {
-    result.style.display = 'none'; empty.style.display = ''; return;
+    result.style.display = 'none'; empty.style.display = ''; _renderTriosActions(); return;
   }
   empty.style.display = 'none';
   _populateTriosFilters();
@@ -4742,14 +4743,29 @@ function renderTrios() {
     if (!_currentTrio) _currentTrio = _generateTrio();
     if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
   } else if (_triosActiveTab === 'regles') {
-    if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
-    else result.style.display = 'none';
+    // Restaure pill active + select de valeur si une règle est en mémoire
+    const ruleControls = document.getElementById('triosRuleControls');
+    if (_currentTrio?._rule) {
+      document.querySelectorAll('.trios-rule-pill').forEach(p =>
+        p.classList.toggle('active', p.dataset.rule === _currentTrio._rule));
+      if (ruleControls) ruleControls.style.display = '';
+      _populateTriosRuleValues(_currentTrio._rule);
+      const sel = document.getElementById('triosRuleValue');
+      if (sel && _currentTrio._ruleValue) sel.value = _currentTrio._ruleValue;
+      _setTriosLinkBar(_currentTrio);
+      _renderTriosCards(_currentTrio.objects);
+      result.style.display = '';
+    } else {
+      if (ruleControls) ruleControls.style.display = 'none';
+      result.style.display = 'none';
+    }
   } else if (_triosActiveTab === 'aleatoire') {
     _renderTriosAleatoireState();
   } else {
     _renderTriosManualState();
   }
   _renderSavedTrios();
+  _renderTriosActions();
 }
 
 // ── Onglet Aléatoire : pioche 3 objets parmi tous les "Disponible" de l'Inventaire
@@ -4762,6 +4778,7 @@ function _renderTriosAleatoireState() {
   if (pool.length < 3) {
     if (emptyEl) emptyEl.style.display = '';
     if (result)  result.style.display  = 'none';
+    _renderTriosActions();
     return;
   }
   if (emptyEl) emptyEl.style.display = 'none';
@@ -4773,6 +4790,7 @@ function _renderTriosAleatoireState() {
   } else if (result) {
     result.style.display = 'none';
   }
+  _renderTriosActions();
 }
 
 // Génère un trio aléatoire depuis les objets "Disponible" de l'Inventaire (préserve les verrouillés)
