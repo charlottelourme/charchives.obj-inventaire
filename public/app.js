@@ -2756,10 +2756,14 @@ function renderJournal(filtered) {
   _galleryItems = [];
   if (_galleryRafId) { cancelAnimationFrame(_galleryRafId); _galleryRafId = null; }
 
-  // Source : on ignore le filtre global (qui exclut les notes) — le Journal
-  // veut ALL les notes + ALL les objets avec photo. Pas de filtre additionnel.
+  // Source du Journal :
+  //  - TOUTES les notes (exclusivement créées ici)
+  //  - TOUTES les photos de contexte (type 'journal-photo' — uploadées directement)
+  //  - SEULEMENT les objets d'inventaire flaggés `inJournal: true`
   const items = state.collections.filter(c =>
-    c.type === 'note' || (c.photos && c.photos.length > 0)
+    c.type === 'note' ||
+    c.type === 'journal-photo' ||
+    (c.inJournal === true && c.photos && c.photos.length > 0)
   );
 
   // Tri par date de création décroissante (plus récent en premier)
