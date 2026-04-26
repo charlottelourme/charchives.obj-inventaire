@@ -2756,10 +2756,11 @@ function renderJournal(filtered) {
   _galleryItems = [];
   if (_galleryRafId) { cancelAnimationFrame(_galleryRafId); _galleryRafId = null; }
 
-  // Source : tous les objets avec photo + toutes les notes (les notes sont
-  // exclusives au Journal selon la nouvelle architecture)
-  const source = filtered || state.collections;
-  const items = source.filter(c => c.type === 'note' || (c.photos && c.photos.length > 0));
+  // Source : on ignore le filtre global (qui exclut les notes) — le Journal
+  // veut ALL les notes + ALL les objets avec photo. Pas de filtre additionnel.
+  const items = state.collections.filter(c =>
+    c.type === 'note' || (c.photos && c.photos.length > 0)
+  );
 
   // Tri par date de création décroissante (plus récent en premier)
   items.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
