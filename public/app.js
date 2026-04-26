@@ -6968,7 +6968,7 @@ function smTriosTabsHTML(draft) {
   const labels = draft.triosTabLabels || {};
   const hidden = draft.triosTabHidden || {};
   return `<div class="sm-trios-tabs">
-    <p class="sm-trios-hint">Renomme, masque ou supprime les 3 onglets de la vue Triptyque.</p>
+    <p class="sm-trios-hint">Renomme, masque ou supprime les 4 onglets de la vue Triptyque.</p>
     ${TRIOS_TAB_KEYS.map((key, i) => `
       <div class="sm-field-row sm-trios-row">
         <label class="sm-trios-tab-label">Onglet ${i+1}</label>
