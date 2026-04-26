@@ -100,7 +100,7 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
 }
 /* Calque 1 : base — blanc en clair, zinc-950 en sombre */
 #bgLayers .bg-base {
-  background: #EFEDE7;
+  background: #F4F2EC;
   transition: background 0.4s ease;
 }
 body.dark-mode #bgLayers .bg-base { background: rgb(9, 9, 11); }
