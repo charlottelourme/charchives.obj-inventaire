@@ -853,7 +853,7 @@ main {
   column-count: var(--grid-cols, 4);
   -webkit-column-gap: 72px;
   column-gap: 72px;
-  padding: 48px 64px calc(80px + env(safe-area-inset-bottom));
+  padding: 48px 48px calc(80px + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 /* Quand le JS détecte peu d'objets, il force CSS Grid via inline style */
