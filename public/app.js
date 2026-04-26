@@ -8594,16 +8594,24 @@ function bindEvents() {
   document.getElementById('journalPhotoInput')?.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
+    const btn = document.getElementById('journalAddPhotoBtn');
+    const prevLabel = btn?.textContent;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = files.length > 1
+        ? `Upload en cours… (${files.length} photos)`
+        : 'Upload en cours…';
+    }
     try {
-      // Upload via l'API existante
-      const { urls } = await api.uploadPhotos(files);
+      // Upload via l'API existante (le serveur renvoie { filenames })
+      const { filenames } = await api.uploadPhotos(files);
       // Crée une entrée par photo uploadée (type spécifique 'journal-photo')
-      for (const url of (urls || [])) {
+      for (const ref of (filenames || [])) {
         const newItem = {
           id: crypto.randomUUID ? crypto.randomUUID() : ('jp-' + Date.now() + Math.random()),
           name: '',
           type: 'journal-photo',           // type dédié — n'apparaît pas dans Inventaire
-          photos: [url],
+          photos: [ref],
           attributes: {},
           keywords: [],
           createdAt: new Date().toISOString()
@@ -8616,6 +8624,11 @@ function bindEvents() {
     } catch (err) {
       console.error('Upload journal photo failed:', err);
       alert('Échec de l\'upload. Réessaie.');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = prevLabel || '+ Ajouter une photo';
+      }
     }
   });
 
