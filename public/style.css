@@ -129,7 +129,7 @@ body.dark-mode #bgLayers .bg-grain {
 
 /* Body : transparent en tout temps (le fond est piloté par #bgLayers) */
 body { background: transparent !important; }
-html { background: #EFEDE7; }
+html { background: #F4F2EC; }
 html:has(body.dark-mode) { background: rgb(9, 9, 11); }
 
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
