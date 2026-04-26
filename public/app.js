@@ -4557,12 +4557,14 @@ function renderTrios() {
   _renderSavedTrios();
 }
 
-// ── Onglet Aléatoire : pioche 3 objets dans la sélection (bookmarked) ─────
+// ── Onglet Aléatoire : pioche 3 objets parmi tous les "Disponible" de l'Inventaire
 function _renderTriosAleatoireState() {
-  const selected = state.collections.filter(c => c.bookmarked);
+  const pool = state.collections.filter(c =>
+    c.type !== 'note' && c.type !== 'journal-photo' && c.itemStatus === 'Disponible'
+  );
   const emptyEl = document.getElementById('triosAleatoireEmpty');
   const result  = document.getElementById('triosResult');
-  if (selected.length < 3) {
+  if (pool.length < 3) {
     if (emptyEl) emptyEl.style.display = '';
     if (result)  result.style.display  = 'none';
     return;
@@ -4578,11 +4580,13 @@ function _renderTriosAleatoireState() {
   }
 }
 
-// Génère un trio aléatoire depuis la sélection
+// Génère un trio aléatoire depuis les objets "Disponible" de l'Inventaire
 function _generateAleatoireTrio() {
-  const selected = state.collections.filter(c => c.bookmarked);
-  if (selected.length < 3) return null;
-  const shuffled = [...selected].sort(() => Math.random() - 0.5);
+  const pool = state.collections.filter(c =>
+    c.type !== 'note' && c.type !== 'journal-photo' && c.itemStatus === 'Disponible'
+  );
+  if (pool.length < 3) return null;
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return {
     objects: shuffled.slice(0, 3),
     rule: 'aleatoire',
