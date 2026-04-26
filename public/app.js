@@ -8487,6 +8487,38 @@ function bindEvents() {
   // Bouton "+ Ajouter une note" sur le Journal (anciennement Dérive)
   document.getElementById('journalAddNoteBtn')?.addEventListener('click', () => openNoteModal(null));
 
+  // Bouton "+ Ajouter une photo" — upload + création d'une entrée 'journal-photo'
+  document.getElementById('journalAddPhotoBtn')?.addEventListener('click', () => {
+    document.getElementById('journalPhotoInput')?.click();
+  });
+  document.getElementById('journalPhotoInput')?.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    try {
+      // Upload via l'API existante
+      const { urls } = await api.uploadPhotos(files);
+      // Crée une entrée par photo uploadée (type spécifique 'journal-photo')
+      for (const url of (urls || [])) {
+        const newItem = {
+          id: crypto.randomUUID ? crypto.randomUUID() : ('jp-' + Date.now() + Math.random()),
+          name: '',
+          type: 'journal-photo',           // type dédié — n'apparaît pas dans Inventaire
+          photos: [url],
+          attributes: {},
+          keywords: [],
+          createdAt: new Date().toISOString()
+        };
+        await api.post('/api/collections', newItem);
+        state.collections.unshift(newItem);
+      }
+      e.target.value = '';                  // reset l'input
+      render();                             // re-render Journal
+    } catch (err) {
+      console.error('Upload journal photo failed:', err);
+      alert('Échec de l\'upload. Réessaie.');
+    }
+  });
+
   // Bouton "Tirer une composition" (Aléatoire) ─ pioche dans la sélection
   document.getElementById('triosAleatoireBtn')?.addEventListener('click', () => {
     const trio = _generateAleatoireTrio();
