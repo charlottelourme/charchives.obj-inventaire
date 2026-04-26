@@ -1694,7 +1694,11 @@ function render() {
 
   if (state.view==='grid') {
     exitGravityMode();
-    renderGrid(filtered);
+    if (state.inventoryMode === 'constellation') {
+      renderInventoryConstellation(filtered);
+    } else {
+      renderGrid(filtered);
+    }
   } else if (state.view==='derive') {
     // Journal : masonry statique de photos + notes (plus de Nuée/Constellation)
     renderJournal(filtered);
