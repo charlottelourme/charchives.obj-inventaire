@@ -1695,8 +1695,8 @@ function render() {
     exitGravityMode();
     renderGrid(filtered);
   } else if (state.view==='derive') {
-    if (state.deriveMode==='nuee')    renderGallery(filtered);
-    else                              renderConstellation(filtered);
+    // Journal : masonry statique de photos + notes (plus de Nuée/Constellation)
+    renderJournal(filtered);
   }
   else if (state.view==='diorama')     renderDiorama();
   else if (state.view==='trios')      renderTrios();
