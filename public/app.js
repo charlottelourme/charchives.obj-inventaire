@@ -4585,6 +4585,21 @@ async function toggleBookmark(id) {
   render();
 }
 
+// Toggle "afficher dans le Journal" — équivalent du bookmark mais pour la page Journal
+async function toggleJournal(id) {
+  const col = state.collections.find(c => c.id === id);
+  if (!col) return;
+  col.inJournal = !col.inJournal;
+  try {
+    await api.put(`/api/collections/${id}`, { ...col });
+  } catch(e) {
+    col.inJournal = !col.inJournal;
+    console.error('toggleJournal error', e);
+  }
+  render();
+}
+window.toggleJournal = toggleJournal;
+
 // ══ TRIOS — Compositions sauvegardées (localStorage) ═══════════════════════
 function _persistSavedTrios() {
   localStorage.setItem('charchives_saved_trios', JSON.stringify(_savedTrios));
