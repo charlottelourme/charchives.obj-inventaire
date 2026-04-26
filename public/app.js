@@ -8817,49 +8817,92 @@ function bindEvents() {
     }
   });
 
-  // Bouton "Tirer une composition" (Aléatoire) ─ pioche dans la sélection
+  // Bouton "Tirer une composition" (Aléatoire) ─ pioche dans tous les "Disponible"
   document.getElementById('triosAleatoireBtn')?.addEventListener('click', () => {
+    _resetTriosLocks();
     const trio = _generateAleatoireTrio();
-    if (!trio) return;
+    if (!trio) {
+      _showTriosToast('Pas assez d\'objets disponibles pour piocher.');
+      return;
+    }
     _currentTrio = trio;
     _setTriosLinkBar(trio);
     _renderTriosCards(trio.objects);
     document.getElementById('triosResult').style.display = '';
+    _renderTriosActions();
   });
 
-  // Mode 1 — Composer
+  // Collisions — Composer (filtres aléatoires)
   document.getElementById('triosComposeBtn').addEventListener('click', () => {
+    _resetTriosLocks();
     const matiere   = document.getElementById('trioFiltMatiere').value;
     const teinte    = document.getElementById('trioFiltTeinte').value;
     const intention = document.getElementById('trioFiltIntention').value;
     const trio = _generateTrioFiltered(matiere, teinte, intention);
     if (!trio) {
-      alert('Pas assez d\'objets correspondant à ces critères. Essaie avec moins de filtres.');
+      _showTriosToast('Pas assez d\'objets pour ces filtres. Essaie d\'en retirer un.');
+      document.getElementById('triosResult').style.display = 'none';
+      _renderTriosActions();
       return;
     }
     _currentTrio = trio;
     renderTrios();
   });
 
-  // Mode 2 — Règles d'Art
+  // Affinités — sélection d'une règle (affiche le sélecteur de valeur, ne génère pas encore)
   document.querySelectorAll('.trios-rule-pill').forEach(pill => {
     pill.addEventListener('click', () => {
       document.querySelectorAll('.trios-rule-pill').forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
-      const trio = _generateTrioByRule(pill.dataset.rule);
-      if (!trio) {
-        document.getElementById('triosRuleDesc').textContent = 'Pas assez d\'objets pour cette règle.';
-        document.getElementById('triosResult').style.display = 'none';
-        return;
+      _resetTriosLocks();
+      const rule = pill.dataset.rule;
+      _populateTriosRuleValues(rule);
+      const sel = document.getElementById('triosRuleValue');
+      if (sel) sel.value = '';
+      const ruleControls = document.getElementById('triosRuleControls');
+      if (ruleControls) ruleControls.style.display = '';
+      // Si aucune valeur n'a ≥3 objets, le select n'a que l'option (au hasard) → message
+      const opts = sel ? sel.querySelectorAll('option').length : 0;
+      const desc = document.getElementById('triosRuleDesc');
+      if (opts <= 1) {
+        if (desc) desc.textContent = 'Aucune valeur ne réunit assez d\'objets pour cette règle.';
+      } else if (desc) {
+        desc.textContent = '';
       }
-      document.getElementById('triosRuleDesc').textContent = '';
-      _currentTrio = trio;
-      renderTrios();
+      // Pas de génération immédiate : on attend le clic sur "Composer"
+      document.getElementById('triosResult').style.display = 'none';
+      document.getElementById('triosLinkBar').innerHTML = '';
+      _currentTrio = null;
+      _renderTriosActions();
     });
   });
 
-  // Mode 3 — Recherche inventaire (input retiré : l'Assemblage utilise désormais la sélection)
-  document.getElementById('triosInvSearch')?.addEventListener('input', _renderInventoryStrip);
+  // Affinités — Composer avec règle + valeur
+  document.getElementById('triosRuleComposeBtn')?.addEventListener('click', () => {
+    _resetTriosLocks();
+    const activePill = document.querySelector('.trios-rule-pill.active');
+    if (!activePill) return;
+    const rule = activePill.dataset.rule;
+    const value = document.getElementById('triosRuleValue')?.value || '';
+    const trio = _generateTrioByRule(rule, value);
+    if (!trio) {
+      _showTriosToast('Pas assez d\'objets pour cette règle.');
+      document.getElementById('triosResult').style.display = 'none';
+      _renderTriosActions();
+      return;
+    }
+    document.getElementById('triosRuleDesc').textContent = '';
+    _currentTrio = trio;
+    _setTriosLinkBar(trio);
+    _renderTriosCards(trio.objects);
+    document.getElementById('triosResult').style.display = '';
+    _renderTriosActions();
+  });
+
+  // Re-piocher — préserve les slots verrouillés sur les 3 onglets génératifs
+  document.getElementById('triosRepickBtn')?.addEventListener('click', () => {
+    _regenerateTrio();
+  });
 
   // Mode 3 — Sauvegarder composition (localStorage)
   document.getElementById('triosSaveBtn').addEventListener('click', () => {
