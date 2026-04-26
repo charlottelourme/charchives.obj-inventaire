@@ -1764,40 +1764,32 @@ function formatRelativeDate(isoStr) {
 
 // ── Grid ───────────────────────────────────────────────────────────────────────
 // ══ INVENTAIRE — Vue Constellation ════════════════════════════════════════
-// Affiche UNIQUEMENT les images détourées (PNG transparents) en grille dense
-// organique. Aucun fond, aucune carte, aucun texte. Clic → fiche objet.
+// Réutilise la D3 force-directed simulation existante (renderConstellation)
+// et injecte la barre d'affinités (Intention / Matière / Identité) + le canvas
+// dans le conteneur #gridView de l'Inventaire.
 function renderInventoryConstellation(items) {
   const el = document.getElementById('gridView');
   if (!el) return;
-  // Filtre : objets avec photo détourée (PNG transparent ou _detour_)
-  // À défaut : on prend la 1ère photo si disponible (constellation tolérante)
-  const visible = items.filter(c => c.photos && c.photos.length > 0);
-  if (!visible.length) {
-    el.innerHTML = '<div class="empty-state grid-empty">Aucun objet à afficher.</div>';
-    return;
-  }
-  // Tri : objets détourés en priorité (PNG transparent)
-  visible.sort((a, b) => {
-    const aDet = (a.photos[0] || '').toLowerCase().includes('.png') || (a.photos[0] || '').includes('detour');
-    const bDet = (b.photos[0] || '').toLowerCase().includes('.png') || (b.photos[0] || '').includes('detour');
-    return (bDet ? 1 : 0) - (aDet ? 1 : 0);
-  });
   el.classList.add('inv-constellation-mode');
   el.classList.remove('grid-css');
-  el.innerHTML = visible.map(c => {
-    const src = photoUrl(c.photos[0]);
-    const isDetoured = (c.photos[0] || '').toLowerCase().includes('.png') || (c.photos[0] || '').includes('detour');
-    return `<div class="inv-con-item${isDetoured ? ' detoured' : ''}" data-id="${esc(c.id)}" title="${esc(c.name || '')}">
-      <img src="${src}" alt="${esc(c.name || '')}" loading="lazy" draggable="false">
-    </div>`;
-  }).join('');
-  // Clic → fiche détail
-  el.querySelectorAll('.inv-con-item').forEach(it => {
-    it.addEventListener('click', () => {
-      const id = it.dataset.id;
-      if (typeof openDetail === 'function') openDetail(id);
-    });
-  });
+
+  // Si la structure n'existe pas encore, on l'injecte
+  if (!el.querySelector('.inv-con-toolbar')) {
+    el.innerHTML = `
+      <div class="inv-con-toolbar">
+        <div class="con-aff-bar">
+          <button class="con-aff-btn" data-aff="intention">Intention</button>
+          <button class="con-aff-btn" data-aff="matiere">Matière</button>
+          <button class="con-aff-btn" data-aff="identite">Identité</button>
+        </div>
+      </div>
+      <div id="conCanvas" class="con-canvas"></div>
+    `;
+  }
+  // Délègue le rendu D3 à la fonction existante (clusters par affinité)
+  if (typeof renderConstellation === 'function') {
+    renderConstellation(items);
+  }
 }
 
 function renderGrid(items) {
