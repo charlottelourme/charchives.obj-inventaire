@@ -3205,18 +3205,22 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 
 /* ══ Toggle "Journal" sur les cartes Inventaire ═══════════════════════════
-   Petit switch on/off bas-droite de l'image. Visible au survol, persistant si actif. */
+   Petit switch on/off placé entre l'image et le corps de la carte, aligné à droite.
+   - OFF : visible uniquement au survol de la carte
+   - ON  : visible en permanence (label "Journal" + track activé) */
+.card-journal-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 6px 4px 0;
+  min-height: 18px;
+}
 .card-journal-toggle {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  z-index: 5;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255,255,255,0.92);
+  background: transparent;
   border: none;
-  padding: 4px 6px 4px 8px;
+  padding: 0;
   cursor: pointer;
   font-family: 'Cutive Mono', monospace;
   font-size: 9px;
@@ -3224,11 +3228,11 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   text-transform: uppercase;
   color: var(--text-3);
   opacity: 0;
-  transition: opacity 0.15s, background 0.2s, color 0.2s;
+  transition: opacity 0.15s, color 0.2s;
 }
-.card:hover .card-journal-toggle { opacity: 1; }
+.card:hover .card-journal-toggle { opacity: 1; }    /* visible au hover quand OFF */
 .card-journal-toggle.on {
-  opacity: 1;
+  opacity: 1 !important;                            /* TOUJOURS visible quand ON */
   color: var(--text);
 }
 /* Track (rail) du switch */
