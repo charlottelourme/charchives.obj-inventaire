@@ -3204,6 +3204,34 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   margin: 0;
 }
 
+/* ══ Bouton "Ajouter au Journal" sur les cartes Inventaire ════════════════
+   Petit picto carnet dans le coin haut-gauche (pendant du bookmark à droite). */
+.card-journal-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: rgba(255,255,255,0.85);
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+  opacity: 0;
+  transition: opacity 0.15s, background 0.2s, color 0.2s;
+}
+.card:hover .card-journal-btn { opacity: 1; }
+.card-journal-btn:hover { background: var(--text); color: var(--bg); }
+.card-journal-btn.active {
+  opacity: 1;
+  background: var(--text);
+  color: var(--bg);
+}
+body.dark-mode .card-journal-btn { background: rgba(24,24,27,0.85); }
+
 /* ══ JOURNAL — Masonry statique style Tumblr/Moodboard ════════════════════
    Mélange photos d'objets + notes/post-it. Aucune animation.
    Layout : CSS columns 4 colonnes (desktop) → 2 (tablette) → 1 (mobile). */
