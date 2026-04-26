@@ -4616,10 +4616,36 @@ function _renderTriosCards(objects) {
       card.addEventListener('click', e => { if (!e.target.closest('.trios-slot-remove')) openDetail(card.dataset.id); });
     });
   } else {
-    // Modes Hasard et Règles — cartes identiques à la Grille
-    grid.innerHTML = objects.map(c => cardHTML(c)).join('');
-    grid.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', () => openDetail(card.dataset.id));
+    // Modes Hasard / Règles / Aléatoire — cartes wrappées avec verrou pour Re-piocher sélectif
+    grid.innerHTML = objects.map((c, i) => {
+      const isLocked = !!_triosLockedSlots[i];
+      const lockTitle = isLocked ? 'Libérer cet objet' : 'Fixer cet objet';
+      return `<div class="trios-slot-wrap auto${isLocked ? ' locked' : ''}" data-slot="${i}">
+        ${cardHTML(c)}
+        <button class="trios-slot-lock" data-slot="${i}" title="${lockTitle}" aria-label="${lockTitle}" aria-pressed="${isLocked}">${_lockSvg(isLocked)}</button>
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('.trios-slot-wrap.auto .card').forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.trios-slot-lock')) return;
+        openDetail(card.dataset.id);
+      });
+    });
+    grid.querySelectorAll('.trios-slot-lock').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const i = +btn.dataset.slot;
+        _triosLockedSlots[i] = !_triosLockedSlots[i];
+        const wrap = btn.closest('.trios-slot-wrap');
+        const nowLocked = _triosLockedSlots[i];
+        if (wrap) wrap.classList.toggle('locked', nowLocked);
+        const title = nowLocked ? 'Libérer cet objet' : 'Fixer cet objet';
+        btn.setAttribute('title', title);
+        btn.setAttribute('aria-label', title);
+        btn.setAttribute('aria-pressed', String(nowLocked));
+        btn.innerHTML = _lockSvg(nowLocked);
+        _renderTriosActions();
+      });
     });
   }
 }
