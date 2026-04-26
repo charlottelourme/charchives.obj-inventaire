@@ -4473,6 +4473,104 @@ function _populateTriosFilters() {
   fill('trioFiltIntention', 'Intention', iSet);
 }
 
+// Peuple le select de valeur en mode Affinités selon la règle (couleurs / origine / matières) — ne montre que les valeurs ayant ≥3 objets.
+function _populateTriosRuleValues(rule) {
+  const sel = document.getElementById('triosRuleValue');
+  if (!sel) return;
+  const cols = state.collections.filter(c => c.type !== 'note' && c.type !== 'journal-photo');
+  let getter, placeholder;
+  if (rule === 'monochrome') { getter = c => c.attributes?.couleurs; placeholder = 'Toutes les teintes'; }
+  else if (rule === 'epoque')  { getter = c => c.attributes?.origine;  placeholder = 'Toutes les époques'; }
+  else if (rule === 'matiere') { getter = c => c.attributes?.matieres; placeholder = 'Toutes les matières'; }
+  else { sel.innerHTML = ''; return; }
+  const counts = {};
+  cols.forEach(c => (getter(c)||[]).forEach(v => { counts[v] = (counts[v]||0) + 1; }));
+  const eligible = Object.entries(counts).filter(([_, n]) => n >= 3).sort((a, b) => a[0].localeCompare(b[0], 'fr'));
+  sel.innerHTML = `<option value="">${esc(placeholder)} (au hasard)</option>` +
+    eligible.map(([v, n]) => `<option value="${esc(v)}">${esc(v)} (${n})</option>`).join('');
+}
+
+// Reset des verrous (slots) — appelé sur changement d'onglet, Composer, Tirer, changement de pill.
+function _resetTriosLocks() {
+  _triosLockedSlots = [false, false, false];
+}
+
+// SVG cadenas — brutaliste, stroke 1.4 round, traits francs.
+function _lockSvg(closed) {
+  if (closed) {
+    return `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="6" y="11" width="12" height="9"/>
+      <path d="M9 11V7a3 3 0 0 1 6 0v4"/>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="6" y="11" width="12" height="9"/>
+    <path d="M9 11V7a3 3 0 0 1 6 0v2"/>
+  </svg>`;
+}
+
+// Affiche / masque la barre d'actions (Re-piocher) selon onglet et présence d'un trio.
+function _renderTriosActions() {
+  const actions = document.getElementById('triosActions');
+  if (!actions) return;
+  const isGenerative = ['hasard', 'regles', 'aleatoire'].includes(_triosActiveTab);
+  const result = document.getElementById('triosResult');
+  const hasTrio = !!_currentTrio && result && result.style.display !== 'none';
+  if (!isGenerative || !hasTrio) {
+    actions.style.display = 'none';
+    return;
+  }
+  actions.style.display = '';
+  const lockedCount = _triosLockedSlots.filter(Boolean).length;
+  const allLocked = lockedCount === 3;
+  const btn = document.getElementById('triosRepickBtn');
+  if (!btn) return;
+  btn.disabled = allLocked;
+  if (allLocked) {
+    btn.textContent = 'Tout est fixé';
+  } else if (lockedCount > 0) {
+    const n = 3 - lockedCount;
+    btn.textContent = `Re-piocher ${n} objet${n > 1 ? 's' : ''}`;
+  } else {
+    btn.textContent = 'Re-piocher';
+  }
+}
+
+// Message inline (remplace les alert() bloquants) — affiché dans la link bar avec ton discret.
+function _showTriosToast(msg) {
+  const bar = document.getElementById('triosLinkBar');
+  if (!bar) return;
+  bar.innerHTML = `<span class="trios-link-pre" style="color:var(--text-3)">${esc(msg)}</span>`;
+}
+
+// Re-pioche le trio courant en respectant les verrous et les paramètres stockés (filtres / règle).
+function _regenerateTrio() {
+  if (!_currentTrio) return;
+  if (_triosLockedSlots.every(Boolean)) return;
+  const prev = _currentTrio.objects;
+  const locked = _triosLockedSlots;
+  let trio = null;
+  if (_triosActiveTab === 'hasard') {
+    if (_currentTrio._matiere !== undefined || _currentTrio._teinte !== undefined || _currentTrio._intention !== undefined) {
+      trio = _generateTrioFiltered(_currentTrio._matiere || '', _currentTrio._teinte || '', _currentTrio._intention || '', prev, locked);
+    } else {
+      trio = _generateTrio(prev, locked);
+    }
+  } else if (_triosActiveTab === 'regles' && _currentTrio._rule) {
+    trio = _generateTrioByRule(_currentTrio._rule, _currentTrio._ruleValue || '', prev, locked);
+  } else if (_triosActiveTab === 'aleatoire') {
+    trio = _generateAleatoireTrio(prev, locked);
+  }
+  if (!trio) {
+    _showTriosToast('Pas assez d\'objets pour re-piocher.');
+    return;
+  }
+  _currentTrio = trio;
+  _setTriosLinkBar(_currentTrio);
+  _renderTriosCards(_currentTrio.objects);
+  _renderTriosActions();
+}
+
 /// Rendu des 3 cartes — utilise cardHTML() (composant universel de la Grille)
 function _renderTriosCards(objects) {
   const grid = document.getElementById('triosGrid');
