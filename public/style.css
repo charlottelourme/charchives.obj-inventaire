@@ -7855,6 +7855,98 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   min-height: 18px;
 }
 
+/* ── Trios — Affinités : sélecteur de valeur (couleur/époque/matière) ── */
+.trios-rule-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 14px 0 6px;
+}
+.trios-rule-controls .trios-filter-sel { min-width: 180px; }
+
+/* ── Trios — Verrou de slot (modes Collisions / Affinités / Aléatoire) ── */
+.trios-slot-lock {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 0;
+  opacity: 0;
+  transition: opacity .15s, background .15s, color .15s, border-color .15s;
+}
+.trios-slot-wrap.auto:hover .trios-slot-lock,
+.trios-slot-wrap.auto.locked .trios-slot-lock {
+  opacity: 1;
+}
+.trios-slot-lock:hover {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.trios-slot-wrap.auto.locked .trios-slot-lock {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.trios-slot-wrap.auto.locked > .card {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+body.dark-mode .trios-slot-lock {
+  background: rgba(24,24,27,0.92);
+  border-color: var(--border);
+  color: var(--text-2);
+}
+body.dark-mode .trios-slot-lock:hover,
+body.dark-mode .trios-slot-wrap.auto.locked .trios-slot-lock {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+body.dark-mode .trios-slot-wrap.auto.locked > .card {
+  outline-color: var(--text);
+}
+
+/* ── Trios — Barre d'actions sous le trio (Re-piocher) ── */
+.trios-actions {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 28px;
+}
+.trios-repick-btn {
+  font-family: 'Cutive Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--text);
+  cursor: pointer;
+  transition: opacity .2s, background .2s, color .2s;
+}
+.trios-repick-btn:hover:not(:disabled) {
+  background: var(--text);
+  color: var(--bg);
+}
+.trios-repick-btn:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
 /* ── Trios — Mode 3 : Éditeur Manuel ── */
 .trios-manual-header {
   display: flex;
