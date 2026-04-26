@@ -7702,6 +7702,11 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   .trios-hasard-controls { flex-wrap: wrap; gap: 6px; }
   .trios-filter-sel { flex: 1 1 calc(50% - 6px); font-size: 12px; min-height: 36px; }
   .trios-compose-btn { width: 100%; min-height: 44px; }
+  .trios-rule-controls { flex-direction: column; gap: 8px; align-items: stretch; }
+  .trios-rule-controls .trios-filter-sel { width: 100%; min-width: 0; }
+  /* Verrous toujours visibles sur tactile (pas de hover) */
+  .trios-slot-wrap.auto .trios-slot-lock { opacity: 1; }
+  .trios-repick-btn { width: 100%; min-height: 44px; padding: 12px 24px; }
 }
 
 /* ── Trios — Slot wrapper (mode manuel + mode auto) ── */
