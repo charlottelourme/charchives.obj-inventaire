@@ -3193,15 +3193,6 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-}
-.trios-aleatoire-desc {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-style: italic;
-  font-size: 17px;
-  color: var(--text-2);
-  text-align: center;
-  margin: 0;
 }
 
 /* ══ Toggle "Journal" sur les cartes Inventaire ═══════════════════════════
