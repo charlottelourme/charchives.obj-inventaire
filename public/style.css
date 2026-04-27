@@ -10025,7 +10025,7 @@ body.dark-mode .section-header {
     z-index: -1 !important;
   }
   body.dark-mode .grid .card::before {
-    background: var(--verbe-accent, #3F3F46) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 30%, #0a0a0a 70%) !important;
   }
   /* Cartes : zéro margin/padding/border, bord à bord physique */
   .grid .card {
