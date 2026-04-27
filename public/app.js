@@ -1596,9 +1596,12 @@ function applyVerbePageTheme() {
       const lightColor = verbe.bgColor   || '#E8E4DE';
       const darkColor  = verbe.textColor || _verbeActiveColor(verbe);
 
-      // ── DOUBLE DÉGRADÉ LINÉAIRE (contreforme — bords colorés) ──
+      // ── DÉGRADÉ VERTICAL (haut + bas — bandes colorées qui fondent vers le centre) ──
       if (radialLayer) {
-        const edgeColor = _toRgbaStr(lightColor, 1.0);   // pleine opacité
+        const isDark = document.body.classList.contains('dark-mode');
+        const edgeColor = isDark
+          ? `color-mix(in srgb, ${lightColor} 25%, #0a0a0a 75%)`  // assombri pour respecter le fond zinc-950
+          : _toRgbaStr(lightColor, 1.0);                           // pleine opacité en clair
         radialLayer.style.background =
           `linear-gradient(to bottom, ${edgeColor} 0%, ${edgeColor} 8%, transparent 25%, transparent 75%, ${edgeColor} 92%, ${edgeColor} 100%)`;
       }
