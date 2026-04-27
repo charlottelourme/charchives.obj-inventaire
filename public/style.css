@@ -10068,6 +10068,11 @@ body.dark-mode .section-header {
   body.dark-mode .grid .card::after {
     background: color-mix(in srgb, var(--verbe-accent, #27272A) 30%, #0a0a0a 70%) !important;
   }
+  /* Mobile — pages Intention : pas de halo (le fond vertical porte la couleur) */
+  body.verbe-active .grid .card::after,
+  body.dark-mode.verbe-active .grid .card::after {
+    display: none !important;
+  }
   /* Images mobile : simples, sans blend-mode ni filtre (sinon disparaissent) */
   .grid .card-thumb-area img,
   .grid .card .card-thumb {
