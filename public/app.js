@@ -6824,7 +6824,7 @@ function _renderStatsBubbles(verbeDist) {
     const maxCount = Math.max(...verbeDist.map(v => v.count));
     el.innerHTML = verbeDist.map(v => {
       const size = Math.round(72 + (v.count / maxCount) * 128);
-      const [r,g,b] = _hexToRgb(v.bg);
+      const [r,g,b] = _hexToRgbArr(v.bg);
       const luma = 0.299*r + 0.587*g + 0.114*b;
       const tc = luma > 160 ? `rgba(${r},${g},${b},1)` : `rgba(255,255,255,.9)`;
       return `<div class="stats-bubble" style="width:${size}px;height:${size}px;background:radial-gradient(circle at 32% 32%,rgba(${r},${g},${b},.28),rgba(${r},${g},${b},.75));border:1px solid rgba(${r},${g},${b},.22)" title="${v.name}">
