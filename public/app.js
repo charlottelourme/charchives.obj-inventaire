@@ -6800,7 +6800,7 @@ function showKwPreview(kw,mouseEvent) {
 function hideKwPreview() { document.getElementById('kwFloatPreview').style.display='none'; }
 
 // ── Stats helpers ──────────────────────────────────────────────────────────────
-function _hexToRgb(hex) {
+function _hexToRgbArr(hex) {
   const h = (hex||'#2D2D2D').replace('#','');
   const n = parseInt(h.length === 3 ? h.split('').map(x=>x+x).join('') : h, 16);
   return [(n>>16)&255, (n>>8)&255, n&255];
