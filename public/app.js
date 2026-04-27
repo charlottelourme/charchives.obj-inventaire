@@ -6858,7 +6858,7 @@ function _renderStatsBubbles(verbeDist) {
 
   nodeEls.each(function(d) {
     const g = d3.select(this);
-    const [r, gv, b] = _hexToRgb(d.bg);
+    const [r, gv, b] = _hexToRgbArr(d.bg);
     const luma = 0.299 * r + 0.587 * gv + 0.114 * b;
     const textFill = luma > 160 ? d.bg : '#fff';
 
