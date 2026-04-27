@@ -1009,7 +1009,7 @@ body.dark-mode .card .card-grain {
     opacity: 1 !important;
   }
   body.dark-mode:not(.verbe-active) .card:hover::before {
-    background: var(--verbe-accent, #3F3F46) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #0a0a0a 68%) !important;
   }
   /* 2. Pages Intentions : halo coloré fondu permanent */
   body.verbe-active .card::before {
@@ -1017,7 +1017,7 @@ body.dark-mode .card .card-grain {
     opacity: 0.95 !important;
   }
   body.dark-mode.verbe-active .card::before {
-    background: var(--verbe-accent, #3F3F46) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 28%, #0a0a0a 72%) !important;
   }
 }
 
