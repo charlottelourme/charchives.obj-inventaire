@@ -10066,7 +10066,7 @@ body.dark-mode .section-header {
     pointer-events: none;
   }
   body.dark-mode .grid .card::after {
-    background: var(--verbe-accent, #27272A) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #27272A) 30%, #0a0a0a 70%) !important;
   }
   /* Images mobile : simples, sans blend-mode ni filtre (sinon disparaissent) */
   .grid .card-thumb-area img,
