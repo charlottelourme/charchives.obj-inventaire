@@ -1596,14 +1596,16 @@ function applyVerbePageTheme() {
       const lightColor = verbe.bgColor   || '#E8E4DE';
       const darkColor  = verbe.textColor || _verbeActiveColor(verbe);
 
-      // ── DÉGRADÉ VERTICAL (haut + bas — bandes colorées qui fondent vers le centre) ──
+      // ── DÉGRADÉ LATÉRAL (gauche + droite — bandes colorées qui fondent vers le centre) ──
+      // Light mode : bgColor (version claire pastel du duotone) — bandes douces sur fond crème.
+      // Dark mode  : textColor (version foncée saturée) — visible et identitaire sur fond zinc-950.
       if (radialLayer) {
         const isDark = document.body.classList.contains('dark-mode');
         const edgeColor = isDark
-          ? `color-mix(in srgb, ${lightColor} 25%, #0a0a0a 75%)`  // assombri pour respecter le fond zinc-950
-          : _toRgbaStr(lightColor, 1.0);                           // pleine opacité en clair
+          ? _toRgbaStr(darkColor, 1.0)
+          : _toRgbaStr(lightColor, 1.0);
         radialLayer.style.background =
-          `linear-gradient(to bottom, ${edgeColor} 0%, ${edgeColor} 8%, transparent 25%, transparent 75%, ${edgeColor} 92%, ${edgeColor} 100%)`;
+          `linear-gradient(to right, ${edgeColor} 0%, ${edgeColor} 8%, transparent 25%, transparent 75%, ${edgeColor} 92%, ${edgeColor} 100%)`;
       }
 
       // Variables typographiques (toujours utiles pour les textes teintés)
