@@ -6930,7 +6930,7 @@ function _renderStatusBars(statusFreq, total) {
   el.innerHTML = withData.map(s => {
     const count = statusFreq[s.key] || 0;
     const pct = total ? Math.round(count / total * 100) : 0;
-    const [r,g,b] = _hexToRgb(s.color);
+    const [r,g,b] = _hexToRgbArr(s.color);
     return `<div class="stats-grad-bar-row">
       <div class="stats-grad-bar-meta">
         <span class="stats-grad-bar-name">${s.key}</span>
