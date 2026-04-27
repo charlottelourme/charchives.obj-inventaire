@@ -1600,7 +1600,7 @@ function applyVerbePageTheme() {
       if (radialLayer) {
         const edgeColor = _toRgbaStr(lightColor, 1.0);   // pleine opacité
         radialLayer.style.background =
-          `linear-gradient(to right, ${edgeColor} 0%, ${edgeColor} 8%, transparent 25%, transparent 75%, ${edgeColor} 92%, ${edgeColor} 100%)`;
+          `linear-gradient(to bottom, ${edgeColor} 0%, ${edgeColor} 8%, transparent 25%, transparent 75%, ${edgeColor} 92%, ${edgeColor} 100%)`;
       }
 
       // Variables typographiques (toujours utiles pour les textes teintés)
