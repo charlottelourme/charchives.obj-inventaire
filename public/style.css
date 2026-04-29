@@ -124,17 +124,18 @@ body.dark-mode #bgLayers .bg-base { background: rgb(9, 9, 11); }
       Effet de profondeur, comme un papier sous une lampe diffuse. */
 #bgLayers .bg-vignette {
   background: radial-gradient(ellipse at center,
-    transparent 50%,
-    rgba(255, 255, 255, 0.32) 92%,
-    rgba(255, 255, 255, 0.5) 100%);
-  z-index: 1;
+    transparent 38%,
+    rgba(255, 255, 255, 0.55) 80%,
+    rgba(255, 255, 255, 0.95) 100%);
+  z-index: 4;                         /* AU-DESSUS du grain pour ne pas être assombrie par le multiply */
   pointer-events: none;
 }
-/* Dark mode : vignette inversée — coins légèrement plus sombres pour profondeur nocturne */
+/* Dark mode : vignette inversée — coins nettement plus sombres pour profondeur nocturne */
 body.dark-mode #bgLayers .bg-vignette {
   background: radial-gradient(ellipse at center,
-    transparent 55%,
-    rgba(0, 0, 0, 0.35) 100%);
+    transparent 40%,
+    rgba(0, 0, 0, 0.55) 90%,
+    rgba(0, 0, 0, 0.85) 100%);
 }
 
 /* Calque 3 : dégradé latéral — pilotée par style inline depuis JS
