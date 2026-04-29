@@ -8629,8 +8629,7 @@ function bindEvents() {
   document.getElementById('hdDarkBtn')?.addEventListener('click', () => { closeDrawer(); toggleDarkMode(); });
   document.getElementById('hdAboutBtn')?.addEventListener('click', () => { closeDrawer(); /* A propos : à implémenter */ alert('Charchives · Archive d\'objets brocante'); });
 
-  // ── Note Modal — Intercalaires narratifs ──
-  document.getElementById('noteBtn').addEventListener('click', () => openNoteModal(null));
+  // ── Note Modal — Intercalaires narratifs (création réservée au Journal) ──
   document.getElementById('noteModalClose').addEventListener('click', closeNoteModal);
   document.getElementById('noteModalCancel').addEventListener('click', closeNoteModal);
   document.getElementById('noteModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeNoteModal(); });
