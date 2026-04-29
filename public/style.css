@@ -1053,7 +1053,10 @@ body.dark-mode .card .card-grain {
   margin-left: auto;    /* collée à droite → décalage asymétrique éditorial */
   margin-right: 0;
 }
-/* Image détourée / cutout — fond transparent, objet en entier */
+/* Image détourée / cutout — fond transparent, objet en entier.
+   mix-blend-mode: multiply → le fond blanc/clair du PNG se fond dans le halo
+   du verbe ; on ne devine plus le rectangle de l'image. Mobile garde
+   "normal !important" (cf. block iOS bas de fichier — alpha cassé sur iOS). */
 .card-thumb-area--detoured,
 .card-thumb-area--cutout {
   background: transparent;
@@ -1066,6 +1069,13 @@ body.dark-mode .card .card-grain {
   padding: 10%;
   transform-origin: center;
   background: transparent;
+  mix-blend-mode: multiply;
+}
+/* Dark mode : multiply écraserait totalement l'image (blanc × fond très sombre = sombre).
+   On revient en rendu naturel — le PNG garde son fond mais reste lisible. */
+body.dark-mode .card-thumb-area--detoured .card-thumb,
+body.dark-mode .card-thumb-area--cutout .card-thumb {
+  mix-blend-mode: normal;
 }
 .card-thumb-area--detoured:hover .card-thumb,
 .card-thumb-area--cutout:hover .card-thumb {
