@@ -3445,11 +3445,30 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #0a0a0a; }
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
   margin-bottom: 72px;
-  cursor: pointer;
+  cursor: grab;
   display: block;
   width: 100%;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, box-shadow 0.15s ease;
 }
+.journal-item:active { cursor: grabbing; }
+/* Pendant le drag : item fantôme estompé */
+.journal-item.journal-dragging {
+  opacity: 0.35;
+  cursor: grabbing;
+}
+/* Marqueurs d'insertion : trait fin Cormorant-noir au bord cible */
+.journal-item.journal-drop-before {
+  box-shadow: 0 -3px 0 0 var(--text);
+}
+.journal-item.journal-drop-after {
+  box-shadow: 0 3px 0 0 var(--text);
+}
+body.dark-mode .journal-item.journal-drop-before,
+body.dark-mode .journal-item.journal-drop-after {
+  box-shadow-color: var(--text);  /* var(--text) suffit, garde la cohérence */
+}
+/* Désactive la sélection de texte/image pendant l'interaction drag */
+.journal-item img { user-select: none; -webkit-user-drag: none; }
 @media (min-width: 1440px) { .journal-item { margin-bottom: 96px; } }
 @media (min-width: 769px) and (max-width: 1024px) { .journal-item { margin-bottom: 52px; } }
 @media (max-width: 768px) { .journal-item { margin-bottom: 32px; } }
