@@ -1123,54 +1123,66 @@ body.dark-mode .card .card-grain {
 .card-poem-overlay {
   position: absolute;
   top: 50%;
-  left: 50%;
-  width: 200%;
-  max-width: 440px;
-  max-height: min(80vh, 520px);
-  transform: translate(-50%, -50%) scale(0.95);
-  transform-origin: center center;
+  left: 78%;                             /* ancré sur le bord droit de la carte */
+  width: 280px;
+  max-height: min(70vh, 460px);
+  transform: translate(-12px, -50%) scale(0.96);
+  transform-origin: left center;
   z-index: 1000;
-  padding: 2.25rem 2.5rem;
+  padding: 1.85rem 2rem;
   background: transparent;               /* pas de fond direct — c'est ::before qui peint */
-  border: none;                          /* pas de border — les bords sont fondus par le blur */
+  border: none;
   opacity: 0;
   visibility: hidden;
   transition: opacity .35s ease-in-out, transform .45s cubic-bezier(.22,.68,0,1.1), visibility 0s linear .35s;
   pointer-events: none;
-  overflow: visible;                     /* le halo flou peut déborder de la fenêtre */
+  overflow: visible;
 }
-/* Le « blob » coloré flou — comme .card::before mais en plus large et plus
-   doux. Inset négatif → déborde généreusement. blur(36px) → angles invisibles. */
+/* Le « blob » coloré flou — Soft Block posé à côté de l'image avec un léger
+   chevauchement (~22 % de la carte). Les bords sont fondus par le blur. */
 .card-poem-overlay::before {
   content: '';
   position: absolute;
-  inset: -28px -32px;
+  inset: -22px -28px;
   background: var(--verbe-accent, rgba(190, 182, 170, 0.92));
-  filter: blur(36px);
+  filter: blur(32px);
   opacity: 0.92;
-  border-radius: 12px;
+  border-radius: 10px;
   z-index: -2;
   pointer-events: none;
 }
-/* Petit calque opaque interne — assure la lisibilité du texte au centre, où
-   le blob flou est le plus dense, sans réintroduire de bord visible (mask
-   radial pour qu'il s'éteigne en douceur sur les côtés). */
+/* Couche dense interne pour la lisibilité au centre — masque radial pour
+   s'éteindre sur les bords sans réintroduire de rebord visible. */
 .card-poem-overlay::after {
   content: '';
   position: absolute;
   inset: 4px;
-  background: color-mix(in srgb, var(--verbe-accent, rgba(190,182,170,1)) 100%, transparent);
+  background: var(--verbe-accent, rgba(190,182,170,1));
   z-index: -1;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 35%, transparent 78%);
-          mask-image: radial-gradient(ellipse at center, #000 35%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at center, #000 30%, transparent 82%);
+          mask-image: radial-gradient(ellipse 75% 65% at center, #000 30%, transparent 82%);
   opacity: 0.85;
 }
 .card:hover .card-poem-overlay {
   opacity: 1;
   visibility: visible;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translate(0, -50%) scale(1);
   transition: opacity .35s ease-in-out, transform .45s cubic-bezier(.22,.68,0,1.1);
+}
+/* Cartes proches du bord droit de la fenêtre : on bascule la fenêtre poème à
+   GAUCHE pour qu'elle ne sorte pas de l'écran. La grille étant fluide, on cible
+   les cartes en dernière colonne via :nth-of-type / :last-of-type sur les rangs. */
+.grid > .card:nth-child(4n) .card-poem-overlay,
+.grid > .card:last-child .card-poem-overlay {
+  left: auto;
+  right: 78%;
+  transform-origin: right center;
+  transform: translate(12px, -50%) scale(0.96);
+}
+.grid > .card:nth-child(4n):hover .card-poem-overlay,
+.grid > .card:last-child:hover .card-poem-overlay {
+  transform: translate(0, -50%) scale(1);
 }
 /* La carte survolée passe au-dessus de ses voisines pour que la fenêtre XXL
    ne soit pas masquée par la carte d'à côté. */
