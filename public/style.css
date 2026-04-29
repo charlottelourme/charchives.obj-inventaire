@@ -6138,7 +6138,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     flex-wrap: wrap !important;          /* logo + actions ligne 1, nav + search lignes suivantes */
     align-items: center;
     gap: 0 !important;
-    background: #ffffff !important;
+    background: #F8F8F8 !important;
     backdrop-filter: none !important;
     z-index: 1000 !important;
   }
@@ -6263,7 +6263,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    background: #ffffff !important;
+    background: #F8F8F8 !important;
     z-index: 10 !important;
   }
   body.dark-mode .search-wrap { background: #080809 !important; }
