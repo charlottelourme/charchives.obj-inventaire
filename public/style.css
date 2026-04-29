@@ -3625,20 +3625,19 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
   position: static !important;
 }
 /* Grille Journal : CSS columns masonry stable.
-   Desktop 3 cols, tablette 2, mobile 1. Gap homogène 1.5rem.
-   Aucune animation, aucun positionnement JS. */
+   Desktop 3 cols, tablette 2, mobile 1. Gap généreux pour la respiration. */
 #deriveView #galleryGrid.journal-mode {
   display: block !important;
   position: static !important;
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
-  padding: 0 1.5rem 4rem;
+  padding: 0 2.5rem 5rem;
   box-sizing: border-box;
   -webkit-column-count: 3;
   column-count: 3;
-  -webkit-column-gap: 1.5rem;
-  column-gap: 1.5rem;
+  -webkit-column-gap: 2.5rem;
+  column-gap: 2.5rem;
   animation: none !important;
   transform: none !important;
 }
@@ -3646,25 +3645,29 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
   #deriveView #galleryGrid.journal-mode {
     -webkit-column-count: 2;
     column-count: 2;
-    padding: 0 1rem 3rem;
+    -webkit-column-gap: 1.75rem;
+    column-gap: 1.75rem;
+    padding: 0 1.5rem 3.5rem;
   }
 }
 @media (max-width: 600px) {
   #deriveView #galleryGrid.journal-mode {
     -webkit-column-count: 1;
     column-count: 1;
-    padding: 0 0.75rem 2rem;
+    padding: 0 1rem 2.5rem;
   }
 }
 
-/* Items Journal : statique, pas coupé entre colonnes, grain papier hérité */
+/* Items Journal : statique, pas coupé entre colonnes, grain papier hérité.
+   Largeur par défaut = pleine colonne ; variations aléatoires injectées par JS
+   via les classes .journal-item-compact / -end / -shift. */
 .journal-item {
   position: relative !important;
   transform: none !important;
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   display: block;
   width: 100%;
   cursor: grab;
@@ -3674,6 +3677,18 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
   transition: opacity 0.2s ease, box-shadow 0.15s ease;
 }
 .journal-item:active { cursor: grabbing; }
+
+/* Variations aléatoires (déterministes par hash d'id) : largeurs et offsets
+   pour casser l'effet "grille trop régulière" et créer de la respiration. */
+.journal-item.journal-item-compact { width: 76%; margin-left: 0; margin-right: auto; }
+.journal-item.journal-item-end     { width: 84%; margin-left: auto; margin-right: 0; }
+.journal-item.journal-item-shift   { margin-top: 2.25rem; }
+@media (max-width: 600px) {
+  /* En 1 col, on désactive les variations latérales (peu lisibles) mais garde le shift */
+  .journal-item.journal-item-compact,
+  .journal-item.journal-item-end { width: 100%; margin-left: 0; margin-right: 0; }
+  .journal-item.journal-item-shift { margin-top: 1.25rem; }
+}
 
 /* Grain papier sur chaque item — même technique que .card .card-grain */
 .journal-item .card-grain {
