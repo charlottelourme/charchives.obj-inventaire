@@ -2436,19 +2436,30 @@ function _drawConGraph(canvas, nodes, links) {
     const bg  = getVerbeBgColor(d.category) || '#9ca3af';
     const src = d.photos[0] ? photoUrl(d.photos[0]) : null;
 
+    const drawFallbackRect = () => {
+      g.append('rect')
+        .attr('class', 'con-node-fallback')
+        .attr('x', -HALF * 0.6).attr('y', -HALF * 0.6)
+        .attr('width', IMG * 0.6).attr('height', IMG * 0.6)
+        .attr('fill', bg).attr('fill-opacity', 0.28)
+        .attr('stroke', bg).attr('stroke-width', 1);
+    };
+
     if (src) {
-      g.append('image')
+      const imgEl = g.append('image')
         .attr('class', 'con-node-photo')
         .attr('href', src)
         .attr('x', -HALF).attr('y', -HALF)
         .attr('width', IMG).attr('height', IMG)
         .attr('preserveAspectRatio', 'xMidYMid meet');
+      // Fallback : si l'image est introuvable (404, ref orpheline), on
+      // remplace par un rect coloré aux couleurs du verbe — pas d'icône cassée.
+      imgEl.on('error', function() {
+        imgEl.remove();
+        drawFallbackRect();
+      });
     } else {
-      g.append('rect')
-        .attr('x', -HALF * 0.6).attr('y', -HALF * 0.6)
-        .attr('width', IMG * 0.6).attr('height', IMG * 0.6)
-        .attr('fill', bg).attr('fill-opacity', 0.28)
-        .attr('stroke', bg).attr('stroke-width', 1);
+      drawFallbackRect();
     }
 
     // Bouton "Coup de cœur" — unifié avec la Sélection (favoris bookmarks)
