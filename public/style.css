@@ -1125,12 +1125,12 @@ body.dark-mode .card .card-grain {
   position: absolute;
   top: 50%;
   left: 78%;                             /* ancré sur le bord droit de la carte */
-  width: 240px;                          /* fenêtre légèrement réduite */
-  max-height: min(65vh, 400px);
+  width: 340px;                          /* fenêtre plus généreuse */
+  max-height: min(75vh, 520px);
   transform: translate(-12px, -50%) scale(0.96);
   transform-origin: left center;
   z-index: 1000;
-  padding: 1.4rem 1.6rem;
+  padding: 2rem 2.25rem;
   background: transparent;               /* pas de fond direct — c'est ::before qui peint */
   border: none;
   opacity: 0;
