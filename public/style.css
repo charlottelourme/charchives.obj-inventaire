@@ -3606,97 +3606,74 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
   min-height: calc(100vh - 200px);
   position: static !important;
 }
-/* Grille Journal : masonry décalé (flex columns + offset alterné).
-   Distribution des items en JS (round-robin) dans N colonnes flex. */
+/* Grille Journal : CSS columns masonry stable.
+   Desktop 3 cols, tablette 2, mobile 1. Gap homogène 1.5rem.
+   Aucune animation, aucun positionnement JS. */
 #deriveView #galleryGrid.journal-mode {
   display: block !important;
   position: static !important;
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
-  padding: 56px 24px calc(96px + env(safe-area-inset-bottom));
+  padding: 0 1.5rem 4rem;
   box-sizing: border-box;
+  -webkit-column-count: 3;
+  column-count: 3;
+  -webkit-column-gap: 1.5rem;
+  column-gap: 1.5rem;
   animation: none !important;
   transform: none !important;
-  -webkit-column-count: unset;
-  column-count: unset;
-  -webkit-column-gap: 0;
-  column-gap: 0;
 }
-@media (min-width: 1440px) {
+@media (max-width: 1024px) {
   #deriveView #galleryGrid.journal-mode {
-    padding: 64px 32px calc(96px + env(safe-area-inset-bottom));
+    -webkit-column-count: 2;
+    column-count: 2;
+    padding: 0 1rem 3rem;
   }
 }
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (max-width: 600px) {
   #deriveView #galleryGrid.journal-mode {
-    padding: 44px 16px calc(80px + env(safe-area-inset-bottom));
-  }
-}
-@media (max-width: 768px) {
-  #deriveView #galleryGrid.journal-mode {
-    padding: 32px 12px calc(72px + env(safe-area-inset-bottom));
-  }
-}
-@media (max-width: 480px) {
-  #deriveView #galleryGrid.journal-mode {
-    padding: 24px 8px calc(72px + env(safe-area-inset-bottom));
+    -webkit-column-count: 1;
+    column-count: 1;
+    padding: 0 0.75rem 2rem;
   }
 }
 
-/* Wrapper colonnes flex : N colonnes égales avec gap horizontal */
-.journal-columns {
-  display: flex;
-  align-items: flex-start;
-  gap: 28px;
-  width: 100%;
-}
-@media (min-width: 1440px) { .journal-columns { gap: 32px; } }
-@media (min-width: 769px) and (max-width: 1024px) { .journal-columns { gap: 24px; } }
-@media (max-width: 768px) { .journal-columns { gap: 16px; } }
-@media (max-width: 480px) { .journal-columns { gap: 12px; } }
-
-/* Chaque colonne : flex-column qui empile ses items. Largeur égale. */
-.journal-col {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-/* Offset alterné : colonnes impaires (1, 3) décalées vers le bas pour briser
-   l'alignement et donner l'effet masonry décalé style Pinterest/Are.na. */
-.journal-col-1 { padding-top: 80px; }
-.journal-col-3 { padding-top: 40px; }
-@media (min-width: 1440px) {
-  .journal-col-1 { padding-top: 96px; }
-  .journal-col-3 { padding-top: 48px; }
-}
-@media (min-width: 769px) and (max-width: 1024px) {
-  .journal-col-1 { padding-top: 64px; }
-}
-@media (max-width: 768px) {
-  .journal-col-1 { padding-top: 36px; }
-}
-@media (max-width: 480px) {
-  .journal-col-1 { padding-top: 24px; }
-}
-
-/* Items Journal : gap vertical entre items de la même colonne */
+/* Items Journal : statique, pas coupé entre colonnes, grain papier hérité */
 .journal-item {
-  position: static !important;
+  position: relative !important;
   transform: none !important;
-  margin-bottom: 32px;
-  cursor: grab;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 1.5rem;
   display: block;
   width: 100%;
+  cursor: grab;
+  border-radius: 0;
+  overflow: visible;
+  animation: none !important;
   transition: opacity 0.2s ease, box-shadow 0.15s ease;
 }
-@media (min-width: 1440px) { .journal-item { margin-bottom: 36px; } }
-@media (min-width: 769px) and (max-width: 1024px) { .journal-item { margin-bottom: 28px; } }
-@media (max-width: 768px) { .journal-item { margin-bottom: 20px; } }
-@media (max-width: 480px) { .journal-item { margin-bottom: 16px; } }
-.journal-col .journal-item:last-child { margin-bottom: 0; }
 .journal-item:active { cursor: grabbing; }
+
+/* Grain papier sur chaque item — même technique que .card .card-grain */
+.journal-item .card-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='jn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23jn)'/%3E%3C/svg%3E");
+}
+body.dark-mode .journal-item .card-grain {
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+}
+.journal-item img,
+.journal-item .journal-caption,
+.journal-item .journal-note-inner { position: relative; z-index: 1; }
 /* Pendant le drag : item fantôme estompé */
 .journal-item.journal-dragging {
   opacity: 0.35;
