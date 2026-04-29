@@ -2810,17 +2810,8 @@ function _shuffleArray(arr) {
   return a;
 }
 
-// ══ JOURNAL — Moodboard statique (Tumblr-like) ═══════════════════════════
-// Distribution JS en colonnes flex avec offset alterné pour un vrai effet
-// masonry décalé (Pinterest/Are.na). Items distribués round-robin pour rester
-// prévisibles à la réorganisation par drag-and-drop.
-function _journalColCount() {
-  const w = window.innerWidth;
-  if (w >= 1440) return 4;
-  if (w >= 769)  return 3;
-  return 2;
-}
-
+// ══ JOURNAL — Moodboard statique masonry CSS columns ═════════════════════
+// Grille Tumblr-like via column-count CSS. Aucune animation, aucun positionnement JS.
 function renderJournal(filtered) {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
@@ -2855,21 +2846,7 @@ function renderJournal(filtered) {
   grid.classList.add('journal-mode');
   grid.innerHTML = '';
 
-  // Construit le wrapper + N colonnes flex
-  const colCount = _journalColCount();
-  const wrap = document.createElement('div');
-  wrap.className = 'journal-columns';
-  wrap.dataset.cols = colCount;
-  const cols = [];
-  for (let i = 0; i < colCount; i++) {
-    const col = document.createElement('div');
-    col.className = 'journal-col journal-col-' + i;
-    cols.push(col);
-    wrap.appendChild(col);
-  }
-  grid.appendChild(wrap);
-
-  items.forEach((c, idx) => {
+  items.forEach(c => {
     const item = document.createElement('div');
     item.className = 'journal-item';
     item.dataset.id = c.id;
@@ -2894,12 +2871,14 @@ function renderJournal(filtered) {
       const removeBtn = isContext
         ? `<button class="journal-remove-btn" data-id="${c.id}" title="Retirer du Journal" aria-label="Retirer">×</button>`
         : '';
+      // Grain papier : div SVG fractalNoise injecté dans chaque item, comme sur les .card de l'Inventaire
       item.innerHTML = `
         ${removeBtn}
         <img src="${src}" alt="${esc(c.name || '')}" loading="lazy" draggable="false">
+        <div class="card-grain"></div>
         ${(!isContext && c.name) ? `<div class="journal-caption">${esc(c.name)}</div>` : ''}`;
     }
-    cols[idx % colCount].appendChild(item);
+    grid.appendChild(item);
   });
 
   // Bind clic : ouvre la note (édition) ou la fiche objet — désactivé pendant un drag
