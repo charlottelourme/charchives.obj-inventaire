@@ -7133,7 +7133,7 @@ function renderStats() {
       onHover:(event,elements)=>{const canvas=event.native?.target;if(!canvas)return;if(elements.length){canvas.style.cursor='pointer';showKwPreview(topKws[elements[0].index][0],event.native);}else{canvas.style.cursor='default';hideKwPreview();}},
       plugins:{legend:{display:false},tooltip:{enabled:false}},
       scales:{
-        x:{grid:{color:gridColor},border:{display:false},ticks:{stepSize:1,precision:0,color:'#c4c0b8'}},
+        x:{grid:{color:gridColor},border:{display:false},ticks:{stepSize:1,precision:0,color:'#C4C4C4'}},
         y:{grid:{display:false},border:{display:false},ticks:{color:'#6b6762'}}
       }
     }
