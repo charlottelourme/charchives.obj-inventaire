@@ -2692,10 +2692,9 @@ function _drawConGraph(canvas, nodes, links) {
     });
 }
 
-// ── Labels de cluster Constellation — Cormorant italique MAJUSCULES
-//    Double rendu SVG pour effet halo : <text stroke="white" stroke-width="6"> sous
-//    <text fill="darkVerbe">. Les lignes passant derrière semblent s'interrompre autour
-//    des lettres sans rectangle de fond. Clic → bascule sur le verbe.
+// ── Labels de cluster Constellation — Cormorant italique
+//    Rendu SVG simple : un seul <text> coloré aux couleurs du verbe, cliquable.
+//    Pas de contour/halo : le label se pose directement sur le fond.
 function _updateClusterLabels(labelsG, nodes) {
   const groups = new Map();
   for (const n of nodes) {
@@ -2712,7 +2711,6 @@ function _updateClusterLabels(labelsG, nodes) {
       return { name, x: cx, y: minY - TITLE_OFFSET };
     });
 
-  // Style typo commun aux deux couches (halo + fill)
   const applyTypo = (sel) => sel
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
@@ -2721,27 +2719,9 @@ function _updateClusterLabels(labelsG, nodes) {
     .style('font-size', '22px')
     .style('font-weight', '400')
     .style('letter-spacing', '.02em')
-    .style('text-transform', 'none')     // casse normale (première lettre maj)
-    .style('paint-order', 'stroke fill');
+    .style('text-transform', 'none');
 
-  // Couche 1 : HALO — texte blanc épais qui découpe les liens passant derrière.
-  // Unique <text> avec stroke blanc + fill blanc = forme pleine de la lettre épaissie.
-  const bgColor = getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#fafaf8';
-  const haloSel = labelsG.selectAll('text.con-cluster-halo').data(clusters, d => d.name);
-  const haloEnter = haloSel.enter().append('text').attr('class', 'con-cluster-halo')
-    .attr('aria-hidden', 'true')
-    .style('pointer-events', 'none');
-  applyTypo(haloEnter);
-  haloEnter.merge(haloSel)
-    .attr('x', d => d.x).attr('y', d => d.y)
-    .attr('stroke', bgColor)
-    .attr('stroke-width', 8)
-    .attr('stroke-linejoin', 'round')
-    .attr('fill', bgColor)
-    .text(d => d.name);
-  haloSel.exit().remove();
-
-  // Couche 2 : FILL — texte sombre couleur verbe, cliquable
+  // FILL — texte couleur verbe, cliquable, sans contour
   const fillSel = labelsG.selectAll('text.con-cluster-label').data(clusters, d => d.name);
   const fillEnter = fillSel.enter().append('text').attr('class', 'con-cluster-label')
     .style('cursor', 'pointer')
