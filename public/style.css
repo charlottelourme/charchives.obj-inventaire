@@ -1125,12 +1125,12 @@ body.dark-mode .card .card-grain {
   position: absolute;
   top: 50%;
   left: 78%;                             /* ancré sur le bord droit de la carte */
-  width: 280px;
-  max-height: min(70vh, 460px);
+  width: 240px;                          /* fenêtre légèrement réduite */
+  max-height: min(65vh, 400px);
   transform: translate(-12px, -50%) scale(0.96);
   transform-origin: left center;
   z-index: 1000;
-  padding: 1.85rem 2rem;
+  padding: 1.4rem 1.6rem;
   background: transparent;               /* pas de fond direct — c'est ::before qui peint */
   border: none;
   opacity: 0;
@@ -1139,31 +1139,31 @@ body.dark-mode .card .card-grain {
   pointer-events: none;
   overflow: visible;
 }
-/* Le « blob » coloré flou — Soft Block posé à côté de l'image avec un léger
-   chevauchement (~22 % de la carte). Les bords sont fondus par le blur. */
+/* Le « blob » coloré flou — Soft Block resserré (le halo s'éloigne moins du
+   contour de la fenêtre), les bords restent fondus mais l'effet est plus net. */
 .card-poem-overlay::before {
   content: '';
   position: absolute;
-  inset: -22px -28px;
+  inset: -10px -14px;                    /* débord plus modeste */
   background: var(--verbe-accent, rgba(190, 182, 170, 0.92));
-  filter: blur(32px);
-  opacity: 0.92;
-  border-radius: 10px;
+  filter: blur(20px);                    /* flou plus serré → halo moins étalé */
+  opacity: 0.95;
+  border-radius: 8px;
   z-index: -2;
   pointer-events: none;
 }
-/* Couche dense interne pour la lisibilité au centre — masque radial pour
-   s'éteindre sur les bords sans réintroduire de rebord visible. */
+/* Couche dense interne — plus présente au centre puisque le halo extérieur
+   est resserré. Mask radial conserve la disparition douce des angles. */
 .card-poem-overlay::after {
   content: '';
   position: absolute;
-  inset: 4px;
+  inset: 2px;
   background: var(--verbe-accent, rgba(190,182,170,1));
   z-index: -1;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 75% 65% at center, #000 30%, transparent 82%);
-          mask-image: radial-gradient(ellipse 75% 65% at center, #000 30%, transparent 82%);
-  opacity: 0.85;
+  -webkit-mask-image: radial-gradient(ellipse 88% 82% at center, #000 50%, transparent 92%);
+          mask-image: radial-gradient(ellipse 88% 82% at center, #000 50%, transparent 92%);
+  opacity: 0.88;
 }
 .card:hover .card-poem-overlay {
   opacity: 1;
