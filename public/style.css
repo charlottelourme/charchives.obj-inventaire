@@ -1204,16 +1204,17 @@ body.dark-mode .card .card-grain {
 }
 body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
 
-/* Typographie éditoriale grande et aérée. La couleur duotone du verbe (--verbe-text)
-   contraste naturellement avec le fond verbe-accent. */
+/* Typographie éditoriale : Feroniapi (display Velvetyne MediumItalic) — c'est
+   la typo qui porte l'identité poétique du projet ; le poème mérite la voix
+   "concept" plutôt que le labeur Inter. Taille resserrée. */
 .card-poem-text {
   position: relative;
   z-index: 1;
-  font-family: 'Inter', sans-serif;
-  font-style: italic;
-  font-weight: 300;
-  font-size: 1.25rem;
-  line-height: 1.6;
+  font-family: 'Feroniapi', serif;
+  font-style: normal;                    /* le woff2 est déjà l'italique — pas de synthétique */
+  font-weight: 400;
+  font-size: 0.98rem;
+  line-height: 1.45;
   letter-spacing: 0.005em;
   color: var(--verbe-text, var(--text, #2A2A2E));
   text-align: left;
