@@ -8625,7 +8625,6 @@ function bindEvents() {
   document.getElementById('hdOverlay')?.addEventListener('click', closeDrawer);
   // Délégation : chaque action du drawer redirige vers sa fonction + ferme le drawer
   document.getElementById('hdAddBtn')?.addEventListener('click', () => { closeDrawer(); openNew(); });
-  document.getElementById('hdNoteBtn')?.addEventListener('click', () => { closeDrawer(); openNoteModal(null); });
   document.getElementById('hdSettingsBtn')?.addEventListener('click', () => { closeDrawer(); openSettingsModal(); });
   document.getElementById('hdDarkBtn')?.addEventListener('click', () => { closeDrawer(); toggleDarkMode(); });
   document.getElementById('hdAboutBtn')?.addEventListener('click', () => { closeDrawer(); /* A propos : à implémenter */ alert('Charchives · Archive d\'objets brocante'); });
