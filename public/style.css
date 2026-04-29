@@ -117,7 +117,7 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
   background: #EDEDED;
   transition: background 0.4s ease;
 }
-body.dark-mode #bgLayers .bg-base { background: #26262A; }
+body.dark-mode #bgLayers .bg-base { background: #080809; }
 
 /* Calque 2 : vignette blanche — voile lumineux subtil aux 4 coins.
       Centre transparent (laisse voir bg-base), coins virant blanc.
@@ -164,7 +164,7 @@ body.dark-mode #bgLayers .bg-grain {
 /* Body : transparent en tout temps (le fond est piloté par #bgLayers) */
 body { background: transparent !important; }
 html { background: #EDEDED; }
-html:has(body.dark-mode) { background: #26262A; }
+html:has(body.dark-mode) { background: #080809; }
 
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
       Tous les conteneurs intermédiaires (main, grid, toolbars, filtres)
@@ -521,7 +521,7 @@ html::before {
   z-index: 1001;                        /* au-dessus du header pour couvrir tout jour */
   pointer-events: none;
 }
-html:has(body.dark-mode)::before { background: #26262A; }
+html:has(body.dark-mode)::before { background: #080809; }
 body.dark-mode header { background: var(--bg); }
 header h1 {
   font-family: 'Inter', sans-serif;     /* labeur clinique pour le wordmark */
@@ -1087,7 +1087,7 @@ body.dark-mode .card .card-grain {
     opacity: 1 !important;
   }
   body.dark-mode:not(.verbe-active) .card:hover::before {
-    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #26262A 68%) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #080809 68%) !important;
   }
   /* 2. Pages Intentions : pas de halo sur les cartes — le dégradé vertical
         haut/bas du fond porte la couleur du verbe à lui seul. */
@@ -3563,7 +3563,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 body.dark-mode .card-journal-toggle { background: rgba(24,24,27,0.92); }
 body.dark-mode .cjt-track { background: var(--border-strong); }
 body.dark-mode .card-journal-toggle.on .cjt-track { background: #F4F4F5; }
-body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #26262A; }
+body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #080809; }
 
 /* ══ JOURNAL — Masonry statique style Tumblr/Moodboard ════════════════════
    - Bandeau d'actions centré (Inter), pas de titre redondant
@@ -6142,7 +6142,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     backdrop-filter: none !important;
     z-index: 1000 !important;
   }
-  body.dark-mode header { background: #26262A !important; }
+  body.dark-mode header { background: #080809 !important; }
   /* Ligne 1 mobile : Logo (gauche) + Loupe + Hamburger (droite uniquement) */
   .header-row-1 {
     padding: 0 14px !important;
@@ -6166,7 +6166,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   body.dark-mode header,
   body.dark-mode header > *,
   body.dark-mode .search-wrap,
-  body.dark-mode .search-bar { background: #26262A !important; }
+  body.dark-mode .search-bar { background: #080809 !important; }
 
   /* Tous les enfants opaques (aucune transparence dans le header) */
   header > *, .search-wrap, .search-bar { background: #ffffff; }
@@ -6266,7 +6266,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     background: #ffffff !important;
     z-index: 10 !important;
   }
-  body.dark-mode .search-wrap { background: #26262A !important; }
+  body.dark-mode .search-wrap { background: #080809 !important; }
   .search-bar {
     width: 100% !important;
     max-width: 100% !important;
@@ -6752,7 +6752,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
    DARK MODE — Palette abyssale, halos lumineux
 ══════════════════════════════════════════════════════════════ */
 body.dark-mode {
-  --bg: #26262A;              /* Noir profond (zinc-950-like) */
+  --bg: #080809;              /* Noir profond (zinc-950-like) */
   --surface: #33333A;          /* surface un ton au-dessus (zinc-900) */
   --border: #27272A;          /* zinc-800 — bordure discrète */
   --border-light: #1F1F22;
@@ -6809,7 +6809,7 @@ body.dark-mode .fs-pill.active {
 body.dark-mode .btn-primary,
 body.dark-mode .hu-primary {
   background: #F4F4F5 !important;
-  color: #26262A !important;
+  color: #080809 !important;
 }
 
 /* ── RESTAURATION : halos Soft Block originaux (colorés, blurrés, éditoriaux) ──
@@ -9517,7 +9517,7 @@ body.dark-mode .mobile-action-bar { border-bottom-color: var(--border); }
   box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
 }
 body.dark-mode .fs-panel {
-  background: #26262A;
+  background: #080809;
 }
 .fs-handle {
   width: 40px;
@@ -9629,7 +9629,7 @@ body.dark-mode .fs-panel {
   border-left: 1px solid var(--border-light);
 }
 body.dark-mode .hd-panel {
-  background: #26262A;
+  background: #080809;
   border-left-color: var(--border);
 }
 .hd-close {
@@ -10376,7 +10376,7 @@ body.dark-mode .section-header {
     z-index: -1 !important;
   }
   body.dark-mode .grid .card::before {
-    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 30%, #26262A 70%) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 30%, #080809 70%) !important;
   }
   /* Cartes : zéro margin/padding/border, bord à bord physique */
   .grid .card {
@@ -10417,7 +10417,7 @@ body.dark-mode .section-header {
     pointer-events: none;
   }
   body.dark-mode .grid .card::after {
-    background: color-mix(in srgb, var(--verbe-accent, #27272A) 30%, #26262A 70%) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #27272A) 30%, #080809 70%) !important;
   }
   /* Mobile — pages Intention : pas de halo (le fond vertical porte la couleur) */
   body.verbe-active .grid .card::after,
