@@ -5931,7 +5931,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   .header-row-1 {
     padding: 0 14px !important;
     height: 44px !important;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: none;
   }
   .header-utils { gap: 8px; }
   /* Sur mobile : cacher tout sauf Loupe + Hamburger */
