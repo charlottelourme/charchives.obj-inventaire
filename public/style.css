@@ -6731,7 +6731,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
 ══════════════════════════════════════════════════════════════ */
 body.dark-mode {
   --bg: #26262A;              /* Noir profond (zinc-950-like) */
-  --surface: #18181B;          /* surface un ton au-dessus (zinc-900) */
+  --surface: #33333A;          /* surface un ton au-dessus (zinc-900) */
   --border: #27272A;          /* zinc-800 — bordure discrète */
   --border-light: #1F1F22;
   --border-strong: #3F3F46;   /* zinc-700 pour contours contrastés */
