@@ -385,7 +385,7 @@ body.verbe-active .search-bar {
 .vpt-name {
   font-family: 'Syne', sans-serif;
   font-size: clamp(42px, 6vw, 78px);
-  font-weight: 300;
+  font-weight: 800;
   letter-spacing: -.03em;
   line-height: .9;
   color: var(--text); /* monochrome — plus de couleur verbe */
