@@ -3351,6 +3351,22 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #0a0a0a; }
   font-size: 18px;
   color: var(--text);
 }
+/* Bandeau Journal : déborde des marges 12px de #mainArea pour aller bord à bord
+   tout en conservant le padding interne 32px (alignement avec le logo). */
+.toolbar-strate.journal-header {
+  margin-left: -12px;
+  margin-right: -12px;
+  width: calc(100% + 24px);
+}
+@media (max-width: 768px) {
+  .toolbar-strate.journal-header {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
 /* Masque la sous-navigation Nuée/Constellation et le pane Constellation */
 #deriveView #deriveReseauPane,
 #deriveView .derive-segmented,
