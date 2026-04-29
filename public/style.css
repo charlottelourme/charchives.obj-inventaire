@@ -1826,7 +1826,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   flex-wrap: nowrap;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: none;
 }
 .typo-filter-bar::-webkit-scrollbar { display: none; }
 
