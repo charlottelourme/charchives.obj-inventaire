@@ -3505,70 +3505,77 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #0a0a0a; }
   min-height: calc(100vh - 200px);
   position: static !important;
 }
-/* Grille Journal : masonry assumée — colonnes serrées (gap horizontal),
-   respiration verticale (margin-bottom des items) plus généreuse.
-   Le ratio v/h ≈ 1.8x donne un rythme éditorial bien lisible. */
+/* Grille Journal : masonry style Pinterest/moodboard — items volontairement
+   plus gros qu'en Inventaire (moins de colonnes), gaps resserrés et homogènes
+   pour l'effet "packing". Outer padding : haut/bas > côtés. */
 #deriveView #galleryGrid.journal-mode {
   display: block !important;
   position: static !important;
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
-  -webkit-column-count: var(--grid-cols, 4);
-  column-count: var(--grid-cols, 4);
-  -webkit-column-gap: 36px;
-  column-gap: 36px;
-  padding: 36px 24px calc(80px + env(safe-area-inset-bottom));
+  -webkit-column-count: 3;
+  column-count: 3;
+  -webkit-column-gap: 28px;
+  column-gap: 28px;
+  padding: 56px 24px calc(96px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   animation: none !important;
   transform: none !important;
 }
 @media (min-width: 1440px) {
   #deriveView #galleryGrid.journal-mode {
-    -webkit-column-gap: 44px;
-    column-gap: 44px;
-    padding: 40px 32px calc(80px + env(safe-area-inset-bottom));
+    -webkit-column-count: 4;
+    column-count: 4;
+    -webkit-column-gap: 32px;
+    column-gap: 32px;
+    padding: 64px 32px calc(96px + env(safe-area-inset-bottom));
   }
 }
 @media (min-width: 769px) and (max-width: 1024px) {
   #deriveView #galleryGrid.journal-mode {
-    -webkit-column-gap: 28px;
-    column-gap: 28px;
-    padding: 28px 16px calc(80px + env(safe-area-inset-bottom));
+    -webkit-column-count: 3;
+    column-count: 3;
+    -webkit-column-gap: 24px;
+    column-gap: 24px;
+    padding: 44px 16px calc(80px + env(safe-area-inset-bottom));
   }
 }
 @media (max-width: 768px) {
   #deriveView #galleryGrid.journal-mode {
     -webkit-column-count: 2;
     column-count: 2;
-    -webkit-column-gap: 20px;
-    column-gap: 20px;
-    padding: 20px 12px calc(80px + env(safe-area-inset-bottom));
+    -webkit-column-gap: 16px;
+    column-gap: 16px;
+    padding: 32px 12px calc(72px + env(safe-area-inset-bottom));
   }
 }
 @media (max-width: 480px) {
   #deriveView #galleryGrid.journal-mode {
-    -webkit-column-count: 1;
-    column-count: 1;
-    padding: 16px 8px calc(80px + env(safe-area-inset-bottom));
+    -webkit-column-count: 2;
+    column-count: 2;
+    -webkit-column-gap: 12px;
+    column-gap: 12px;
+    padding: 24px 8px calc(72px + env(safe-area-inset-bottom));
   }
 }
 
-/* Items Journal : margin-bottom = respiration verticale (plus large que le gap horizontal) */
+/* Items Journal : gap vertical légèrement supérieur au gap horizontal */
 .journal-item {
   position: static !important;
   transform: none !important;
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
-  margin-bottom: 64px;
+  margin-bottom: 32px;
   cursor: grab;
   display: block;
   width: 100%;
   transition: opacity 0.2s ease, box-shadow 0.15s ease;
 }
-@media (min-width: 1440px) { .journal-item { margin-bottom: 80px; } }
-@media (min-width: 769px) and (max-width: 1024px) { .journal-item { margin-bottom: 48px; } }
-@media (max-width: 768px) { .journal-item { margin-bottom: 40px; } }
+@media (min-width: 1440px) { .journal-item { margin-bottom: 36px; } }
+@media (min-width: 769px) and (max-width: 1024px) { .journal-item { margin-bottom: 28px; } }
+@media (max-width: 768px) { .journal-item { margin-bottom: 20px; } }
+@media (max-width: 480px) { .journal-item { margin-bottom: 16px; } }
 .journal-item:active { cursor: grabbing; }
 /* Pendant le drag : item fantôme estompé */
 .journal-item.journal-dragging {
