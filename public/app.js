@@ -2880,6 +2880,7 @@ function renderJournal(filtered) {
     const item = document.createElement('div');
     item.className = 'journal-item';
     item.dataset.id = c.id;
+    _applyJournalRhythm(item, c.id);
 
     if (c.type === 'note') {
       // Note : post-it stylé Cormorant italique
