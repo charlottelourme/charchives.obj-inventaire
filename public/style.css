@@ -3502,9 +3502,6 @@ body.dark-mode .journal-item.journal-drop-after {
 }
 /* Désactive la sélection de texte/image pendant l'interaction drag */
 .journal-item img { user-select: none; -webkit-user-drag: none; }
-@media (min-width: 1440px) { .journal-item { margin-bottom: 96px; } }
-@media (min-width: 769px) and (max-width: 1024px) { .journal-item { margin-bottom: 52px; } }
-@media (max-width: 768px) { .journal-item { margin-bottom: 32px; } }
 .journal-item:hover { opacity: 0.85; }
 .journal-item img {
   width: 100%;
