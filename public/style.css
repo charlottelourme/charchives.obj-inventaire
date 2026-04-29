@@ -1087,7 +1087,7 @@ body.dark-mode .card .card-grain {
     opacity: 1 !important;
   }
   body.dark-mode:not(.verbe-active) .card:hover::before {
-    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #0a0a0a 68%) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #26262A 68%) !important;
   }
   /* 2. Pages Intentions : pas de halo sur les cartes — le dégradé vertical
         haut/bas du fond porte la couleur du verbe à lui seul. */
@@ -3545,7 +3545,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 body.dark-mode .card-journal-toggle { background: rgba(24,24,27,0.92); }
 body.dark-mode .cjt-track { background: var(--border-strong); }
 body.dark-mode .card-journal-toggle.on .cjt-track { background: #F4F4F5; }
-body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #0a0a0a; }
+body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #26262A; }
 
 /* ══ JOURNAL — Masonry statique style Tumblr/Moodboard ════════════════════
    Mélange photos d'objets + notes/post-it. Aucune animation.
@@ -6730,7 +6730,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
    DARK MODE — Palette abyssale, halos lumineux
 ══════════════════════════════════════════════════════════════ */
 body.dark-mode {
-  --bg: #0a0a0a;              /* Noir profond (zinc-950-like) */
+  --bg: #26262A;              /* Noir profond (zinc-950-like) */
   --surface: #18181B;          /* surface un ton au-dessus (zinc-900) */
   --border: #27272A;          /* zinc-800 — bordure discrète */
   --border-light: #1F1F22;
@@ -6787,7 +6787,7 @@ body.dark-mode .fs-pill.active {
 body.dark-mode .btn-primary,
 body.dark-mode .hu-primary {
   background: #F4F4F5 !important;
-  color: #0a0a0a !important;
+  color: #26262A !important;
 }
 
 /* ── RESTAURATION : halos Soft Block originaux (colorés, blurrés, éditoriaux) ──
@@ -10354,7 +10354,7 @@ body.dark-mode .section-header {
     z-index: -1 !important;
   }
   body.dark-mode .grid .card::before {
-    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 30%, #0a0a0a 70%) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 30%, #26262A 70%) !important;
   }
   /* Cartes : zéro margin/padding/border, bord à bord physique */
   .grid .card {
@@ -10395,7 +10395,7 @@ body.dark-mode .section-header {
     pointer-events: none;
   }
   body.dark-mode .grid .card::after {
-    background: color-mix(in srgb, var(--verbe-accent, #27272A) 30%, #0a0a0a 70%) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #27272A) 30%, #26262A 70%) !important;
   }
   /* Mobile — pages Intention : pas de halo (le fond vertical porte la couleur) */
   body.verbe-active .grid .card::after,
