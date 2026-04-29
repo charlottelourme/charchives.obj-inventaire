@@ -20,7 +20,7 @@
 .con-add-btn circle { border-radius: 50% !important; }
 
 :root {
-  --bg: #FAFAF8;
+  --bg: #F0F0F0;
   --surface: #ffffff;
   --border: #C4C0B8;         /* allégé — warm gray */
   --border-light: #E8E4DE;
@@ -6358,7 +6358,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   ══════════════════════════════════════ */
   /* Barres de filtres : fond plein pour éviter le bleed-through */
   .status-filter-bar {
-    background: var(--bg);    /* #FAFAF8 solide */
+    background: var(--bg);    /* #F0F0F0 solide */
     position: relative;
     z-index: 10;
   }
