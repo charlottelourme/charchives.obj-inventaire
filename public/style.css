@@ -870,7 +870,9 @@ main {
   column-count: var(--grid-cols, 4);
   -webkit-column-gap: 72px;
   column-gap: 72px;
-  padding: 40px 32px calc(80px + env(safe-area-inset-bottom));
+  /* padding-x : aligné sur --page-gutter (logo + grille = même axe vertical).
+     padding-top : grand vide vertical pour isoler le header de la grille. */
+  padding: 80px var(--page-gutter) calc(80px + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 /* Quand le JS détecte peu d'objets, il force CSS Grid via inline style */
