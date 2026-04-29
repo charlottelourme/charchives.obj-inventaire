@@ -223,7 +223,7 @@ const state = {
   breadcrumb: [],      // [{label, action}]
   activeExpoFilter: null,
   _formType: 'item',
-  editFragmentBg: '#1a1a1a',
+  editFragmentBg: '#2A2A2E',
   deriveMode: 'nuee',   // 'nuee' | 'reseau' (legacy)
   inventoryMode: 'grid', // 'grid' | 'constellation' — toggle dans Inventaire
   galleryShuffled: false,
@@ -1891,7 +1891,7 @@ function cardHTML(c) {
   if (c.type === 'note') {
     const bg       = c.backgroundColor || '#F5E6D3';
     const lum      = _luminance(bg);
-    const fg       = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+    const fg       = lum > 0.35 ? '#2A2A2E' : '#f5f5f0';
     const fontCls  = c.noteFont  === 'terrain'  ? 'font-terrain'  : 'font-poetic';
     const wideCls  = c.noteWidth === 'wide'      ? ' note-wide'    : '';
     const sizeCls  = c.noteSize  === 'small'     ? ' note-size-sm'
@@ -1908,9 +1908,9 @@ function cardHTML(c) {
 
   // ── Fragment card ──
   if (c.type === 'fragment') {
-    const bg  = c.backgroundColor || '#1a1a1a';
+    const bg  = c.backgroundColor || '#2A2A2E';
     const lum = _luminance(bg);
-    const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+    const fg  = lum > 0.35 ? '#2A2A2E' : '#f5f5f0';
     const verbeLabel = c.category ? `<span class="card-verbe-label">${esc(c.category)}</span>` : '';
     return `<div class="card card-fragment" data-id="${c.id}" style="background:${bg};color:${fg}">
       <div class="card-top-badges"><span>${verbeLabel}</span></div>
@@ -2240,7 +2240,7 @@ function _updateNotePreview() {
   if (!preview || !textEl) return;
   const bg  = _noteSelectedColor;
   const lum = _luminance(bg);
-  const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+  const fg  = lum > 0.35 ? '#2A2A2E' : '#f5f5f0';
   preview.style.background = bg;
   preview.style.color      = fg;
   const sizeCls = _noteSelectedSize === 'small' ? ' note-size-sm' : _noteSelectedSize === 'large' ? ' note-size-lg' : '';
@@ -4381,9 +4381,9 @@ function openDetail(id) {
 
   // Fragment modal variant
   if (c.type === 'fragment') {
-    const bg  = c.backgroundColor || '#1a1a1a';
+    const bg  = c.backgroundColor || '#2A2A2E';
     const lum = _luminance(bg);
-    const fg  = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+    const fg  = lum > 0.35 ? '#2A2A2E' : '#f5f5f0';
     body.innerHTML = `
       <div class="portrait-split" style="--portrait-verbe-accent:${portraitHaloColor}">
         <div class="portrait-halo"></div>
@@ -9257,11 +9257,11 @@ function renderFragmentBgPicker() {
   if (!container) return;
   container.innerHTML = '';
 
-  const selected = state.editFragmentBg || '#1a1a1a';
+  const selected = state.editFragmentBg || '#2A2A2E';
 
   // 1. Couleurs des verbes
   getVerbes().forEach(v => {
-    const hex = v.bgColor || v.color || '#1a1a1a';
+    const hex = v.bgColor || v.color || '#2A2A2E';
     _addFragBgSwatch(container, hex, hex === selected, v.name);
   });
 
@@ -9275,7 +9275,7 @@ function renderFragmentBgPicker() {
   const basics = [
     { hex: '#F5F5F0', label: 'Écru' },
     { hex: '#FFFFFF', label: 'Blanc' },
-    { hex: '#1a1a1a', label: 'Noir' },
+    { hex: '#2A2A2E', label: 'Noir' },
   ];
   basics.forEach(({ hex, label }) => {
     if (!getVerbes().some(v => (v.bgColor||v.color) === hex))
@@ -9291,7 +9291,7 @@ function renderFragmentBgPicker() {
   addBtn.addEventListener('click', () => {
     const native = document.getElementById('fFragmentBgNative');
     if (!native) return;
-    native.value = state.editFragmentBg || '#1a1a1a';
+    native.value = state.editFragmentBg || '#2A2A2E';
     native.click();
   });
   container.appendChild(addBtn);
@@ -9330,9 +9330,9 @@ function _updateFragmentPreview() {
   const previewText = document.getElementById('fragmentPreviewText');
   const textarea = document.getElementById('fFragmentText');
   if (!preview) return;
-  const bg = state.editFragmentBg || '#1a1a1a';
+  const bg = state.editFragmentBg || '#2A2A2E';
   const lum = _luminance(bg);
-  const fg = lum > 0.35 ? '#1a1a1a' : '#f5f5f0';
+  const fg = lum > 0.35 ? '#2A2A2E' : '#f5f5f0';
   preview.style.background = bg;
   if (previewText) {
     previewText.style.color = fg;
