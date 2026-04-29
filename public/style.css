@@ -49,7 +49,7 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   line-height: 1.5;
   min-height: 100vh;
   transition: background-color .5s ease, color .5s ease, border-color .5s ease;
@@ -403,7 +403,7 @@ body.verbe-active .search-bar {
   margin: 0;
 }
 .vpt-count {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
@@ -428,7 +428,7 @@ body.verbe-active .search-bar {
   border: none;
   border-radius: 0;
   background: transparent;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10.5px;
   font-weight: 400;
   text-transform: uppercase;
@@ -612,7 +612,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   border: none;
   border-radius: 0;
   box-shadow: none;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 400;
   white-space: nowrap;
@@ -637,7 +637,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   border: none;
   outline: none;
   background: transparent;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 15px;
   color: var(--text);
   min-width: 60px;
@@ -678,7 +678,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
 /* Items — réutilise .idx-dd-item (déjà défini) pour cohérence */
 .search-kw-empty {
   padding: 12px 16px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   letter-spacing: .05em;
   color: var(--text-3);
@@ -695,7 +695,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   justify-content: center;
   width: 100%;
   padding: 10px 16px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-size: 11px;
   font-weight: 400;
@@ -716,7 +716,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   gap: 6px;
   padding: 6px 14px;
   border-radius: 0;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -770,7 +770,7 @@ main {
   padding: 3px 10px;
   height: 28px;
   font-size: 12px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
   letter-spacing: .04em;
   color: var(--text-2);
@@ -1252,7 +1252,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 }
 /* Typologie — mono compact, uppercase */
 .card-typo-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 500;
   text-transform: uppercase;
@@ -1296,7 +1296,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   gap: 8px;
 }
 .card-price {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: var(--text);
@@ -1327,7 +1327,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   border: none;
   box-shadow: none;
   font-size: 10px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   text-transform: uppercase;
   letter-spacing: .05em;
   color: var(--text-2);
@@ -1433,7 +1433,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   letter-spacing: .01em;
 }
 .card-note-text.font-terrain {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: clamp(10px, 1.1vw, 13px);
   font-weight: 400;
   letter-spacing: .04em;
@@ -1504,7 +1504,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 
 /* ── Note Modal — formulaire ── */
 .btn-note {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-size: 11px;
   font-weight: 400;
@@ -1626,7 +1626,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   font-weight: 300;
 }
 .gallery-note-text.font-terrain {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   letter-spacing: .04em;
 }
@@ -1659,7 +1659,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   line-height: .9;
 }
 .vab-typos {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
@@ -1672,7 +1672,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   position: absolute;
   top: 22px;
   right: 28px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1713,7 +1713,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   position: absolute;
   top: 18px;
   right: 24px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1747,7 +1747,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 /* ── Label de ligne : "INTENTION", "OBJETS" — colonne fixe à gauche ──
    Tous les labels partagent exactement la même largeur → axe vertical strict */
 .sfb-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -1771,7 +1771,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   border: none;
   border-radius: 0;
   background: none;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 500;
   cursor: pointer;
@@ -1841,7 +1841,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 
 /* Bouton "Toutes" — Inter uppercase discret */
 .tfb-all {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-size: 9px;
   font-weight: 600;
@@ -1867,7 +1867,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 
 /* Boutons typologies — Cutive Mono compact, étiquette de musée ── */
 .tfb-pill {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-size: 11px;
   font-weight: 400;
@@ -1917,7 +1917,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   border: none;
   border-radius: 0;
   padding: 5px 14px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 500;
   text-transform: uppercase;
@@ -2655,7 +2655,7 @@ body.dark-mode .form-intent-band {
   color: var(--text);
 }
 .photo-btn-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 8.5px;
   font-weight: 600;
   text-transform: uppercase;
@@ -2884,7 +2884,7 @@ body.dark-mode .form-intent-band {
   font-size: 13px;
 }
 .count-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 400;
   letter-spacing: .08em;
@@ -2922,7 +2922,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   color: var(--text-3);
 }
 .cal-h-date-sel {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -2936,7 +2936,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .cal-h-date-sel:hover { border-color: var(--border-strong); color: var(--text); }
 .cal-jump-btn {
   margin-left: auto;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 500;
   padding: 4px 14px;
@@ -3003,7 +3003,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   border-radius: 5px;
   padding: 7px 4px 16px;
   cursor: pointer;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 500;
   color: var(--text-3);
@@ -3164,7 +3164,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   border: none;
   border-radius: 0;
   padding: 4px 8px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: .04em;
@@ -3257,7 +3257,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 .trios-empty-selection p { margin: 0 0 8px; }
 .trios-empty-hint {
-  font-family: 'Cutive Mono', monospace !important;
+  font-family: 'Inter', sans-serif !important;
   font-style: normal !important;
   font-size: 11px !important;
   letter-spacing: .08em;
@@ -3265,7 +3265,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   margin-top: 16px !important;
 }
 .trios-selection-info {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -3344,7 +3344,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   border: none;
   padding: 0;
   cursor: pointer;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -3838,7 +3838,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 
 /* "parcourir les typologies" — action majeure, poids visuel égal aux verbes */
 .idx-trigger-hint {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-size: 15px;
   /* align-self : géré par .idx-trigger-btn { align-items: flex-end } */
@@ -3894,7 +3894,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   border-bottom: 1px solid var(--border);
   background: transparent;
   padding: 5px 4px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 15px; /* aligné sur .idx-trigger-hint */
   color: var(--text);
   outline: none;
@@ -3930,7 +3930,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   border: none;
   border-bottom: 1px solid var(--border-light);
   cursor: pointer;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   text-align: left;
   color: var(--text);
@@ -3967,7 +3967,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 }
 .idx-dd-empty {
   padding: 12px 16px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   color: var(--text-3);
 }
@@ -3988,7 +3988,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   border: none;
   box-shadow: none;
   background: transparent;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -4057,7 +4057,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 /* Wrap de la barre de recherche dans l'overlay — largeur max pour rester compact */
 .idx-overlay-search { flex: 0 1 260px; min-width: 160px; }
 .idx-overlay-title {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-style: normal !important; /* force l'upright — annule tout héritage italic */
   font-size: 15px;
   font-weight: 500;
@@ -4095,7 +4095,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   border: none;
   background: transparent;
   padding: 4px 0;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 15px; /* aligné sur .idx-trigger-hint */
   color: var(--text);
   outline: none;
@@ -4161,7 +4161,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   border: none;
   border-radius: 0;
   background: none;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 400;
   color: var(--text-2);
@@ -4239,7 +4239,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   user-select: none;
 }
 .grav-verb-count {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 400;
   fill: currentColor;
@@ -4250,7 +4250,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 
 /* Labels sous les nœuds */
 .grav-node-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 400;
   fill: var(--text-2);
@@ -4466,7 +4466,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 }
 /* Nom — Inter uppercase sous le chiffre */
 .sgn-name {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -4508,7 +4508,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 .stats-grad-bar-pct {
   font-size: 12px;
   color: var(--text-3);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
   margin-left: 6px;
 }
@@ -4944,7 +4944,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   flex-shrink: 0;
 }
 .canvas-editor-title {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .14em;
@@ -4976,7 +4976,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .06em;
@@ -4999,7 +4999,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   color: var(--text-2);
 }
@@ -5055,7 +5055,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 .canvas-editor-cancel {
   background: none;
   border: 1px solid var(--border);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 500;
   color: var(--text-2);
@@ -5067,7 +5067,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   background: var(--text);
   color: var(--bg);
   border: none;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .1em;
@@ -5178,7 +5178,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
 .starting-retry-btn {
   margin-top: 12px;
   padding: 9px 24px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 500;
   border: 1.5px solid var(--border);
@@ -5576,7 +5576,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   justify-content: space-between;
   padding: 11px 22px;
   cursor: pointer;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -5592,7 +5592,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   background: transparent;
   border: none;
   border-bottom: 1px dashed transparent;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -5613,7 +5613,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   font-size: 11px;
   color: var(--text-3);
   margin: 0 0 4px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 .sm-field-row {
   display: flex;
@@ -5628,7 +5628,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   letter-spacing: .06em;
   white-space: nowrap;
   min-width: 54px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 .sm-input {
   flex: 1;
@@ -5638,7 +5638,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   border-radius: 4px;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   transition: border-color .1s;
 }
@@ -5689,7 +5689,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   height: 28px;
   padding: 3px 8px;
   font-size: 13px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   border: 1px solid transparent;
   border-radius: 0;
   background: none;
@@ -5725,7 +5725,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   height: 28px;
   padding: 3px 8px;
   font-size: 12px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   border: 1px solid var(--border-light);
   border-radius: 0;
   background: var(--surface);
@@ -5800,7 +5800,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   padding: 0 4px 0 12px;
 }
 .bottom-nav-export-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .10em;
@@ -5817,7 +5817,7 @@ body.dark-mode .gallery-scroll { background: #ffffff; }
   height: 100%;
   background: none;
   border: none;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: .06em;
@@ -6464,7 +6464,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
 .gs-search-input {
   flex: 1; min-width: 80px; border: none;
   background: transparent; font-size: 12px; color: var(--text);
-  padding: 2px 0; outline: none; font-family: 'Cutive Mono', monospace;
+  padding: 2px 0; outline: none; font-family: 'Inter', sans-serif;
 }
 .gs-dropdown {
   position: absolute; top: calc(100% + 3px); left: 0; right: 0;
@@ -6478,12 +6478,12 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   font-size: 9px; font-weight: 700; text-transform: uppercase;
   letter-spacing: .15em; color: var(--text-3);
   border-top: 1px solid var(--border-light);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 .gs-family-label:first-child { border-top: none; }
 .gs-option {
   padding: 6px 18px; font-size: 12px; cursor: pointer; color: var(--text);
-  font-family: 'Cutive Mono', monospace; transition: background .08s;
+  font-family: 'Inter', sans-serif; transition: background .08s;
 }
 .gs-option:hover { background: var(--tag-bg); }
 .gs-option.selected { color: var(--accent); font-weight: 600; }
@@ -6502,7 +6502,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
 .sm-group-name-input {
   flex: 1; border: none; background: transparent;
   font-size: 12px; font-weight: 600; color: var(--text);
-  padding: 2px 4px; outline: none; font-family: 'Cutive Mono', monospace;
+  padding: 2px 4px; outline: none; font-family: 'Inter', sans-serif;
 }
 .sm-group-name-input:focus { background: var(--surface); border-radius: 3px; }
 .sm-group-del-btn {
@@ -6519,7 +6519,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   padding: 2px 8px;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 9999px; font-size: 11px; color: var(--text);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 .sm-tag-del-btn {
   background: none; border: none; cursor: pointer;
@@ -6529,7 +6529,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
 .sm-group-tag-input {
   border: none; border-bottom: 1px dashed var(--border);
   background: transparent; font-size: 11px; color: var(--text-2);
-  padding: 2px 4px; width: 90px; outline: none; font-family: 'Cutive Mono', monospace;
+  padding: 2px 4px; width: 90px; outline: none; font-family: 'Inter', sans-serif;
 }
 .sm-group-tag-input:focus { border-bottom-color: var(--border-strong); }
 .sm-add-group-row {
@@ -6539,7 +6539,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   flex: 1; height: 28px; padding: 3px 8px;
   border: 1px dashed var(--border-light); border-radius: 4px;
   background: transparent; font-size: 12px; color: var(--text); outline: none;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 .sm-new-group-input:focus { border-color: var(--border); background: var(--surface); }
 
@@ -6827,7 +6827,7 @@ main { padding-bottom: 44px; }
   background: none;
   border: none;
   padding: 0;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9.5px;     /* aligné sur .sfb-pill-sm et .mf-btn */
   font-weight: 500;
   text-transform: uppercase;
@@ -6952,7 +6952,7 @@ body.dark-mode .mf-btn:not(.mf-active) .mf-count { color: #1a1917; }
 .mf-search {
   width: 100%;
   font-size: 12px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   padding: 5px 8px;
   border: 1px solid var(--border-light);
   border-radius: 0;
@@ -7169,7 +7169,7 @@ body.dark-mode .mf-btn:not(.mf-active) .mf-count { color: #1a1917; }
   align-items: center;
   padding: 5px 12px;
   font-size: 12px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
   color: var(--text-2);
   background: var(--tag-bg);
@@ -7354,7 +7354,7 @@ body.dark-mode .subcat-chip.selected { color: #1a1917; }
 
 /* ── Typographie globale ── */
 label, input, select, textarea, button {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .portrait-title, .vpt-name, .vab-name, .cat-hdr-name,
@@ -7363,7 +7363,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 /* .idx-overlay-title : Cutive Mono — cohérent avec le trigger "Typologies" (défini dans sa règle propre) */
 .settings-section-title, .attr-group-header span, .form-group-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
 }
 /* Prix */
 .card-price { font-variant-numeric: tabular-nums; }
@@ -7545,7 +7545,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 /* Typologie — factuel Cutive Mono, casse d'origine, pas de soulignement */
 .portrait-typo-pill {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: .06em;
@@ -7583,7 +7583,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 /* Statut — note d'archive discrète, gris neutre (pas la couleur du dot) */
 .portrait-status-text {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 400;
   font-style: italic;
@@ -7593,7 +7593,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 /* Prix — factuel Cutive Mono, taille augmentée (équivalent text-xl) */
 .portrait-price {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 20px;
   font-weight: 500;
   color: var(--text);
@@ -7632,7 +7632,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   gap: 16px;
 }
 .portrait-attr-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -7648,7 +7648,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   gap: 0; /* le séparateur · est géré par ::before sur .portrait-attr-pill + .portrait-attr-pill */
 }
 .portrait-attr-pill {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   color: #1e1c19;
   padding: 2px 0;
@@ -7689,7 +7689,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   margin-bottom: 48px;
 }
 .trios-eyebrow {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -7706,7 +7706,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   margin-bottom: 32px;
 }
 .trios-sub {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   color: var(--text-3);
   max-width: 420px;
@@ -7715,7 +7715,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 .trios-generate-btn {
   display: inline-block;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .1em;
@@ -7742,7 +7742,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   letter-spacing: .01em;
 }
 .trios-link-pre {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -7894,7 +7894,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   line-height: 1;
 }
 .trios-empty-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: .08em;
@@ -7902,7 +7902,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   color: var(--text-3);
 }
 .trios-empty-hint {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -7952,7 +7952,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   justify-content: center;
 }
 .trios-filter-sel {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   padding: 9px 14px;
   border: 1px solid var(--border);
@@ -7962,7 +7962,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   min-width: 130px;
 }
 .trios-compose-btn {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .12em;
@@ -7985,7 +7985,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   margin-bottom: 14px;
 }
 .trios-rule-pill {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: .05em;
@@ -8001,7 +8001,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .trios-rule-pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 .trios-rule-desc {
   text-align: center;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   color: var(--text-3);
   min-height: 18px;
@@ -8078,7 +8078,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   margin: 8px 0 28px;
 }
 .trios-repick-btn {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .12em;
@@ -8110,7 +8110,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
 .trios-inv-search {
   flex: 1;
   min-width: 180px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   padding: 9px 12px;
   border: 1px solid var(--border);
@@ -8118,7 +8118,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   color: var(--text);
 }
 .trios-save-btn {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .12em;
@@ -8162,7 +8162,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
 .trios-inv-name {
   display: block;
   font-size: 9px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   color: var(--text-2);
   margin-top: 4px;
   white-space: nowrap;
@@ -8204,7 +8204,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   gap: 0;
 }
 .tl-mode-btn {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -8269,7 +8269,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   align-content: flex-start;
 }
 .tl-origine-chip {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   padding: 5px 12px;
   border: 1px solid var(--border);
@@ -8306,7 +8306,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   gap: 10px;
   padding: 10px 16px;
   margin: -28px -28px 20px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: .04em;
@@ -8468,7 +8468,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   padding: 9px 0;
   border: 1.5px solid var(--border);
   background: none;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: .05em;
@@ -8614,7 +8614,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
 .bc-item {
   display: inline-flex;
   align-items: center;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: .02em;
@@ -8642,7 +8642,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   background: none;
 }
 .bc-sep {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   color: var(--text-3);
   padding: 0 4px;
@@ -8650,7 +8650,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   opacity: .4;
 }
 .bc-ellipsis {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   color: var(--text-3);
   opacity: .55;
@@ -8989,7 +8989,7 @@ body.dark-mode .card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: #18181b;
 
 /* ── Classe utilitaire : Factuel (technique, filtres, données, labels) ── */
 .font-factual {
-  font-family: 'Cutive Mono', monospace !important;
+  font-family: 'Inter', sans-serif !important;
   font-style: normal !important;
   font-weight: 500 !important;
   letter-spacing: .05em !important;
@@ -9119,7 +9119,7 @@ body.dark-mode .portrait-title { color: var(--text); }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   color: var(--text-3);
   white-space: nowrap;
@@ -9150,7 +9150,7 @@ body.dark-mode .portrait-title { color: var(--text); }
   gap: 10px;
 }
 .sm-pagedesc-label {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -9158,7 +9158,7 @@ body.dark-mode .portrait-title { color: var(--text); }
   color: var(--text-3);
 }
 .sm-pagedesc-reset {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -9223,7 +9223,7 @@ body.dark-mode .section-header {
   margin: 0 0 8px;
 }
 .section-header-desc {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 400;
   letter-spacing: .03em;
@@ -9252,7 +9252,7 @@ body.dark-mode .section-header {
   justify-content: space-between;
   padding: 10px 14px;
   border-bottom: 1px solid var(--border-light);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -9265,7 +9265,7 @@ body.dark-mode .section-header {
   border: none;
   cursor: pointer;
   padding: 4px 0;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -9353,7 +9353,7 @@ body.dark-mode .fs-panel {
 .fs-section:last-child { border-bottom: none; }
 .fs-section-title {
   display: block;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   letter-spacing: .16em;
   text-transform: uppercase;
@@ -9387,7 +9387,7 @@ body.dark-mode .fs-panel {
   padding: 0 12px;
   border: 1px solid var(--border);
   background: var(--surface);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   color: var(--text);
 }
@@ -9442,7 +9442,7 @@ body.dark-mode .hd-panel {
   border: none;
   padding: 14px 0;
   text-align: left;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -9472,7 +9472,7 @@ body.dark-mode .hd-item { border-bottom-color: var(--border); }
   padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
   align-items: center;
   gap: 12px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   color: var(--text-3);
 }
@@ -9603,7 +9603,7 @@ body.dark-mode .diorama-decor-bar { border-bottom-color: var(--border); }
 
 /* ── Compteur (12 objets) reste en Mono : c'est de la donnée, pas de la navigation */
 .toolbar-strate .count-label {
-  font-family: 'Cutive Mono', monospace !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 11px !important;
   letter-spacing: .14em !important;
   text-transform: uppercase !important;
@@ -9612,7 +9612,7 @@ body.dark-mode .diorama-decor-bar { border-bottom-color: var(--border); }
 
 /* Selects (Trier / Statut) : Mono uppercase cohérent */
 .toolbar-strate select.status-filter {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -9661,7 +9661,7 @@ body.dark-mode .diorama-decor-bar { border-bottom-color: var(--border); }
   header .search-input-inner,
   header .search-input-inner::placeholder {
     font-style: normal !important;   /* pas d'italique sur l'input mobile */
-    font-family: 'Cutive Mono', monospace;
+    font-family: 'Inter', sans-serif;
     color: var(--text-3);
   }
   header .search-input-inner::placeholder { font-size: 13px; }
@@ -9677,7 +9677,7 @@ body.dark-mode .diorama-decor-bar { border-bottom-color: var(--border); }
   margin: 0 0 6px;
 }
 .section-header-desc {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-size: 13px;
   font-weight: 400;
@@ -9701,7 +9701,7 @@ body.dark-mode .section-header {
   flex-wrap: wrap;
 }
 .sab-counter {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -9714,7 +9714,7 @@ body.dark-mode .section-header {
 }
 .sab-spacer { flex: 1; }
 .sab-btn {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: .06em;
@@ -9802,7 +9802,7 @@ body.dark-mode .section-header {
   position: absolute;
   bottom: 2px;
   left: 4px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 8px;
   font-weight: 600;
   letter-spacing: .08em;
@@ -9827,7 +9827,7 @@ body.dark-mode .section-header {
   color: var(--text-3);
 }
 .dio-slot-plus {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 22px;
   line-height: 1;
   font-weight: 300;
@@ -9863,7 +9863,7 @@ body.dark-mode .section-header {
   border-radius: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: .08em;
@@ -9884,7 +9884,7 @@ body.dark-mode .section-header {
   transform: translateX(-50%) translateY(12px);
   background: var(--text);
   color: var(--bg);
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: .04em;
@@ -9939,7 +9939,7 @@ body.dark-mode .section-header {
   gap: 6px;
 }
 .diorama-sidebar-title {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
@@ -9952,7 +9952,7 @@ body.dark-mode .section-header {
   border-bottom: 1px solid var(--border);
   background: transparent;
   padding: 4px 0;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   color: var(--text);
   outline: none;
@@ -9984,7 +9984,7 @@ body.dark-mode .section-header {
   pointer-events: none;
 }
 .diorama-lib-item .dio-lib-name {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 8px;
   color: var(--text-3);
   padding: 2px 4px;
@@ -10081,7 +10081,7 @@ body.dark-mode .section-header {
 
 /* ── Loading + Crédits ── */
 .diorama-loading {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   color: var(--text-3);
   padding: 14px 0;
@@ -10091,7 +10091,7 @@ body.dark-mode .section-header {
   position: absolute;
   bottom: 10px;
   left: 12px;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 9px;
   font-weight: 400;
   color: rgba(255,255,255,.65);
