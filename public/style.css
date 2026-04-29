@@ -8551,7 +8551,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   justify-content: center;
   padding: 14px;
   box-sizing: border-box;
-  background: #1a1a1a;
+  background: #2A2A2E;
   transition: background .2s;
   overflow: hidden;
 }
@@ -10181,7 +10181,7 @@ body.dark-mode .section-header {
   flex: 1;
   overflow: hidden;
   position: relative;
-  background: #1a1a1a;
+  background: #2A2A2E;
   touch-action: none;
   cursor: grab;
 }
