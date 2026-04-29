@@ -1,3 +1,14 @@
+/* ══ FONT-FACE — Feroniapi (Velvetyne, MediumItalic display) ═══════════════
+      Hébergée localement. Cible exclusive : grands titres + navigation. */
+@font-face {
+  font-family: 'Feroniapi';
+  src: url('./fonts/feroniapi-mediumitalic.woff2') format('woff2'),
+       url('./fonts/feroniapi-mediumitalic.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ══ BRUTALISME — angles droits partout ══════════════════════════════════ */
