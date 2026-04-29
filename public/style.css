@@ -9387,7 +9387,7 @@ body.dark-mode .portrait-title { color: var(--text); }
   text-align: left;
   width: 100%;
   padding: 32px 32px 24px;
-  background: #fafaf8;
+  background: #F0F0F0;
   border-bottom: 1px solid #e4e4e7;   /* zinc-200 */
   box-sizing: border-box;
 }
