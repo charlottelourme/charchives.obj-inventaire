@@ -1097,6 +1097,68 @@ body.dark-mode .card .card-grain {
   .card:hover { transform: scale(1.02); }
 }
 
+/* ══ Calque poème — révèle la description (utilisée comme texte poétique)
+   au survol, par-dessus l'image. Esthétique Soft Block : fond semi-transparent
+   au verbe + backdrop-filter blur pour rendre le texte lisible. ══════════════ */
+.card-poem-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;                            /* au-dessus de l'image (z:2) et du grain (z:1) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 22px;
+  background: color-mix(in srgb, var(--verbe-accent, #6F6962) 78%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity .5s ease-in-out;
+  pointer-events: none;                  /* ne bloque pas le clic carte */
+  overflow: hidden;
+}
+.card:hover .card-poem-overlay { opacity: 1; }
+
+/* Grain papier discret — réutilise le SVG fractalNoise pour cohérence avec
+   .card-grain et bg-grain. Pose la texture par-dessus le voile coloré. */
+.card-poem-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.10;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.18; }
+
+/* Typographie : Inter italique, aérée, ferrée à gauche.
+   La couleur du texte est dérivée du verbe (textColor) ou neutre clair en fallback. */
+.card-poem-text {
+  position: relative;
+  z-index: 1;
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--verbe-text, #FAF9F5);
+  text-align: left;
+  white-space: pre-wrap;                 /* préserve sauts de ligne du poème */
+  margin: 0;
+  max-height: 100%;
+  overflow: hidden;
+  /* fade-out élégant en bas si le poème dépasse */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 88%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 88%, transparent 100%);
+}
+
+/* Mobile : pas de hover possible — le poème est révélé via la fiche objet,
+   pas sur la carte. */
+@media (max-width: 767px) {
+  .card-poem-overlay { display: none !important; }
+}
+
 /* Header row de la carte : masqué — info dans card-body */
 .card-header-row { display: none; }
 .card-verbe-badge { display: none; }
