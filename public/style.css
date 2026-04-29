@@ -913,7 +913,7 @@ main {
   .grid {
     -webkit-column-gap: 52px;
     column-gap: 52px;
-    padding: 28px 20px calc(80px + env(safe-area-inset-bottom));
+    padding: 60px var(--page-gutter) calc(80px + env(safe-area-inset-bottom));
   }
   .grid:not(.grid-css) .card { margin-bottom: 52px; }
   .grid.grid-css { gap: 52px; }
