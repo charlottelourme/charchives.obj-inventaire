@@ -5991,8 +5991,6 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     gap: 2px;
     flex-shrink: 0;
   }
-  /* Sur mobile : garde +Ajouter, ⚙ et ◑ — masque Note (accessible via menu/drawer) */
-  .header-actions .btn-note { display: none !important; }
   .header-actions .btn-primary {
     font-size: 10px !important;
     padding: 4px 8px !important;
