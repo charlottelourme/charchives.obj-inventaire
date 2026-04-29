@@ -747,8 +747,8 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
 @media (min-width: 521px) {
   #newBtn {
     position: fixed;
-    bottom: clamp(24px, 3vw, 40px);
-    right: clamp(24px, 3vw, 40px);
+    bottom: clamp(48px, 5vw, 72px);
+    right: clamp(48px, 5vw, 72px);
     z-index: 50;
     padding: 12px 22px;
     font-family: 'Inter', sans-serif;
