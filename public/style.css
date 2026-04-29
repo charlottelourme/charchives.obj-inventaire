@@ -30,6 +30,9 @@
   /* ── Grille des filtres — alignement vertical strict ── */
   --filter-gutter: 12px; /* marge gauche réduite — aligne près du bord */
   --label-w: 96px;  /* largeur fixe de la colonne "INTENTION" / "OBJETS" */
+  /* ══ NEGATIVE SPACE — gouttière unique pour aligner logo / grille / filtres
+        au pixel près (axe vertical strict, façon galerie d'art) ══════════ */
+  --page-gutter: clamp(48px, 5vw, 96px);
 }
 
 body {
