@@ -1213,8 +1213,8 @@ body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
   font-family: 'Feroniapi', serif;
   font-style: normal;                    /* le woff2 est déjà l'italique — pas de synthétique */
   font-weight: 400;
-  font-size: 0.98rem;
-  line-height: 1.45;
+  font-size: 1.18rem;
+  line-height: 1.5;
   letter-spacing: 0.005em;
   color: var(--verbe-text, var(--text, #2A2A2E));
   text-align: left;
@@ -1222,6 +1222,23 @@ body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
   margin: 0;
   /* Légère ombre douce pour aider la lisibilité quand le blob est très clair */
   text-shadow: 0 0 1px color-mix(in srgb, var(--verbe-accent, transparent) 40%, transparent);
+}
+
+/* ══ Hover : les textes de la carte virent en duotone foncé ══════════════════
+   Quand la carte est survolée, son nom, sa méta, son prix et la date passent
+   à la couleur duotone la plus foncée du verbe (calculée côté JS dans
+   --verbe-dark). Renforce la cohérence visuelle entre la carte et la fenêtre
+   poème ouverte à côté. */
+@media (hover: hover) {
+  .card:hover .card-name,
+  .card:hover .card-meta-row,
+  .card:hover .card-meta-row .card-verbe-label,
+  .card:hover .card-meta-row .card-typo-label,
+  .card:hover .card-price,
+  .card:hover .card-added-date {
+    color: var(--verbe-dark, var(--text, #2A2A2E));
+    transition: color .35s ease-in-out;
+  }
 }
 
 /* Mobile : pas de hover possible — le poème est révélé via la fiche objet,
