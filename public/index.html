@@ -146,13 +146,11 @@
 
   <!-- ── Journal — moodboard statique de notes & photos ── -->
   <div id="deriveView" style="display:none">
-    <!-- ToolBar Journal : ajouter photos de contexte + notes -->
-    <div class="toolbar-strate journal-header">
-      <span class="journal-label">Journal</span>
-      <div class="toolbar-gap" style="flex:1"></div>
+    <!-- Actions Journal : centrées (Inter), sans titre redondant -->
+    <div class="journal-actions">
       <input type="file" id="journalPhotoInput" accept="image/*" multiple style="display:none">
-      <button class="btn btn-ghost" id="journalAddPhotoBtn">+ Ajouter une photo</button>
-      <button class="btn btn-ghost" id="journalAddNoteBtn">+ Ajouter une note</button>
+      <button class="btn btn-ghost journal-action-btn" id="journalAddPhotoBtn">+ Ajouter une photo</button>
+      <button class="btn btn-ghost journal-action-btn" id="journalAddNoteBtn">+ Ajouter une note</button>
     </div>
     <!-- Pane Nuée — Galerie Masonry -->
     <div class="derive-pane" id="deriveNueePane">
