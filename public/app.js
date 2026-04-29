@@ -2148,7 +2148,7 @@ function _noteColors() {
     .filter(v => v.bgColor || v.color)
     .map(v => ({ hex: v.bgColor || v.color, label: v.name }));
   return [
-    { hex: '#FAFAF8', label: 'Blanc chaud' },
+    { hex: '#F0F0F0', label: 'Blanc chaud' },
     { hex: '#F5E6D3', label: 'Parchemin' },
     { hex: '#EDE8E0', label: 'Lin' },
     { hex: '#D9D0C7', label: 'Pierre' },
@@ -2206,7 +2206,7 @@ function _renderNoteColorSwatches() {
   const wrap   = document.getElementById('noteColorSwatches');
   const colors = _noteColors();
   wrap.innerHTML = colors.map(c => {
-    const isLight = c.hex === '#FAFAF8' || c.hex === '#F5E6D3' || c.hex === '#EDE8E0'
+    const isLight = c.hex === '#F0F0F0' || c.hex === '#F5E6D3' || c.hex === '#EDE8E0'
                   || c.hex === '#E8EEF4' || c.hex === '#E8F4EF' || _luminance(c.hex) > 0.75;
     return `<button class="note-swatch${c.hex === _noteSelectedColor ? ' selected' : ''}"
       style="background:${c.hex};${isLight ? 'border-color:var(--border)' : ''}"
