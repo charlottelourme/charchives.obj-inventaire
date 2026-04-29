@@ -1097,33 +1097,56 @@ body.dark-mode .card .card-grain {
   .card:hover { transform: scale(1.02); }
 }
 
-/* ══ Calque poème — fenêtre XXL flottante révélée au survol ══════════════════
-   Le calque est sorti de .card-thumb-area (qui clip via overflow:hidden) pour
-   être positionné dans .card directement, débordant largement (200% de la carte).
-   Apparition : fade + léger zoom. Lit en gros, fond opaque + blur pour effacer
-   la grille en arrière-plan. ═══════════════════════════════════════════════════ */
+/* ══ Calque poème — Soft Block XXL duotone, fondu aux bords ══════════════════
+   Pas de fond opaque ni de bordure : un blob coloré flou (verbe-accent + filter
+   blur) joue le rôle de fenêtre. Les angles disparaissent dans le flou, comme
+   le halo des cartes au survol — esthétique cohérente avec le reste du site.
+   Le texte sur dessus reste net (Inter italic, couleur duotone du verbe). ════ */
 .card-poem-overlay {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 200%;
-  max-width: 460px;                      /* plafond pour ne pas envahir l'écran */
-  max-height: min(80vh, 540px);
+  max-width: 440px;
+  max-height: min(80vh, 520px);
   transform: translate(-50%, -50%) scale(0.95);
   transform-origin: center center;
   z-index: 1000;
-  padding: 2rem 2.25rem;
-  background: color-mix(in srgb, var(--bg, #FAFAF8) 92%, transparent);
-  backdrop-filter: blur(12px) saturate(1.05);
-  -webkit-backdrop-filter: blur(12px) saturate(1.05);
-  border: 1px solid var(--border, #C4C0B8);
+  padding: 2.25rem 2.5rem;
+  background: transparent;               /* pas de fond direct — c'est ::before qui peint */
+  border: none;                          /* pas de border — les bords sont fondus par le blur */
   opacity: 0;
-  visibility: hidden;                    /* évite tout coût de rendu hors-survol */
+  visibility: hidden;
   transition: opacity .35s ease-in-out, transform .45s cubic-bezier(.22,.68,0,1.1), visibility 0s linear .35s;
-  pointer-events: none;                  /* ne bloque pas le clic carte */
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
+  pointer-events: none;
+  overflow: visible;                     /* le halo flou peut déborder de la fenêtre */
+}
+/* Le « blob » coloré flou — comme .card::before mais en plus large et plus
+   doux. Inset négatif → déborde généreusement. blur(36px) → angles invisibles. */
+.card-poem-overlay::before {
+  content: '';
+  position: absolute;
+  inset: -28px -32px;
+  background: var(--verbe-accent, rgba(190, 182, 170, 0.92));
+  filter: blur(36px);
+  opacity: 0.92;
+  border-radius: 12px;
+  z-index: -2;
+  pointer-events: none;
+}
+/* Petit calque opaque interne — assure la lisibilité du texte au centre, où
+   le blob flou est le plus dense, sans réintroduire de bord visible (mask
+   radial pour qu'il s'éteigne en douceur sur les côtés). */
+.card-poem-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: color-mix(in srgb, var(--verbe-accent, rgba(190,182,170,1)) 100%, transparent);
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 35%, transparent 78%);
+          mask-image: radial-gradient(ellipse at center, #000 35%, transparent 78%);
+  opacity: 0.85;
 }
 .card:hover .card-poem-overlay {
   opacity: 1;
@@ -1136,20 +1159,22 @@ body.dark-mode .card .card-grain {
 .card { z-index: 0; }
 .card:hover { z-index: 100; }
 
-/* Grain papier discret sur le fond de la fenêtre — cohérence avec le reste
-   de l'esthétique Charchives. */
+/* Grain papier discret sur le blob coloré — cohérence avec .card-grain et bg-grain. */
 .card-poem-grain {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.07;
+  opacity: 0.08;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E");
   background-size: 200px 200px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 80%);
+          mask-image: radial-gradient(ellipse at center, #000 40%, transparent 80%);
 }
-body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.14; }
+body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
 
-/* Typographie éditoriale grande et aérée. */
+/* Typographie éditoriale grande et aérée. La couleur duotone du verbe (--verbe-text)
+   contraste naturellement avec le fond verbe-accent. */
 .card-poem-text {
   position: relative;
   z-index: 1;
@@ -1159,10 +1184,12 @@ body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.14; }
   font-size: 1.25rem;
   line-height: 1.6;
   letter-spacing: 0.005em;
-  color: var(--text, #1A1A1A);
+  color: var(--verbe-text, var(--text, #1A1A1A));
   text-align: left;
-  white-space: pre-wrap;                 /* préserve sauts de ligne du poème */
+  white-space: pre-wrap;
   margin: 0;
+  /* Légère ombre douce pour aider la lisibilité quand le blob est très clair */
+  text-shadow: 0 0 1px color-mix(in srgb, var(--verbe-accent, transparent) 40%, transparent);
 }
 
 /* Mobile : pas de hover possible — le poème est révélé via la fiche objet,
