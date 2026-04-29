@@ -2858,7 +2858,7 @@ function renderJournal(filtered) {
       const text = (c.content || c.textContent || '').replace(/\n/g, '<br>');
       item.classList.add('journal-note');
       item.innerHTML = `
-        <div class="journal-note-inner" style="background:${bg};color:${isDark ? '#F4F4F5' : '#1A1A1A'}">
+        <div class="journal-note-inner" style="background:${bg};color:${isDark ? '#F4F4F5' : '#2A2A2E'}">
           <div class="journal-note-text">${text}</div>
         </div>`;
     } else {
