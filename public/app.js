@@ -1947,9 +1947,12 @@ function cardHTML(c) {
   const haloColor = verbeHasColor ? bgColor + '55' : 'rgba(45,45,45,0.08)';
   const accentStyle = ` style="--verbe-accent:${haloAccent};--card-halo:${haloColor}"`;
 
-  // ── imageMode : portrait (3:4) | landscape (4:3) | cutout (auto) ──
-  const _isDetoured = photo && (photo.toLowerCase().endsWith('.png') || photo.includes('detour'));
-  const imageMode = c.imageMode || (_isDetoured ? 'cutout' : 'portrait');
+  // ── imageMode : portrait (3:4) | landscape (4:3) | cutout (explicite uniquement) ──
+  // Pas d'auto-détection cutout sur .png — la plupart des PNG du projet ont un fond
+  // blanc cassé (~245 alpha 255) plutôt qu'un vrai canal alpha, ce qui dessine un
+  // rectangle visible avec multiply. Le mode cutout doit être explicite via
+  // c.imageMode === 'cutout' (futur toggle dans la fiche objet).
+  const imageMode = c.imageMode || 'portrait';
   const thumbAreaMod = imageMode === 'cutout'    ? ' card-thumb-area--cutout'
                      : imageMode === 'landscape' ? ' card-thumb-area--landscape'
                      : ''; // portrait par défaut
