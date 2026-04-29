@@ -1082,12 +1082,20 @@ body.dark-mode .card .card-grain {
   transform-origin: center;
   background: transparent;
   mix-blend-mode: multiply;
+  /* La plupart des PNG « détourés » du projet ne sont pas un vrai cutout alpha :
+     leur fond est un blanc cassé (~245-249) plutôt que 255 ou alpha 0. Multiply
+     produit alors une teinte légèrement différente du halo et le rectangle
+     réapparaît. On force les pixels presque blancs vers 255 via contraste +
+     luminosité — multiply devient propre, sans dénaturer significativement
+     l'objet (impact ~4-5 % sur le sujet). */
+  filter: contrast(1.12) brightness(1.04);
 }
 /* Dark mode : multiply écraserait totalement l'image (blanc × fond très sombre = sombre).
    On revient en rendu naturel — le PNG garde son fond mais reste lisible. */
 body.dark-mode .card-thumb-area--detoured .card-thumb,
 body.dark-mode .card-thumb-area--cutout .card-thumb {
   mix-blend-mode: normal;
+  filter: none;
 }
 .card-thumb-area--detoured:hover .card-thumb,
 .card-thumb-area--cutout:hover .card-thumb {
