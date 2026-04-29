@@ -1947,7 +1947,12 @@ function cardHTML(c) {
   const verbeHasColor = c.category && getVerbes().some(v => v.name === c.category && (v.bgColor || v.color));
   const haloAccent = verbeHasColor ? bgColor : 'rgba(198,188,175,0.8)';
   const haloColor = verbeHasColor ? bgColor + '55' : 'rgba(45,45,45,0.08)';
-  const accentStyle = ` style="--verbe-accent:${haloAccent};--card-halo:${haloColor};--verbe-text:${textColor}"`;
+  // La "couleur duotone foncée" = la moins lumineuse entre bgColor et textColor.
+  // Robuste quelle que soit la palette utilisateur (light-on-dark ou dark-on-light).
+  const verbeDark = (bgColor && textColor && _luminance(bgColor) < _luminance(textColor))
+    ? bgColor
+    : (textColor || bgColor || '#2A2A2E');
+  const accentStyle = ` style="--verbe-accent:${haloAccent};--card-halo:${haloColor};--verbe-text:${textColor};--verbe-dark:${verbeDark}"`;
 
   // ── imageMode : portrait (3:4) | landscape (4:3) | cutout (explicite uniquement) ──
   // Pas d'auto-détection cutout sur .png — la plupart des PNG du projet ont un fond
