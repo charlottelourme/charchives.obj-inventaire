@@ -1344,6 +1344,8 @@ function setView(v, _silent = false) {
   if (v === 'gallery')        { v = 'derive'; state.deriveMode = 'nuee'; }
   if (v === 'constellation')  { v = 'derive'; state.deriveMode = 'reseau'; }
   state.view = v;
+  // Reflet de l'état de vue dans le DOM — utilisé par CSS (ex: bouton flottant Inventaire only)
+  document.body.dataset.view = v;
 
   const views = {
     grid: 'gridWrapper', derive: 'deriveView',
