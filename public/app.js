@@ -2817,6 +2817,31 @@ function _shuffleArray(arr) {
 
 // ══ JOURNAL — Moodboard statique masonry CSS columns ═════════════════════
 // Grille Tumblr-like via column-count CSS. Aucune animation, aucun positionnement JS.
+// Rythme : largeurs/offsets aléatoires DÉTERMINISTES (par hash d'id) pour éviter
+// que le visuel "saute" à chaque render.
+function _journalHash(id) {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function _applyJournalRhythm(item, id) {
+  const h = _journalHash(id);
+  const widthRoll = h % 100;
+  // 60% pleine largeur, 22% compact gauche, 18% compact droite
+  if (widthRoll >= 60 && widthRoll < 82) {
+    item.classList.add('journal-item-compact');
+  } else if (widthRoll >= 82) {
+    item.classList.add('journal-item-end');
+  }
+  // Roll indépendant pour offset top : 28% des items reçoivent un shift
+  const shiftRoll = (h >>> 8) % 100;
+  if (shiftRoll < 28) item.classList.add('journal-item-shift');
+}
+
 function renderJournal(filtered) {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
