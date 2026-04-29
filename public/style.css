@@ -2389,7 +2389,26 @@ body.dark-mode .sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: #18
   max-height: 92vh;
   overflow-y: auto;
   box-shadow: none;  /* flat design — pas d'ombre portée */
+  position: relative; /* contexte d'empilement pour le grain ::before */
 }
+/* Grain papier sur les modales — cohérence avec body + cartes */
+.modal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='mn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mn)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+body.dark-mode .modal::before {
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+}
+/* Le contenu de la modale doit rester au-dessus du grain ::before */
+.modal > * { position: relative; z-index: 1; }
 .modal-lg {
   max-width: 80vw; width: 80vw;
   max-height: 85vh; height: 85vh;
