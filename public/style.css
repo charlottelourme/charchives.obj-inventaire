@@ -750,7 +750,7 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 16px var(--filter-gutter); /* aligne count-label sur la même règle que INTENTION/OBJETS */
+  padding: 16px var(--page-gutter); /* aligne sur la grille — axe vertical strict */
   min-height: 56px;
 }
 .toolbar-gap { flex: 1; }
