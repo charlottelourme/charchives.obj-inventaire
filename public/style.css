@@ -526,7 +526,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   /* ── Brutalisme Poétique : navigation XXL Bodoni Moda italic ── */
   font-family: 'Bodoni Moda', Georgia, serif;
   font-style: italic;
-  font-size: clamp(2rem, 3.5vw, 3.25rem);
+  font-size: clamp(1.5rem, 2.4vw, 2.4rem);
   font-weight: 400;
   line-height: 1.15;
   cursor: pointer;
