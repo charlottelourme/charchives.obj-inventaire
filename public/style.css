@@ -524,7 +524,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   position: relative;              /* contexte de positionnement pour le halo ::before */
   background: transparent !important;
   border: none;
-  padding: 0 16px;
+  padding: 0 6px;                  /* padding réduit — Syne 800 compense en présence */
   height: 100%;
   display: flex;
   align-items: center;
