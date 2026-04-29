@@ -25,10 +25,10 @@
   --border: #C4C4C4;         /* allégé — warm gray */
   --border-light: #E5E5E5;
   --border-strong: #888888;
-  --text: #1A1A1A;
+  --text: #2A2A2E;
   --text-2: #3F3F46;
   --text-3: #52525B;
-  --accent: #1A1A1A;
+  --accent: #2A2A2E;
   --red: #D13F13;
   --tag-bg: #EFEFEF;
   --tag-border: #DDDDDD;
@@ -529,7 +529,7 @@ header h1 {
   font-weight: 500;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: #1A1A1A !important;      /* visibilité forcée — jamais de blanc sur blanc */
+  color: #2A2A2E !important;      /* visibilité forcée — jamais de blanc sur blanc */
   flex-shrink: 0;
   display: flex !important;
   align-items: center;
@@ -1215,7 +1215,7 @@ body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
   font-size: 1.25rem;
   line-height: 1.6;
   letter-spacing: 0.005em;
-  color: var(--verbe-text, var(--text, #1A1A1A));
+  color: var(--verbe-text, var(--text, #2A2A2E));
   text-align: left;
   white-space: pre-wrap;
   margin: 0;
@@ -6162,7 +6162,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     display: flex !important;
     align-items: center;
     margin: 0;
-    color: #1A1A1A !important;
+    color: #2A2A2E !important;
   }
   body.dark-mode header > h1#siteTitle { color: #F4F4F5 !important; }
 
