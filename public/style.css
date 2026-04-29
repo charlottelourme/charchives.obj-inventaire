@@ -902,7 +902,7 @@ main {
 /* ── Ultra-large (≥ 1440px) — défaut 5 colonnes ── */
 @media (min-width: 1440px) {
   :root { --grid-cols: 5; }
-  .grid { -webkit-column-gap: 96px; column-gap: 96px; padding-left: 40px; padding-right: 40px; }
+  .grid { -webkit-column-gap: 96px; column-gap: 96px; padding-left: var(--page-gutter); padding-right: var(--page-gutter); }
   .grid:not(.grid-css) .card { margin-bottom: 96px; }
   .grid.grid-css { gap: 96px; }
 }
