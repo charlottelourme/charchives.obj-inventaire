@@ -2934,6 +2934,21 @@ function renderJournal(filtered) {
   });
 }
 
+// Re-render Journal sur resize (changement de colonnes par breakpoint)
+let _journalResizeTimer = null;
+let _journalLastColCount = null;
+window.addEventListener('resize', () => {
+  if (state.view !== 'derive') return;
+  clearTimeout(_journalResizeTimer);
+  _journalResizeTimer = setTimeout(() => {
+    const cc = _journalColCount();
+    if (cc !== _journalLastColCount) {
+      _journalLastColCount = cc;
+      render();
+    }
+  }, 150);
+});
+
 // ── Drag-and-drop pour réorganiser le Journal ─────────────────────────────
 let _journalDraggedId = null;
 let _journalDragJustEnded = false;
