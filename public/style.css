@@ -1757,7 +1757,17 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   position: relative;
   letter-spacing: .03em;
 }
-.sfb-pill:hover { color: var(--text); background: none; }
+.sfb-pill { transition: color .25s, filter 0.4s ease-out, opacity 0.4s ease-out; }
+.sfb-pill:hover {
+  color: var(--text);
+  background: none;
+  filter: blur(2.5px);
+  opacity: 0.78;
+}
+.sfb-pill.active {
+  filter: none !important;
+  opacity: 1 !important;
+}
 /* Actif : jeu typographique (clair vs foncé) — aucun fond rectangulaire */
 .sfb-pill.active {
   color: var(--text);
