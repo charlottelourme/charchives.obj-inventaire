@@ -1093,12 +1093,37 @@ body.dark-mode .card .card-grain {
 .card-thumb-placeholder {
   width: 100%;
   aspect-ratio: 3/4;          /* aligné sur le ratio portrait */
-  background: var(--tag-bg);
+  background: var(--verbe-accent, var(--tag-bg));
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-3);
   font-size: 28px;
+}
+
+/* Image cassée (404, ref orpheline) — placeholder coloré au verbe via ::after.
+   L'<img> reste dans le DOM (visibility hidden) pour conserver l'aspect-ratio,
+   et au prochain changement de src (carousel) le listener 'load' enlève la classe. */
+.card-thumb-area--broken .card-thumb { visibility: hidden; }
+.card-thumb-area--broken::after {
+  content: '◻';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--verbe-accent, var(--tag-bg));
+  color: var(--text-3);
+  font-size: 28px;
+  pointer-events: none;
+}
+/* Pour les cartes cutout/détourées, l'<img> a aspect-ratio:unset et padding:10%,
+   ce qui ferait s'effondrer la zone. On force un rectangle visible. */
+.card-thumb-area--cutout.card-thumb-area--broken .card-thumb,
+.card-thumb-area--detoured.card-thumb-area--broken .card-thumb {
+  aspect-ratio: 3/4;
+  height: auto;
+  padding: 0;
 }
 
 /* Carousel navigation */
