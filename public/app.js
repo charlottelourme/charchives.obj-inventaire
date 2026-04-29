@@ -2900,6 +2900,103 @@ function renderJournal(filtered) {
   });
 }
 
+// ── Drag-and-drop pour réorganiser le Journal ─────────────────────────────
+let _journalDraggedId = null;
+let _journalDragJustEnded = false;
+
+function _clearJournalDropMarkers(grid) {
+  grid.querySelectorAll('.journal-drop-before, .journal-drop-after')
+      .forEach(el => el.classList.remove('journal-drop-before', 'journal-drop-after'));
+}
+
+function _bindJournalDnd(grid) {
+  grid.querySelectorAll('.journal-item').forEach(el => {
+    el.draggable = true;
+
+    el.addEventListener('dragstart', (e) => {
+      _journalDraggedId = el.dataset.id;
+      el.classList.add('journal-dragging');
+      try {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', _journalDraggedId);
+      } catch (_) {}
+    });
+
+    el.addEventListener('dragend', () => {
+      el.classList.remove('journal-dragging');
+      _clearJournalDropMarkers(grid);
+      _journalDraggedId = null;
+      _journalDragJustEnded = true;
+      setTimeout(() => { _journalDragJustEnded = false; }, 50);
+    });
+
+    el.addEventListener('dragover', (e) => {
+      if (!_journalDraggedId || el.dataset.id === _journalDraggedId) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const r = el.getBoundingClientRect();
+      const after = (e.clientY - r.top) > r.height / 2;
+      _clearJournalDropMarkers(grid);
+      el.classList.add(after ? 'journal-drop-after' : 'journal-drop-before');
+    });
+
+    el.addEventListener('dragleave', (e) => {
+      // Ne retire le marker que si on quitte vraiment l'item (pas un enfant)
+      if (!el.contains(e.relatedTarget)) {
+        el.classList.remove('journal-drop-before', 'journal-drop-after');
+      }
+    });
+
+    el.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      if (!_journalDraggedId || el.dataset.id === _journalDraggedId) return;
+      const targetId = el.dataset.id;
+      const r = el.getBoundingClientRect();
+      const after = (e.clientY - r.top) > r.height / 2;
+      _clearJournalDropMarkers(grid);
+      await _reorderJournal(_journalDraggedId, targetId, after);
+    });
+  });
+}
+
+async function _reorderJournal(draggedId, targetId, insertAfter) {
+  const journalItems = state.collections.filter(c =>
+    c.type === 'note' ||
+    c.type === 'journal-photo' ||
+    (c.inJournal === true && c.photos && c.photos.length > 0)
+  );
+  journalItems.sort((a, b) => {
+    const oa = (typeof a.journalOrder === 'number') ? a.journalOrder : Infinity;
+    const ob = (typeof b.journalOrder === 'number') ? b.journalOrder : Infinity;
+    if (oa !== ob) return oa - ob;
+    return (b.createdAt || '').localeCompare(a.createdAt || '');
+  });
+  const dragged = journalItems.find(c => c.id === draggedId);
+  if (!dragged) return;
+  const ordered = journalItems.filter(c => c.id !== draggedId);
+  const targetIdx = ordered.findIndex(c => c.id === targetId);
+  if (targetIdx === -1) return;
+  ordered.splice(insertAfter ? targetIdx + 1 : targetIdx, 0, dragged);
+
+  // Réassigne journalOrder séquentiel et collecte les items dont l'ordre change
+  const updates = [];
+  ordered.forEach((c, i) => {
+    if (c.journalOrder !== i) {
+      c.journalOrder = i;
+      updates.push(c);
+    }
+  });
+
+  // Re-render optimiste
+  render();
+
+  // Persiste en parallèle
+  await Promise.all(updates.map(c =>
+    api.put(`/api/collections/${c.id}`, { journalOrder: c.journalOrder })
+       .catch(err => console.error('Failed to persist journalOrder for', c.id, err))
+  ));
+}
+
 function renderGallery(filtered) {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
