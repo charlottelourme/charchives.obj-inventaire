@@ -2868,10 +2868,10 @@ function renderJournal(filtered) {
     grid.appendChild(item);
   });
 
-  // Bind clic : ouvre la note (édition) ou la fiche objet
+  // Bind clic : ouvre la note (édition) ou la fiche objet — désactivé pendant un drag
   grid.querySelectorAll('.journal-item').forEach(el => {
     el.addEventListener('click', (e) => {
-      // Ignore si on a cliqué sur le bouton de suppression
+      if (_journalDragJustEnded) return;                    // un drag vient de se terminer → ignore le clic
       if (e.target.closest('.journal-remove-btn')) return;
       const id = el.dataset.id;
       const obj = state.collections.find(c => c.id === id);
@@ -2881,6 +2881,9 @@ function renderJournal(filtered) {
       else if (typeof openDetail === 'function') openDetail(id);
     });
   });
+
+  // Bind drag-and-drop pour réorganiser
+  _bindJournalDnd(grid);
 
   // Bouton "×" sur les photos de contexte → suppression
   grid.querySelectorAll('.journal-remove-btn').forEach(btn => {
