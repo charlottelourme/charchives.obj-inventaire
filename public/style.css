@@ -1100,10 +1100,12 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   object-fit: contain;
   padding: 10%;
 }
+/* Pas de fond propre — on laisse le halo ::before de la carte transparaître,
+   sans rectangle visible. Seul le glyphe ◻ subsiste pour signaler l'absence. */
 .card-thumb-placeholder {
   width: 100%;
   aspect-ratio: 3/4;          /* aligné sur le ratio portrait */
-  background: var(--verbe-accent, var(--tag-bg));
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1111,9 +1113,9 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   font-size: 28px;
 }
 
-/* Image cassée (404, ref orpheline) — placeholder coloré au verbe via ::after.
-   L'<img> reste dans le DOM (visibility hidden) pour conserver l'aspect-ratio,
-   et au prochain changement de src (carousel) le listener 'load' enlève la classe. */
+/* Image cassée (404, ref orpheline) — l'<img> est masquée (visibility:hidden)
+   pour conserver l'aspect-ratio. Le ::after se fond dans le halo de la carte
+   sans dessiner de rectangle distinct. */
 .card-thumb-area--broken .card-thumb { visibility: hidden; }
 .card-thumb-area--broken::after {
   content: '◻';
@@ -1122,7 +1124,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--verbe-accent, var(--tag-bg));
+  background: transparent;
   color: var(--text-3);
   font-size: 28px;
   pointer-events: none;
