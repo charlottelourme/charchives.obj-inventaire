@@ -2283,7 +2283,12 @@ async function deleteNote(id) {
 
 function updateCardThumb(el,id,photos,idx) {
   const card=el.querySelector(`.card[data-id="${id}"]`); if(!card) return;
-  const img=card.querySelector('.card-thumb'); if(img) img.src=photoUrl(photos[idx]);
+  const img=card.querySelector('.card-thumb');
+  if (img) {
+    // Reset l'état "cassé" — le listener load/error réagira au nouveau src
+    img.closest('.card-thumb-area')?.classList.remove('card-thumb-area--broken');
+    img.src = photoUrl(photos[idx]);
+  }
   const counter=card.querySelector('.card-photo-count'); if(counter) counter.textContent=`${idx+1} / ${photos.length}`;
 }
 
