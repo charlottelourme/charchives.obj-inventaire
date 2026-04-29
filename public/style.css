@@ -521,27 +521,37 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   height: 100%;
   display: flex;
   align-items: center;
-  /* ── Loi Conceptuel : navigation majeure → Cormorant italic ── */
+  /* ── Brutalisme Poétique : navigation XXL Bodoni Moda italic ── */
   font-family: 'Bodoni Moda', Georgia, serif;
   font-style: italic;
-  font-size: 17px;
-  font-weight: 300;
+  font-size: clamp(2rem, 3.5vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.15;
   cursor: pointer;
   color: var(--text-3);
-  transition: color .25s;
+  transition: color .25s, filter 0.4s ease-out, opacity 0.4s ease-out;
   white-space: nowrap;
-  letter-spacing: .01em;
+  letter-spacing: -.005em;
+  will-change: filter;             /* hint compositor pour transition fluide */
 }
 
 /* ── Halo de Navigation — nuage flouté : survol uniquement ── */
 /* Pas de halo au hover — soulignement seul indique l'état actif */
 .view-tab::before, .view-tab::after { display: none !important; }
 
-.view-tab:hover { color: #000; }
+/* Effet signature : flou poétique au survol ─────────────────────────────── */
+.view-tab:hover {
+  color: #000;
+  filter: blur(3px);
+  opacity: 0.8;
+}
 .view-tab.active {
   color: #18181b;
-  font-weight: 700;
+  font-weight: 500;     /* Bodoni Moda 500 — assez de poids sans surépaissir le glyph italique */
   text-decoration: none;
+  /* Pas de blur sur l'onglet actif — l'oeil doit pouvoir se poser */
+  filter: none !important;
+  opacity: 1 !important;
 }
 /* ══ Omnibar — composant de recherche unifié ══════════════════════════════ */
 .search-wrap {
