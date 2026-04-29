@@ -2811,7 +2811,16 @@ function _shuffleArray(arr) {
 }
 
 // ══ JOURNAL — Moodboard statique (Tumblr-like) ═══════════════════════════
-// Mélange photos d'objets + notes en masonry CSS columns. Aucune animation.
+// Distribution JS en colonnes flex avec offset alterné pour un vrai effet
+// masonry décalé (Pinterest/Are.na). Items distribués round-robin pour rester
+// prévisibles à la réorganisation par drag-and-drop.
+function _journalColCount() {
+  const w = window.innerWidth;
+  if (w >= 1440) return 4;
+  if (w >= 769)  return 3;
+  return 2;
+}
+
 function renderJournal(filtered) {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
@@ -2846,7 +2855,21 @@ function renderJournal(filtered) {
   grid.classList.add('journal-mode');
   grid.innerHTML = '';
 
-  items.forEach(c => {
+  // Construit le wrapper + N colonnes flex
+  const colCount = _journalColCount();
+  const wrap = document.createElement('div');
+  wrap.className = 'journal-columns';
+  wrap.dataset.cols = colCount;
+  const cols = [];
+  for (let i = 0; i < colCount; i++) {
+    const col = document.createElement('div');
+    col.className = 'journal-col journal-col-' + i;
+    cols.push(col);
+    wrap.appendChild(col);
+  }
+  grid.appendChild(wrap);
+
+  items.forEach((c, idx) => {
     const item = document.createElement('div');
     item.className = 'journal-item';
     item.dataset.id = c.id;
@@ -2876,7 +2899,7 @@ function renderJournal(filtered) {
         <img src="${src}" alt="${esc(c.name || '')}" loading="lazy" draggable="false">
         ${(!isContext && c.name) ? `<div class="journal-caption">${esc(c.name)}</div>` : ''}`;
     }
-    grid.appendChild(item);
+    cols[idx % colCount].appendChild(item);
   });
 
   // Bind clic : ouvre la note (édition) ou la fiche objet — désactivé pendant un drag
