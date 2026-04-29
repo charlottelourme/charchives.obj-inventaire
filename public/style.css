@@ -554,7 +554,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
 }
 .view-tab.active {
   color: #18181b;
-  font-weight: 500;     /* Bodoni Moda 500 — assez de poids sans surépaissir le glyph italique */
+  font-weight: 800;     /* Syne ExtraBold — assise massive de l'onglet actif */
   text-decoration: none;
   /* Pas de blur sur l'onglet actif — l'oeil doit pouvoir se poser */
   filter: none !important;
