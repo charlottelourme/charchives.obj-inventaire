@@ -564,8 +564,8 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   opacity: 0.8;
 }
 .view-tab.active {
-  color: #18181b;
-  font-weight: 800;     /* Syne ExtraBold — assise massive de l'onglet actif */
+  color: #18181b;        /* contraste pur — l'unique poids de Feroniapi force la distinction par couleur */
+  font-weight: 500;
   text-decoration: none;
   /* Pas de blur sur l'onglet actif — l'oeil doit pouvoir se poser */
   filter: none !important;
