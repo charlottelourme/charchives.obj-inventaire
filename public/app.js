@@ -1960,7 +1960,7 @@ function cardHTML(c) {
       <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">${_asteriskSVG()}</button>
       <div class="card-grain" aria-hidden="true"></div>
       ${photo
-        ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="" loading="lazy" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=\\'card-thumb-placeholder\\'>◻</div>')">`
+        ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="" loading="lazy">`
         : `<div class="card-thumb-placeholder">◻</div>`}
       ${hasMultiple ? `<div class="card-nav">
         <button class="card-prev" data-id="${c.id}">‹</button>
