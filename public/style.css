@@ -521,7 +521,7 @@ html::before {
   z-index: 1001;                        /* au-dessus du header pour couvrir tout jour */
   pointer-events: none;
 }
-html:has(body.dark-mode)::before { background: #0d0d0c; }
+html:has(body.dark-mode)::before { background: #26262A; }
 body.dark-mode header { background: var(--bg); }
 header h1 {
   font-family: 'Inter', sans-serif;     /* labeur clinique pour le wordmark */
@@ -6120,7 +6120,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     backdrop-filter: none !important;
     z-index: 1000 !important;
   }
-  body.dark-mode header { background: #0d0d0c !important; }
+  body.dark-mode header { background: #26262A !important; }
   /* Ligne 1 mobile : Logo (gauche) + Loupe + Hamburger (droite uniquement) */
   .header-row-1 {
     padding: 0 14px !important;
@@ -6144,7 +6144,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   body.dark-mode header,
   body.dark-mode header > *,
   body.dark-mode .search-wrap,
-  body.dark-mode .search-bar { background: #0d0d0c !important; }
+  body.dark-mode .search-bar { background: #26262A !important; }
 
   /* Tous les enfants opaques (aucune transparence dans le header) */
   header > *, .search-wrap, .search-bar { background: #ffffff; }
@@ -6244,7 +6244,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     background: #ffffff !important;
     z-index: 10 !important;
   }
-  body.dark-mode .search-wrap { background: #0d0d0c !important; }
+  body.dark-mode .search-wrap { background: #26262A !important; }
   .search-bar {
     width: 100% !important;
     max-width: 100% !important;
@@ -9495,7 +9495,7 @@ body.dark-mode .mobile-action-bar { border-bottom-color: var(--border); }
   box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
 }
 body.dark-mode .fs-panel {
-  background: #0d0d0c;
+  background: #26262A;
 }
 .fs-handle {
   width: 40px;
@@ -9607,7 +9607,7 @@ body.dark-mode .fs-panel {
   border-left: 1px solid var(--border-light);
 }
 body.dark-mode .hd-panel {
-  background: #0d0d0c;
+  background: #26262A;
   border-left-color: var(--border);
 }
 .hd-close {
