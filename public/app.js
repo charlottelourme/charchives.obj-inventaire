@@ -1991,6 +1991,16 @@ function cardHTML(c) {
 }
 
 function bindCardEvents(el) {
+  // Fallback image cassée — marque .card-thumb-area pour afficher le placeholder
+  // CSS coloré (verbe). Persiste à travers les changements de src (carousel).
+  el.querySelectorAll('img.card-thumb').forEach(img => {
+    const area = img.closest('.card-thumb-area');
+    if (!area) return;
+    if (img.complete && img.naturalWidth === 0) area.classList.add('card-thumb-area--broken');
+    img.addEventListener('error', () => area.classList.add('card-thumb-area--broken'));
+    img.addEventListener('load',  () => area.classList.remove('card-thumb-area--broken'));
+  });
+
   el.querySelectorAll('.card').forEach(card => {
     const id = card.dataset.id;
     card.addEventListener('dragover', e=>{ e.preventDefault(); card.classList.add('drag-over'); });
