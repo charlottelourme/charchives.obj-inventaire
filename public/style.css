@@ -1,9 +1,9 @@
 /* ══ FONT-FACE — Feroniapi (Velvetyne, MediumItalic display) ═══════════════
-      Hébergée localement. Cible exclusive : grands titres + navigation. */
+      Hébergée localement. Cible exclusive : grands titres + navigation.
+      NB : casse stricte du nom de fichier — Render (Linux) est case-sensitive. */
 @font-face {
   font-family: 'Feroniapi';
-  src: url('./fonts/feroniapi-mediumitalic.woff2') format('woff2'),
-       url('./fonts/feroniapi-mediumitalic.woff') format('woff');
+  src: url('./fonts/Feroniapi-MediumItalic.woff2') format('woff2');
   font-weight: 500;
   font-style: italic;
   font-display: swap;
