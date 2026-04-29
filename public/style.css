@@ -117,7 +117,7 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
   background: #EDEDED;
   transition: background 0.4s ease;
 }
-body.dark-mode #bgLayers .bg-base { background: rgb(9, 9, 11); }
+body.dark-mode #bgLayers .bg-base { background: #26262A; }
 
 /* Calque 2 : vignette blanche — voile lumineux subtil aux 4 coins.
       Centre transparent (laisse voir bg-base), coins virant blanc.
@@ -164,7 +164,7 @@ body.dark-mode #bgLayers .bg-grain {
 /* Body : transparent en tout temps (le fond est piloté par #bgLayers) */
 body { background: transparent !important; }
 html { background: #EDEDED; }
-html:has(body.dark-mode) { background: rgb(9, 9, 11); }
+html:has(body.dark-mode) { background: #26262A; }
 
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
       Tous les conteneurs intermédiaires (main, grid, toolbars, filtres)
