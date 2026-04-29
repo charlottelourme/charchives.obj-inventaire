@@ -1730,7 +1730,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   gap: 0;
   flex-wrap: nowrap;
   border-bottom: none;
-  padding: 8px var(--filter-gutter);
+  padding: 8px var(--page-gutter);
   min-height: 52px;
   background: transparent;
 }
