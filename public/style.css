@@ -531,7 +531,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   /* ── Brutalisme Acide : navigation XXL Syne Extra-Bold (display) ── */
   font-family: 'Syne', sans-serif;
   font-style: normal;
-  font-size: clamp(1.2rem, 1.7vw, 1.75rem);
+  font-size: clamp(1.05rem, 1.45vw, 1.55rem);
   font-weight: 800;
   line-height: 1.1;
   cursor: pointer;
