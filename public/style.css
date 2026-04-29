@@ -511,7 +511,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
 /* Navigation centrée dans le header via flex-grow */
 .view-tabs {
   display: flex;
-  gap: clamp(1.5rem, 3vw, 3.5rem);
+  gap: clamp(1rem, 2vw, 2.5rem);
   background: none;
   border: none;
   padding: 0;
