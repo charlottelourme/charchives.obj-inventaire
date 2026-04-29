@@ -8982,9 +8982,9 @@ body.dark-mode .card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: #18181b;
 /* ── Classe utilitaire : Conceptuel (poétique, navigation majeure, verbes) ── */
 .font-concept {
   font-family: 'Feroniapi', serif !important;
-  font-style: normal !important;
-  font-weight: 800 !important;
-  letter-spacing: -.02em !important;
+  font-style: italic !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
 }
 
 /* ── Classe utilitaire : Factuel (technique, filtres, données, labels) ── */
