@@ -9072,8 +9072,7 @@ input, select, textarea {
   letter-spacing: .02em;
 }
 
-/* Navigation onglets (Inventaire, Dérive, etc.) — Cormorant italic */
-.view-tab { font-size: 17px; letter-spacing: .01em; }
+/* Navigation onglets (Inventaire, Dérive, etc.) — XXL Bodoni Moda italic */
 @media (max-width: 520px) {
   .view-tab { font-size: 15px; padding: 0 10px; }
 }
