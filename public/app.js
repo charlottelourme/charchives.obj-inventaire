@@ -2819,8 +2819,13 @@ function renderJournal(filtered) {
     (c.inJournal === true && c.photos && c.photos.length > 0)
   );
 
-  // Tri par date de création décroissante (plus récent en premier)
-  items.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+  // Tri : journalOrder asc (drag-and-drop), puis createdAt desc en fallback
+  items.sort((a, b) => {
+    const oa = (typeof a.journalOrder === 'number') ? a.journalOrder : Infinity;
+    const ob = (typeof b.journalOrder === 'number') ? b.journalOrder : Infinity;
+    if (oa !== ob) return oa - ob;
+    return (b.createdAt || '').localeCompare(a.createdAt || '');
+  });
 
   if (!items.length) {
     grid.innerHTML = '<div class="gallery-empty">Aucun élément dans le Journal pour le moment.</div>';
