@@ -539,17 +539,17 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   height: 100%;
   display: flex;
   align-items: center;
-  /* ── Brutalisme Acide : navigation XXL Syne Extra-Bold (display) ── */
+  /* ── Display Velvetyne : navigation XXL Feroniapi MediumItalic ── */
   font-family: 'Feroniapi', serif;
-  font-style: normal;
-  font-size: clamp(0.95rem, 1.3vw, 1.4rem);
-  font-weight: 800;
+  font-style: italic;
+  font-size: clamp(1.5rem, 2.4vw, 2.5rem);
+  font-weight: 500;
   line-height: 1.1;
   cursor: pointer;
   color: var(--text-3);
   transition: color .25s, filter 0.4s ease-out, opacity 0.4s ease-out;
   white-space: nowrap;
-  letter-spacing: -.02em;
+  letter-spacing: 0;               /* Feroniapi italic — pas de tightening */
   will-change: filter;             /* hint compositor pour transition fluide */
 }
 
