@@ -581,7 +581,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
    .view-tab:hover { filter: blur(3px); opacity: 0.8; }
    .sfb-pill:hover { filter: blur(2.5px); opacity: 0.78; } */
 .view-tab:hover {
-  color: #000;
+  color: #2A2A2E;
 }
 .view-tab.active {
   color: #18181b;        /* contraste pur — l'unique poids de Feroniapi force la distinction par couleur */
@@ -2070,7 +2070,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
 }
 .sfb-pill-typo:hover { color: var(--text); background: none; }
 .sfb-pill-typo.active {
-  color: #000;
+  color: #2A2A2E;
   font-weight: 700;
   background: none;
 }
@@ -2138,7 +2138,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
 }
 .sfb-pill-sm:hover { background: none; color: var(--text); }
 .sfb-pill-sm.active {
-  color: #000;
+  color: #2A2A2E;
   font-weight: 700;
 }
 /* Pas de Point de Galerie sur les pills de statut */
@@ -2152,7 +2152,7 @@ body.dark-mode .typo-filter-bar { border-bottom-color: var(--border); }
   gap: 7px;
 }
 .sfb-pill-selection.active {
-  color: #000;
+  color: #2A2A2E;
   font-weight: 700;
 }
 /* ── Bouton "+" Sélection — design unifié ──────────────────────────────────
