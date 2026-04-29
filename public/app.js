@@ -1973,10 +1973,13 @@ function cardHTML(c) {
         <button class="card-next" data-id="${c.id}">›</button>
       </div>` : ''}
       <div class="card-drop-hint">Déposer les photos ici</div>
-      ${c.description && c.description.trim()
-        ? `<div class="card-poem-overlay" aria-hidden="true"><div class="card-poem-grain"></div><p class="card-poem-text">${esc(c.description)}</p></div>`
-        : ''}
     </div>
+    <!-- Calque poème : sortie de .card-thumb-area pour échapper à overflow:hidden.
+         Positionné absolu dans .card (qui a overflow: visible) — peut donc déborder
+         pour former une fenêtre XXL flottante au survol. -->
+    ${c.description && c.description.trim()
+      ? `<div class="card-poem-overlay" aria-hidden="true"><div class="card-poem-grain"></div><p class="card-poem-text">${esc(c.description)}</p></div>`
+      : ''}
     <!-- Toggle Journal : entre l'image et le corps de la carte, aligné à droite -->
     <div class="card-journal-row">
       <button class="card-journal-toggle${c.inJournal ? ' on' : ''}" data-id="${c.id}" title="${c.inJournal ? 'Retirer du Journal' : 'Ajouter au Journal'}" onclick="event.stopPropagation();toggleJournal('${c.id}')" aria-label="Toggle Journal" role="switch" aria-checked="${c.inJournal ? 'true' : 'false'}">
