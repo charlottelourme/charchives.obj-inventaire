@@ -728,15 +728,13 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
 .btn-sm { padding: 4px 10px; font-size: 11px; }
 .btn-xs { padding: 2px 8px; font-size: 10px; }
 
-/* ── Layout — centré avec respiration latérale sur grands écrans ── */
+/* ── Layout — centré, gouttière déléguée à la grille (--page-gutter) ── */
 main {
   padding: 0;
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  padding-left: 12px;
-  padding-right: 12px;
   box-sizing: border-box;
 }
 #gridWrapper {
