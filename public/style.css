@@ -1504,23 +1504,6 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 .card-note-text.note-size-lg.font-terrain { font-size: clamp(14px, 1.7vw, 20px); }
 
 /* ── Note Modal — formulaire ── */
-.btn-note {
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  background: transparent;
-  color: var(--text);
-  border-color: var(--text);
-}
-.btn-note:hover {
-  background: transparent;
-  color: var(--text);
-  border-color: var(--text);
-  opacity: .72;
-}
 .note-opt-group {
   display: flex;
   flex-wrap: wrap;
