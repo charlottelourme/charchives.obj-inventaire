@@ -2921,15 +2921,19 @@ function _journalSnap(v) {
 }
 
 // Génère des paramètres canvas (taille + position snap) pour un nouvel item.
-// `idx` sert de base pour étaler verticalement les items à la première création.
+// `idx` est l'ordre d'apparition (0 = premier nouveau de ce render). Les nouveaux
+// items s'affichent TOUJOURS en haut du canvas. Au-delà de 4 items, on passe à
+// la "rangée" suivante (par incréments de ~280px) pour éviter les empilements
+// massifs lors d'un upload batch ou d'une première initialisation.
 function _generateJournalCanvasParams(canvasWidth, idx) {
   const size = _JOURNAL_SIZE_KEYS[Math.floor(Math.random() * _JOURNAL_SIZE_KEYS.length)];
   const w = _JOURNAL_SIZE_WIDTHS[size];
   const maxX = Math.max(0, canvasWidth - w);
   const x = _journalSnap(Math.random() * maxX);
-  // Y : étalé vers le bas selon l'ordre d'arrivée (≈ 280px par item) + jitter
-  const yBase = idx * 280;
-  const y = _journalSnap(yBase + Math.random() * 200);
+  // Y : ancrage en haut + rangée optionnelle si plusieurs items à placer
+  const row = Math.floor(idx / 4);
+  const yBase = 40 + row * 280;
+  const y = _journalSnap(yBase + Math.random() * 80);
   return { x, y, size };
 }
 
