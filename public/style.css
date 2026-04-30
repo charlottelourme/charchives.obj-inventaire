@@ -6424,7 +6424,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
      GRILLE MOBILE — 2 colonnes flottantes (halos qui débordent)
      NB : la spec canonique est plus bas (~ligne 10362), bloc "CARTES MOBILE
      — Halos Soft Block FLOTTANTS". Ici on se contente d'aligner main/wrapper
-     et de définir la typographie compacte des cartes. */
+     et de définir la typographie compacte des cartes.
   ══════════════════════════════════════ */
   main, #mainArea, #gridWrapper { padding-left: 0 !important; padding-right: 0 !important; }
   /* Image cartes : pas de blend-mode (canal alpha iOS), object-fit: contain */
