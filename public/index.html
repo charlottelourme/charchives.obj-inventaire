@@ -66,32 +66,39 @@
     <!-- ══ NOUVEAU BANDEAU : 2 piliers Feroniapi centraux ══ -->
     <div class="inv-pillars" id="invPillars">
       <button class="inv-pillar" id="invPillarIntention" type="button" aria-haspopup="true" aria-expanded="false">
-        <span class="inv-pillar-text">Intention</span>
+        <span class="inv-pillar-text">Intentions</span>
         <span class="inv-pillar-caret">▾</span>
       </button>
       <button class="inv-pillar" id="invPillarObjet" type="button" aria-haspopup="true" aria-expanded="false">
-        <span class="inv-pillar-text">Objet</span>
+        <span class="inv-pillar-text">Objets</span>
         <span class="inv-pillar-caret">▾</span>
       </button>
     </div>
 
-    <!-- Dropdown Intention — liste des verbes -->
+    <!-- Dropdown Intentions — liste des verbes en Feroniapi (sans label) -->
     <div class="inv-dropdown" id="invDropdownIntention" hidden>
       <div class="inv-dd-panel">
-        <div class="status-filter-bar inv-dd-list" id="categoryFilterBar">
+        <div class="status-filter-bar inv-dd-list inv-dd-list-feronia" id="categoryFilterBar">
           <button class="sfb-pill active" data-cat="">Toutes</button>
         </div>
       </div>
     </div>
 
-    <!-- Dropdown Objet — recherche + typologies + attributs -->
+    <!-- Dropdown Objets — Index typologies (search + groupes) déplacé depuis l'overlay -->
     <div class="inv-dropdown" id="invDropdownObjet" hidden>
       <div class="inv-dd-panel inv-dd-panel-objet">
-        <input type="text" class="inv-dd-search" id="invObjetSearch" placeholder="Rechercher un objet…" autocomplete="off" spellcheck="false">
-        <div class="status-filter-bar" id="subcategoryFilterBar" style="display:none">
+        <div class="inv-dd-objet-top">
+          <span class="inv-dd-objet-title">Typologies</span>
+          <div class="idx-inline-wrap inv-dd-objet-search">
+            <input type="text" class="idx-inline-input" id="idxSearchInput" placeholder="Rechercher" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+        <div class="idx-groups" id="idxGroups"></div>
+        <!-- Sous-filtres Identité / Matière / Couleur — gardés en bas -->
+        <div class="status-filter-bar" id="subcategoryFilterBar" style="display:none" hidden>
           <span class="sfb-label">Sous-cat.</span>
         </div>
-        <div class="typo-filter-bar" id="typologyFilterBar">
+        <div class="typo-filter-bar" id="typologyFilterBar" style="display:none" hidden>
           <button class="tfb-all active" data-typo="">Tout</button>
         </div>
         <div class="attr-filter-bar inv-dd-attrs" id="attrFilterBar">
