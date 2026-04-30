@@ -2007,7 +2007,18 @@ function cardHTML(c) {
       <button class="card-bookmark-btn${c.bookmarked ? ' bookmarked' : ''}" data-id="${c.id}" title="${c.bookmarked ? 'Retirer des favoris' : 'Coup de cœur'}" onclick="event.stopPropagation();toggleBookmark('${c.id}')">${_asteriskSVG()}</button>
       <div class="card-grain" aria-hidden="true"></div>
       ${photo
-        ? `<img class="card-thumb" src="${photoUrl(photo)}" alt="" loading="lazy">`
+        ? (() => {
+            // Switch Light/Dark : en Light on affiche photos[idx] (originale).
+            // En Dark on bascule sur la version PNG détourée si elle existe
+            // (même convention que le Diorama : un .png dans c.photos[]).
+            // Le toggle est géré 100% en CSS via .img-standard / .img-cutout.
+            const cutout = (photos.find(p => p && p.toLowerCase().endsWith('.png')) || null);
+            const standardImg = `<img class="card-thumb img-standard" src="${photoUrl(photo)}" alt="" loading="lazy">`;
+            const cutoutImg = (cutout && cutout !== photo)
+              ? `<img class="card-thumb img-cutout" src="${photoUrl(cutout)}" alt="" loading="lazy" aria-hidden="true">`
+              : '';
+            return standardImg + cutoutImg;
+          })()
         : `<div class="card-thumb-placeholder">◻</div>`}
       ${hasMultiple ? `<div class="card-nav">
         <button class="card-prev" data-id="${c.id}">‹</button>
