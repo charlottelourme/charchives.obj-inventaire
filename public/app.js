@@ -3679,7 +3679,8 @@ function _dioRenderItems(scene) {
 
   state.diorama.items.forEach(item => {
     const col = state.collections.find(c => c.id === item.collectionId);
-    if (!col || !col.photos?.[0]) return;
+    const photo = col ? _dioPhotoFor(col) : null;
+    if (!col || !photo) return;
     let el = existing.get(item.id);
     if (!el) {
       // Create new
@@ -3687,7 +3688,7 @@ function _dioRenderItems(scene) {
       el.className = 'diorama-item';
       el.dataset.dioId = item.id;
       el.innerHTML = `
-        <img src="${photoUrl(col.photos[0])}" alt="${esc(col.name||'')}" draggable="false">
+        <img src="${photoUrl(photo)}" alt="${esc(col.name||'')}" draggable="false">
         <div class="dio-handle dio-handle-nw"></div>
         <div class="dio-handle dio-handle-ne"></div>
         <div class="dio-handle dio-handle-sw"></div>
