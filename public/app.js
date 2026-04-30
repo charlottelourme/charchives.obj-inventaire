@@ -3200,6 +3200,7 @@ let _jcDrag = {
 function _onJournalItemMouseDown(e) {
   if (e.button !== 0) return;
   if (e.target.closest('.journal-remove-btn')) return;
+  if (e.target.closest('.journal-size-picker')) return;     // ne pas démarrer le drag depuis le picker
   const el = e.currentTarget;
   _jcDrag.el = el;
   _jcDrag.startMouseX = e.clientX;
