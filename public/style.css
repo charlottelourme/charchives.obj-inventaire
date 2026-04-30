@@ -623,10 +623,9 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   color: #2A2A2E;
 }
 .view-tab.active {
-  color: #18181b;        /* contraste pur — l'unique poids de Feroniapi force la distinction par couleur */
-  font-weight: 500;
+  color: #18181b;        /* contraste pur — Compagnon Bold suffit à signifier l'actif */
+  font-weight: 700;
   text-decoration: none;
-  /* Pas de blur sur l'onglet actif — l'oeil doit pouvoir se poser */
   filter: none !important;
   opacity: 1 !important;
 }
