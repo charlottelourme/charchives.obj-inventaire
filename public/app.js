@@ -3111,6 +3111,7 @@ function renderJournal(filtered) {
     el.addEventListener('click', (e) => {
       if (_journalDragJustEnded) return;
       if (e.target.closest('.journal-remove-btn')) return;
+      if (e.target.closest('.journal-size-picker')) return;     // ne pas ouvrir la modale au resize
       const id = el.dataset.id;
       const obj = state.collections.find(c => c.id === id);
       if (!obj) return;
