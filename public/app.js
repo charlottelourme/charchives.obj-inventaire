@@ -1681,6 +1681,15 @@ function _applyGridCols() {
     g.style.gridTemplateColumns = '';
     g.style.columnCount         = '';
     g.style.webkitColumnCount   = '';
+    // Cap local : si la grille contient moins d'items que de colonnes, on
+    // limite cols au nb d'items. Sinon, column-fill: balance (défaut) tenterait
+    // de répartir 2 cartes dans 4 colonnes en les empilant dans la 1re
+    // (résultat : 1 colonne de 2 items au lieu de 2 colonnes de 1 item).
+    // Override local sur --grid-cols → la CSS prend automatiquement cette
+    // valeur via `var(--grid-cols, 4)`.
+    const itemCount = g.querySelectorAll(':scope > .card').length;
+    const effective = Math.max(1, Math.min(cols, itemCount || cols));
+    g.style.setProperty('--grid-cols', String(effective));
   });
 }
 
