@@ -8633,6 +8633,9 @@ function bindEvents() {
   document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
   document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
 
+  // ── Bandeau Inventaire : 2 piliers Feroniapi (Intention / Objet) ─────────
+  _setupInvPillars();
+
   // ── Mobile Footer : bouton Retour ──────────────────────────────────────
   // Priorité d'action :
   //   1. Si une modale/fiche objet est ouverte → la fermer (retour à la grille)
