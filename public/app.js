@@ -643,7 +643,7 @@ async function init(attempt = 0) {
     Object.entries(_initCustomColors).forEach(([name, hex]) => { COLOR_MAP[name] = hex; });
 
     // Apply site title
-    document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'ARCHIVE';
+    document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'Charchives . obj';
 
     // Load Diorama state from localStorage
     _dioLoad();
@@ -7447,7 +7447,7 @@ async function saveSettingsModal() {
   const d = state.settingsDraft;
   if (!d.verbes) d.verbes = [];
   const titleInput = document.querySelector('#settingsModalBody .sm-sitetitle-input');
-  if (titleInput) d.siteTitle = titleInput.value.trim() || 'ARCHIVE';
+  if (titleInput) d.siteTitle = titleInput.value.trim() || 'Charchives . obj';
   // Lecture directe des labels Trios depuis le DOM (plus fiable que l'événement input)
   document.querySelectorAll('#settingsModalBody .sm-trios-input').forEach(inp => {
     if (!d.triosTabLabels) d.triosTabLabels = {};
@@ -7467,7 +7467,7 @@ async function saveSettingsModal() {
     syncAttrLabels();
     const custom = state.settings.customColorHexes || {};
     Object.entries(custom).forEach(([name, hex]) => { COLOR_MAP[name] = hex; });
-    document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'ARCHIVE';
+    document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'Charchives . obj';
     buildCategoryFilterBar();
     populateCategoryDropdown();
     populateLocationDropdown();
@@ -8193,7 +8193,7 @@ function openSettings() {
   state.settingsDraft = JSON.parse(JSON.stringify(state.settings));
   renderSettingsPanel();
   const titleEl = document.getElementById('settingsSiteTitle');
-  if (titleEl) titleEl.value = state.settings.siteTitle || 'ARCHIVE';
+  if (titleEl) titleEl.value = state.settings.siteTitle || 'Charchives . obj';
   switchModalTab('settings');
 }
 function closeSettings() {
@@ -8570,7 +8570,7 @@ function _isHexDark(hex) {
 async function saveSettings() {
   const d = state.settingsDraft;
   const titleEl = document.getElementById('settingsSiteTitle');
-  d.siteTitle = titleEl ? (titleEl.value.trim() || 'ARCHIVE') : 'ARCHIVE';
+  d.siteTitle = titleEl ? (titleEl.value.trim() || 'Charchives . obj') : 'ARCHIVE';
   state.settings = await api.put('/api/settings', d);
   ATTRIBUTES_DEF.couleurs.options = state.settings.colors || [];
   ATTRIBUTES_DEF.motifs.options = state.settings.motifs || [];
@@ -8579,7 +8579,7 @@ async function saveSettings() {
   // Merge custom color hexes into COLOR_MAP
   const custom = state.settings.customColorHexes || {};
   Object.entries(custom).forEach(([name, hex]) => { COLOR_MAP[name] = hex; });
-  document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'ARCHIVE';
+  document.getElementById('siteTitle').textContent = state.settings.siteTitle || 'Charchives . obj';
   buildCategoryFilterBar();
   // Refresh form fields now that settings changed
   populateCategoryDropdown();
@@ -9446,7 +9446,7 @@ function bindEvents() {
     state.settingsDraft = JSON.parse(JSON.stringify(state.settings));
     renderSettingsPanel();
     const titleEl = document.getElementById('settingsSiteTitle');
-    if (titleEl) titleEl.value = state.settings.siteTitle || 'ARCHIVE';
+    if (titleEl) titleEl.value = state.settings.siteTitle || 'Charchives . obj';
   });
 
   // Settings add buttons
