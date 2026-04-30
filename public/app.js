@@ -2889,12 +2889,39 @@ function _shuffleArray(arr) {
   return a;
 }
 
-// ══ JOURNAL — Moodboard statique masonry CSS columns ═════════════════════
-// Grille calquée sur les principes de l'Inventaire :
-//   - column-count piloté par --grid-cols (var globale, 5/4/3 selon viewport)
-//   - column-gap et margin-bottom égaux (rythme régulier généreux)
-//   - break-inside: avoid pour ne pas couper les items entre colonnes
-//   - aucune animation, aucun positionnement JS
+// ══ JOURNAL — Spatial Canvas avec grille magnétique ══════════════════════
+// Plus de masonry CSS columns. Chaque item est en `position: absolute` dans
+// un canvas (#galleryGrid.journal-canvas) avec un fond quadrillé invisible.
+// - Tailles aléatoires (3 classes basées sur multiples du grid-step de 40px)
+// - Positions aléatoires snappées sur la grille au premier render, puis
+//   persistées dans `c.journalCanvas = { x, y, size }` côté serveur.
+// - Drag-and-drop souris avec snap permanent à 40px.
+// - Mobile (< 768px) : fallback en stack relatif (transformé via CSS).
+const _JOURNAL_GRID_STEP = 40;
+const _JOURNAL_SIZE_WIDTHS = {
+  'size-1': 240,    // 6 × 40
+  'size-2': 320,    // 8 × 40
+  'size-3': 480,    // 12 × 40
+};
+const _JOURNAL_SIZE_KEYS = Object.keys(_JOURNAL_SIZE_WIDTHS);
+
+function _journalSnap(v) {
+  return Math.round(v / _JOURNAL_GRID_STEP) * _JOURNAL_GRID_STEP;
+}
+
+// Génère des paramètres canvas (taille + position snap) pour un nouvel item.
+// `idx` sert de base pour étaler verticalement les items à la première création.
+function _generateJournalCanvasParams(canvasWidth, idx) {
+  const size = _JOURNAL_SIZE_KEYS[Math.floor(Math.random() * _JOURNAL_SIZE_KEYS.length)];
+  const w = _JOURNAL_SIZE_WIDTHS[size];
+  const maxX = Math.max(0, canvasWidth - w);
+  const x = _journalSnap(Math.random() * maxX);
+  // Y : étalé vers le bas selon l'ordre d'arrivée (≈ 280px par item) + jitter
+  const yBase = idx * 280;
+  const y = _journalSnap(yBase + Math.random() * 200);
+  return { x, y, size };
+}
+
 function renderJournal(filtered) {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
@@ -2913,29 +2940,55 @@ function renderJournal(filtered) {
     (c.inJournal === true && c.photos && c.photos.length > 0)
   );
 
-  // Tri : journalOrder asc (drag-and-drop), puis createdAt desc en fallback
+  // Tri : items déjà placés sur le canvas viennent d'abord (plus stables),
+  // puis les nouveaux par createdAt desc.
   items.sort((a, b) => {
-    const oa = (typeof a.journalOrder === 'number') ? a.journalOrder : Infinity;
-    const ob = (typeof b.journalOrder === 'number') ? b.journalOrder : Infinity;
-    if (oa !== ob) return oa - ob;
+    const aPlaced = a.journalCanvas && typeof a.journalCanvas.x === 'number' ? 0 : 1;
+    const bPlaced = b.journalCanvas && typeof b.journalCanvas.x === 'number' ? 0 : 1;
+    if (aPlaced !== bPlaced) return aPlaced - bPlaced;
     return (b.createdAt || '').localeCompare(a.createdAt || '');
   });
 
   if (!items.length) {
+    grid.classList.remove('journal-canvas');
     grid.innerHTML = '<div class="gallery-empty">Aucun élément dans le Journal pour le moment.</div>';
     return;
   }
 
+  // Mode mobile : fallback stack — pas de canvas, items en flux relatif
+  const isMobile = window.innerWidth < 768;
   grid.classList.add('journal-mode');
+  grid.classList.toggle('journal-canvas', !isMobile);
   grid.innerHTML = '';
 
-  items.forEach(c => {
+  // Largeur du canvas pour générer les positions initiales (desktop uniquement)
+  const canvasWidth = !isMobile ? Math.max(grid.clientWidth, 800) : 0;
+  const itemsToPersist = [];
+  let maxY = 0;
+
+  items.forEach((c, idx) => {
     const item = document.createElement('div');
     item.className = 'journal-item';
     item.dataset.id = c.id;
 
+    // Taille + position : récupère ou génère
+    if (!isMobile) {
+      let cv = c.journalCanvas;
+      if (!cv || typeof cv.x !== 'number' || typeof cv.y !== 'number') {
+        cv = _generateJournalCanvasParams(canvasWidth, idx);
+        c.journalCanvas = cv;
+        itemsToPersist.push(c);
+      }
+      const sizeCls = _JOURNAL_SIZE_KEYS.includes(cv.size) ? cv.size : 'size-2';
+      item.classList.add(sizeCls);
+      item.style.transform = `translate(${cv.x}px, ${cv.y}px)`;
+      item.dataset.canvasX = cv.x;
+      item.dataset.canvasY = cv.y;
+      const itemH = 320;    // approximation pour étendre min-height (note : la hauteur réelle dépend de l'image)
+      if (cv.y + itemH > maxY) maxY = cv.y + itemH;
+    }
+
     if (c.type === 'note') {
-      // Note : post-it stylé Cormorant italique
       const bg = c.backgroundColor || '#fbe7bc';
       const isDark = _luminance(bg) < 0.5;
       const text = (c.content || c.textContent || '').replace(/\n/g, '<br>');
@@ -2945,8 +2998,6 @@ function renderJournal(filtered) {
           <div class="journal-note-text">${text}</div>
         </div>`;
     } else {
-      // Photo : pleine largeur de la colonne. Si c'est une photo de contexte (journal-photo),
-      // pas de légende. Si c'est un objet d'inventaire, afficher son nom en caption.
       const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
       if (!src) return;
       const isContext = c.type === 'journal-photo';
@@ -2954,32 +3005,43 @@ function renderJournal(filtered) {
       const removeBtn = isContext
         ? `<button class="journal-remove-btn" data-id="${c.id}" title="Retirer du Journal" aria-label="Retirer">×</button>`
         : '';
-      // Grain papier : div SVG fractalNoise injecté dans chaque item, comme sur les .card de l'Inventaire
+      // Pas de grain par item — Charlotte a demandé le grain global du site uniquement
       item.innerHTML = `
         ${removeBtn}
         <img src="${src}" alt="${esc(c.name || '')}" loading="lazy" draggable="false">
-        <div class="card-grain"></div>
         ${(!isContext && c.name) ? `<div class="journal-caption">${esc(c.name)}</div>` : ''}`;
     }
     grid.appendChild(item);
   });
 
-  // Bind clic : ouvre la note (édition) ou la modale d'agrandissement photo
-  // — désactivé pendant un drag
+  // Étend la hauteur du canvas si nécessaire pour englober tous les items
+  if (!isMobile && maxY > 0) {
+    grid.style.minHeight = Math.max(maxY + 200, window.innerHeight * 2) + 'px';
+  } else {
+    grid.style.minHeight = '';
+  }
+
+  // Persiste les positions générées en arrière-plan (PUT parallèle)
+  itemsToPersist.forEach(c => {
+    api.put(`/api/collections/${c.id}`, { journalCanvas: c.journalCanvas })
+       .catch(err => console.error('Persist journalCanvas failed for', c.id, err));
+  });
+
+  // Clic : ouvre note ou modale photo (désactivé pendant un drag)
   grid.querySelectorAll('.journal-item').forEach(el => {
     el.addEventListener('click', (e) => {
-      if (_journalDragJustEnded) return;                    // un drag vient de se terminer → ignore le clic
+      if (_journalDragJustEnded) return;
       if (e.target.closest('.journal-remove-btn')) return;
       const id = el.dataset.id;
       const obj = state.collections.find(c => c.id === id);
       if (!obj) return;
       if (obj.type === 'note') openNoteModal(id);
-      else openJournalPhotoModal(id);                       // photos (contexte + objet) → agrandissement
+      else openJournalPhotoModal(id);
     });
   });
 
-  // Bind drag-and-drop pour réorganiser
-  _bindJournalDnd(grid);
+  // Drag canvas (desktop seulement)
+  if (!isMobile) _bindJournalCanvasDrag(grid);
 
   // Bouton "×" sur les photos de contexte → suppression
   grid.querySelectorAll('.journal-remove-btn').forEach(btn => {
