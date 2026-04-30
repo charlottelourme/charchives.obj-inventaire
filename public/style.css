@@ -10003,9 +10003,9 @@ body.dark-mode .trios-tabs-nav { border-bottom-color: var(--border); }
   position: relative;
   white-space: nowrap;
 }
-/* Triptyque : onglets plus gros que la navigation header (hiérarchie inversée). */
+/* Triptyque : onglets plus discrets que la navigation header. */
 .trios-tab-btn {
-  font-size: clamp(1.5rem, 2.2vw, 2.3rem) !important;
+  font-size: 14px !important;
 }
 .derive-seg-btn:hover,
 .trios-tab-btn:hover { color: var(--text-2) !important; }
