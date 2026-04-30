@@ -10710,7 +10710,7 @@ body.dark-mode .section-header {
         On laisse body.padding-top piloté par var(--header-h) (mesuré dynamiquement
         par updateHeaderHeightVar dans app.js). Ne PAS hardcoder ici. */
   html { padding-top: 0 !important; }
-  header h1 { font-size: 14px !important; letter-spacing: 0 !important; font-weight: 300; text-transform: lowercase; }
+  header h1 { font-size: 14px !important; letter-spacing: 0 !important; font-weight: 300; text-transform: none; }
   .view-tabs { gap: 0 !important; }
   .view-tab { font-size: 13px !important; padding: 0 8px !important; }
   .header-actions { gap: 3px !important; }
