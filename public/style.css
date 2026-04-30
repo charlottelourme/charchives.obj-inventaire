@@ -9767,8 +9767,12 @@ body.dark-mode .hd-item { border-bottom-color: var(--border); }
 @keyframes hdSlideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   FOOTER NAVIGATION MOBILE — bandeau fixé en bas avec fil d'Ariane + retour
+   FOOTER NAVIGATION MOBILE — bandeau fixé en bas, 2 lignes :
+     (1) Retour + fil d'Ariane sérif italique
+     (2) Calendrier / Catalogue / Stats + dark mode (◑ comme desktop)
    Visible uniquement sous 520px ; desktop : caché.
+   La global-footer (Calendrier/Catalogue/Stats/Exporter) est masquée sur mobile
+   pour éviter le double-empilement — son contenu utile est repris ici.
    ══════════════════════════════════════════════════════════════════════════ */
 .mobile-footer-nav {
   display: none;
@@ -9777,21 +9781,43 @@ body.dark-mode .hd-item { border-bottom-color: var(--border); }
   left: 0;
   right: 0;
   z-index: 500;
-  background: transparent;        /* = continuité bg-base + vignette + grain */
-  border-top: none;
-  padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
-  align-items: center;
-  gap: 12px;
+  background: var(--bg);                    /* opaque → masque le scroll dessous */
+  border-top: 1px solid var(--border-light, #E8E4DE);
+  padding: 4px 14px calc(4px + env(safe-area-inset-bottom));
+  flex-direction: column;
+  gap: 0;
   font-family: 'Inter', sans-serif;
   font-size: 11px;
   color: var(--text-3);
 }
 body.dark-mode .mobile-footer-nav {
-  background: transparent;
+  background: var(--bg);
+  border-top-color: var(--border, #27272A);
   color: var(--text-3);
 }
-.mfn-back,
-.mfn-darkmode {
+
+/* ── Lignes ── */
+.mfn-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+}
+.mfn-row-breadcrumb {
+  /* Ligne 1 : retour + breadcrumb */
+  padding-bottom: 2px;
+}
+.mfn-row-tools {
+  /* Ligne 2 : outils + dark mode, séparée par un filet fin */
+  border-top: 1px solid var(--border-light, #E8E4DE);
+  padding-top: 4px;
+  justify-content: space-between;
+}
+body.dark-mode .mfn-row-tools { border-top-color: var(--border, #27272A); }
+
+/* ── Boutons utilitaires (back / dark mode) ── */
+.mfn-back {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -9804,8 +9830,30 @@ body.dark-mode .mobile-footer-nav {
   width: 32px;
   height: 32px;
 }
-.mfn-back:hover,
+.mfn-back:hover { color: var(--text); }
+.mfn-back:active { opacity: .6; }
+
+/* Dark mode mobile : symbole ◑ / ◐ comme le desktop (pas de SVG) */
+.mfn-darkmode {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-2);
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+  line-height: 1;
+  font-family: 'Inter', sans-serif;
+}
 .mfn-darkmode:hover { color: var(--text); }
+.mfn-darkmode:active { opacity: .6; }
+
+/* ── Breadcrumb (ligne 1) ── */
 .mfn-breadcrumb {
   flex: 1;
   min-width: 0;
@@ -9825,10 +9873,34 @@ body.dark-mode .mobile-footer-nav {
 .mfn-breadcrumb .mfn-item { color: var(--text-2); }
 .mfn-breadcrumb .mfn-item:last-child { color: var(--text); font-weight: 500; }
 
+/* ── Boutons outils (ligne 2 — Calendrier / Catalogue / Stats) ── */
+.mfn-tool-btn {
+  font-family: 'Inter', sans-serif !important;
+  font-style: normal !important;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex: 1;                             /* répartition équitable horizontale */
+  min-height: 36px;
+  transition: color .15s;
+  white-space: nowrap;
+}
+.mfn-tool-btn:hover { color: var(--text); }
+.mfn-tool-btn.active { color: var(--text); font-weight: 600; }
+
 @media (max-width: 520px) {
   .mobile-footer-nav { display: flex; }
-  /* Ajoute un padding-bottom sur le body pour que le footer ne cache pas le contenu */
-  body { padding-bottom: calc(48px + env(safe-area-inset-bottom)) !important; }
+  /* La global-footer (Calendrier/Catalogue/Stats/Exporter desktop) est totalement
+     masquée sur mobile : son contenu est repris dans .mobile-footer-nav. */
+  .global-footer { display: none !important; }
+  /* Padding-bottom du body : le footer mobile fait ~84px (2 lignes + safe-area) */
+  body { padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
