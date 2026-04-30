@@ -4574,7 +4574,7 @@ body.dark-mode .gallery-scroll { background: #F8F8F8; }
 
 /* ── Stats view ── */
 #statsView {
-  height: calc(100vh - 52px);
+  height: calc(100dvh - var(--header-h));
   overflow-y: auto;
 }
 .stats-scroll {
