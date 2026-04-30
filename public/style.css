@@ -10848,57 +10848,54 @@ body.dark-mode .inv-dd-panel {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   MASONRY — FORÇAGE STRICT (« bulletproof »)
+   GRILLE INVENTAIRE — CSS GRID (lignes horizontales)
    ══════════════════════════════════════════════════════════════════════════
-   Bloc de fin de fichier : c'est la dernière voix qui parle, donc celle qui
-   gagne quand la spécificité est égale. On force ici les 3 invariants du
-   masonry CSS-Columns + responsive — quoi qu'il puisse y avoir ailleurs dans
-   le fichier ou injecté inline par le JS. */
+   Lecture top → bottom : les cartes se lisent ligne par ligne, chaque ligne
+   limitée par la largeur du site. CSS Columns abandonné (provoquait des
+   problèmes de répartition + scroll). CSS Grid garantit :
+   - distribution propre par ligne, sans empilement bizarre
+   - scroll vertical naturel, pas de débordement horizontal
+   - hauteur naturelle de chaque carte respectée (align-items: start) */
 
-/* 1. CONTENEUR : annule tout flex/grid/inline-display, force le mode columns. */
+/* 1. CONTENEUR : CSS Grid avec --grid-cols colonnes égales. */
 #gridView .grid,
 .grid {
-  display: block !important;
-  -webkit-column-count: var(--grid-cols, 4) !important;
-          column-count: var(--grid-cols, 4) !important;
-  -webkit-column-gap: 2rem !important;
-          column-gap: 2rem !important;
+  display: grid !important;
+  grid-template-columns: repeat(var(--grid-cols, 4), minmax(0, 1fr)) !important;
+  gap: 4rem 2rem !important;                /* row-gap, column-gap */
+  align-items: start !important;            /* hauteurs naturelles, pas de stretch */
   width: 100% !important;
-  /* on neutralise les éventuelles propriétés flex/grid résiduelles */
+  /* neutralise tout résidu CSS-Columns ou flex */
+  -webkit-column-count: initial !important;
+          column-count: initial !important;
+  -webkit-column-gap: initial !important;
+          column-gap: 2rem !important;       /* (réécrit par `gap` au-dessus, ok) */
+  -webkit-column-fill: initial !important;
+          column-fill: initial !important;
   flex: initial !important;
-  grid-template-columns: none !important;
-  grid-auto-flow: initial !important;
-  align-items: initial !important;
+  height: auto !important;                   /* annule les `height: Xpx` JS antérieurs */
 }
-/* L'ancien fallback CSS-Grid reste neutralisé même si le JS tente de l'ajouter */
+/* Le fallback `.grid.grid-css` (héritage) prend la même règle que .grid */
 #gridView .grid.grid-css,
 .grid.grid-css {
-  display: block !important;
-  -webkit-column-count: var(--grid-cols, 4) !important;
-          column-count: var(--grid-cols, 4) !important;
-  grid-template-columns: none !important;
-  gap: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(var(--grid-cols, 4), minmax(0, 1fr)) !important;
+  gap: 4rem 2rem !important;
 }
 
-/* 2. CARTES : inline-block (le seul mode qui se comporte bien en CSS Columns).
-   Anti-casse au passage entre 2 colonnes (break-inside + page-break-inside
-   pour Safari). Marge verticale uniquement. */
+/* 2. CARTES : block, largeur de cellule complète, marges nulles (gap gère). */
 .grid > .card,
 #gridView .grid > .card {
-  display: inline-block !important;
+  display: block !important;
   width: 100% !important;
-  margin: 0 0 4rem 0 !important;
-  break-inside: avoid !important;
-  -webkit-column-break-inside: avoid !important;
-  page-break-inside: avoid !important;          /* fallback Safari */
+  min-width: 0 !important;
+  margin: 0 !important;
   position: relative !important;
-  vertical-align: top !important;
-  float: none !important;                        /* annule un éventuel float */
+  float: none !important;
+  break-inside: auto !important;             /* plus besoin avec CSS Grid */
 }
 
-/* 3. IMAGES : la hauteur n'est plus contrainte → c'est ce qui fait vivre
-   le masonry. height:auto + max-height:none écrasent tout aspect-ratio ou
-   height fixe défini ailleurs. */
+/* 3. IMAGES : hauteur naturelle dictée par chaque image. */
 .grid .card .card-thumb,
 .grid .card img.card-thumb,
 .grid .card-image {
@@ -10908,31 +10905,27 @@ body.dark-mode .inv-dd-panel {
   display: block !important;
   object-fit: contain !important;
 }
-/* EXCEPTION : image cassée — il faut garder un volume visible pour le
-   placeholder ◻, sinon la zone s'effondre à 0. */
+/* EXCEPTION : image cassée — volume visible pour le placeholder ◻. */
 .card-thumb-area--broken .card-thumb {
   aspect-ratio: 3/4 !important;
   height: auto !important;
 }
 
-/* 4. RESPONSIVE — column-count par breakpoint (override inconditionnel
-   indépendant du slider). Mobile-first. */
+/* 4. RESPONSIVE — nb de colonnes par breakpoint, mobile-first. */
 @media (max-width: 1024px) {
   #gridView .grid,
-  .grid { -webkit-column-count: 3 !important; column-count: 3 !important; }
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 }
 @media (max-width: 768px) {
   #gridView .grid,
   .grid {
-    -webkit-column-count: 2 !important;
-            column-count: 2 !important;
-    -webkit-column-gap: 1rem !important;
-            column-gap: 1rem !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 2.5rem 1rem !important;
   }
 }
 @media (max-width: 480px) {
   #gridView .grid,
-  .grid { -webkit-column-count: 1 !important; column-count: 1 !important; }
+  .grid { grid-template-columns: 1fr !important; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
