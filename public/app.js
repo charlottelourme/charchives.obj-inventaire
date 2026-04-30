@@ -2980,6 +2980,9 @@ function renderJournal(filtered) {
   const canvasWidth = !isMobile ? Math.max(grid.clientWidth, 800) : 0;
   const itemsToPersist = [];
   let maxY = 0;
+  let newOnlyIdx = 0;     // compteur séparé pour les NOUVEAUX items uniquement → ils
+                          // s'étalent dans le haut du canvas indépendamment du nombre
+                          // d'items déjà placés en bas
 
   items.forEach((c, idx) => {
     const item = document.createElement('div');
@@ -2990,7 +2993,8 @@ function renderJournal(filtered) {
     if (!isMobile) {
       let cv = c.journalCanvas;
       if (!cv || typeof cv.x !== 'number' || typeof cv.y !== 'number') {
-        cv = _generateJournalCanvasParams(canvasWidth, idx);
+        cv = _generateJournalCanvasParams(canvasWidth, newOnlyIdx);
+        newOnlyIdx++;
         c.journalCanvas = cv;
         itemsToPersist.push(c);
       }
