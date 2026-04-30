@@ -6055,15 +6055,21 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
   left: 0;
   right: 0;
   z-index: 98;
-  background: transparent;         /* = continuité bg-base + vignette + grain (calques #bgLayers) */
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border-top: none;
+  /* Bandeau aligné sur le fil d'Ariane (.breadcrumb-bar) : même fond translucide
+     dérivé du bg du site, même flou, même filet en haut. Tout est regroupé dans
+     ce seul bandeau au pied de page. */
+  background: rgba(var(--bg-rgb, 250,250,248), .82);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-top: 1px solid rgba(0,0,0,.04);
   display: flex;
   align-items: stretch;
   height: 44px;
 }
-body.dark-mode .bottom-nav { background: transparent; }
+body.dark-mode .bottom-nav {
+  background: rgba(var(--bg-rgb, 10,10,10), .82);
+  border-top-color: rgba(255,255,255,.04);
+}
 .bottom-nav > * { position: relative; z-index: 1; }
 
 /* Bloc export — gauche */
