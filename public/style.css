@@ -134,8 +134,9 @@ body.dark-mode #bgLayers .bg-base { background: #080809; }
       Démarre tôt (couvre une grande zone) → effet diffus papier sous lampe. */
 #bgLayers .bg-vignette {
   background: radial-gradient(ellipse at center,
-    transparent 18%,
-    rgba(255, 255, 255, 0.55) 65%,
+    transparent 10%,
+    rgba(255, 255, 255, 0.50) 50%,
+    rgba(255, 255, 255, 0.85) 80%,
     rgba(255, 255, 255, 1) 100%);
   z-index: 4;                         /* AU-DESSUS du grain pour ne pas être assombrie par le multiply */
   pointer-events: none;
