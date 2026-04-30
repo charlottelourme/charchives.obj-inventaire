@@ -10614,3 +10614,230 @@ body.dark-mode .section-header {
   .vpt-count { font-size: 8px; }
   .vpt-pill { font-size: 9px; margin: 0 8px 4px 0; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BANDEAU INVENTAIRE — 2 piliers Feroniapi + dropdowns + toolbar discrète
+   ══════════════════════════════════════════════════════════════════════════
+   Le bandeau Inventaire a été restructuré : la navigation principale passe
+   par 2 grands triggers centraux (« Intention » et « Objet »), les outils
+   techniques sont relégués dans une barre quasi invisible juste au-dessus
+   de la grille. L'ancienne toolbar haute (.toolbar.toolbar-strate) est
+   désormais inutilisée — son contenu a migré dans la nouvelle structure. */
+
+/* Anciennes barres : neutralisées si encore présentes dans le DOM. */
+.toolbar.toolbar-strate { display: none !important; }
+
+/* ── Piliers centraux ─────────────────────────────────────────────────── */
+.inv-pillars {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 4rem;
+  margin: 3rem 0 1.25rem;
+  position: relative;
+  z-index: 50;
+  padding: 0 var(--page-gutter, 24px);
+}
+.inv-pillar {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Feroniapi', serif;
+  font-style: normal;
+  font-size: clamp(28px, 3.6vw, 44px);
+  line-height: 1;
+  color: var(--text);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  transition: opacity .25s ease;
+}
+.inv-pillar:hover { opacity: 0.78; }
+.inv-pillar[aria-expanded="true"] { opacity: 1; }
+.inv-pillar-text { display: inline-block; }
+.inv-pillar-caret {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.42em;
+  font-style: normal;
+  font-weight: 300;
+  letter-spacing: 0;
+  transition: transform .25s ease;
+  display: inline-block;
+  transform-origin: center 60%;
+}
+.inv-pillar[aria-expanded="true"] .inv-pillar-caret { transform: rotate(180deg); }
+
+/* ── Dropdowns ────────────────────────────────────────────────────────── */
+.inv-dropdown {
+  position: relative;
+  z-index: 40;
+  margin: 0 auto 1rem;
+  max-width: 920px;
+  padding: 0 var(--page-gutter, 24px);
+  animation: invDropdownSlide .28s cubic-bezier(.22,.68,0,1.1);
+}
+.inv-dropdown[hidden] { display: none !important; }
+@keyframes invDropdownSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.inv-dd-panel {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border-light, #E8E4DE);
+  padding: 1.1rem 1.3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+  justify-content: center;
+}
+body.dark-mode .inv-dd-panel {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.inv-dd-panel-objet {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+}
+.inv-dd-search {
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;                       /* anti-zoom iOS */
+  font-weight: 400;
+  padding: 0.7rem 0.9rem;
+  background: transparent;
+  border: 1px solid var(--border-light, #E8E4DE);
+  color: var(--text);
+  outline: none;
+  border-radius: 0;
+  transition: border-color .2s ease;
+}
+.inv-dd-search::placeholder { color: var(--text-3); font-style: italic; }
+.inv-dd-search:focus { border-color: var(--text); }
+
+/* Override des barres existantes insérées dans une dropdown : pas de bordure,
+   pas de padding propre — elles héritent du panel. */
+.inv-dropdown .status-filter-bar,
+.inv-dropdown .typo-filter-bar,
+.inv-dropdown .attr-filter-bar {
+  border: none !important;
+  border-bottom: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: center;
+}
+.inv-dropdown .sfb-label,
+.inv-dropdown .tfb-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  width: auto !important;
+  min-width: 0 !important;
+  margin-right: 0.5rem;
+}
+.inv-dropdown .clear-attr-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  margin-left: auto;
+}
+.inv-dropdown .clear-attr-btn:hover { color: var(--text); }
+.inv-dd-attrs {
+  flex-wrap: wrap;
+  gap: 0.6rem !important;
+  justify-content: flex-start !important;
+}
+.inv-dd-attrs .mf-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ── Toolbar discrète juste au-dessus de la grille ────────────────────── */
+.inv-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.55rem var(--page-gutter, 24px);
+  margin: 0.5rem 0 0.75rem;
+  border: none;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.invt-count { white-space: nowrap; flex-shrink: 0; }
+.invt-mid {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1;
+  justify-content: center;
+}
+.invt-select {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.invt-select:hover { color: var(--text-2); }
+.invt-select:focus { color: var(--text); }
+.invt-select option { text-transform: none; letter-spacing: 0; color: var(--text); }
+.inv-toolbar .inventory-view-toggle {
+  display: inline-flex;
+  gap: 2px;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.inv-toolbar .inventory-view-toggle .ivt-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .15s ease;
+}
+.inv-toolbar .inventory-view-toggle .ivt-btn:hover { color: var(--text-2); }
+.inv-toolbar .inventory-view-toggle .ivt-btn.active { color: var(--text); }
+.inv-toolbar .card-size-slider {
+  flex-shrink: 0;
+  width: 80px;
+}
+
+/* Mobile : on cache la nouvelle structure et on garde la mobile-action-bar
+   + le bottom sheet existant (logique inchangée). */
+@media (max-width: 520px) {
+  .inv-pillars,
+  .inv-dropdown,
+  .inv-toolbar { display: none !important; }
+}
