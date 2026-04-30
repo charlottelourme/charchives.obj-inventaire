@@ -11218,3 +11218,14 @@ body.dark-mode #gridView .grid .card-thumb-area .img-cutout   { display: block !
 body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-standard {
   display: block !important;
 }
+
+/* Spécificité plus haute (#gridView ID + 3 classes) pour battre la règle
+   bulletproof masonry `.grid .card .card-thumb { display:block !important }`
+   (spécificité 0,3,0). On force ainsi le toggle Light/Dark à gagner. */
+#gridView .grid .card-thumb-area .img-cutout { display: none !important; }
+#gridView .grid .card-thumb-area .img-standard { display: block !important; }
+body.dark-mode #gridView .grid .card-thumb-area .img-standard { display: none !important; }
+body.dark-mode #gridView .grid .card-thumb-area .img-cutout   { display: block !important; }
+body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-standard {
+  display: block !important;
+}
