@@ -1,11 +1,33 @@
-/* ══ FONT-FACE — Feroniapi (Velvetyne, MediumItalic display) ═══════════════
-      Hébergée localement. Cible exclusive : grands titres + navigation.
-      NB : casse stricte du nom de fichier — Render (Linux) est case-sensitive. */
+/* ══ FONT-FACE — Compagnon (4 graisses, identité unique du site) ═══════════
+      Hébergées localement (.otf). Compagnon Light = display + logo,
+      Compagnon Roman = labeur (filtres, notes, descriptions), Compagnon Bold
+      = navigation principale. Casse stricte des noms de fichiers (Render Linux). */
 @font-face {
-  font-family: 'Feroniapi';
-  src: url('./fonts/Feroniapi-MediumItalic.woff2') format('woff2');
-  font-weight: 500;
+  font-family: 'Compagnon';
+  src: url('./fonts/Compagnon-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Compagnon';
+  src: url('./fonts/Compagnon-LightItalic.otf') format('opentype');
+  font-weight: 300;
   font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Compagnon';
+  src: url('./fonts/Compagnon-Roman.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Compagnon';
+  src: url('./fonts/Compagnon-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
   font-display: swap;
 }
 
