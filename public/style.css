@@ -114,7 +114,7 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
 }
 /* Calque 1 : base — blanc en clair, zinc-950 en sombre */
 #bgLayers .bg-base {
-  background: #EDEDED;
+  background: #E0E0E0;
   transition: background 0.4s ease;
 }
 body.dark-mode #bgLayers .bg-base { background: #080809; }
@@ -163,7 +163,7 @@ body.dark-mode #bgLayers .bg-grain {
 
 /* Body : transparent en tout temps (le fond est piloté par #bgLayers) */
 body { background: transparent !important; }
-html { background: #EDEDED; }
+html { background: #E0E0E0; }
 html:has(body.dark-mode) { background: #080809; }
 
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
@@ -518,7 +518,7 @@ html::before {
   left: 0;
   right: 0;
   height: env(safe-area-inset-top);
-  background: #EDEDED;                  /* matche bg-base — couvre la safe-area iOS */
+  background: #E0E0E0;                  /* matche bg-base — couvre la safe-area iOS */
   z-index: 1001;                        /* au-dessus du header pour couvrir tout jour */
   pointer-events: none;
 }
