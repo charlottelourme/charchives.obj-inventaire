@@ -3319,7 +3319,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 #deriveView {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 52px);
+  min-height: calc(100dvh - var(--header-h));
   background: var(--bg);
 }
 /* Le canvas/galerie vit sous la toolbar-strate */
