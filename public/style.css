@@ -151,7 +151,7 @@ body.verbe-active #bgLayers .bg-radial { opacity: 1 !important; }
 /* Calque 3 : grain papier INTENSIFIÉ — SVG fractalNoise baseFrequency 0.8
       Brutalisme Poétique : opacity 0.18, grain très visible, papier imprimé. */
 #bgLayers .bg-grain {
-  opacity: 0.18;                 /* 18% — texture marquée, sensation papier brut */
+  opacity: 0.28;                 /* 28% — bruit franc, fibre papier perceptible partout */
   mix-blend-mode: multiply;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
@@ -159,7 +159,7 @@ body.verbe-active #bgLayers .bg-radial { opacity: 1 !important; }
 }
 body.dark-mode #bgLayers .bg-grain {
   mix-blend-mode: overlay;
-  opacity: 0.18;
+  opacity: 0.30;                /* dark mode : grain plus marqué pour casser l'aplat sombre */
 }
 
 /* Body : transparent en tout temps (le fond est piloté par #bgLayers) */
