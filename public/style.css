@@ -6495,7 +6495,9 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     flex-direction: column;
   }
   #editModal .modal-header {
-    padding: 14px 16px 0;
+    /* safe-area-inset-top : sur iPhone à dynamic island, le header doit descendre
+       sous l'île pour rester visible. */
+    padding: calc(14px + env(safe-area-inset-top)) 16px 0;
     flex-shrink: 0;
   }
   #editModal .modal-body {
