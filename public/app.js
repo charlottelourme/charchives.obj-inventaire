@@ -834,6 +834,18 @@ function buildAttrFilterBar() {
     buildMultiFilter('filterMatieresWrap', 'matieres', 'Matière', ATTRIBUTES_DEF.matieres.options);
     // État supprimé de l'interface
     buildMultiFilter('filterCouleursWrap', 'couleurs', 'Couleur', state.settings.colors||[]);
+    // Ambiance : custom (settings.univers) + presets EMOTION_OPTIONS (cf. renderUniversChips).
+    const ambianceOpts = [...new Set([
+      ...(state.settings.univers || []),
+      ...(typeof EMOTION_OPTIONS !== 'undefined' ? EMOTION_OPTIONS : [])
+    ])];
+    if (document.getElementById('filterUniversWrap')) {
+      buildMultiFilter('filterUniversWrap', 'univers', 'Ambiance', ambianceOpts);
+    }
+    // Usages : préréglés ATTRIBUTES_DEF.usage.options.
+    if (document.getElementById('filterUsagesWrap')) {
+      buildMultiFilter('filterUsagesWrap', 'usage', 'Usages', ATTRIBUTES_DEF.usage.options);
+    }
   }
   buildSubcategoryBar();
 }
