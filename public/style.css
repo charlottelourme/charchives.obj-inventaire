@@ -8033,7 +8033,8 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 @media (max-width: 700px) {
   #triosView {
     overflow-y: auto;
-    height: calc(100vh - 52px - 44px); /* header + bottom-nav */
+    /* header dynamique (--header-h) + footer mobile fixed (~44px) */
+    height: calc(100dvh - var(--header-h) - 44px);
     -webkit-overflow-scrolling: touch;
   }
   .trios-view {
