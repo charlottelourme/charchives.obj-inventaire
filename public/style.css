@@ -451,7 +451,7 @@ body.verbe-active .search-bar {
   gap: 16px;
 }
 .vpt-name {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: clamp(42px, 6vw, 78px);
   font-weight: 500;
@@ -600,7 +600,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   display: flex;
   align-items: center;
   /* ── Display Velvetyne : navigation XXL Feroniapi MediumItalic ── */
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: clamp(1.2rem, 1.8vw, 1.9rem);
   font-weight: 500;
@@ -1249,7 +1249,7 @@ body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
 .card-poem-text {
   position: relative;
   z-index: 1;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: normal;                    /* le woff2 est déjà l'italique — pas de synthétique */
   font-weight: 400;
   font-size: 1.18rem;
@@ -1459,7 +1459,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 }
 /* Intention — typo éditoriale (Cormorant italic), JAMAIS Cutive Mono */
 .card-verbe-label {
-  font-family: 'Feroniapi', serif !important;
+  font-family: 'Compagnon', monospace !important;
   font-style: italic;
   font-size: 12px;
   font-weight: 300;
@@ -1485,7 +1485,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 }
 
 .card-name {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.28;
@@ -1497,7 +1497,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   margin-bottom: 0;
 }
 .card-desc {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 12px;
   font-weight: 300;
@@ -1647,7 +1647,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   white-space: pre-wrap;
 }
 .card-note-text.font-poetic {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: clamp(15px, 1.8vw, 22px);
   font-weight: 300;
@@ -1824,7 +1824,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   overflow: hidden;
 }
 .gallery-note-text.font-poetic {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: clamp(13px, 1.6vw, 18px);
   font-weight: 300;
@@ -1856,7 +1856,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   z-index: 1;
 }
 .vab-name {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: clamp(52px, 8vw, 110px);
   font-weight: 300;
   letter-spacing: -.03em;
@@ -1907,7 +1907,7 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
   padding: 32px;
 }
 .cat-hdr-name {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: clamp(42px, 6vw, 80px);
   font-weight: 300;
   letter-spacing: -.02em;
@@ -2332,7 +2332,7 @@ body.dark-mode .sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: #18
   z-index: 2;
 }
 .tl-sep-label {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: clamp(42px, 5.5vw, 68px);
   font-weight: 300;
   color: var(--text);
@@ -2499,7 +2499,7 @@ body.dark-mode .modal::before {
   z-index: 1;
 }
 .modal-title {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 18px;
   font-weight: 400;
 }
@@ -3191,7 +3191,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   margin-bottom: 14px;
 }
 .cal-mini-year-label {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 20px;
   font-weight: 300;
   letter-spacing: -.02em;
@@ -3430,7 +3430,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   border: none;
   background: transparent;
   border-radius: 0;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: normal;
   font-size: 14px;
   font-weight: 400;
@@ -3470,7 +3470,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .trios-empty-selection {
   padding: 60px 32px;
   text-align: center;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 18px;
   color: var(--text-2);
@@ -3815,7 +3815,7 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   .journal-size-picker { display: none !important; }   /* pas de resize sur mobile */
 }
 .journal-caption {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 13px;
   color: var(--text-3);
@@ -3891,7 +3891,7 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   /* Aucune bordure / box-shadow : image brute */
 }
 #journalPhotoModal .journal-photo-modal-caption {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 15px;
   color: rgba(255,255,255,0.78);     /* lisible sur backdrop sombre */
@@ -3928,7 +3928,7 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
 /* Notes Journal : post-it Cormorant italique */
 .journal-note .journal-note-inner {
   padding: 22px 22px 26px;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 17px;
   line-height: 1.5;
@@ -3990,7 +3990,7 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
 }
 /* Boutons de concept (Intention / Matière / Identité) — police éditoriale */
 .con-aff-btn {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 14px;
   font-weight: 400;
@@ -4078,7 +4078,7 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
 
 /* Name labels */
 .con-label {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 10px;
   font-weight: 400;
   fill: var(--text);
@@ -4329,7 +4329,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
   transition: background .12s;
 }
 .idx-dd-verbe {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 11px;
   color: var(--text-3);
@@ -4510,7 +4510,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
 
 /* Lettrine éditoriale */
 .idx-alpha-letter {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: normal;
   font-size: 22px;
   font-weight: 300;
@@ -4565,7 +4565,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
 .idx-empty {
   color: var(--text-3);
   font-style: italic;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 13px;
   padding: 20px 0;
 }
@@ -4604,7 +4604,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
 
 /* Verbe central — Spectral italic */
 .grav-verb-label {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 38px;
   font-weight: 300;
@@ -4768,7 +4768,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
 .stats-kpi-item:first-child { border-left: 1px solid var(--border-light); padding-left: 32px; }
 .stats-kpi-item:not(:first-child) { padding-left: 32px; }
 .stats-kpi-number {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: clamp(52px, 7vw, 88px);
   font-weight: 300;
   color: var(--text);
@@ -4812,7 +4812,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
   filter: brightness(1.08);
 }
 .stats-bubble-count {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: clamp(18px, 2.5vw, 32px);
   font-weight: 300;
   line-height: 1;
@@ -4830,7 +4830,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
 
 /* Nombre — grand chiffre Spectral */
 .sgn-count {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 28px;
   font-weight: 300;
   line-height: 1;
@@ -4872,7 +4872,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
   letter-spacing: .07em;
 }
 .stats-grad-bar-count {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 22px;
   font-weight: 300;
   color: var(--text);
@@ -5526,7 +5526,7 @@ body.dark-mode .canvas-editor-overlay { background: var(--bg); }
   100% { transform: rotate(360deg); }
 }
 .starting-title {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 22px;
   font-weight: 400;
   color: var(--text);
@@ -5941,7 +5941,7 @@ body.dark-mode .canvas-editor-overlay { background: var(--bg); }
   flex: 1;
   height: 32px;
   padding: 4px 10px;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 16px;
   border: 1px solid var(--border-light);
   border-radius: 0;
@@ -6457,7 +6457,7 @@ body { padding-bottom: 64px; }
   .view-tabs::-webkit-scrollbar { display: none; }
   .view-tab {
     padding: 0 !important;
-    font-family: 'Feroniapi', serif !important;
+    font-family: 'Compagnon', monospace !important;
     font-style: italic !important;
     font-size: 16px !important;
     font-weight: 400 !important;
@@ -7756,7 +7756,7 @@ label, input, select, textarea, button {
 h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .portrait-title, .vpt-name, .vab-name, .cat-hdr-name,
 .stats-kpi-number, .trios-headline {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
 }
 /* .idx-overlay-title : Cutive Mono — cohérent avec le trigger "Typologies" (défini dans sa règle propre) */
 .settings-section-title, .attr-group-header span, .form-group-label {
@@ -7767,7 +7767,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 /* KPI values — handled in stats redesign via .stats-kpi-number */
 /* Detail modal title */
 #detailModal .detail-title {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 22px;
   font-weight: 400;
 }
@@ -7929,7 +7929,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 /* Intention — typo éditoriale italique, JAMAIS Cutive Mono */
 .portrait-verbe-pill {
-  font-family: 'Feroniapi', serif !important;
+  font-family: 'Compagnon', monospace !important;
   font-style: italic;
   font-size: 14px;
   font-weight: 300;
@@ -7956,7 +7956,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 /* Titre : XXL Spectral italique — la vedette */
 .portrait-title {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: clamp(26px, 3.2vw, 42px);
   font-weight: 300;
   font-style: italic;
@@ -8011,7 +8011,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 /* Description : légèrement plus grande, lisible sur le halo */
 .portrait-desc {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 14.5px;
   font-style: italic;
   color: #2a2623; /* très sombre */
@@ -8095,7 +8095,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   margin-bottom: 12px;
 }
 .trios-headline {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 42px;
   font-weight: 300;
   color: var(--text);
@@ -8132,7 +8132,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .trios-link-bar {
   text-align: center;
   margin-bottom: 40px;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 18px;
   font-weight: 300;
   color: var(--text-2);
@@ -8323,7 +8323,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   gap: 0;
 }
 .trios-tab-btn {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 15px;
   font-weight: 400;
@@ -8653,7 +8653,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   border: 2px solid var(--bg);
 }
 .tl-origine-label {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 13px;
   font-weight: 300;
   color: var(--text-2);
@@ -8688,7 +8688,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   flex-shrink: 0;
 }
 .tl-none-label {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-size: 13px;
   color: var(--text-3);
   font-weight: 300;
@@ -8772,7 +8772,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   overflow: hidden;
 }
 .fragment-preview-text {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 13px;
   line-height: 1.5;
@@ -8795,7 +8795,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   border: 1.5px solid var(--border);
   border-radius: 2px;
   background: var(--bg);
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 14px;
   line-height: 1.6;
@@ -8895,7 +8895,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   overflow: hidden;
 }
 .card-fragment .frag-text {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 14px;
   line-height: 1.5;
@@ -9380,7 +9380,7 @@ body.dark-mode .card-bookmark-btn.bookmarked .ast-icon .ast-s { stroke: #18181b;
 
 /* ── Classe utilitaire : Conceptuel (poétique, navigation majeure, verbes) ── */
 .font-concept {
-  font-family: 'Feroniapi', serif !important;
+  font-family: 'Compagnon', monospace !important;
   font-style: italic !important;
   font-weight: 500 !important;
   letter-spacing: 0 !important;
@@ -9529,7 +9529,7 @@ body.dark-mode .portrait-title { color: var(--text); }
 /* ── Paramètres : éditeur des textes de bandeaux ─────────────────────────── */
 .sm-pagedescs { padding: 4px 0; }
 .sm-pagedescs-hint {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 13px;
   color: var(--text-3);
@@ -9572,7 +9572,7 @@ body.dark-mode .portrait-title { color: var(--text); }
 .sm-pagedesc-reset:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
 .sm-pagedesc-reset:disabled { opacity: .35; cursor: not-allowed; }
 .sm-pagedesc-input {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 14px;
   color: var(--text);
@@ -9612,7 +9612,7 @@ body.dark-mode .section-header {
   border-bottom-color: var(--border);  /* zinc-800 */
 }
 .section-header-title {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: clamp(26px, 3.5vw, 36px);
   font-weight: 300;
@@ -9727,7 +9727,7 @@ body.dark-mode .fs-panel {
   border-bottom: 1px solid var(--border-light);
 }
 .fs-title {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 20px;
   color: var(--text);
@@ -9768,7 +9768,7 @@ body.dark-mode .fs-panel {
   padding: 8px 14px;
   border: 1px solid var(--border);
   background: transparent;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 15px;
   color: var(--text-2);
@@ -9950,7 +9950,7 @@ body.dark-mode .mfn-row-tools { border-top-color: var(--border, #27272A); }
   white-space: nowrap;
   scrollbar-width: none;
   /* Typographie éditoriale — sérif italique (cohérence avec titres d'intentions) */
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 14px;
   letter-spacing: 0;
@@ -10046,7 +10046,7 @@ body.dark-mode .trios-tabs-nav { border-bottom-color: var(--border); }
       États : gris par défaut, noir à l'actif — pas d'indicateur point. */
 .derive-seg-btn,
 .trios-tab-btn {
-  font-family: 'Feroniapi', serif !important;
+  font-family: 'Compagnon', monospace !important;
   font-style: italic !important;
   font-size: 16px !important;
   letter-spacing: 0 !important;
@@ -10147,7 +10147,7 @@ body.dark-mode .trios-tabs-nav { border-bottom-color: var(--border); }
   header .search-input-inner::placeholder { font-size: 13px; }
 }
 .section-header-title {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: clamp(28px, 4vw, 42px);
   font-weight: 300;
@@ -10889,7 +10889,7 @@ body.dark-mode .section-header {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: normal;
   font-size: clamp(28px, 3.6vw, 44px);
   line-height: 1;
@@ -10969,7 +10969,7 @@ body.dark-mode .inv-dd-panel {
 .inv-dropdown #categoryFilterBar .sfb-label { display: none !important; }
 /* Verbes du dropdown Intentions en Feroniapi (la voix « concept » du projet). */
 .inv-dd-list-feronia .sfb-pill {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: normal;
   font-weight: 400;
   font-size: 1.35rem;
@@ -11016,7 +11016,7 @@ body.dark-mode .inv-dd-panel {
   margin-bottom: 0.4rem;
 }
 .inv-dd-objet-title {
-  font-family: 'Feroniapi', serif;
+  font-family: 'Compagnon', monospace;
   font-style: normal;
   font-size: 1.1rem;
   color: var(--text);
