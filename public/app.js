@@ -5735,6 +5735,9 @@ function openEdit(id) {
   renderExpoChipsPicker();
   switchModalTab('public');
   document.getElementById('editModal').style.display = 'flex';
+  // Reset du scroll : on veut toujours voir la zone Photos en haut quand on ouvre la fiche
+  const _mbEdit = document.querySelector('#editModal .modal-body');
+  if (_mbEdit) _mbEdit.scrollTop = 0;
 }
 
 function closeEdit() { document.getElementById('editModal').style.display = 'none'; }
