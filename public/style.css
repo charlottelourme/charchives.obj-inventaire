@@ -6689,7 +6689,8 @@ body { padding-bottom: 64px; }
   ══════════════════════════════════════ */
   .fab {
     display: flex;
-    bottom: calc(56px + env(safe-area-inset-bottom) + 8px);
+    /* Footer mobile = ~84px (2 lignes + safe-area) — FAB doit flotter au-dessus */
+    bottom: calc(92px + env(safe-area-inset-bottom));
     right: 18px;
     width: 52px;
     height: 52px;
