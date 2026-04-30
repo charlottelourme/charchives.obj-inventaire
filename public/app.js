@@ -1543,6 +1543,10 @@ function getFiltered() {
     if (af.origine.length && !af.origine.some(v=>(c.attributes?.origine||[]).includes(v))) return false;
     if (af.etat_traces.length && !af.etat_traces.some(v=>(c.attributes?.etat_traces||[]).includes(v))) return false;
     if (af.couleurs.length && !af.couleurs.some(v=>(c.attributes?.couleurs||[]).includes(v))) return false;
+    // Ambiance : stockée dans c.univers (top-level), pas dans c.attributes.
+    if ((af.univers||[]).length && !af.univers.some(v=>(c.univers||[]).includes(v))) return false;
+    // Usages : c.attributes.usage
+    if ((af.usage||[]).length && !af.usage.some(v=>(c.attributes?.usage||[]).includes(v))) return false;
     if (!q) return true;
 
     // ── PASSE A : correspondance textuelle directe ──────────────────────────
