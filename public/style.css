@@ -912,13 +912,16 @@ main {
   box-shadow: none;
 }
 
-/* ── Grid — CSS Colonnes (masonry) ─────────────────────────────────────────
-   column-count piloté par --grid-cols (modifié par le slider JS).
-   Le JS bascule sur CSS Grid quand il y a peu d'objets (< nb colonnes).
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── Grid — Masonry assumé via CSS Columns ─────────────────────────────────
+   column-count piloté par --grid-cols (slider JS + media queries).
+   Plus de fallback CSS Grid : la grille est TOUJOURS en colonnes, hauteurs
+   variables, esthétique éditoriale Pinterest assumée. */
 
-/* Valeur de base pour la plage desktop intermédiaire (1025-1439px) */
-:root { --grid-cols: 4; }
+/* Valeur de base mobile-first */
+:root { --grid-cols: 1; }
+@media (min-width: 521px)  { :root { --grid-cols: 2; } }   /* tablette */
+@media (min-width: 1025px) { :root { --grid-cols: 3; } }   /* desktop */
+@media (min-width: 1440px) { :root { --grid-cols: 4; } }   /* très grand écran */
 
 #gridView {
   display: block;
@@ -931,55 +934,51 @@ main {
   min-width: 0;
   -webkit-column-count: var(--grid-cols, 4);
   column-count: var(--grid-cols, 4);
-  -webkit-column-gap: 72px;
-  column-gap: 72px;
-  /* padding-x : aligné sur --page-gutter (logo + grille = même axe vertical).
-     padding-top : grand vide vertical pour isoler le header de la grille. */
+  -webkit-column-gap: 2rem;
+  column-gap: 2rem;
   padding: 80px var(--page-gutter) calc(80px + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
-/* Quand le JS détecte peu d'objets, il force CSS Grid via inline style */
+/* L'ancien fallback CSS Grid (`.grid.grid-css`) est neutralisé : on force
+   le masonry même quand il y a peu de cartes (plus d'alignement rigide). */
 .grid.grid-css {
-  display: grid !important;
-  align-items: start;
-  gap: 72px;
-  column-count: unset !important;
-  -webkit-column-count: unset !important;
+  display: block !important;
+  -webkit-column-count: var(--grid-cols, 4) !important;
+  column-count: var(--grid-cols, 4) !important;
+  gap: 0 !important;
+  grid-template-columns: none !important;
 }
 .grid .card {
   display: inline-block !important;
   width: 100%;
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
-  margin-bottom: 72px;
+  page-break-inside: avoid;
+  margin: 0 0 4rem;                /* aération verticale éditoriale */
   border: none;
   overflow: visible;
   vertical-align: top;
 }
-/* En mode CSS Grid (peu d'objets) */
 .grid.grid-css .card {
-  display: block !important;
-  margin-bottom: 0;
+  display: inline-block !important;
+  margin-bottom: 4rem !important;
 }
 
-/* ── Ultra-large (≥ 1440px) — défaut 5 colonnes ── */
+/* Ajustement gap/marge selon viewport pour un rythme cohérent */
 @media (min-width: 1440px) {
-  :root { --grid-cols: 5; }
-  .grid { -webkit-column-gap: 96px; column-gap: 96px; padding-left: var(--page-gutter); padding-right: var(--page-gutter); }
-  .grid:not(.grid-css) .card { margin-bottom: 96px; }
-  .grid.grid-css { gap: 96px; }
-}
-
-/* ── Laptop (769px – 1024px) — défaut 3 colonnes ── */
-@media (min-width: 769px) and (max-width: 1024px) {
-  :root { --grid-cols: 3; }
   .grid {
-    -webkit-column-gap: 52px;
-    column-gap: 52px;
+    -webkit-column-gap: 2.5rem;
+    column-gap: 2.5rem;
+  }
+  .grid .card { margin-bottom: 5rem; }
+}
+@media (max-width: 1024px) {
+  .grid {
+    -webkit-column-gap: 1.5rem;
+    column-gap: 1.5rem;
     padding: 60px var(--page-gutter) calc(80px + env(safe-area-inset-bottom));
   }
-  .grid:not(.grid-css) .card { margin-bottom: 52px; }
-  .grid.grid-css { gap: 52px; }
+  .grid .card { margin-bottom: 3rem; }
 }
 
 /* ── Card ── */
