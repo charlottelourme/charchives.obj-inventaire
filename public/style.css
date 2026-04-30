@@ -9945,6 +9945,9 @@ body.dark-mode .mfn-row-tools { border-top-color: var(--border, #27272A); }
 .derive-header::-webkit-scrollbar,
 .trios-tabs-nav::-webkit-scrollbar { display: none; }
 
+/* Triptyque : 4 onglets centrés (override du flex-start hérité) */
+.trios-tabs-nav { justify-content: center; }
+
 body.dark-mode .toolbar-strate,
 body.dark-mode .derive-header,
 body.dark-mode .trios-tabs-nav { border-bottom-color: var(--border); }
