@@ -10938,3 +10938,24 @@ body.dark-mode .inv-dd-panel {
   #gridView .grid,
   .grid { -webkit-column-count: 1 !important; column-count: 1 !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MODAL OUVERTE : neutralise l'inventaire derrière
+   ══════════════════════════════════════════════════════════════════════════
+   Quand body.modal-open est posée par _setupModalOpenObserver(), on tue les
+   effets de hover des cartes inventaire :
+   - le calque poème (z:1000) qui transparaît sinon à travers le backdrop-filter
+     blur du modal et donne l'illusion que la fenêtre image passe derrière la fiche ;
+   - le scale(1.02) du hover qui peut bouger une carte sous le modal ;
+   - le z-index lift du hover (z:100) inutile sous une fenêtre fixée. */
+body.modal-open .card-poem-overlay {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+body.modal-open .card,
+body.modal-open .card:hover {
+  transform: none !important;
+  z-index: 0 !important;
+}
