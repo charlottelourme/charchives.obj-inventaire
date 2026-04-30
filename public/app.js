@@ -1681,15 +1681,30 @@ function _applyGridCols() {
     g.style.gridTemplateColumns = '';
     g.style.columnCount         = '';
     g.style.webkitColumnCount   = '';
-    // Cap local : si la grille contient moins d'items que de colonnes, on
-    // limite cols au nb d'items. Sinon, column-fill: balance (défaut) tenterait
-    // de répartir 2 cartes dans 4 colonnes en les empilant dans la 1re
-    // (résultat : 1 colonne de 2 items au lieu de 2 colonnes de 1 item).
-    // Override local sur --grid-cols → la CSS prend automatiquement cette
-    // valeur via `var(--grid-cols, 4)`.
-    const itemCount = g.querySelectorAll(':scope > .card').length;
+    const items = [...g.querySelectorAll(':scope > .card')];
+    const itemCount = items.length;
+    // Cap local : si la grille a moins d'items que de colonnes, on réduit
+    // cols pour ne pas laisser de colonnes vides. Override local sur
+    // --grid-cols → la CSS prend automatiquement cette valeur.
     const effective = Math.max(1, Math.min(cols, itemCount || cols));
     g.style.setProperty('--grid-cols', String(effective));
+    // ── FORCE LA RÉPARTITION ÉQUILIBRÉE ────────────────────────────────────
+    // column-fill: balance par défaut a un bug bien connu : avec peu d'items
+    // tall + break-inside:avoid, le navigateur empile parfois plusieurs cartes
+    // dans la 1re colonne au lieu de répartir 1 par colonne. On force ici la
+    // distribution en insérant `break-before: column` toutes les ⌈N/cols⌉
+    // cartes — le moteur de layout ne peut alors PAS rassembler 2 items dans
+    // la même colonne quand il devrait en avoir un par colonne.
+    const perCol = Math.max(1, Math.ceil(itemCount / effective));
+    items.forEach((card, i) => {
+      if (i > 0 && i % perCol === 0) {
+        card.style.breakBefore           = 'column';
+        card.style.webkitColumnBreakBefore = 'always';
+      } else {
+        card.style.breakBefore           = '';
+        card.style.webkitColumnBreakBefore = '';
+      }
+    });
   });
 }
 
