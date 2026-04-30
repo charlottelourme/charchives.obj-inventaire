@@ -9523,7 +9523,7 @@ input, select, textarea {
 
 /* Navigation onglets (Inventaire, Dérive, etc.) — XXL Bodoni Moda italic */
 @media (max-width: 520px) {
-  .view-tab { font-size: 14px; padding: 0 10px; font-weight: 700; }
+  .view-tab { font-size: 24px; padding: 0 10px; font-weight: 300; font-style: italic; }
 }
 
 /* Labels filtres attributs */
