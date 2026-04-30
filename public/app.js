@@ -8871,6 +8871,23 @@ function bindEvents() {
   fsClose?.addEventListener('click', closeFiltersSheet);
   fsOverlay?.addEventListener('click', closeFiltersSheet);
 
+  // ── Mobile Action Bar : toggle 1 / 2 colonnes ──────────────────────────
+  const mabColsToggle = document.getElementById('mabColsToggle');
+  if (mabColsToggle) {
+    // Persistance : restaure le choix utilisateur
+    if (localStorage.getItem('charchives_mobile2cols') === '1') {
+      document.querySelectorAll('#gridView .grid').forEach(g => g.classList.add('mobile-2-cols'));
+      mabColsToggle.classList.add('on');
+    }
+    mabColsToggle.addEventListener('click', () => {
+      const grids = document.querySelectorAll('#gridView .grid');
+      let isOn = false;
+      grids.forEach(g => { g.classList.toggle('mobile-2-cols'); isOn = g.classList.contains('mobile-2-cols'); });
+      mabColsToggle.classList.toggle('on', isOn);
+      try { localStorage.setItem('charchives_mobile2cols', isOn ? '1' : '0'); } catch(e) {}
+    });
+  }
+
   // ── Hamburger Drawer (mobile) ──────────────────────────────────────────
   const drawer = document.getElementById('hamburgerDrawer');
   const openDrawer = () => { if (drawer) drawer.hidden = false; };
