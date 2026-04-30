@@ -2942,7 +2942,8 @@ function renderJournal(filtered) {
     grid.appendChild(item);
   });
 
-  // Bind clic : ouvre la note (édition) ou la fiche objet — désactivé pendant un drag
+  // Bind clic : ouvre la note (édition) ou la modale d'agrandissement photo
+  // — désactivé pendant un drag
   grid.querySelectorAll('.journal-item').forEach(el => {
     el.addEventListener('click', (e) => {
       if (_journalDragJustEnded) return;                    // un drag vient de se terminer → ignore le clic
@@ -2951,8 +2952,7 @@ function renderJournal(filtered) {
       const obj = state.collections.find(c => c.id === id);
       if (!obj) return;
       if (obj.type === 'note') openNoteModal(id);
-      else if (obj.type === 'journal-photo') return;        // photo de contexte : pas de fiche
-      else if (typeof openDetail === 'function') openDetail(id);
+      else openJournalPhotoModal(id);                       // photos (contexte + objet) → agrandissement
     });
   });
 
