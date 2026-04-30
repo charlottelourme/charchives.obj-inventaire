@@ -3637,7 +3637,14 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #080809; }
   min-height: calc(100dvh - var(--header-h) - 68px);
   position: static !important;
 }
-/* Grille Journal : PROPORTIONNELLE à la grille Inventaire (.grid).
+/* ── Spatial Canvas Journal ────────────────────────────────────────────────
+   #galleryGrid.journal-canvas est une zone de positionnement absolu où chaque
+   item est déposé librement sur une grille magnétique invisible (40px).
+   Le grid-step est exposé en variable CSS pour cohérence avec le snap JS. */
+:root { --grid-step: 40px; }
+/* (commentaire historique préservé ci-dessous — règles désactivées et
+   remplacées par les règles canvas plus bas)
+   Grille Journal PROPORTIONNELLE à la grille Inventaire (.grid).
    - column-count : calc(--grid-cols + 2) → items plus petits, plus d'air,
      mais variation pilotée par le slider Inventaire (cohérence proportions).
    - column-gap : identique à Inventaire (2 / 2.5 / 1.5 rem)
