@@ -3088,7 +3088,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 #calendarView {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 52px);
+  height: calc(100dvh - var(--header-h));
   position: relative;
   overflow: hidden;
 }
