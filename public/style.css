@@ -9784,8 +9784,7 @@ body.dark-mode .mobile-footer-nav {
    ══════════════════════════════════════════════════════════════════════════ */
 .toolbar-strate,
 .derive-header,
-.trios-tabs-nav,
-.diorama-decor-bar {
+.trios-tabs-nav {
   width: 100%;
   height: 52px;                       /* hauteur fixe stricte */
   min-height: 52px;
@@ -9804,13 +9803,15 @@ body.dark-mode .mobile-footer-nav {
 }
 .toolbar-strate::-webkit-scrollbar,
 .derive-header::-webkit-scrollbar,
-.trios-tabs-nav::-webkit-scrollbar,
-.diorama-decor-bar::-webkit-scrollbar { display: none; }
+.trios-tabs-nav::-webkit-scrollbar { display: none; }
 
 body.dark-mode .toolbar-strate,
 body.dark-mode .derive-header,
-body.dark-mode .trios-tabs-nav,
-body.dark-mode .diorama-decor-bar { border-bottom-color: var(--border); }
+body.dark-mode .trios-tabs-nav { border-bottom-color: var(--border); }
+/* NOTE : .diorama-decor-bar est volontairement EXCLU du groupe ci-dessus.
+   La barre décor est une grille de slots 88×64 + bouton import — elle a sa
+   propre hauteur naturelle (~88px) définie plus bas. La forcer à 52px
+   rognait verticalement les vignettes des fonds. */
 
 /* ── Onglets des bandeaux secondaires : Nuée/Constellation, Collisions/Affinités/Assemblage
       Typographie : Cormorant Garamond italique (sérif éditoriale)
