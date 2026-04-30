@@ -144,9 +144,10 @@ body.dark-mode #bgLayers .bg-base { background: #080809; }
 /* Dark mode : vignette CLAIRE aussi — halo gris-clair plus marqué aux extrémités sur fond très sombre */
 body.dark-mode #bgLayers .bg-vignette {
   background: radial-gradient(ellipse at center,
-    transparent 18%,
-    rgba(255, 255, 255, 0.10) 65%,
-    rgba(255, 255, 255, 0.24) 100%);
+    transparent 10%,
+    rgba(255, 255, 255, 0.14) 50%,
+    rgba(255, 255, 255, 0.30) 80%,
+    rgba(255, 255, 255, 0.45) 100%);
 }
 
 /* Calque 3 : dégradé latéral — pilotée par style inline depuis JS
