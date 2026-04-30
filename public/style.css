@@ -3669,20 +3669,19 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #080809; }
   column-gap: 0;
 }
 
-/* Mode canvas (desktop) : grille magnétique en fond + items en absolu */
+/* Mode canvas (desktop) : grille magnétique invisible — items en absolu.
+   Plus de lignes : juste de petits points gris aux intersections, espacés
+   d'un multiple du grid-step (80px = 2 × 40px) → dots clairsemés, suggestion
+   discrète de la trame, le snap reste à 40px côté JS. */
 #deriveView #galleryGrid.journal-canvas {
   position: relative;
   min-height: 200vh;
-  background-size: var(--grid-step) var(--grid-step);
-  background-image:
-    linear-gradient(to right, var(--border-light) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border-light) 1px, transparent 1px);
-  background-position: var(--page-gutter) 80px;     /* aligne le quadrillage avec le padding */
+  background-image: radial-gradient(circle, rgba(0,0,0,0.22) 1px, transparent 1.5px);
+  background-size: calc(var(--grid-step) * 2) calc(var(--grid-step) * 2);
+  background-position: var(--page-gutter) 80px;
 }
 body.dark-mode #deriveView #galleryGrid.journal-canvas {
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1.5px);
 }
 
 /* Items Journal — par défaut (desktop canvas) : position absolue */
@@ -11290,4 +11289,149 @@ body.dark-mode #gridView .grid .card-thumb-area .img-standard { display: none !i
 body.dark-mode #gridView .grid .card-thumb-area .img-cutout   { display: block !important; }
 body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-standard {
   display: block !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE — Toggle 1 / 2 colonnes (bouton mab-cols-toggle)
+   ══════════════════════════════════════════════════════════════════════════
+   Default mobile (<768px) : 1 colonne. Si .mobile-2-cols est posée par le JS
+   sur la grille → bascule à 2 colonnes. Persistant via localStorage. */
+@media (max-width: 767px) {
+  /* Override : 1 colonne par défaut sur tout < 768px (était 2 entre 521-768) */
+  #gridView .grid:not(.mobile-2-cols),
+  .grid:not(.mobile-2-cols) {
+    grid-template-columns: 1fr !important;
+  }
+  #gridView .grid.mobile-2-cols,
+  .grid.mobile-2-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1.5rem 1rem !important;
+  }
+}
+
+/* Toggle button dans la mobile-action-bar — discret, à gauche du bouton Filtres. */
+.mab-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.mab-cols-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border-light, #E8E4DE);
+  cursor: pointer;
+  padding: 4px 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  transition: color .15s, border-color .15s;
+  min-height: 28px;
+}
+.mab-cols-toggle:hover { color: var(--text); }
+.mab-cols-toggle.on { color: var(--text); border-color: var(--text); }
+.mab-cols-label { white-space: nowrap; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CARTE — Swipe carousel mobile (image + poème + autres photos)
+   ══════════════════════════════════════════════════════════════════════════
+   Desktop (≥768px) : conteneur en block, seul le 1er slide visible. Le
+   carrousel ‹/› existant continue à swap img-standard.src.
+   Mobile (<768px)  : scroll-snap horizontal natif, l'utilisateur swipe entre
+   image principale, poème, et autres photos. */
+
+.card-swipe-container {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.swipe-slide {
+  position: relative;
+  width: 100%;
+}
+
+/* Desktop : on n'affiche que le 1er slide (cohérent avec la carrousel ‹/›
+   et l'overlay poème au survol — pas de duplication visuelle). */
+@media (min-width: 768px) {
+  .card-swipe-container > .swipe-slide:not(:first-child) { display: none !important; }
+}
+
+/* Mobile : scroll-snap horizontal natif + cache la scrollbar. */
+@media (max-width: 767px) {
+  .card-swipe-container {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;        /* Firefox */
+  }
+  .card-swipe-container::-webkit-scrollbar { display: none; }
+  .swipe-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .swipe-slide-extra img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  /* En mobile, on cache la nav ‹/› (le swipe natif suffit) */
+  .card-nav { display: none !important; }
+}
+
+/* ── Slide poème (mobile) — fond verbe-accent + grain + Inter italic ────── */
+.poem-slide {
+  display: none;                  /* caché desktop, géré par règle générale ci-dessus */
+}
+@media (max-width: 767px) {
+  .poem-slide {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 3/4;            /* même volume que la photo portrait */
+    padding: 1.5rem 1.25rem;
+    background: color-mix(in srgb, var(--verbe-accent, #6F6962) 88%, transparent);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Grain papier discret, mêmes paramètres que .card-grain */
+  .poem-slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.10;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ps'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ps)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  body.dark-mode .poem-slide::before { mix-blend-mode: overlay; opacity: 0.18; }
+
+  .swipe-poem-text {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    text-align: center;
+    color: var(--verbe-text, #FAF9F5);
+    white-space: pre-wrap;
+    max-height: 100%;
+    overflow: hidden;
+  }
+
+  /* Indicateur de slide (petits points en bas du conteneur) */
+  .card-swipe-container {
+    scroll-snap-stop: always;
+  }
 }
