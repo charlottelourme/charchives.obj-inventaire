@@ -8160,7 +8160,8 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   .trios-link-bar { margin-bottom: 16px; font-size: 15px; }
   /* Tabs compacts */
   .trios-tabs-nav { gap: 0; }
-  .trios-tab-btn { padding: 8px 10px; font-size: 9px; }
+  /* Mobile : onglets Triptyque plus gros que le header mobile (16px) */
+  .trios-tab-btn { padding: 8px 10px; font-size: 18px !important; }
   .trios-hasard-controls { flex-wrap: wrap; gap: 6px; }
   .trios-filter-sel { flex: 1 1 calc(50% - 6px); font-size: 12px; min-height: 36px; }
   .trios-compose-btn { width: 100%; min-height: 44px; }
