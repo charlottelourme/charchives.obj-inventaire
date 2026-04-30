@@ -6815,103 +6815,10 @@ function renderPhotos() {
     });
   });
 
-  // ── Stylize (ambiance) buttons ──────────────────────────────────────────────
-  el.querySelectorAll('.photo-stylize').forEach(btn => {
-    btn.addEventListener('click', async e => {
-      e.stopPropagation();
-
-      // Couleur du verbe sélectionné, ou neutre chaud par défaut
-      const hexColor = _getSelectedVerbeTextColor() || '#8B7355';
-
-      const i = parseInt(btn.dataset.i);
-      const filename = state.editPhotos[i];
-      const wrap = btn.closest('.photo-card');
-
-      // ── Skeleton loading ──
-      const skeleton = document.createElement('div');
-      skeleton.className = 'photo-skeleton';
-      skeleton.innerHTML = `<div class="photo-skeleton-spinner"></div><div class="photo-skeleton-label">Ambiance AI<br>en cours…</div>`;
-      wrap.querySelector(".photo-thumb-wrap").appendChild(skeleton);
-      btn.disabled = true;
-      // also disable enhance on same thumb
-      /* détourage désactivé pendant ambiance */
-
-      try {
-        // Phase 1 — Cloudinary : couleur + contraste + teinte
-        const result = await api.post('/api/stylize-photo', { filename, hexColor });
-        if (result.error) {
-          skeleton.remove();
-          btn.disabled = false;
-          _showPhotoToast(`Erreur ambiance : ${result.error}`);
-          return;
-        }
-
-        // Phase 2 — Canvas : grain film + vignette blanche
-        const skLabel = skeleton.querySelector('.photo-skeleton-label');
-        if (skLabel) skLabel.innerHTML = 'Grain &amp; vignette…';
-        let finalFilename = result.stylizedFilename;
-        try {
-          const canvasFilename = await _applyAmbianceCanvas(result.stylizedFilename);
-          // Supprimer l'intermédiaire Cloudinary
-          api.post('/api/remove-photo', { ref: result.stylizedFilename }).catch(() => {});
-          finalFilename = canvasFilename;
-        } catch (canvasErr) {
-          console.warn('Canvas ambiance fallback:', canvasErr.message);
-          // Garde la version Cloudinary sans grain/vignette
-        }
-
-        skeleton.remove();
-
-        // Build before/after compare block
-        const compareEl = document.createElement('div');
-        compareEl.className = 'photo-compare-wrap';
-        compareEl.innerHTML = `
-          <div class="photo-compare-images">
-            <div class="photo-compare-side">
-              <img src="${photoUrl(filename)}" alt="Avant">
-              <div class="photo-compare-label">Original</div>
-            </div>
-            <div class="photo-compare-sep"></div>
-            <div class="photo-compare-side">
-              <img src="${photoUrl(finalFilename)}" alt="Après">
-              <div class="photo-compare-label">Ambiance AI</div>
-            </div>
-          </div>
-          <div class="photo-compare-actions">
-            <button class="photo-compare-cancel">Annuler</button>
-            <button class="photo-compare-apply">Appliquer l'ambiance</button>
-          </div>`;
-
-        if (wrap.nextSibling) {
-          el.insertBefore(compareEl, wrap.nextSibling);
-        } else {
-          el.appendChild(compareEl);
-        }
-
-        wrap.style.opacity = '.35';
-        wrap.style.pointerEvents = 'none';
-
-        compareEl.querySelector('.photo-compare-apply').addEventListener('click', () => {
-          state.editPhotos.push(finalFilename);
-          compareEl.remove();
-          renderPhotos();
-        });
-
-        compareEl.querySelector('.photo-compare-cancel').addEventListener('click', () => {
-          api.post('/api/remove-photo', { ref: finalFilename }).catch(() => {});
-          compareEl.remove();
-          wrap.style.opacity = '';
-          wrap.style.pointerEvents = '';
-          btn.disabled = false;
-        });
-
-      } catch (err) {
-        skeleton.remove();
-        btn.disabled = false;
-        _showPhotoToast(`Erreur ambiance : ${err.message}`);
-      }
-    });
-  });
+  // ── Mode « Ambiance » retiré : plus de bouton .photo-stylize. La fonction
+  // _applyAmbianceCanvas et la route /api/stylize-photo restent dans le code
+  // pour rétrocompat (si on souhaite la réactiver plus tard) mais ne sont
+  // plus appelées depuis l'UI.
 
   // Bouton "Re-analyser" sur la première photo
   // ── Recadrer : ouvre le cropper canvas sur la photo existante ──
