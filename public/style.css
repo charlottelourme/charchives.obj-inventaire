@@ -6282,11 +6282,11 @@ body { padding-bottom: 64px; }
     flex-wrap: wrap !important;          /* logo + actions ligne 1, nav + search lignes suivantes */
     align-items: center;
     gap: 0 !important;
-    background: #F8F8F8 !important;
+    background: transparent !important;  /* canevas continu — laisse passer body + #bgLayers */
     backdrop-filter: none !important;
     z-index: 1000 !important;
   }
-  body.dark-mode header { background: #080809 !important; }
+  body.dark-mode header { background: transparent !important; }
   /* Ligne 1 mobile : Logo (gauche) + Loupe + Hamburger (droite uniquement) */
   .header-row-1 {
     padding: 0 14px !important;
