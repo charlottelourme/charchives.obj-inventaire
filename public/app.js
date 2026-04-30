@@ -1947,12 +1947,13 @@ function cardHTML(c) {
   const verbeHasColor = c.category && getVerbes().some(v => v.name === c.category && (v.bgColor || v.color));
   const haloAccent = verbeHasColor ? bgColor : 'rgba(198,188,175,0.8)';
   const haloColor = verbeHasColor ? bgColor + '55' : 'rgba(45,45,45,0.08)';
-  // La "couleur duotone foncée" = la moins lumineuse entre bgColor et textColor.
-  // Robuste quelle que soit la palette utilisateur (light-on-dark ou dark-on-light).
-  const verbeDark = (bgColor && textColor && _luminance(bgColor) < _luminance(textColor))
-    ? bgColor
-    : (textColor || bgColor || '#2A2A2E');
-  const accentStyle = ` style="--verbe-accent:${haloAccent};--card-halo:${haloColor};--verbe-text:${textColor};--verbe-dark:${verbeDark}"`;
+  // Duotone normalisé : --verbe-dark = la moins lumineuse, --verbe-light = la plus
+  // lumineuse. Robuste quelle que soit la palette (light-on-dark ou dark-on-light).
+  const _bgL = bgColor ? _luminance(bgColor) : 0;
+  const _txL = textColor ? _luminance(textColor) : 1;
+  const verbeDark  = _bgL < _txL ? (bgColor   || textColor || '#2A2A2E') : (textColor || bgColor || '#2A2A2E');
+  const verbeLight = _bgL < _txL ? (textColor || bgColor   || '#FAFAF8') : (bgColor   || textColor || '#FAFAF8');
+  const accentStyle = ` style="--verbe-accent:${haloAccent};--card-halo:${haloColor};--verbe-text:${textColor};--verbe-dark:${verbeDark};--verbe-light:${verbeLight}"`;
 
   // ── imageMode : portrait (3:4) | landscape (4:3) | cutout (explicite uniquement) ──
   // Pas d'auto-détection cutout sur .png — la plupart des PNG du projet ont un fond
