@@ -524,10 +524,10 @@ html::before {
 html:has(body.dark-mode)::before { background: #080809; }
 body.dark-mode header { background: var(--bg); }
 header h1 {
-  font-family: 'Inter', sans-serif;     /* labeur clinique pour le wordmark */
-  font-size: 14px;
+  font-family: 'Inter', sans-serif;     /* labeur clinique pour le wordmark — document d'archive */
+  font-size: 16px;                       /* 1rem — modeste, ferme, lisible */
   font-weight: 500;
-  letter-spacing: .18em;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: #2A2A2E !important;      /* visibilité forcée — jamais de blanc sur blanc */
   flex-shrink: 0;
