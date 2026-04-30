@@ -530,7 +530,7 @@ header {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: transparent;         /* laisse passer bg-base + grain global → continuité totale */
+  background-color: var(--bg);     /* OPAQUE — masque le contenu qui scrolle dessous */
   border-bottom: none;
   width: 100vw;
   max-width: 100vw;
