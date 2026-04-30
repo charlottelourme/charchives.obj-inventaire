@@ -8752,6 +8752,8 @@ function bindEvents() {
 
   // ── Bandeau Inventaire : 2 piliers Feroniapi (Intention / Objet) ─────────
   _setupInvPillars();
+  // ── Observer modales : toggle body.modal-open ─────────────────────────────
+  _setupModalOpenObserver();
 
   // ── Mobile Footer : bouton Retour ──────────────────────────────────────
   // Priorité d'action :
