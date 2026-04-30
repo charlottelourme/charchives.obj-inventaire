@@ -84,28 +84,29 @@
       </div>
     </div>
 
-    <!-- Dropdown Objets — Index typologies (search + groupes) déplacé depuis l'overlay -->
+    <!-- Dropdown Objets — Trier par : Identité / Matière / Couleur / Ambiance / Usages
+         (en haut), puis Index typologies (groupes A→V) en dessous. -->
     <div class="inv-dropdown" id="invDropdownObjet" hidden>
       <div class="inv-dd-panel inv-dd-panel-objet">
-        <div class="inv-dd-objet-top">
-          <span class="inv-dd-objet-title">Typologies</span>
-          <div class="idx-inline-wrap inv-dd-objet-search">
-            <input type="text" class="idx-inline-input" id="idxSearchInput" placeholder="Rechercher" autocomplete="off" spellcheck="false">
-          </div>
+        <!-- Trier par : remonté tout en haut du déroulé -->
+        <div class="attr-filter-bar inv-dd-attrs" id="attrFilterBar">
+          <div class="mf-wrap" id="filterStylesWrap"></div>     <!-- Identité -->
+          <div class="mf-wrap" id="filterMatieresWrap"></div>    <!-- Matière -->
+          <div class="mf-wrap" id="filterCouleursWrap"></div>    <!-- Couleur -->
+          <div class="mf-wrap" id="filterUniversWrap"></div>     <!-- Ambiance (univers) -->
+          <div class="mf-wrap" id="filterUsagesWrap"></div>      <!-- Usages (usage) -->
+          <button class="clear-attr-btn" id="clearAttrFilters">Effacer</button>
         </div>
+        <!-- Index typologies (groupes A→V) — l'input recherche reste rendu (caché)
+             pour que _buildIndexGroups() fonctionne sans modif. -->
+        <input type="text" id="idxSearchInput" placeholder="Rechercher" autocomplete="off" spellcheck="false" hidden style="display:none">
         <div class="idx-groups" id="idxGroups"></div>
-        <!-- Sous-filtres Identité / Matière / Couleur — gardés en bas -->
+        <!-- Anciens conteneurs gardés masqués (rétrocompat des build*) -->
         <div class="status-filter-bar" id="subcategoryFilterBar" style="display:none" hidden>
           <span class="sfb-label">Sous-cat.</span>
         </div>
         <div class="typo-filter-bar" id="typologyFilterBar" style="display:none" hidden>
           <button class="tfb-all active" data-typo="">Tout</button>
-        </div>
-        <div class="attr-filter-bar inv-dd-attrs" id="attrFilterBar">
-          <div class="mf-wrap" id="filterStylesWrap"></div>   <!-- Identité -->
-          <div class="mf-wrap" id="filterMatieresWrap"></div>  <!-- Matière -->
-          <div class="mf-wrap" id="filterCouleursWrap"></div>  <!-- Couleur -->
-          <button class="clear-attr-btn" id="clearAttrFilters">Effacer</button>
         </div>
       </div>
     </div>
