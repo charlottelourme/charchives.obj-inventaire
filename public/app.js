@@ -2049,7 +2049,33 @@ function bindCardEvents(el) {
       state.cardPhotoIdx.set(btn.dataset.id,next); updateCardThumb(el,btn.dataset.id,c.photos,next);
     });
   });
+  // Positionne le calque poème (à droite par défaut, à gauche pour les cartes
+  // proches du bord droit du viewport pour éviter le débord).
+  _positionPoemOverlays(el);
 }
+
+// Détecte les cartes dont le calque poème (340 px à partir de 78 % de la carte)
+// dépasserait la fenêtre, et leur ajoute la classe `card-poem-flip-left` qui
+// bascule la fenêtre à gauche. Recalculé au render et au resize.
+const _POEM_PANEL_W = 340;            // doit matcher la width CSS de .card-poem-overlay
+const _POEM_VIEWPORT_MARGIN = 24;     // marge de sécurité depuis le bord du viewport
+function _positionPoemOverlays(scope) {
+  const root = scope || document;
+  root.querySelectorAll('.card[data-id]').forEach(card => {
+    if (!card.querySelector('.card-poem-overlay')) return;
+    const r = card.getBoundingClientRect();
+    if (r.width === 0) return; // carte non visible
+    const panelEndIfRight = r.left + r.width * 0.78 + _POEM_PANEL_W;
+    const overflowsRight  = panelEndIfRight > window.innerWidth - _POEM_VIEWPORT_MARGIN;
+    card.classList.toggle('card-poem-flip-left', overflowsRight);
+  });
+}
+// Recalcule au resize (debounced).
+let _poemResizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_poemResizeTimer);
+  _poemResizeTimer = setTimeout(() => _positionPoemOverlays(), 120);
+});
 
 // ══════════════════════════════════════════════════════════════
 // NOTES INTERCALAIRES — Blocs de texte narratifs
