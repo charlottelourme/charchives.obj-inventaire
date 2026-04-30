@@ -4440,7 +4440,8 @@ body.dark-mode .gallery-scroll { background: #F8F8F8; }
 #gravityPane {
   display: none;
   width: 100%;
-  height: calc(100vh - 200px);
+  /* dvh pour iOS — variable header + 52px de toolbar */
+  height: calc(100dvh - var(--header-h) - 52px);
   min-height: 540px;
   position: relative;
 }
