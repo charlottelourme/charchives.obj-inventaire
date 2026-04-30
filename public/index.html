@@ -63,54 +63,48 @@
       <span class="mab-count" id="mabCount">0 objets</span>
       <button class="mab-filter-btn" id="mabFilterBtn">+ Filtres</button>
     </div>
-    <!-- STRATE 3 : ToolBar universelle (compteur + tri + slider + view toggle) -->
-    <div class="toolbar toolbar-strate">
-      <span class="count-label" id="countLabel"></span>
-      <!-- Toggle Vue : Grille | Constellation -->
-      <div class="inventory-view-toggle" id="inventoryViewToggle" role="tablist">
-        <button class="ivt-btn active" data-mode="grid" title="Vue Grille" aria-label="Grille">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        </button>
-        <button class="ivt-btn" data-mode="constellation" title="Vue Constellation" aria-label="Constellation">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="6" cy="7" r="1.6"/><circle cx="13" cy="5" r="1.2"/><circle cx="18" cy="9" r="1.4"/><circle cx="9" cy="13" r="1.4"/><circle cx="16" cy="15" r="1.6"/><circle cx="6" cy="18" r="1.2"/><circle cx="14" cy="20" r="1.2"/><line x1="6" y1="7" x2="13" y2="5"/><line x1="13" y1="5" x2="18" y2="9"/><line x1="18" y1="9" x2="16" y2="15"/><line x1="9" y1="13" x2="16" y2="15"/><line x1="6" y1="18" x2="14" y2="20"/></svg>
-        </button>
-      </div>
-      <select class="status-filter" id="sortSelect">
-        <option value="chrono-desc">Plus récent</option>
-        <option value="chrono">Plus ancien</option>
-        <option value="alpha">Alphabétique</option>
-        <option value="category">Par intention</option>
-        <option value="price-asc">Prix croissant</option>
-        <option value="price-desc">Prix décroissant</option>
-      </select>
-      <!-- Dropdown Statut : remplace la barre de pills sur mobile & desktop -->
-      <select class="status-filter" id="statusSelect">
-        <option value="">Tous les objets</option>
-        <option value="Disponible">Disponible</option>
-        <option value="Vendu">Vendu</option>
-        <option value="Pas à vendre">Pas à vendre</option>
-        <option value="Brouillon">Brouillon</option>
-        <option value="__selection__">Sélection</option>
-      </select>
-      <div class="toolbar-gap" style="flex:1"></div>
-      <div class="toolbar-right">
-        <input type="range" id="cardSizeSlider" class="card-size-slider" min="140" max="480" value="310" step="10">
+    <!-- ══ NOUVEAU BANDEAU : 2 piliers Feroniapi centraux ══ -->
+    <div class="inv-pillars" id="invPillars">
+      <button class="inv-pillar" id="invPillarIntention" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="inv-pillar-text">Intention</span>
+        <span class="inv-pillar-caret">▾</span>
+      </button>
+      <button class="inv-pillar" id="invPillarObjet" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="inv-pillar-text">Objet</span>
+        <span class="inv-pillar-caret">▾</span>
+      </button>
+    </div>
+
+    <!-- Dropdown Intention — liste des verbes -->
+    <div class="inv-dropdown" id="invDropdownIntention" hidden>
+      <div class="inv-dd-panel">
+        <div class="status-filter-bar inv-dd-list" id="categoryFilterBar">
+          <button class="sfb-pill active" data-cat="">Toutes</button>
+        </div>
       </div>
     </div>
-    <!-- ── Intentions (Verbes) — filtre principal, toujours visible ── -->
-    <div class="status-filter-bar" id="categoryFilterBar">
-      <span class="sfb-label">Intention</span>
-      <button class="sfb-pill active" data-cat="">Toutes</button>
+
+    <!-- Dropdown Objet — recherche + typologies + attributs -->
+    <div class="inv-dropdown" id="invDropdownObjet" hidden>
+      <div class="inv-dd-panel inv-dd-panel-objet">
+        <input type="text" class="inv-dd-search" id="invObjetSearch" placeholder="Rechercher un objet…" autocomplete="off" spellcheck="false">
+        <div class="status-filter-bar" id="subcategoryFilterBar" style="display:none">
+          <span class="sfb-label">Sous-cat.</span>
+        </div>
+        <div class="typo-filter-bar" id="typologyFilterBar">
+          <button class="tfb-all active" data-typo="">Tout</button>
+        </div>
+        <div class="attr-filter-bar inv-dd-attrs" id="attrFilterBar">
+          <div class="mf-wrap" id="filterStylesWrap"></div>   <!-- Identité -->
+          <div class="mf-wrap" id="filterMatieresWrap"></div>  <!-- Matière -->
+          <div class="mf-wrap" id="filterCouleursWrap"></div>  <!-- Couleur -->
+          <button class="clear-attr-btn" id="clearAttrFilters">Effacer</button>
+        </div>
+      </div>
     </div>
-    <!-- ── Objets / Typologies — trigger + recherche inline ── -->
-    <div class="status-filter-bar" id="subcategoryFilterBar" style="display:none">
-      <span class="sfb-label">Sous-cat.</span>
-    </div>
-    <!-- ── Barre Typologies — masquée par défaut, remplie via overlay ── -->
-    <div class="typo-filter-bar" id="typologyFilterBar" style="display:none">
-      <button class="tfb-all active" data-typo="">Tout</button>
-    </div>
-    <div class="status-filter-bar status-filter-bar-sm" id="statusFilterBar">
+
+    <!-- Status filter pills — gardé caché (statut désormais dans la toolbar discrète) -->
+    <div class="status-filter-bar status-filter-bar-sm" id="statusFilterBar" style="display:none" hidden>
       <button class="sfb-pill sfb-pill-sm active" data-status="">Tous</button>
       <button class="sfb-pill sfb-pill-sm" data-status="Disponible"><span class="sfb-dot sfb-dot-sm" style="background:#22c55e"></span>Disponible</button>
       <button class="sfb-pill sfb-pill-sm" data-status="Vendu"><span class="sfb-dot sfb-dot-sm" style="background:#9ca3af"></span>Vendu</button>
@@ -118,11 +112,37 @@
       <button class="sfb-pill sfb-pill-sm" data-status="Brouillon"><span class="sfb-dot sfb-dot-sm" style="background:#d1d5db"></span>Brouillon</button>
       <button class="sfb-pill sfb-pill-sm sfb-pill-selection" data-bookmark="1"><span class="sel-ast-wrap"><svg class="ast-icon sel-ast" viewBox="0 0 24 24" width="10" height="10" fill="none" aria-hidden="true"><line class="ast-s" x1="12" y1="4" x2="12" y2="20"/><line class="ast-s" x1="4" y1="12" x2="20" y2="12"/></svg></span>Sélection</button>
     </div>
-    <div class="attr-filter-bar" id="attrFilterBar" style="display:none">
-      <div class="mf-wrap" id="filterStylesWrap"></div>   <!-- Identité -->
-      <div class="mf-wrap" id="filterMatieresWrap"></div>  <!-- Matière -->
-      <div class="mf-wrap" id="filterCouleursWrap"></div>  <!-- Couleur -->
-      <button class="clear-attr-btn" id="clearAttrFilters">Effacer</button>
+
+    <!-- Toolbar discrète juste au-dessus de la grille -->
+    <div class="inv-toolbar" id="invToolbar">
+      <span class="invt-count" id="countLabel"></span>
+      <div class="invt-mid">
+        <div class="inventory-view-toggle" id="inventoryViewToggle" role="tablist">
+          <button class="ivt-btn active" data-mode="grid" title="Vue Grille" aria-label="Grille">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="ivt-btn" data-mode="constellation" title="Vue Constellation" aria-label="Constellation">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="6" cy="7" r="1.6"/><circle cx="13" cy="5" r="1.2"/><circle cx="18" cy="9" r="1.4"/><circle cx="9" cy="13" r="1.4"/><circle cx="16" cy="15" r="1.6"/><circle cx="6" cy="18" r="1.2"/><circle cx="14" cy="20" r="1.2"/><line x1="6" y1="7" x2="13" y2="5"/><line x1="13" y1="5" x2="18" y2="9"/><line x1="18" y1="9" x2="16" y2="15"/><line x1="9" y1="13" x2="16" y2="15"/><line x1="6" y1="18" x2="14" y2="20"/></svg>
+          </button>
+        </div>
+        <select class="invt-select" id="sortSelect">
+          <option value="chrono-desc">Plus récent</option>
+          <option value="chrono">Plus ancien</option>
+          <option value="alpha">Alphabétique</option>
+          <option value="category">Par intention</option>
+          <option value="price-asc">Prix croissant</option>
+          <option value="price-desc">Prix décroissant</option>
+        </select>
+        <select class="invt-select" id="statusSelect">
+          <option value="">Tous</option>
+          <option value="Disponible">Disponible</option>
+          <option value="Vendu">Vendu</option>
+          <option value="Pas à vendre">Pas à vendre</option>
+          <option value="Brouillon">Brouillon</option>
+          <option value="__selection__">Sélection</option>
+        </select>
+      </div>
+      <input type="range" id="cardSizeSlider" class="card-size-slider" min="140" max="480" value="310" step="10">
     </div>
     <div id="gridView"></div>
     <!-- Mode Gravité — canvas D3 force -->
