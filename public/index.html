@@ -812,6 +812,17 @@
 
 <!-- Export footer fusionné dans le bottom-nav -->
 
+<!-- ── Journal — Modale d'agrandissement des photos ── -->
+<div class="modal-overlay" id="journalPhotoModal" style="display:none">
+  <div class="modal modal-lg journal-photo-modal-inner">
+    <button class="modal-close" id="journalPhotoModalClose" aria-label="Fermer"><svg class="ui-icon ui-icon-close" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    <div class="journal-photo-modal-body">
+      <img id="journalPhotoModalImg" src="" alt="">
+      <div class="journal-photo-modal-caption" id="journalPhotoModalCaption"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ── Note Modal — Intercalaires narratifs ── -->
 <div class="modal-overlay" id="noteModal" style="display:none">
   <div class="modal">
