@@ -6011,19 +6011,7 @@ body.dark-mode .gallery-scroll { background: #F8F8F8; }
   isolation: isolate;
 }
 body.dark-mode .bottom-nav { background: transparent; }
-/* Grain papier sur le footer — cohérence avec header + body */
-.bottom-nav::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.32;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='fn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23fn)'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
-}
-body.dark-mode .bottom-nav::before { mix-blend-mode: overlay; opacity: 0.24; }
+/* Pas de grain local sur le footer : le grain global de #bgLayers traverse via fond transparent */
 .bottom-nav > * { position: relative; z-index: 1; }
 
 /* Bloc export — gauche */
