@@ -6022,7 +6022,7 @@ body.dark-mode .gallery-scroll { background: #F8F8F8; }
   height: 44px;
   isolation: isolate;
 }
-body.dark-mode .bottom-nav { background: #101013; }
+body.dark-mode .bottom-nav { background: var(--bg); }
 /* Grain papier sur le footer — cohérence avec header + body */
 .bottom-nav::before {
   content: '';
