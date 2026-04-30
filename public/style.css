@@ -6819,7 +6819,7 @@ body { padding-bottom: 64px; }
   /* Vue tabs : scroll horizontal */
   .view-tabs { overflow-x: auto; scrollbar-width: none; }
   .view-tabs::-webkit-scrollbar { display: none; }
-  .view-tab { font-size: 14px; padding: 3px 10px; white-space: nowrap; flex-shrink: 0; }
+  .view-tab { font-size: 13px; padding: 3px 10px; white-space: nowrap; flex-shrink: 0; font-weight: 700; }
 }
 
 /* Tablette 521–900px : 3 colonnes — géré par la règle column-count ci-dessus */
