@@ -9478,7 +9478,7 @@ header h1 {
   font-weight: 300;
   letter-spacing: 0;
   font-size: 18px;
-  text-transform: lowercase;
+  text-transform: none;
 }
 
 /* ── Desktop (≥ 1024px) : texte plus aéré ── */
