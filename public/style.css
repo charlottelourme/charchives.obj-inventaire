@@ -1174,18 +1174,17 @@ body.dark-mode .card .card-grain {
   transform: translate(0, -50%) scale(1);
   transition: opacity .35s ease-in-out, transform .45s cubic-bezier(.22,.68,0,1.1);
 }
-/* Cartes proches du bord droit de la fenêtre : on bascule la fenêtre poème à
-   GAUCHE pour qu'elle ne sorte pas de l'écran. La grille étant fluide, on cible
-   les cartes en dernière colonne via :nth-of-type / :last-of-type sur les rangs. */
-.grid > .card:nth-child(4n) .card-poem-overlay,
-.grid > .card:last-child .card-poem-overlay {
+/* Cartes proches du bord droit du viewport : la classe .card-poem-flip-left
+   est ajoutée par JS (cf. _positionPoemOverlays dans app.js) quand la fenêtre
+   risque de déborder à droite. On la bascule à gauche, sans toucher aux
+   marges du grid (qui restent symétriques). */
+.card.card-poem-flip-left .card-poem-overlay {
   left: auto;
   right: 78%;
   transform-origin: right center;
   transform: translate(12px, -50%) scale(0.96);
 }
-.grid > .card:nth-child(4n):hover .card-poem-overlay,
-.grid > .card:last-child:hover .card-poem-overlay {
+.card.card-poem-flip-left:hover .card-poem-overlay {
   transform: translate(0, -50%) scale(1);
 }
 /* La carte survolée passe au-dessus de ses voisines pour que la fenêtre XXL
