@@ -10850,3 +10850,91 @@ body.dark-mode .inv-dd-panel {
   .inv-dropdown,
   .inv-toolbar { display: none !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MASONRY — FORÇAGE STRICT (« bulletproof »)
+   ══════════════════════════════════════════════════════════════════════════
+   Bloc de fin de fichier : c'est la dernière voix qui parle, donc celle qui
+   gagne quand la spécificité est égale. On force ici les 3 invariants du
+   masonry CSS-Columns + responsive — quoi qu'il puisse y avoir ailleurs dans
+   le fichier ou injecté inline par le JS. */
+
+/* 1. CONTENEUR : annule tout flex/grid/inline-display, force le mode columns. */
+#gridView .grid,
+.grid {
+  display: block !important;
+  -webkit-column-count: var(--grid-cols, 4) !important;
+          column-count: var(--grid-cols, 4) !important;
+  -webkit-column-gap: 2rem !important;
+          column-gap: 2rem !important;
+  width: 100% !important;
+  /* on neutralise les éventuelles propriétés flex/grid résiduelles */
+  flex: initial !important;
+  grid-template-columns: none !important;
+  grid-auto-flow: initial !important;
+  align-items: initial !important;
+}
+/* L'ancien fallback CSS-Grid reste neutralisé même si le JS tente de l'ajouter */
+#gridView .grid.grid-css,
+.grid.grid-css {
+  display: block !important;
+  -webkit-column-count: var(--grid-cols, 4) !important;
+          column-count: var(--grid-cols, 4) !important;
+  grid-template-columns: none !important;
+  gap: 0 !important;
+}
+
+/* 2. CARTES : inline-block (le seul mode qui se comporte bien en CSS Columns).
+   Anti-casse au passage entre 2 colonnes (break-inside + page-break-inside
+   pour Safari). Marge verticale uniquement. */
+.grid > .card,
+#gridView .grid > .card {
+  display: inline-block !important;
+  width: 100% !important;
+  margin: 0 0 4rem 0 !important;
+  break-inside: avoid !important;
+  -webkit-column-break-inside: avoid !important;
+  page-break-inside: avoid !important;          /* fallback Safari */
+  position: relative !important;
+  vertical-align: top !important;
+  float: none !important;                        /* annule un éventuel float */
+}
+
+/* 3. IMAGES : la hauteur n'est plus contrainte → c'est ce qui fait vivre
+   le masonry. height:auto + max-height:none écrasent tout aspect-ratio ou
+   height fixe défini ailleurs. */
+.grid .card .card-thumb,
+.grid .card img.card-thumb,
+.grid .card-image {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+/* EXCEPTION : image cassée — il faut garder un volume visible pour le
+   placeholder ◻, sinon la zone s'effondre à 0. */
+.card-thumb-area--broken .card-thumb {
+  aspect-ratio: 3/4 !important;
+  height: auto !important;
+}
+
+/* 4. RESPONSIVE — column-count par breakpoint (override inconditionnel
+   indépendant du slider). Mobile-first. */
+@media (max-width: 1024px) {
+  #gridView .grid,
+  .grid { -webkit-column-count: 3 !important; column-count: 3 !important; }
+}
+@media (max-width: 768px) {
+  #gridView .grid,
+  .grid {
+    -webkit-column-count: 2 !important;
+            column-count: 2 !important;
+    -webkit-column-gap: 1rem !important;
+            column-gap: 1rem !important;
+  }
+}
+@media (max-width: 480px) {
+  #gridView .grid,
+  .grid { -webkit-column-count: 1 !important; column-count: 1 !important; }
+}
