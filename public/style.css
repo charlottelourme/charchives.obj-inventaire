@@ -6310,10 +6310,10 @@ body { padding-bottom: 64px; }
   body.dark-mode header,
   body.dark-mode header > *,
   body.dark-mode .search-wrap,
-  body.dark-mode .search-bar { background: #080809 !important; }
+  body.dark-mode .search-bar { background: transparent !important; }
 
-  /* Tous les enfants opaques (aucune transparence dans le header) */
-  header > *, .search-wrap, .search-bar { background: #F8F8F8; }
+  /* Header mobile : tous les enfants transparents — pas de bandeau opaque */
+  header > *, .search-wrap, .search-bar { background: transparent; }
   .header-sep { display: none; }
 
   /* ── LIGNE 1 : Logo (gauche) + Header actions (droite) ─────────────── */
