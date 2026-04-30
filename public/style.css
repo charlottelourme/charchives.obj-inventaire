@@ -3515,7 +3515,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 }
 #gridView.inv-constellation-mode #conCanvas {
   width: 100%;
-  height: calc(100vh - 280px);
+  /* dvh + variable header → reste correct quand l'URL bar iOS apparaît/disparaît */
+  height: calc(100dvh - var(--header-h) - 132px);
   min-height: 480px;
   position: relative;
 }
