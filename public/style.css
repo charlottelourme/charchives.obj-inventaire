@@ -10751,6 +10751,13 @@ body.dark-mode .inv-dd-panel {
   margin-right: 0.5rem;
 }
 
+/* Les anciennes barres « Sous-cat. » + « Typologies pills » deviennent
+   redondantes maintenant que l'Index est dans le déroulé Objets — on les
+   masque définitivement dans ce contexte (le JS leur remet display:'' au
+   build, donc on a besoin de !important pour gagner sur l'inline style). */
+#invDropdownObjet #subcategoryFilterBar,
+#invDropdownObjet #typologyFilterBar { display: none !important; }
+
 /* ── Dropdown Objets : l'Index typologies en place ─────────────────────── */
 .inv-dd-objet-top {
   display: flex;
