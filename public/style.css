@@ -159,7 +159,7 @@ body.verbe-active #bgLayers .bg-radial { opacity: 1 !important; }
 }
 body.dark-mode #bgLayers .bg-grain {
   mix-blend-mode: overlay;
-  opacity: 0.40;
+  opacity: 0.22;                  /* dark mode : opacity réduite pour ne pas éclaircir le fond très sombre */
 }
 
 /* Body : transparent en tout temps (le fond est piloté par #bgLayers) */
