@@ -1300,23 +1300,22 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 .card-thumb-area--cutout:hover .card-thumb {
   transform: none;
 }
+/* L'image dicte sa propre hauteur → le masonry vit. Plus d'aspect-ratio
+   forcé : chaque photo s'affiche à ses proportions naturelles, scaleées à
+   100 % de la largeur de la colonne. C'est ce qui crée l'asymétrie organique
+   du masonry. */
 .card-thumb {
   width: 100%;
-  aspect-ratio: 3/4;          /* Portrait par défaut — ratio éditorial */
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
   display: block;
   background: transparent;
   transition: transform .5s cubic-bezier(.22,.68,0,1.2);
 }
-/* Ratio Paysage 4:3 */
-.card-thumb-area--landscape .card-thumb {
-  aspect-ratio: 4/3;
-}
-/* Détouré : hauteur libre, objet visible en entier */
+/* Les modificateurs --landscape / --cutout ne forcent plus de ratio non plus :
+   la hauteur naturelle de l'image suffit. On garde le padding du cutout pour
+   l'air autour de l'objet détouré. */
 .card-thumb-area--cutout .card-thumb {
-  aspect-ratio: unset;
-  height: auto;
-  object-fit: contain;
   padding: 10%;
 }
 /* Pas de fond propre — on laisse le halo ::before de la carte transparaître,
