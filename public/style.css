@@ -11180,3 +11180,41 @@ body.modal-open .card:hover {
   transform: none !important;
   z-index: 0 !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SWITCH PHOTO STANDARD / PNG DÉTOURÉ AU DARK MODE (Inventaire uniquement)
+   ══════════════════════════════════════════════════════════════════════════
+   Convention projet : un .png dans c.photos[] = version sans fond (la même
+   que celle utilisée par le Diorama). renderCard injecte les deux <img>
+   (img-standard + img-cutout) dans la même thumb-area, et on bascule
+   l'affichage en CSS :
+     - Light mode  → photo originale visible (img-standard)
+     - Dark mode   → PNG détouré visible à la place (img-cutout)
+   Scope strict : seulement dans #gridView .grid (les cartes Inventaire).
+   Le Diorama, le Triptyque, le Journal et les autres vues ne sont PAS
+   impactés — chacun a son propre rendu d'images. */
+
+/* Light mode (défaut) : standard visible, cutout caché. */
+.card-thumb-area .img-standard { display: block; }
+.card-thumb-area .img-cutout   { display: none; }
+
+/* Dark mode + grille Inventaire : on bascule. */
+body.dark-mode #gridView .grid .card-thumb-area .img-standard { display: none !important; }
+body.dark-mode #gridView .grid .card-thumb-area .img-cutout   { display: block !important; }
+
+/* Fallback : si un objet n'a PAS de PNG détouré (img-cutout absente du DOM),
+   on garde la photo standard visible — pas de carte vide en dark. */
+body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-standard {
+  display: block !important;
+}
+
+/* Override de spécificité : la règle masonry bulletproof force
+   `.card-thumb { display: block !important }`. On doit donc passer aussi en
+   !important pour cacher le cutout en light mode. */
+.card-thumb-area .img-cutout { display: none !important; }
+.card-thumb-area .img-standard { display: block !important; }
+body.dark-mode #gridView .grid .card-thumb-area .img-standard { display: none !important; }
+body.dark-mode #gridView .grid .card-thumb-area .img-cutout   { display: block !important; }
+body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-standard {
+  display: block !important;
+}
