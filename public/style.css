@@ -603,17 +603,17 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   height: 100%;
   display: flex;
   align-items: center;
-  /* ── Navigation : Compagnon Bold, taille resserrée pour ne pas écraser ── */
+  /* ── Navigation : Compagnon Light italic, présence éditoriale ── */
   font-family: 'Compagnon', monospace;
-  font-style: normal;
-  font-size: clamp(0.85rem, 1.05vw, 1.05rem);
-  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(1.4rem, 2vw, 2.1rem);
+  font-weight: 300;
   line-height: 1.1;
   cursor: pointer;
   color: var(--text-3);
   transition: color .2s ease, opacity .2s ease;
   white-space: nowrap;
-  letter-spacing: .01em;
+  letter-spacing: 0;
 }
 
 /* ── Halo de Navigation — nuage flouté : survol uniquement ── */
