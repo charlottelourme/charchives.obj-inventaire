@@ -7742,7 +7742,7 @@ function renderSettingsModal() {
   body.innerHTML = `<div class="sm-body">
     <div class="sm-site-title-field">
       <label>Titre du site</label>
-      <input type="text" class="sm-sitetitle-input" value="${esc(draft.siteTitle || '')}" placeholder="ARCHIVE">
+      <input type="text" class="sm-sitetitle-input" value="${esc(draft.siteTitle || '')}" placeholder="Charchives . obj">
     </div>
     ${smAccordion('verbes', smGetCurrentLabel(draft, 'verbes'), smVerbesHTML(draft), true, false)}
     ${smAccordion('matieres', smGetCurrentLabel(draft, 'matieres'), smGroupedListHTML(opts.matieres || MATIERES_GROUPS_DEFAULT, 'matieres'), false, true)}
