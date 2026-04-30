@@ -8350,11 +8350,11 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .trios-tab-btn {
   font-family: 'Compagnon', monospace;
   font-style: italic;
-  font-size: 15px;
+  font-size: 13px;                /* légèrement réduit (était 15px) */
   font-weight: 400;
   letter-spacing: .01em;
   text-transform: none;
-  padding: 12px 22px;
+  padding: 10px 18px;             /* padding rétréci proportionnellement */
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
