@@ -1139,34 +1139,35 @@ body.dark-mode .card .card-grain {
   pointer-events: none;
   overflow: visible;
 }
-/* Le « blob » coloré flou — Soft Block très adouci. Blur 36px sur un débord
-   modéré → les angles disparaissent dans un fondu doux d'aquarelle. Pas un
-   nuage étalé (la fenêtre reste lisible), mais des bords franchement flous. */
+/* Le « blob » coloré flou — pas de forme rectangulaire visible : ::before est
+   une ellipse pure (border-radius 50 %) avec un gros flou (48px), et ::after
+   est lui-même légèrement flouté + masqué très tôt. Aucune ligne droite ne
+   subsiste, l'aspect est un wash aquarellé. */
 .card-poem-overlay::before {
   content: '';
   position: absolute;
-  inset: -16px -20px;
+  inset: -8px -14px;
   background: var(--verbe-accent, rgba(190, 182, 170, 0.92));
-  filter: blur(36px);                    /* gros flou → contours mous */
-  opacity: 0.94;
-  border-radius: 20px;
+  filter: blur(48px);                    /* très gros flou */
+  opacity: 0.96;
+  border-radius: 50%;                    /* forme ellipse pure → plus aucun angle */
   z-index: -2;
   pointer-events: none;
 }
-/* Couche dense centrale — masque radial avec une transition très étalée
-   (18 % → 100 %) pour que la densité disparaisse jusqu'au bord de l'overlay
-   sans dessiner de rebord visible. Couplé au blur du ::before, le résultat
-   est un blob coloré aux contours indistinguables. */
+/* Couche dense centrale — elle-même légèrement floutée + masque radial qui
+   commence à s'éteindre quasiment dès le centre (5 %) jusqu'à 100 %. Aucun
+   contour droit perceptible. */
 .card-poem-overlay::after {
   content: '';
   position: absolute;
-  inset: 6px;
+  inset: 12px;
   background: var(--verbe-accent, rgba(190,182,170,1));
+  filter: blur(6px);                     /* dense layer également flou */
   z-index: -1;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 80% 72% at center, #000 18%, transparent 100%);
-          mask-image: radial-gradient(ellipse 80% 72% at center, #000 18%, transparent 100%);
-  opacity: 0.82;
+  -webkit-mask-image: radial-gradient(ellipse 76% 66% at center, #000 5%, transparent 100%);
+          mask-image: radial-gradient(ellipse 76% 66% at center, #000 5%, transparent 100%);
+  opacity: 0.78;
 }
 .card:hover .card-poem-overlay {
   opacity: 1;
