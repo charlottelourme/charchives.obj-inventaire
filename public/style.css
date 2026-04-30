@@ -7899,7 +7899,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
    VUE TRIOS
 ══════════════════════════════════════════════════════════════ */
 #triosView {
-  height: calc(100vh - 52px);
+  height: calc(100dvh - var(--header-h));
   overflow-y: auto;
 }
 .trios-view {
