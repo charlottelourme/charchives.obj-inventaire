@@ -568,14 +568,13 @@ header h1 {
   font-size: 18px;
   font-weight: 300;                        /* Light */
   letter-spacing: 0;
-  text-transform: lowercase;               /* "ARCHIVE" → "archive" */
+  text-transform: none;                    /* HTML écrit en casse douce : "Charchives . obj" */
   color: #2A2A2E !important;
   flex-shrink: 0;
   display: flex !important;
   align-items: center;
   margin: 0;
 }
-header h1::first-letter { text-transform: uppercase; }   /* "archive" → "Archive" */
 body.dark-mode header h1 { color: #F4F4F5 !important; }
 .header-sep { display: none; /* plus de séparateur expansif — le gap 12px suffit */ }
 
