@@ -6406,9 +6406,10 @@ body { padding-bottom: 64px; }
     flex: 1 1 auto;
     padding: 6px 14px;
     height: 40px;
-    font-size: 13px !important;
-    letter-spacing: .14em !important;
-    text-transform: uppercase;
+    font-size: 15px !important;
+    letter-spacing: 0 !important;
+    text-transform: lowercase;          /* "ARCHIVE" → "archive" + ::first-letter cap */
+    font-weight: 300;                   /* Compagnon Light */
     display: flex !important;
     align-items: center;
     margin: 0;
