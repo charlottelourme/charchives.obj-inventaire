@@ -6402,11 +6402,11 @@ body { padding-bottom: 64px; }
     flex-wrap: wrap !important;          /* logo + actions ligne 1, nav + search lignes suivantes */
     align-items: center;
     gap: 0 !important;
-    background: transparent !important;  /* canevas continu — laisse passer body + #bgLayers */
+    background-color: var(--bg) !important;  /* opaque — masque le scroll dessous */
     backdrop-filter: none !important;
     z-index: 1000 !important;
   }
-  body.dark-mode header { background: transparent !important; }
+  body.dark-mode header { background-color: var(--bg) !important; }
   /* Ligne 1 mobile : Logo (gauche) + Loupe + Hamburger (droite uniquement) */
   .header-row-1 {
     padding: 0 14px !important;
