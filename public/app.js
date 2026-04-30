@@ -3046,6 +3046,12 @@ function renderJournal(filtered) {
        .catch(err => console.error('Persist journalCanvas failed for', c.id, err));
   });
 
+  // Si de nouveaux items viennent d'être placés (upload, note, première init),
+  // scroll en haut pour les rendre immédiatement visibles
+  if (!isMobile && itemsToPersist.length > 0) {
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+  }
+
   // Clic : ouvre note ou modale photo (désactivé pendant un drag)
   grid.querySelectorAll('.journal-item').forEach(el => {
     el.addEventListener('click', (e) => {
