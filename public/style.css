@@ -1161,11 +1161,11 @@ body.dark-mode .card .card-grain {
 .card-poem-overlay::after {
   content: '';
   position: absolute;
-  inset: 14px;
+  inset: 8px;
   background: var(--verbe-dark, rgba(60, 70, 60, 1));
-  filter: blur(10px);                    /* dense layer floutée */
+  filter: blur(8px);
   opacity: 0.92;
-  border-radius: 50%;                    /* ellipse pure */
+  border-radius: 14px;                   /* rectangle arrondi (pas ellipse) */
   z-index: -1;
   pointer-events: none;
 }
