@@ -8642,16 +8642,15 @@ function setupSearch() {
   });
 }
 
-// ── Inventaire : 2 piliers Feroniapi (Intention / Objet) ──────────────────────
-// Piliers centraux qui ouvrent leur dropdown au clic. La dropdown Intention
-// contient #categoryFilterBar (rempli par buildCategoryFilterBar). La dropdown
-// Objet contient l'input recherche + #typologyFilterBar + #attrFilterBar.
+// ── Inventaire : 2 piliers Feroniapi (Intentions / Objets) ────────────────────
+// Pillar Intentions ouvre #invDropdownIntention (verbes en Feroniapi).
+// Pillar Objets ouvre #invDropdownObjet (Index typologies — search + groupes).
 function _setupInvPillars() {
   const pillarIntention = document.getElementById('invPillarIntention');
   const pillarObjet     = document.getElementById('invPillarObjet');
   const ddIntention     = document.getElementById('invDropdownIntention');
   const ddObjet         = document.getElementById('invDropdownObjet');
-  const objetSearch     = document.getElementById('invObjetSearch');
+  const idxSearch       = document.getElementById('idxSearchInput');
 
   if (!pillarIntention || !pillarObjet) return;
 
@@ -8682,7 +8681,18 @@ function _setupInvPillars() {
   pillarObjet.addEventListener('click', e => {
     e.stopPropagation();
     toggle(pillarObjet, ddObjet);
-    if (!ddObjet?.hidden && objetSearch) setTimeout(() => objetSearch.focus(), 60);
+    // À l'ouverture du déroulé Objets : (re)construire l'Index typologies +
+    // donner le focus à l'input recherche.
+    if (!ddObjet?.hidden) {
+      if (idxSearch) {
+        if (!idxSearch._idxBound) {
+          idxSearch.addEventListener('input', _buildIndexGroups);
+          idxSearch._idxBound = true;
+        }
+        setTimeout(() => idxSearch.focus(), 60);
+      }
+      if (typeof _buildIndexGroups === 'function') _buildIndexGroups();
+    }
   });
 
   // Click hors dropdown / pilier → ferme
@@ -8703,21 +8713,12 @@ function _setupInvPillars() {
     }
   });
 
-  // Recherche dans la dropdown Objet → mirroir vers state.searchQuery + render
-  if (objetSearch) {
-    objetSearch.addEventListener('input', e => {
-      state.searchQuery = e.target.value.trim();
-      // Synchronise aussi l'input du header pour cohérence visuelle
-      const headerInput = document.getElementById('searchInput');
-      if (headerInput && headerInput !== e.target) headerInput.value = e.target.value;
-      if (typeof render === 'function') render();
-    });
-    // Synchronise depuis le header search vers la dropdown si l'utilisateur
-    // tape dans le header pendant que la dropdown est ouverte.
-    document.getElementById('searchInput')?.addEventListener('input', e => {
-      if (objetSearch && objetSearch !== e.target) objetSearch.value = e.target.value;
-    });
-  }
+  // Clic sur un item de l'Index → ferme aussi
+  ddObjet?.addEventListener('click', e => {
+    if (e.target.closest('.idx-dd-item, .idx-group-pill, .idx-typo-link')) {
+      setTimeout(closeAll, 180);
+    }
+  });
 }
 
 // ── Events ─────────────────────────────────────────────────────────────────────
