@@ -44,6 +44,16 @@
   /* ══ NEGATIVE SPACE — gouttière unique pour aligner logo / grille / filtres
         au pixel près (axe vertical strict, façon galerie d'art) ══════════ */
   --page-gutter: clamp(48px, 5vw, 96px);
+  /* ══ HAUTEUR DU HEADER — variable dynamique ════════════════════════════════
+     Mesurée par JS (updateHeaderHeightVar) pour rester précise quand la barre
+     de recherche s'ouvre/se ferme ou quand l'orientation change.
+     Les valeurs ici sont les FALLBACK avant que JS ne tourne. */
+  --header-h: calc(148px + env(safe-area-inset-top));
+}
+
+/* Fallback mobile — header 3 strates compactes (40 + 42 + 50 = ~132px + safe-area) */
+@media (max-width: 520px) {
+  :root { --header-h: calc(132px + env(safe-area-inset-top)); }
 }
 
 body {
