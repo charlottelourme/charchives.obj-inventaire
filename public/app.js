@@ -1674,40 +1674,19 @@ function _applyGridCols() {
   else                cols = Math.max(2, Math.round(5 - ratio * 3));
   document.documentElement.style.setProperty('--grid-cols', String(cols));
   document.querySelectorAll('#gridView .grid').forEach(g => {
+    // Plus de fallback grid-css ni d'inline column-count/height : la CSS gère
+    // tout via display:grid + grid-template-columns: repeat(var(--grid-cols), 1fr).
+    // Cap local : si moins d'items que de colonnes, on réduit pour ne pas
+    // laisser de colonnes vides en bout de ligne.
     g.classList.remove('grid-css');
     g.style.gridTemplateColumns = '';
     g.style.columnCount         = '';
     g.style.webkitColumnCount   = '';
-    const items = [...g.querySelectorAll(':scope > .card')];
-    const itemCount = items.length;
-    // Cap local : si la grille a moins d'items que de colonnes, on réduit
-    // cols pour ne pas laisser de colonnes vides.
+    g.style.columnFill          = '';
+    g.style.height              = '';
+    const itemCount = g.querySelectorAll(':scope > .card').length;
     const effective = Math.max(1, Math.min(cols, itemCount || cols));
     g.style.setProperty('--grid-cols', String(effective));
-    // ── FORCE LA RÉPARTITION VRAIMENT ÉQUILIBRÉE ────────────────────────────
-    // column-fill: balance (par défaut) a un bug : avec peu d'items tall +
-    // break-inside:avoid, le navigateur empile plusieurs cartes dans la 1re
-    // colonne au lieu de répartir 1 par colonne. La parade :
-    //   1. column-fill: auto  → remplit chaque colonne dans l'ordre
-    //   2. on calcule la hauteur totale du contenu / cols → hauteur cible
-    //   3. on fixe inline `height` à cette cible : les cartes dépassant
-    //      basculent automatiquement dans la colonne suivante.
-    // C'est le seul moyen fiable d'obtenir une répartition équilibrée en CSS
-    // Columns avec 2-10 items.
-    if (itemCount > 0) {
-      // Force le layout pour mesurer les hauteurs APRÈS application de --grid-cols.
-      void g.offsetHeight;
-      const totalH = items.reduce((s, it) => s + it.offsetHeight + parseFloat(getComputedStyle(it).marginBottom || 0), 0);
-      const maxItemH = items.reduce((m, it) => Math.max(m, it.offsetHeight), 0);
-      // Hauteur cible = total / cols + une carte de buffer (break-inside évite
-      // les coupures, donc il faut prévoir l'épaisseur d'une carte en marge).
-      const targetH = Math.ceil(totalH / effective) + maxItemH * 0.3;
-      g.style.columnFill = 'auto';
-      g.style.height     = targetH + 'px';
-    } else {
-      g.style.columnFill = '';
-      g.style.height     = '';
-    }
   });
 }
 
