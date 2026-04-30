@@ -1379,13 +1379,21 @@ function setView(v, _silent = false) {
   });
 
   document.querySelectorAll('.view-tab').forEach(btn => btn.classList.remove('active'));
+  // Une vue peut avoir plusieurs boutons miroirs (header desktop + footer mobile).
+  // Tous reçoivent .active simultanément.
   const tabs = {
-    grid: 'viewInventaire', derive: 'viewDerive',
-    trios: 'viewAtelier',   diorama: 'viewDiorama',
-    calendar: 'viewCalendar', catalogue: 'viewCatalogue', stats: 'viewStats'
+    grid:      ['viewInventaire'],
+    derive:    ['viewDerive'],
+    trios:     ['viewAtelier'],
+    diorama:   ['viewDiorama'],
+    calendar:  ['viewCalendar', 'mfnViewCalendar'],
+    catalogue: ['viewCatalogue', 'mfnViewCatalogue'],
+    stats:     ['viewStats', 'mfnViewStats']
   };
-  const tabEl = document.getElementById(tabs[v]);
-  if (tabEl) tabEl.classList.add('active');
+  (tabs[v] || []).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  });
 
   // Si on entre dans Dérive → réinitialiser tous les filtres Inventaire
   if (v === 'derive') {
