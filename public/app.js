@@ -9659,4 +9659,38 @@ function renderBreadcrumbBar() {
   });
 }
 
+// ══════════════════════════════════════════════════════════════════════════════
+// HEADER HEIGHT — mesure dynamique de la hauteur réelle du header
+// Injecte dans :root la variable CSS --header-h, utilisée par toutes les vues
+// plein-écran (calc(100dvh - var(--header-h))). Indispensable sur mobile :
+// le header passe de 2 à 3 strates quand la barre de recherche s'ouvre, et
+// la hauteur change selon l'orientation et la safe-area iOS.
+// ══════════════════════════════════════════════════════════════════════════════
+function updateHeaderHeightVar() {
+  const header = document.querySelector('header');
+  if (!header) return;
+  const h = Math.ceil(header.getBoundingClientRect().height);
+  if (h > 0) document.documentElement.style.setProperty('--header-h', `${h}px`);
+}
+// Première mesure dès que le DOM est parsé (header présent côté HTML statique)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateHeaderHeightVar);
+} else {
+  updateHeaderHeightVar();
+}
+// Re-mesure après load complet (au cas où des polices ou images modifient la hauteur)
+window.addEventListener('load', updateHeaderHeightVar);
+// Re-mesure à chaque resize (orientation change, redimensionnement, viewport iOS)
+let _headerResizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_headerResizeTimer);
+  _headerResizeTimer = setTimeout(updateHeaderHeightVar, 80);
+});
+// ResizeObserver : couvre les cas où le header change sans resize fenêtre
+// (ex : recherche mobile qui s'ouvre/ferme et fait passer à 3 strates).
+if (typeof ResizeObserver !== 'undefined') {
+  const _headerEl = document.querySelector('header');
+  if (_headerEl) new ResizeObserver(updateHeaderHeightVar).observe(_headerEl);
+}
+
 init();
