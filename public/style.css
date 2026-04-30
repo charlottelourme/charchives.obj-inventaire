@@ -3757,8 +3757,9 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   padding: 6px 0 0;
   line-height: 1.3;
 }
-/* Bouton supprimer sur les photos de contexte (visible au hover) */
-.journal-item { position: relative !important; }
+/* Bouton supprimer sur les photos de contexte (visible au hover)
+   Note : .journal-item est en position: absolute (canvas) ou position: relative
+   (mobile fallback) — le bouton remove fonctionne dans les deux cas. */
 .journal-remove-btn {
   position: absolute;
   top: 6px;
