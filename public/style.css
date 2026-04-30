@@ -596,21 +596,21 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   position: relative;              /* contexte de positionnement pour le halo ::before */
   background: transparent !important;
   border: none;
-  padding: 0 6px;                  /* léger air autour de chaque mot italique */
+  padding: 0 6px;
   height: 100%;
   display: flex;
   align-items: center;
-  /* ── Display Velvetyne : navigation XXL Feroniapi MediumItalic ── */
+  /* ── Navigation : Compagnon Bold, taille resserrée pour ne pas écraser ── */
   font-family: 'Compagnon', monospace;
-  font-style: italic;
-  font-size: clamp(1.2rem, 1.8vw, 1.9rem);
-  font-weight: 500;
+  font-style: normal;
+  font-size: clamp(0.85rem, 1.05vw, 1.05rem);
+  font-weight: 700;
   line-height: 1.1;
   cursor: pointer;
   color: var(--text-3);
   transition: color .2s ease, opacity .2s ease;
   white-space: nowrap;
-  letter-spacing: 0;               /* Feroniapi italic — pas de tightening */
+  letter-spacing: .01em;
 }
 
 /* ── Halo de Navigation — nuage flouté : survol uniquement ── */
