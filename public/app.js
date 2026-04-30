@@ -1643,25 +1643,21 @@ function _applyGridCols() {
   const min   = parseFloat(slider.min)   || 140;
   const max   = parseFloat(slider.max)   || 480;
   const ratio = (parseFloat(slider.value) - min) / (max - min);
-  // Sur mobile (< 520px), forcer 2 colonnes max pour la lisibilité
-  const isMobile = window.innerWidth < 520;
-  const cols  = isMobile ? 2 : Math.max(2, Math.round(6 - ratio * 4));
+  // Spec masonry assumée : mobile = 1, tablet = 2, desktop = 3, très grand = 4
+  // Le slider permet de zoomer/dézoomer dans la plage [2..5] sur desktop+.
+  const w = window.innerWidth;
+  let cols;
+  if      (w < 520)  cols = 1;
+  else if (w < 1024) cols = 2;
+  else               cols = Math.max(2, Math.round(5 - ratio * 3)); // 2..5 selon slider
   document.documentElement.style.setProperty('--grid-cols', String(cols));
+  // Toujours masonry par colonnes — plus de fallback CSS Grid (qui figeait
+  // l'affichage en alignement rigide quand le nb de cartes <= cols).
   document.querySelectorAll('#gridView .grid').forEach(g => {
-    const cardCount = g.querySelectorAll(':scope > .card').length;
-    if (cardCount > 0 && cardCount <= cols) {
-      // Peu d'objets : CSS Grid — utilise le nb de colonnes du slider pour que le zoom fonctionne
-      g.classList.add('grid-css');
-      g.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-      g.style.columnCount = '';
-      g.style.webkitColumnCount = '';
-    } else {
-      // Beaucoup d'objets : CSS colonnes masonry
-      g.classList.remove('grid-css');
-      g.style.gridTemplateColumns = '';
-      g.style.columnCount = String(cols);
-      g.style.webkitColumnCount = String(cols);
-    }
+    g.classList.remove('grid-css');
+    g.style.gridTemplateColumns = '';
+    g.style.columnCount         = String(cols);
+    g.style.webkitColumnCount   = String(cols);
   });
 }
 
