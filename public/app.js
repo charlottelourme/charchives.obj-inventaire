@@ -2259,6 +2259,28 @@ function closeNoteModal() {
   document.getElementById('noteModal').style.display = 'none';
 }
 
+// ── Modale d'agrandissement des photos Journal ──────────────────────────────
+// Reprend les proportions de la modale Inventaire (.modal-lg). Affiche la photo
+// en grand + une caption optionnelle (nom de l'objet d'inventaire).
+function openJournalPhotoModal(id) {
+  const item = state.collections.find(c => c.id === id);
+  if (!item || !item.photos?.[0]) return;
+  const modal = document.getElementById('journalPhotoModal');
+  const img   = document.getElementById('journalPhotoModalImg');
+  const cap   = document.getElementById('journalPhotoModalCaption');
+  if (!modal || !img || !cap) return;
+  img.src = photoUrl(item.photos[0]);
+  img.alt = item.name || '';
+  // Caption visible uniquement pour les objets d'inventaire (pas pour les journal-photo)
+  cap.textContent = (item.type !== 'journal-photo' && item.name) ? item.name : '';
+  modal.style.display = 'flex';
+}
+
+function closeJournalPhotoModal() {
+  const modal = document.getElementById('journalPhotoModal');
+  if (modal) modal.style.display = 'none';
+}
+
 function _renderNoteColorSwatches() {
   const wrap   = document.getElementById('noteColorSwatches');
   const colors = _noteColors();
