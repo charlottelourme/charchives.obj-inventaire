@@ -1083,7 +1083,7 @@ body.dark-mode.verbe-active .card {
 }
 body.dark-mode .card .card-grain {
   mix-blend-mode: overlay;
-  opacity: 0.38;
+  opacity: 0.24;
 }
 
 /* ── DESKTOP (≥ 521px) ──────────────────────────────────────────────────
