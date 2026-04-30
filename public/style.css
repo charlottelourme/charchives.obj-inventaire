@@ -1963,23 +1963,24 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 }
 .sfb-pill.active::after { display: none; }
 
-/* ── Verbes (INTENTION) — Cormorant Garamond italique, éditorial ── */
+/* ── Verbes (INTENTION) — Inter, taille intermédiaire pour hiérarchie sans concurrence à Feroniapi ── */
 .sfb-pill-verbe {
-  font-family: 'Feroniapi', serif;
-  font-style: italic;
-  font-size: 18px;
-  font-weight: 300;
-  letter-spacing: .01em;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .02em;
   padding: 6px 18px;
   border-radius: 0;
   border: none;
-  transition: color .15s, background .15s;
+  transition: color .15s, opacity .15s;
   margin: 0;
   line-height: 1.2;
+  text-transform: none;
 }
 .sfb-pill-verbe:hover { color: var(--text); background: none; }
-/* Verbe actif : couleur noire (light) / écru (dark), sans fond ni décoration */
-.sfb-pill-verbe.active { font-weight: 300; text-decoration: none; background: none; color: var(--text); }
+/* Verbe actif : poids accru pour distinction propre, sans fond ni décoration */
+.sfb-pill-verbe.active { font-weight: 600; text-decoration: none; background: none; color: var(--text); }
 
 /* ══════════════════════════════════════════════════════════════
    BARRE TYPOLOGIES — Flux typographique primaire
