@@ -6483,10 +6483,10 @@ body { padding-bottom: 64px; }
   .view-tab {
     padding: 0 !important;
     font-family: 'Compagnon', monospace !important;
-    font-style: normal !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    letter-spacing: .01em !important;
+    font-style: italic !important;
+    font-size: 22px !important;
+    font-weight: 300 !important;
+    letter-spacing: 0 !important;
     text-transform: none !important;
     color: var(--text-3) !important;
     white-space: nowrap;
@@ -6499,7 +6499,7 @@ body { padding-bottom: 64px; }
   }
   .view-tab.active {
     color: var(--text) !important;
-    font-weight: 700 !important;
+    font-weight: 300 !important;
   }
 
   /* ── Barre de recherche mobile : OVERLAY absolu sur la ligne 1 (pas de décalage) ── */
