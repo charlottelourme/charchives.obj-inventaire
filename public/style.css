@@ -524,7 +524,7 @@ html::before {
   pointer-events: none;
 }
 html:has(body.dark-mode)::before { background: #080809; }
-body.dark-mode header { background: #101013; }   /* gris-noir légèrement levé du fond */
+body.dark-mode header { background: var(--bg); }   /* fond identique au reste */
 
 /* Grain papier sur le header — texture continue avec le reste du site */
 header::before {
