@@ -1341,7 +1341,11 @@ body.dark-mode .card-thumb-area--cutout .card-thumb {
 /* Image cassée (404, ref orpheline) — l'<img> est masquée (visibility:hidden)
    pour conserver l'aspect-ratio. Le ::after se fond dans le halo de la carte
    sans dessiner de rectangle distinct. */
-.card-thumb-area--broken .card-thumb { visibility: hidden; }
+.card-thumb-area--broken .card-thumb {
+  visibility: hidden;
+  aspect-ratio: 3/4;
+  height: auto;
+}
 .card-thumb-area--broken::after {
   content: '◻';
   position: absolute;
