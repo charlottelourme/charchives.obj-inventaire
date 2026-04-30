@@ -1664,21 +1664,23 @@ function _applyGridCols() {
   const min   = parseFloat(slider.min)   || 140;
   const max   = parseFloat(slider.max)   || 480;
   const ratio = (parseFloat(slider.value) - min) / (max - min);
-  // Spec masonry assumée : mobile = 1, tablet = 2, desktop = 3, très grand = 4
-  // Le slider permet de zoomer/dézoomer dans la plage [2..5] sur desktop+.
+  // Spec masonry stricte : breakpoints CSS (480/768/1024) — le slider n'agit
+  // que sur la plage desktop+ (≥1025). Mobile-first : 1 / 2 / 3 / slider(2..5).
   const w = window.innerWidth;
   let cols;
-  if      (w < 520)  cols = 1;
-  else if (w < 1024) cols = 2;
-  else               cols = Math.max(2, Math.round(5 - ratio * 3)); // 2..5 selon slider
+  if      (w <= 480)  cols = 1;
+  else if (w <= 768)  cols = 2;
+  else if (w <= 1024) cols = 3;
+  else                cols = Math.max(2, Math.round(5 - ratio * 3));
+  // On ne touche QUE la CSS variable. Aucune écriture inline de column-count :
+  // le CSS de fin de fichier (avec !important) garde la main et applique la
+  // valeur via `var(--grid-cols)`. Évite tout conflit JS↔CSS.
   document.documentElement.style.setProperty('--grid-cols', String(cols));
-  // Toujours masonry par colonnes — plus de fallback CSS Grid (qui figeait
-  // l'affichage en alignement rigide quand le nb de cartes <= cols).
   document.querySelectorAll('#gridView .grid').forEach(g => {
     g.classList.remove('grid-css');
     g.style.gridTemplateColumns = '';
-    g.style.columnCount         = String(cols);
-    g.style.webkitColumnCount   = String(cols);
+    g.style.columnCount         = '';
+    g.style.webkitColumnCount   = '';
   });
 }
 
