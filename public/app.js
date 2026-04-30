@@ -8625,6 +8625,84 @@ function setupSearch() {
   });
 }
 
+// ── Inventaire : 2 piliers Feroniapi (Intention / Objet) ──────────────────────
+// Piliers centraux qui ouvrent leur dropdown au clic. La dropdown Intention
+// contient #categoryFilterBar (rempli par buildCategoryFilterBar). La dropdown
+// Objet contient l'input recherche + #typologyFilterBar + #attrFilterBar.
+function _setupInvPillars() {
+  const pillarIntention = document.getElementById('invPillarIntention');
+  const pillarObjet     = document.getElementById('invPillarObjet');
+  const ddIntention     = document.getElementById('invDropdownIntention');
+  const ddObjet         = document.getElementById('invDropdownObjet');
+  const objetSearch     = document.getElementById('invObjetSearch');
+
+  if (!pillarIntention || !pillarObjet) return;
+
+  function closeAll() {
+    if (ddIntention) ddIntention.hidden = true;
+    if (ddObjet)     ddObjet.hidden     = true;
+    pillarIntention.setAttribute('aria-expanded', 'false');
+    pillarObjet.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('inv-dropdown-open');
+  }
+  function open(pillar, dd) {
+    closeAll();
+    if (!dd) return;
+    dd.hidden = false;
+    pillar.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('inv-dropdown-open');
+  }
+  function toggle(pillar, dd) {
+    const isOpen = dd && !dd.hidden;
+    if (isOpen) closeAll();
+    else open(pillar, dd);
+  }
+
+  pillarIntention.addEventListener('click', e => {
+    e.stopPropagation();
+    toggle(pillarIntention, ddIntention);
+  });
+  pillarObjet.addEventListener('click', e => {
+    e.stopPropagation();
+    toggle(pillarObjet, ddObjet);
+    if (!ddObjet?.hidden && objetSearch) setTimeout(() => objetSearch.focus(), 60);
+  });
+
+  // Click hors dropdown / pilier → ferme
+  document.addEventListener('click', e => {
+    if (e.target.closest('.inv-dropdown') || e.target.closest('.inv-pillar')) return;
+    closeAll();
+  });
+
+  // Escape → ferme
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeAll();
+  });
+
+  // Clic sur une pill d'intention → laisse le handler natif filtrer + ferme la dropdown
+  ddIntention?.addEventListener('click', e => {
+    if (e.target.closest('.sfb-pill[data-cat]')) {
+      setTimeout(closeAll, 180);
+    }
+  });
+
+  // Recherche dans la dropdown Objet → mirroir vers state.searchQuery + render
+  if (objetSearch) {
+    objetSearch.addEventListener('input', e => {
+      state.searchQuery = e.target.value.trim();
+      // Synchronise aussi l'input du header pour cohérence visuelle
+      const headerInput = document.getElementById('searchInput');
+      if (headerInput && headerInput !== e.target) headerInput.value = e.target.value;
+      if (typeof render === 'function') render();
+    });
+    // Synchronise depuis le header search vers la dropdown si l'utilisateur
+    // tape dans le header pendant que la dropdown est ouverte.
+    document.getElementById('searchInput')?.addEventListener('input', e => {
+      if (objetSearch && objetSearch !== e.target) objetSearch.value = e.target.value;
+    });
+  }
+}
+
 // ── Events ─────────────────────────────────────────────────────────────────────
 function bindEvents() {
   // Header
