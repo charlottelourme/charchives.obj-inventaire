@@ -3421,7 +3421,8 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 /* ── Content panes ── */
 .derive-pane {
   position: relative;
-  height: calc(100vh - 52px - 200px);  /* viewport moins header global + strates 2+3 */
+  /* viewport moins header global (--header-h dynamique) + strates 2+3 du Journal (200px) */
+  height: calc(100dvh - var(--header-h) - 200px);
   min-height: 480px;
   overflow: hidden;
   opacity: 1;
