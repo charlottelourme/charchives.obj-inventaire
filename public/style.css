@@ -6407,7 +6407,7 @@ body { padding-bottom: 64px; }
     height: 40px;
     font-size: 15px !important;
     letter-spacing: 0 !important;
-    text-transform: lowercase;          /* "ARCHIVE" → "archive" + ::first-letter cap */
+    text-transform: none;
     font-weight: 300;                   /* Compagnon Light */
     display: flex !important;
     align-items: center;
