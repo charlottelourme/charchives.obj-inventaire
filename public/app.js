@@ -3058,101 +3058,89 @@ function renderJournal(filtered) {
   });
 }
 
-// ── Drag-and-drop pour réorganiser le Journal ─────────────────────────────
-let _journalDraggedId = null;
+// ── Drag-and-drop CANVAS du Journal (souris + snap 40px) ──────────────────
+// Architecture : un mousedown sur un item démarre un drag potentiel.
+// Un mousemove > 5px de seuil active le mode drag réel. mouseup persiste la
+// nouvelle position si un drag a eu lieu, sinon laisse le clic naturel.
 let _journalDragJustEnded = false;
+let _journalCanvasDragInited = false;
 
-function _clearJournalDropMarkers(grid) {
-  grid.querySelectorAll('.journal-drop-before, .journal-drop-after')
-      .forEach(el => el.classList.remove('journal-drop-before', 'journal-drop-after'));
+// État du drag courant (module-level pour partage entre handlers)
+let _jcDrag = {
+  el: null,
+  startMouseX: 0,
+  startMouseY: 0,
+  startItemX: 0,
+  startItemY: 0,
+  isDragging: false,
+};
+
+function _onJournalItemMouseDown(e) {
+  if (e.button !== 0) return;
+  if (e.target.closest('.journal-remove-btn')) return;
+  const el = e.currentTarget;
+  _jcDrag.el = el;
+  _jcDrag.startMouseX = e.clientX;
+  _jcDrag.startMouseY = e.clientY;
+  _jcDrag.startItemX = parseFloat(el.dataset.canvasX) || 0;
+  _jcDrag.startItemY = parseFloat(el.dataset.canvasY) || 0;
+  _jcDrag.isDragging = false;
+  // Empêche la sélection texte / le drag natif d'image
+  e.preventDefault();
 }
 
-function _bindJournalDnd(grid) {
-  grid.querySelectorAll('.journal-item').forEach(el => {
-    el.draggable = true;
-
-    el.addEventListener('dragstart', (e) => {
-      _journalDraggedId = el.dataset.id;
-      el.classList.add('journal-dragging');
-      try {
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', _journalDraggedId);
-      } catch (_) {}
-    });
-
-    el.addEventListener('dragend', () => {
-      el.classList.remove('journal-dragging');
-      _clearJournalDropMarkers(grid);
-      _journalDraggedId = null;
-      _journalDragJustEnded = true;
-      setTimeout(() => { _journalDragJustEnded = false; }, 50);
-    });
-
-    el.addEventListener('dragover', (e) => {
-      if (!_journalDraggedId || el.dataset.id === _journalDraggedId) return;
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      const r = el.getBoundingClientRect();
-      const after = (e.clientY - r.top) > r.height / 2;
-      _clearJournalDropMarkers(grid);
-      el.classList.add(after ? 'journal-drop-after' : 'journal-drop-before');
-    });
-
-    el.addEventListener('dragleave', (e) => {
-      // Ne retire le marker que si on quitte vraiment l'item (pas un enfant)
-      if (!el.contains(e.relatedTarget)) {
-        el.classList.remove('journal-drop-before', 'journal-drop-after');
-      }
-    });
-
-    el.addEventListener('drop', async (e) => {
-      e.preventDefault();
-      if (!_journalDraggedId || el.dataset.id === _journalDraggedId) return;
-      const targetId = el.dataset.id;
-      const r = el.getBoundingClientRect();
-      const after = (e.clientY - r.top) > r.height / 2;
-      _clearJournalDropMarkers(grid);
-      await _reorderJournal(_journalDraggedId, targetId, after);
-    });
-  });
+function _onJournalDocMouseMove(e) {
+  if (!_jcDrag.el) return;
+  const dx = e.clientX - _jcDrag.startMouseX;
+  const dy = e.clientY - _jcDrag.startMouseY;
+  if (!_jcDrag.isDragging && Math.hypot(dx, dy) > 5) {
+    _jcDrag.isDragging = true;
+    _jcDrag.el.classList.add('journal-dragging');
+    document.body.style.userSelect = 'none';
+  }
+  if (_jcDrag.isDragging) {
+    const rawX = _jcDrag.startItemX + dx;
+    const rawY = _jcDrag.startItemY + dy;
+    const snapX = _journalSnap(rawX);
+    const snapY = _journalSnap(Math.max(0, rawY));
+    _jcDrag.el.style.transform = `translate(${snapX}px, ${snapY}px)`;
+    _jcDrag.el.dataset.canvasX = snapX;
+    _jcDrag.el.dataset.canvasY = snapY;
+  }
 }
 
-async function _reorderJournal(draggedId, targetId, insertAfter) {
-  const journalItems = state.collections.filter(c =>
-    c.type === 'note' ||
-    c.type === 'journal-photo' ||
-    (c.inJournal === true && c.photos && c.photos.length > 0)
-  );
-  journalItems.sort((a, b) => {
-    const oa = (typeof a.journalOrder === 'number') ? a.journalOrder : Infinity;
-    const ob = (typeof b.journalOrder === 'number') ? b.journalOrder : Infinity;
-    if (oa !== ob) return oa - ob;
-    return (b.createdAt || '').localeCompare(a.createdAt || '');
-  });
-  const dragged = journalItems.find(c => c.id === draggedId);
-  if (!dragged) return;
-  const ordered = journalItems.filter(c => c.id !== draggedId);
-  const targetIdx = ordered.findIndex(c => c.id === targetId);
-  if (targetIdx === -1) return;
-  ordered.splice(insertAfter ? targetIdx + 1 : targetIdx, 0, dragged);
-
-  // Réassigne journalOrder séquentiel et collecte les items dont l'ordre change
-  const updates = [];
-  ordered.forEach((c, i) => {
-    if (c.journalOrder !== i) {
-      c.journalOrder = i;
-      updates.push(c);
+function _onJournalDocMouseUp() {
+  if (!_jcDrag.el) return;
+  if (_jcDrag.isDragging) {
+    const id = _jcDrag.el.dataset.id;
+    const x = parseFloat(_jcDrag.el.dataset.canvasX);
+    const y = parseFloat(_jcDrag.el.dataset.canvasY);
+    const obj = state.collections.find(c => c.id === id);
+    if (obj) {
+      obj.journalCanvas = { ...(obj.journalCanvas || { size: 'size-2' }), x, y };
+      api.put(`/api/collections/${id}`, { journalCanvas: obj.journalCanvas })
+         .catch(err => console.error('Persist drag failed for', id, err));
     }
+    _jcDrag.el.classList.remove('journal-dragging');
+    document.body.style.userSelect = '';
+    _journalDragJustEnded = true;
+    setTimeout(() => { _journalDragJustEnded = false; }, 200);
+  }
+  _jcDrag.el = null;
+  _jcDrag.isDragging = false;
+}
+
+function _bindJournalCanvasDrag(grid) {
+  // Bind item-level mousedown sur les nouveaux .journal-item
+  grid.querySelectorAll('.journal-item').forEach(el => {
+    el.addEventListener('mousedown', _onJournalItemMouseDown);
   });
-
-  // Re-render optimiste
-  render();
-
-  // Persiste en parallèle
-  await Promise.all(updates.map(c =>
-    api.put(`/api/collections/${c.id}`, { journalOrder: c.journalOrder })
-       .catch(err => console.error('Failed to persist journalOrder for', c.id, err))
-  ));
+  // Bind document-level move/up une seule fois
+  if (!_journalCanvasDragInited) {
+    document.addEventListener('mousemove', _onJournalDocMouseMove);
+    document.addEventListener('mouseup', _onJournalDocMouseUp);
+    _journalCanvasDragInited = true;
+  }
 }
 
 function renderGallery(filtered) {
