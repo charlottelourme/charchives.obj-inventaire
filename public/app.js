@@ -1012,24 +1012,45 @@ function buildIndexTrigger() {
 }
 
 // ── Index Overlay ─────────────────────────────────────────────────────────────
+// L'Index typologies a été déplacé dans le déroulé "Objets" de l'Inventaire.
+// openIndexOverlay() redirige donc vers l'ouverture du déroulé Objets ; tous
+// les anciens triggers (header search, etc.) continuent de fonctionner sans modif.
 function openIndexOverlay() {
-  const overlay = document.getElementById('indexOverlay');
-  if (!overlay) return;
-  overlay.style.display = 'flex';
-  requestAnimationFrame(() => overlay.classList.add('idx-overlay-open'));
+  const pillarObjet = document.getElementById('invPillarObjet');
+  const ddObjet     = document.getElementById('invDropdownObjet');
+  if (!pillarObjet || !ddObjet) {
+    // Fallback : si le déroulé n'est pas dans la page, on ne peut rien faire.
+    return;
+  }
+  // S'assurer qu'on est en vue Inventaire pour que le bandeau soit visible
+  if (state.view !== 'grid' && typeof setView === 'function') setView('grid');
+  // Ouvre le déroulé Objets et donne le focus à l'input recherche
+  document.getElementById('invDropdownIntention').hidden = true;
+  document.getElementById('invPillarIntention')?.setAttribute('aria-expanded', 'false');
+  ddObjet.hidden = false;
+  pillarObjet.setAttribute('aria-expanded', 'true');
+  document.body.classList.add('inv-dropdown-open');
   const inp = document.getElementById('idxSearchInput');
-  if (inp) { inp.value = ''; inp.addEventListener('input', _buildIndexGroups); inp.focus(); }
-  document.getElementById('idxCloseBtn')?.addEventListener('click', closeIndexOverlay);
-  // Close on backdrop click
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeIndexOverlay(); });
+  if (inp) {
+    inp.value = '';
+    // Idempotent : on évite de doubler le listener à chaque ouverture
+    if (!inp._idxBound) {
+      inp.addEventListener('input', _buildIndexGroups);
+      inp._idxBound = true;
+    }
+    setTimeout(() => inp.focus(), 60);
+  }
   _buildIndexGroups();
 }
 
 function closeIndexOverlay() {
+  // Ferme le déroulé Objets de l'Inventaire (et l'éventuel ancien overlay vide).
+  const ddObjet = document.getElementById('invDropdownObjet');
+  if (ddObjet) ddObjet.hidden = true;
+  document.getElementById('invPillarObjet')?.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('inv-dropdown-open');
   const overlay = document.getElementById('indexOverlay');
-  if (!overlay) return;
-  overlay.classList.remove('idx-overlay-open');
-  setTimeout(() => { overlay.style.display = 'none'; }, 280);
+  if (overlay) { overlay.classList.remove('idx-overlay-open'); overlay.style.display = 'none'; }
 }
 
 function _buildIndexGroups() {
