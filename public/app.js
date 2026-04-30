@@ -2955,6 +2955,7 @@ const _JOURNAL_SIZE_WIDTHS = {
   'size-1': 240,    // 6 × 40
   'size-2': 320,    // 8 × 40
   'size-3': 480,    // 12 × 40
+  'size-4': 640,    // 16 × 40
 };
 const _JOURNAL_SIZE_KEYS = Object.keys(_JOURNAL_SIZE_WIDTHS);
 
