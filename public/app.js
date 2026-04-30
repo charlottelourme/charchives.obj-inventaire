@@ -6673,10 +6673,6 @@ function renderPhotos() {
           ${i===0 ? `<button class="photo-btn photo-analyze" data-i="0" title="Analyser l'objet et pré-remplir la fiche">
             <span class="photo-btn-label">Analyser</span>
           </button>` : ''}
-          <button class="photo-btn photo-stylize" data-i="${i}" data-filename="${esc(filename)}"
-            title="Générer une mise en scène colorée">
-            <span class="photo-btn-label">Ambiance</span>
-          </button>
         </div>
       </div>
     </div>`).join('');
