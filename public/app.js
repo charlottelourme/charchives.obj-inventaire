@@ -3050,12 +3050,22 @@ function renderJournal(filtered) {
       if (cv.y + itemH > maxY) maxY = cv.y + itemH;
     }
 
+    // Picker de taille (4 dots) — visible uniquement en canvas mode (desktop)
+    const sizePickerHTML = !isMobile
+      ? `<div class="journal-size-picker" aria-label="Modifier la taille">
+          ${_JOURNAL_SIZE_KEYS.map((s, i) =>
+            `<button type="button" class="jsp-dot${s === (c.journalCanvas?.size || 'size-2') ? ' active' : ''}" data-size="${s}" aria-label="Taille ${i + 1} sur 4" title="Taille ${i + 1}/4"></button>`
+          ).join('')}
+        </div>`
+      : '';
+
     if (c.type === 'note') {
       const bg = c.backgroundColor || '#fbe7bc';
       const isDark = _luminance(bg) < 0.5;
       const text = (c.content || c.textContent || '').replace(/\n/g, '<br>');
       item.classList.add('journal-note');
       item.innerHTML = `
+        ${sizePickerHTML}
         <div class="journal-note-inner" style="background:${bg};color:${isDark ? '#F4F4F5' : '#2A2A2E'}">
           <div class="journal-note-text">${text}</div>
         </div>`;
@@ -3070,6 +3080,7 @@ function renderJournal(filtered) {
       // Pas de grain par item — Charlotte a demandé le grain global du site uniquement
       item.innerHTML = `
         ${removeBtn}
+        ${sizePickerHTML}
         <img src="${src}" alt="${esc(c.name || '')}" loading="lazy" draggable="false">
         ${(!isContext && c.name) ? `<div class="journal-caption">${esc(c.name)}</div>` : ''}`;
     }
