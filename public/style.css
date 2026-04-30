@@ -119,23 +119,24 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
 }
 body.dark-mode #bgLayers .bg-base { background: #080809; }
 
-/* Calque 2 : vignette blanche — voile lumineux subtil aux 4 coins.
-      Centre transparent (laisse voir bg-base), coins virant blanc.
-      Effet de profondeur, comme un papier sous une lampe diffuse. */
+/* Calque 2 : vignette claire — voile lumineux étendu aux 4 extrémités.
+      Centre transparent (laisse voir bg-base), bords virant blanc/gris clair.
+      Démarre tôt (couvre une grande zone) → effet diffus papier sous lampe. */
 #bgLayers .bg-vignette {
   background: radial-gradient(ellipse at center,
-    transparent 38%,
-    rgba(255, 255, 255, 0.55) 80%,
-    rgba(255, 255, 255, 0.95) 100%);
+    transparent 25%,
+    rgba(255, 255, 255, 0.40) 70%,
+    rgba(255, 255, 255, 0.85) 100%);
   z-index: 4;                         /* AU-DESSUS du grain pour ne pas être assombrie par le multiply */
   pointer-events: none;
 }
-/* Dark mode : vignette inversée — coins nettement plus sombres pour profondeur nocturne */
+/* Dark mode : vignette CLAIRE aussi — halo gris-clair aux extrémités sur fond très sombre,
+      effet "lumière diffuse qui caresse les bords" plutôt que coins assombris. */
 body.dark-mode #bgLayers .bg-vignette {
   background: radial-gradient(ellipse at center,
-    transparent 40%,
-    rgba(0, 0, 0, 0.55) 90%,
-    rgba(0, 0, 0, 0.85) 100%);
+    transparent 25%,
+    rgba(255, 255, 255, 0.06) 70%,
+    rgba(255, 255, 255, 0.14) 100%);
 }
 
 /* Calque 3 : dégradé latéral — pilotée par style inline depuis JS
