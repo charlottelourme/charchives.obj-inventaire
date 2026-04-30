@@ -405,23 +405,25 @@
 <!-- ── Floating mobile button ── -->
 <button class="fab" id="fabBtn" title="Ajouter un objet">+</button>
 
-<!-- ── Bottom bar — Export (gauche) + Navigation (droite) ── -->
-<div id="breadcrumbBar" class="breadcrumb-bar" style="display:none"></div>
-
-<nav class="bottom-nav">
-  <div class="bottom-nav-exports">
-    <span class="bottom-nav-export-label">EXPORTER</span>
-    <button class="btn-export" id="exportJsonBtn" title="Télécharger les données JSON">↓ JSON</button>
-    <button class="btn-export" id="exportShopifyBtn" title="Exporter Shopify CSV">↓ Shopify</button>
-    <a class="btn-export" href="/api/export/photos-zip" download title="Télécharger toutes les photos en ZIP">↓ Photos ZIP</a>
-  </div>
-  <div class="bottom-nav-sep"></div>
-  <div class="bottom-nav-views">
-    <button class="view-tab" id="viewCalendar">Calendrier</button>
-    <button class="view-tab" id="viewCatalogue">Catalogue</button>
-    <button class="view-tab" id="viewStats">Stats</button>
-  </div>
-</nav>
+<!-- ── Footer global : socle opaque avec 2 lignes (breadcrumb + outils) ── -->
+<footer class="global-footer">
+  <!-- Ligne 1 : fil d'Ariane (à gauche, discret) -->
+  <div id="breadcrumbBar" class="breadcrumb-bar global-footer-breadcrumb" style="display:none"></div>
+  <!-- Ligne 2 : outils — INVERSION : Vues à gauche, Exports à droite -->
+  <nav class="bottom-nav global-footer-tools">
+    <div class="bottom-nav-views">
+      <button class="view-tab" id="viewCalendar">Calendrier</button>
+      <button class="view-tab" id="viewCatalogue">Catalogue</button>
+      <button class="view-tab" id="viewStats">Stats</button>
+    </div>
+    <div class="bottom-nav-exports">
+      <span class="bottom-nav-export-label">EXPORTER</span>
+      <button class="btn-export" id="exportJsonBtn" title="Télécharger les données JSON">↓ JSON</button>
+      <button class="btn-export" id="exportShopifyBtn" title="Exporter Shopify CSV">↓ Shopify</button>
+      <a class="btn-export" href="/api/export/photos-zip" download title="Télécharger toutes les photos en ZIP">↓ Photos ZIP</a>
+    </div>
+  </nav>
+</footer>
 
 <!-- ── Edit / Create Modal ── -->
 <div class="modal-overlay" id="editModal" style="display:none">
