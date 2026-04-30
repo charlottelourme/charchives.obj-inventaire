@@ -3847,8 +3847,9 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
 .journal-remove-btn:hover { background: rgba(0,0,0,0.9); }
 
 /* ── Modale d'agrandissement photo Journal ──────────────────────────────────
-   Pas de cadre / bordure / fond : juste l'image agrandie centrée sur un
-   backdrop sombre. Caption italique flotte sous l'image. */
+   Halo Soft Block clair fondu derrière la photo (mêmes principes que la
+   fiche objet d'Inventaire : ::before déborde + blur + opacity). Pas de
+   backdrop foncé : voile clair qui laisse deviner le canvas dessous. */
 #journalPhotoModal .journal-photo-modal-inner {
   /* Override les styles par défaut .modal et .modal-lg */
   display: flex;
@@ -3864,12 +3865,27 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   max-height: 92vh !important;
   height: auto !important;
   overflow: visible !important;
+  position: relative;
+  isolation: isolate;     /* contexte d'empilement pour le ::before z-index: -1 */
 }
-/* Supprime le grain papier ::before hérité de .modal */
+/* Halo Soft Block : rectangle clair flou qui déborde derrière l'image —
+   mêmes paramètres que .detailModal .modal::before (Inventaire). */
 #journalPhotoModal .journal-photo-modal-inner::before {
-  display: none !important;
-  content: none !important;
+  content: '' !important;
+  display: block !important;
+  position: absolute;
+  inset: -8% -6%;
+  background: rgba(250, 250, 248, 0.94);
+  filter: blur(52px);
+  border-radius: 4px;
+  z-index: -1;
+  opacity: 0.92;
+  pointer-events: none;
 }
+body.dark-mode #journalPhotoModal .journal-photo-modal-inner::before {
+  background: rgba(244, 244, 245, 0.18);
+}
+
 #journalPhotoModal .journal-photo-modal-body {
   display: flex;
   flex-direction: column;
@@ -3887,19 +3903,19 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   object-fit: contain;
   display: block;
   border-radius: 0;
-  /* Aucune bordure / box-shadow : image brute */
 }
 #journalPhotoModal .journal-photo-modal-caption {
   font-family: 'Compagnon', monospace;
   font-style: italic;
   font-size: 15px;
-  color: rgba(255,255,255,0.78);     /* lisible sur backdrop sombre */
+  color: var(--text-2);                    /* lisible sur halo clair */
   text-align: center;
   line-height: 1.4;
   max-width: 80%;
 }
 #journalPhotoModal .journal-photo-modal-caption:empty { display: none; }
-/* Bouton close flottant en haut-droite de l'écran (pas du cadre) */
+
+/* Bouton close flottant en haut-droite de l'écran */
 #journalPhotoModal .modal-close {
   position: fixed;
   top: 22px;
@@ -3908,15 +3924,20 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: rgba(255,255,255,0.85);
+  color: var(--text-2);
   padding: 6px;
 }
-#journalPhotoModal .modal-close:hover { color: #fff; }
+#journalPhotoModal .modal-close:hover { color: var(--text); }
 
-/* Backdrop : assombri pour focus total sur l'image */
+/* Backdrop : voile clair, pas de blur — laisse percevoir le canvas dessous */
 #journalPhotoModal.modal-overlay {
-  background: rgba(20, 20, 22, 0.92);
+  background: rgba(250, 250, 248, 0.42);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   padding: 0;
+}
+body.dark-mode #journalPhotoModal.modal-overlay {
+  background: rgba(10, 10, 10, 0.50);
 }
 
 @media (max-width: 768px) {
