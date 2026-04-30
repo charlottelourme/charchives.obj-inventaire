@@ -1672,9 +1672,6 @@ function _applyGridCols() {
   else if (w <= 768)  cols = 2;
   else if (w <= 1024) cols = 3;
   else                cols = Math.max(2, Math.round(5 - ratio * 3));
-  // On ne touche QUE la CSS variable. Aucune écriture inline de column-count :
-  // le CSS de fin de fichier (avec !important) garde la main et applique la
-  // valeur via `var(--grid-cols)`. Évite tout conflit JS↔CSS.
   document.documentElement.style.setProperty('--grid-cols', String(cols));
   document.querySelectorAll('#gridView .grid').forEach(g => {
     g.classList.remove('grid-css');
@@ -1684,27 +1681,33 @@ function _applyGridCols() {
     const items = [...g.querySelectorAll(':scope > .card')];
     const itemCount = items.length;
     // Cap local : si la grille a moins d'items que de colonnes, on réduit
-    // cols pour ne pas laisser de colonnes vides. Override local sur
-    // --grid-cols → la CSS prend automatiquement cette valeur.
+    // cols pour ne pas laisser de colonnes vides.
     const effective = Math.max(1, Math.min(cols, itemCount || cols));
     g.style.setProperty('--grid-cols', String(effective));
-    // ── FORCE LA RÉPARTITION ÉQUILIBRÉE ────────────────────────────────────
-    // column-fill: balance par défaut a un bug bien connu : avec peu d'items
-    // tall + break-inside:avoid, le navigateur empile parfois plusieurs cartes
-    // dans la 1re colonne au lieu de répartir 1 par colonne. On force ici la
-    // distribution en insérant `break-before: column` toutes les ⌈N/cols⌉
-    // cartes — le moteur de layout ne peut alors PAS rassembler 2 items dans
-    // la même colonne quand il devrait en avoir un par colonne.
-    const perCol = Math.max(1, Math.ceil(itemCount / effective));
-    items.forEach((card, i) => {
-      if (i > 0 && i % perCol === 0) {
-        card.style.breakBefore           = 'column';
-        card.style.webkitColumnBreakBefore = 'always';
-      } else {
-        card.style.breakBefore           = '';
-        card.style.webkitColumnBreakBefore = '';
-      }
-    });
+    // ── FORCE LA RÉPARTITION VRAIMENT ÉQUILIBRÉE ────────────────────────────
+    // column-fill: balance (par défaut) a un bug : avec peu d'items tall +
+    // break-inside:avoid, le navigateur empile plusieurs cartes dans la 1re
+    // colonne au lieu de répartir 1 par colonne. La parade :
+    //   1. column-fill: auto  → remplit chaque colonne dans l'ordre
+    //   2. on calcule la hauteur totale du contenu / cols → hauteur cible
+    //   3. on fixe inline `height` à cette cible : les cartes dépassant
+    //      basculent automatiquement dans la colonne suivante.
+    // C'est le seul moyen fiable d'obtenir une répartition équilibrée en CSS
+    // Columns avec 2-10 items.
+    if (itemCount > 0) {
+      // Force le layout pour mesurer les hauteurs APRÈS application de --grid-cols.
+      void g.offsetHeight;
+      const totalH = items.reduce((s, it) => s + it.offsetHeight + parseFloat(getComputedStyle(it).marginBottom || 0), 0);
+      const maxItemH = items.reduce((m, it) => Math.max(m, it.offsetHeight), 0);
+      // Hauteur cible = total / cols + une carte de buffer (break-inside évite
+      // les coupures, donc il faut prévoir l'épaisseur d'une carte en marge).
+      const targetH = Math.ceil(totalH / effective) + maxItemH * 0.3;
+      g.style.columnFill = 'auto';
+      g.style.height     = targetH + 'px';
+    } else {
+      g.style.columnFill = '';
+      g.style.height     = '';
+    }
   });
 }
 
