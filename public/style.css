@@ -2411,7 +2411,10 @@ body.dark-mode .sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: #18
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 200;
+  /* z-index: 1500 — DOIT être au-dessus du header (1000) et du masque safe-area iOS (html::before, 1001).
+     Sinon, sur mobile en plein écran, le header de page reste devant la modale
+     et masque le titre + onglets + la zone Photos en haut du formulaire. */
+  z-index: 1500;
   padding: 20px;
 }
 .modal {
