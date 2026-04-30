@@ -2395,9 +2395,12 @@ async function deleteNote(id) {
 
 function updateCardThumb(el,id,photos,idx) {
   const card=el.querySelector(`.card[data-id="${id}"]`); if(!card) return;
-  const img=card.querySelector('.card-thumb');
+  // Met à jour la photo standard (carrousel < ›). Le PNG détouré (img-cutout)
+  // n'est PAS modifié — il représente la version sans fond, pas une variante
+  // du carrousel. C'est volontaire : en dark mode, on continue à voir le PNG
+  // détouré « principal » de l'objet, indépendamment de l'index courant.
+  const img=card.querySelector('.card-thumb.img-standard') || card.querySelector('.card-thumb');
   if (img) {
-    // Reset l'état "cassé" — le listener load/error réagira au nouveau src
     img.closest('.card-thumb-area')?.classList.remove('card-thumb-area--broken');
     img.src = photoUrl(photos[idx]);
   }
