@@ -3439,6 +3439,20 @@ function _dioSave() {
   catch(e) { /* ignore */ }
 }
 
+// ─────────────────────────────────────────────────────────────
+// Helper : sélectionne la photo "sans fond" d'un objet pour le Diorama.
+// Convention projet : un PNG dans c.photos[] = version sans fond.
+// Si imageMode === 'cutout' (tag explicite), on fait confiance à photos[0].
+// Retourne null si aucune photo PNG/cutout n'est dispo (l'objet sera exclu
+// de la bibliothèque Diorama — pas d'image avec fond admise).
+function _dioPhotoFor(c) {
+  const photos = (c && c.photos) || [];
+  if (!photos.length) return null;
+  if (c.imageMode === 'cutout') return photos[0];
+  const png = photos.find(p => p && p.toLowerCase().endsWith('.png'));
+  return png || null;
+}
+
 function renderDiorama() {
   // Injecte la description éditable
   const dioDescEl = document.getElementById('dioramaDesc');
@@ -3454,19 +3468,23 @@ function renderDiorama() {
     _dioRenderDecorBar(decBar, backdrop);
   }
 
-  // ── Sidebar bibliothèque (objets avec PNG) ──
+  // ── Sidebar bibliothèque ──
+  // Toute la bibliothèque d'Inventaire, mais uniquement la version PNG
+  // sans fond (sélectionnée auto via _dioPhotoFor). Un objet sans PNG
+  // est exclu : "pas les images avec fond" (cf. brief Charlotte).
   const pngItems = state.collections.filter(c =>
-    c.type !== 'note' && c.type !== 'fragment' &&
-    c.photos?.[0] && (c.photos[0].toLowerCase().endsWith('.png') || c.imageMode === 'cutout')
+    c.type !== 'note' && c.type !== 'fragment' && c.type !== 'journal-photo' &&
+    !!_dioPhotoFor(c)
   );
   libList.innerHTML = '';
   const searchQ = (document.getElementById('dioSearch')?.value || '').toLowerCase().trim();
   const filtered = searchQ ? pngItems.filter(c => (c.name||'').toLowerCase().includes(searchQ)) : pngItems;
   filtered.forEach(c => {
+    const photo = _dioPhotoFor(c);
     const el = document.createElement('div');
     el.className = 'diorama-lib-item';
     el.draggable = true;
-    el.innerHTML = `<img src="${photoUrl(c.photos[0])}" alt="${esc(c.name||'')}"><div class="dio-lib-name">${esc(c.name||'')}</div>`;
+    el.innerHTML = `<img src="${photoUrl(photo)}" alt="${esc(c.name||'')}"><div class="dio-lib-name">${esc(c.name||'')}</div>`;
     el.addEventListener('dragstart', e => {
       e.dataTransfer.setData('text/plain', c.id);
       e.dataTransfer.effectAllowed = 'copy';
