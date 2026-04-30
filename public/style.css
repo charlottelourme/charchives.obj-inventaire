@@ -6049,26 +6049,60 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
    BOTTOM NAV — Frise · Calendrier · Stats en bas à droite
 ══════════════════════════════════════════════════════════════ */
 /* ── Bottom bar unifiée ── */
-.bottom-nav {
+/* ══════════════════════════════════════════════════════════════════════════
+   GLOBAL FOOTER — socle opaque en bas de page, 2 lignes empilées
+   ══════════════════════════════════════════════════════════════════════════
+   Conteneur fixe en bas. Fond OPAQUE (var(--bg)) → masque tout ce qui scrolle
+   en dessous. Pas de transparence, pas de blur. Filet supérieur fin pour
+   marquer la séparation. Padding global pour la respiration.
+   Contient 2 lignes : breadcrumb (haut) + outils (bas), inversion gauche/droite. */
+.global-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 98;
-  /* Bandeau aligné sur le fil d'Ariane (.breadcrumb-bar) : même fond translucide
-     dérivé du bg du site, même flou, même filet en haut. Tout est regroupé dans
-     ce seul bandeau au pied de page. */
-  background: rgba(var(--bg-rgb, 250,250,248), .82);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border-top: 1px solid rgba(0,0,0,.04);
+  background: var(--bg);                  /* OPAQUE — pas de transparence */
+  border-top: 1px solid var(--border-light, #E8E4DE);
+  padding: 0.6rem 2rem;
   display: flex;
-  align-items: stretch;
-  height: 44px;
+  flex-direction: column;
+  gap: 0.35rem;
 }
-body.dark-mode .bottom-nav {
-  background: rgba(var(--bg-rgb, 10,10,10), .82);
-  border-top-color: rgba(255,255,255,.04);
+body.dark-mode .global-footer {
+  background: var(--bg);
+  border-top-color: var(--border, #27272A);
+}
+
+/* Ligne 1 : breadcrumb intégré au footer (plus de position:fixed séparé). */
+.global-footer-breadcrumb {
+  position: static !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  height: auto !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-top: none !important;
+  padding: 0 !important;
+  z-index: auto !important;
+  align-self: stretch;
+}
+
+/* Ligne 2 : outils en flex space-between. INVERSION : Vues à gauche, Exports à droite. */
+.bottom-nav.global-footer-tools {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;        /* gauche / droite */
+  height: auto;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: none;
+  padding: 0;
+  gap: 1rem;
 }
 .bottom-nav > * { position: relative; z-index: 1; }
 
