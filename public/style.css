@@ -6407,10 +6407,10 @@ body { padding-bottom: 64px; }
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    background: #F8F8F8 !important;
+    background: transparent !important;
     z-index: 10 !important;
   }
-  body.dark-mode .search-wrap { background: #080809 !important; }
+  body.dark-mode .search-wrap { background: transparent !important; }
   .search-bar {
     width: 100% !important;
     max-width: 100% !important;
