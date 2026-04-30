@@ -6013,7 +6013,7 @@ body.dark-mode .gallery-scroll { background: #F8F8F8; }
   left: 0;
   right: 0;
   z-index: 98;
-  background: var(--bg);           /* fond identique à la page */
+  background: transparent;         /* laisse passer bg-base + grain global */
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border-top: none;
