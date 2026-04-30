@@ -652,7 +652,10 @@ async function init(attempt = 0) {
     if (localStorage.getItem('darkMode') === 'true') {
       state.darkMode = true;
       document.body.classList.add('dark-mode');
-      document.getElementById('darkModeBtn').textContent = '◐';
+      const _dmBtn  = document.getElementById('darkModeBtn');
+      const _dmMbtn = document.getElementById('mfnDarkBtn');
+      if (_dmBtn)  _dmBtn.textContent  = '◐';
+      if (_dmMbtn) _dmMbtn.textContent = '◐';
     }
 
     // Calendar years
