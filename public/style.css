@@ -3629,7 +3629,7 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
 /* Pane Nuée → Journal : libère hauteur fixe pour scroll naturel */
 #deriveView #deriveNueePane {
   height: auto !important;
-  min-height: calc(100vh - 220px) !important;
+  min-height: calc(100dvh - var(--header-h) - 88px) !important;
   overflow: visible !important;
 }
 /* Conteneur scroll : retire toute interaction de physique */
