@@ -124,19 +124,18 @@ body.dark-mode #bgLayers .bg-base { background: #080809; }
       Démarre tôt (couvre une grande zone) → effet diffus papier sous lampe. */
 #bgLayers .bg-vignette {
   background: radial-gradient(ellipse at center,
-    transparent 25%,
-    rgba(255, 255, 255, 0.40) 70%,
-    rgba(255, 255, 255, 0.85) 100%);
+    transparent 18%,
+    rgba(255, 255, 255, 0.55) 65%,
+    rgba(255, 255, 255, 1) 100%);
   z-index: 4;                         /* AU-DESSUS du grain pour ne pas être assombrie par le multiply */
   pointer-events: none;
 }
-/* Dark mode : vignette CLAIRE aussi — halo gris-clair aux extrémités sur fond très sombre,
-      effet "lumière diffuse qui caresse les bords" plutôt que coins assombris. */
+/* Dark mode : vignette CLAIRE aussi — halo gris-clair plus marqué aux extrémités sur fond très sombre */
 body.dark-mode #bgLayers .bg-vignette {
   background: radial-gradient(ellipse at center,
-    transparent 25%,
-    rgba(255, 255, 255, 0.06) 70%,
-    rgba(255, 255, 255, 0.14) 100%);
+    transparent 18%,
+    rgba(255, 255, 255, 0.10) 65%,
+    rgba(255, 255, 255, 0.24) 100%);
 }
 
 /* Calque 3 : dégradé latéral — pilotée par style inline depuis JS
