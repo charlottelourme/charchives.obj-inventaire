@@ -20,7 +20,7 @@
 .con-add-btn circle { border-radius: 50% !important; }
 
 :root {
-  --bg: #F0F0F0;
+  --bg: #E5E5E5;
   --surface: #F8F8F8;
   --border: #C4C4C4;         /* allégé — warm gray */
   --border-light: #E5E5E5;
@@ -6385,7 +6385,7 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
   ══════════════════════════════════════ */
   /* Barres de filtres : fond plein pour éviter le bleed-through */
   .status-filter-bar {
-    background: var(--bg);    /* #F0F0F0 solide */
+    background: var(--bg);    /* #E5E5E5 solide */
     position: relative;
     z-index: 10;
   }
@@ -9414,7 +9414,7 @@ body.dark-mode .portrait-title { color: var(--text); }
   text-align: left;
   width: 100%;
   padding: 32px 32px 24px;
-  background: #F0F0F0;
+  background: #E5E5E5;
   border-bottom: 1px solid #e4e4e7;   /* zinc-200 */
   box-sizing: border-box;
 }
