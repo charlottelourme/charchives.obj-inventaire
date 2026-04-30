@@ -1155,9 +1155,8 @@ body.dark-mode .card .card-grain {
   z-index: -2;
   pointer-events: none;
 }
-/* Couche dense centrale, elle aussi en ellipse + blur (10px) → ses bords se
-   fondent naturellement, plus besoin de mask-image. Le résultat est un wash
-   coloré sans aucune ligne droite ni angle. */
+/* Couche dense centrale — rectangle arrondi modeste + blur 8px → bords nets
+   mais fondus, donne du corps au centre sans dessiner d'ovale. */
 .card-poem-overlay::after {
   content: '';
   position: absolute;
