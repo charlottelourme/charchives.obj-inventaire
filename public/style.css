@@ -517,7 +517,7 @@ html::before {
   left: 0;
   right: 0;
   height: env(safe-area-inset-top);
-  background: #F8F8F8;                  /* blanc pur — aucune transparence possible */
+  background: #EDEDED;                  /* matche bg-base — couvre la safe-area iOS */
   z-index: 1001;                        /* au-dessus du header pour couvrir tout jour */
   pointer-events: none;
 }
