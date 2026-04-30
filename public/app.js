@@ -7094,8 +7094,12 @@ function setupKeywordInput() {
 function toggleDarkMode() {
   state.darkMode = !state.darkMode;
   document.body.classList.toggle('dark-mode', state.darkMode);
-  const btn = document.getElementById('darkModeBtn');
-  if (btn) btn.textContent = state.darkMode ? '◐' : '◑';
+  // Sync les deux boutons (desktop header + footer mobile)
+  const symbol = state.darkMode ? '◐' : '◑';
+  const btn  = document.getElementById('darkModeBtn');
+  const mbtn = document.getElementById('mfnDarkBtn');
+  if (btn)  btn.textContent  = symbol;
+  if (mbtn) mbtn.textContent = symbol;
   localStorage.setItem('darkMode', state.darkMode);
   applyVerbePageTheme();
 }
