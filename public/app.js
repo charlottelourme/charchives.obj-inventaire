@@ -8857,6 +8857,19 @@ function bindEvents() {
   document.getElementById('noteModalClose').addEventListener('click', closeNoteModal);
   document.getElementById('noteModalCancel').addEventListener('click', closeNoteModal);
   document.getElementById('noteModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeNoteModal(); });
+
+  // ── Journal Photo Modal — agrandissement au clic sur photo du Journal ──
+  document.getElementById('journalPhotoModalClose')?.addEventListener('click', closeJournalPhotoModal);
+  document.getElementById('journalPhotoModal')?.addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeJournalPhotoModal();
+  });
+  // Escape ferme la modale photo si elle est ouverte
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const m = document.getElementById('journalPhotoModal');
+      if (m && m.style.display === 'flex') closeJournalPhotoModal();
+    }
+  });
   document.getElementById('noteModalSave').addEventListener('click', saveNote);
   document.getElementById('noteDeleteBtn').addEventListener('click', () => { if (_noteEditId) deleteNote(_noteEditId); });
   // Font selector
