@@ -3775,6 +3775,62 @@ body.dark-mode .journal-item.journal-drop-after {
 .journal-item:hover .journal-remove-btn { opacity: 1; }
 .journal-remove-btn:hover { background: rgba(0,0,0,0.9); }
 
+/* ── Modale d'agrandissement photo Journal ──────────────────────────────────
+   Reprend les proportions de la modale Inventaire (.modal + .modal-lg) :
+   80vw × 80vh, surface, border, grain papier hérités. */
+#journalPhotoModal .journal-photo-modal-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: var(--surface);
+}
+#journalPhotoModal .journal-photo-modal-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  gap: 16px;
+  overflow: auto;
+  min-height: 0;
+}
+#journalPhotoModal .journal-photo-modal-body img {
+  max-width: 100%;
+  max-height: calc(80vh - 100px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 0;
+}
+#journalPhotoModal .journal-photo-modal-caption {
+  font-family: 'Feroniapi', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--text-2);
+  text-align: center;
+  line-height: 1.4;
+  max-width: 80%;
+}
+#journalPhotoModal .journal-photo-modal-caption:empty { display: none; }
+/* Le bouton close se positionne en haut-droite, flottant au-dessus du grain */
+#journalPhotoModal .modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-2);
+  padding: 4px;
+}
+#journalPhotoModal .modal-close:hover { color: var(--text); }
+@media (max-width: 768px) {
+  #journalPhotoModal .journal-photo-modal-body { padding: 20px; }
+  #journalPhotoModal .journal-photo-modal-caption { font-size: 14px; }
+}
+
 /* Notes Journal : post-it Cormorant italique */
 .journal-note .journal-note-inner {
   padding: 22px 22px 26px;
