@@ -20,7 +20,7 @@
 .con-add-btn circle { border-radius: 50% !important; }
 
 :root {
-  --bg: #E5E5E5;
+  --bg: #E0E0E0;             /* unifié avec bg-base #bgLayers — tout le site partage cette couleur */
   --surface: #F8F8F8;
   --border: #C4C4C4;         /* allégé — warm gray */
   --border-light: #E5E5E5;
