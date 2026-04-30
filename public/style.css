@@ -6101,8 +6101,7 @@ body.dark-mode .bottom-nav::before { mix-blend-mode: overlay; opacity: 0.40; }
 /* Padding bas pour ne pas cacher le contenu */
 body { padding-bottom: 44px; }
 
-/* Dark mode */
-body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
+/* Dark mode bottom-nav → voir règle principale ci-dessus */
 
 /* ── FAB (mobile floating button) ── */
 .fab {
