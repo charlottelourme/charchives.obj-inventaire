@@ -514,12 +514,9 @@ header {
   gap: 16px;
   box-sizing: border-box;
 }
-/* Compensation de la hauteur du header fixed + safe area */
-body { padding-top: calc(148px + env(safe-area-inset-top)); }
-@media (max-width: 520px) {
-  /* Mobile 3 lignes : logo+actions(40) + nav(40) + search(44) = 124 + safe-area */
-  body { padding-top: calc(124px + env(safe-area-inset-top)); }
-}
+/* Compensation de la hauteur du header fixed — repose sur --header-h
+   (mesurée dynamiquement par JS, fallback CSS via :root). */
+body { padding-top: var(--header-h); }
 /* Masque de sécurité — aucun "jour" ne peut apparaître au-dessus du header
    même en over-scroll iOS (bounce). Le voile opaque couvre la safe-area. */
 html::before {
