@@ -207,7 +207,7 @@ const state = {
   dpYear: new Date().getFullYear(),
   dpSelectedDate: '',
   typoFilter: '',          // filtre primaire par Typologie (barre Typologies)
-  attrFilters: { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [] },
+  attrFilters: { subcat: [], matieres: [], origine: [], etat_traces: [], couleurs: [], univers: [], usage: [] },
   calDateType: 'dateAchat',
   calYear: 2025,
   calMonth: 0,
