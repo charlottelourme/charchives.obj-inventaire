@@ -6351,6 +6351,14 @@ function _cropDraw() {
 
 function _cropClose() {
   _crop.overlay.style.display = 'none';
+  // Restaure la modale parente cachée pendant le recadrage (cf. openCropper).
+  // display: none préserve l'état du DOM → tous les champs saisis (titre, prix,
+  // description, etc.) sont conservés tels quels.
+  if (_crop._parentModal) {
+    _crop._parentModal.style.display = _crop._parentModalPrevDisplay || 'flex';
+    _crop._parentModal = null;
+    _crop._parentModalPrevDisplay = null;
+  }
 }
 
 async function _cropValidate() {
