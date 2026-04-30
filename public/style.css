@@ -3704,10 +3704,48 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
 .journal-item:active { cursor: grabbing; }
 .journal-item.journal-note { cursor: pointer; }     /* notes : édition, pas zoom */
 
-/* 3 classes de tailles fondées sur le grid-step (40px) */
+/* 4 classes de tailles fondées sur le grid-step (40px) */
 .journal-item.size-1 { width: calc(var(--grid-step) * 6); }     /* 240px */
 .journal-item.size-2 { width: calc(var(--grid-step) * 8); }     /* 320px */
 .journal-item.size-3 { width: calc(var(--grid-step) * 12); }    /* 480px */
+.journal-item.size-4 { width: calc(var(--grid-step) * 16); }    /* 640px */
+
+/* Picker de taille — 4 dots discrets en haut-gauche, visibles au hover.
+   Les dots croissent visuellement avec la taille qu'ils représentent. */
+.journal-size-picker {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.62);
+  z-index: 6;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.journal-item:hover .journal-size-picker { opacity: 1; pointer-events: auto; }
+.jsp-dot {
+  display: inline-block;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  border: 1px solid rgba(255,255,255,0.55);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+.jsp-dot[data-size="size-1"] { width: 5px;  height: 5px; }
+.jsp-dot[data-size="size-2"] { width: 7px;  height: 7px; }
+.jsp-dot[data-size="size-3"] { width: 9px;  height: 9px; }
+.jsp-dot[data-size="size-4"] { width: 11px; height: 11px; }
+.jsp-dot:hover { background: rgba(255,255,255,0.7); }
+.jsp-dot.active {
+  background: #fff;
+  border-color: #fff;
+}
 
 /* Pendant un drag : item allégé pour visualiser le mouvement */
 .journal-item.journal-dragging {
