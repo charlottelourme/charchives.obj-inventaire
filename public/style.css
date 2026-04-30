@@ -9773,7 +9773,9 @@ body.dark-mode .mobile-footer-nav {
 /* ══════════════════════════════════════════════════════════════════════════
    SUB-NAV BAR — Composant unique pour tous les bandeaux de second niveau
    Appliqué sur : .toolbar-strate (Inventaire), .derive-header (Dérive),
-                  .trios-tabs-nav (Triptyque), .diorama-decor-bar (Diorama).
+                  .trios-tabs-nav (Triptyque).
+   .diorama-decor-bar est EXCLU : c'est une grille de slots image (~88px
+   de haut), pas une nav d'onglets. Voir bloc dédié plus bas.
    Règle architecturale stricte :
    - Hauteur fixe 52px
    - Bordure basse 1px pleine largeur (w-full)
