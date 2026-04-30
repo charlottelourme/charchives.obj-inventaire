@@ -9966,13 +9966,6 @@ body.dark-mode .trios-tabs-nav { border-bottom-color: var(--border); }
   font-style: italic !important;
   font-size: 16px !important;
   letter-spacing: 0 !important;
-}
-/* Triptyque : onglets plus gros que la navigation header (hiérarchie inversée). */
-.trios-tab-btn {
-  font-size: clamp(1.5rem, 2.2vw, 2.3rem) !important;
-}
-.trios-tab-btn-stub-anchor {
-  letter-spacing: 0 !important;
   text-transform: none !important;
   font-weight: 400 !important;
   color: var(--text-3) !important;
@@ -9986,6 +9979,10 @@ body.dark-mode .trios-tabs-nav { border-bottom-color: var(--border); }
   transition: color 0.15s ease;
   position: relative;
   white-space: nowrap;
+}
+/* Triptyque : onglets plus gros que la navigation header (hiérarchie inversée). */
+.trios-tab-btn {
+  font-size: clamp(1.5rem, 2.2vw, 2.3rem) !important;
 }
 .derive-seg-btn:hover,
 .trios-tab-btn:hover { color: var(--text-2) !important; }
