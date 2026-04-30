@@ -9648,8 +9648,8 @@ body.dark-mode .hd-item { border-bottom-color: var(--border); }
   left: 0;
   right: 0;
   z-index: 500;
-  background: #F8F8F8;
-  border-top: 1px solid var(--border-light);
+  background: transparent;        /* = continuité bg-base + vignette + grain */
+  border-top: none;
   padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
   align-items: center;
   gap: 12px;
@@ -9658,8 +9658,7 @@ body.dark-mode .hd-item { border-bottom-color: var(--border); }
   color: var(--text-3);
 }
 body.dark-mode .mobile-footer-nav {
-  background: var(--bg);
-  border-top-color: var(--border);
+  background: transparent;
   color: var(--text-3);
 }
 .mfn-back,
