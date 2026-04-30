@@ -627,8 +627,8 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   color: #2A2A2E;
 }
 .view-tab.active {
-  color: #18181b;        /* contraste pur — Compagnon Bold suffit à signifier l'actif */
-  font-weight: 700;
+  color: #18181b;        /* contraste pur — couleur signe l'actif (poids reste 300 italic) */
+  font-weight: 300;
   text-decoration: none;
   filter: none !important;
   opacity: 1 !important;
