@@ -58,10 +58,15 @@
 
   <!-- ── Grid view ── -->
   <div id="gridWrapper">
-    <!-- ── Action Bar mobile : compteur + bouton Filtres ── -->
+    <!-- ── Action Bar mobile : compteur + toggle 1/2 colonnes + bouton Filtres ── -->
     <div class="mobile-action-bar" id="mobileActionBar">
       <span class="mab-count" id="mabCount">0 objets</span>
-      <button class="mab-filter-btn" id="mabFilterBtn">+ Filtres</button>
+      <div class="mab-actions">
+        <button class="mab-cols-toggle" id="mabColsToggle" type="button" aria-label="Basculer 1 ou 2 colonnes" title="1 / 2 colonnes">
+          <span class="mab-cols-label">1 | 2</span>
+        </button>
+        <button class="mab-filter-btn" id="mabFilterBtn">+ Filtres</button>
+      </div>
     </div>
     <!-- ══ BANDEAU : 2 piliers Feroniapi — Objets à gauche, Intentions à droite ══ -->
     <div class="inv-pillars" id="invPillars">
