@@ -6400,6 +6400,17 @@ function openCropper(source, onCrop) {
   _crop._onCrop = onCrop;
   _crop.ratio   = 'free';
   _crop.selW = 0; _crop.selH = 0;
+  // ── SWITCH DE MODALE ────────────────────────────────────────────────────
+  // On masque la modale parente (#editModal — fiche objet) pendant que le
+  // cropper plein-écran prend la main. Évite tout conflit z-index / contexte
+  // d'empilement. display:none préserve l'état du DOM (champs saisis OK).
+  // _cropClose() restaurera la modale au close OU à la validation.
+  const parentModal = document.getElementById('editModal');
+  if (parentModal && window.getComputedStyle(parentModal).display !== 'none') {
+    _crop._parentModal = parentModal;
+    _crop._parentModalPrevDisplay = parentModal.style.display || 'flex';
+    parentModal.style.display = 'none';
+  }
   // Détecte si la source est un PNG pour préserver la transparence
   _crop.isPng = typeof source === 'string'
     ? /\.png(\?|#|$)/i.test(source)
