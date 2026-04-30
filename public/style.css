@@ -3788,8 +3788,10 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   }
   .journal-item.size-1,
   .journal-item.size-2,
-  .journal-item.size-3 { width: 100% !important; }
+  .journal-item.size-3,
+  .journal-item.size-4 { width: 100% !important; }
   .journal-item img { pointer-events: auto; }    /* clic OK sur mobile */
+  .journal-size-picker { display: none !important; }   /* pas de resize sur mobile */
 }
 .journal-caption {
   font-family: 'Feroniapi', serif;
