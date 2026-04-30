@@ -568,10 +568,9 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   line-height: 1.1;
   cursor: pointer;
   color: var(--text-3);
-  transition: color .25s, filter 0.4s ease-out, opacity 0.4s ease-out;
+  transition: color .2s ease, opacity .2s ease;
   white-space: nowrap;
   letter-spacing: 0;               /* Feroniapi italic — pas de tightening */
-  will-change: filter;             /* hint compositor pour transition fluide */
 }
 
 /* ── Halo de Navigation — nuage flouté : survol uniquement ── */
