@@ -3653,95 +3653,101 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #080809; }
      car les items sont plus petits, la respiration relative reste équivalente. */
 #deriveView #galleryGrid.journal-mode {
   display: block !important;
-  position: static !important;
   width: 100% !important;
   height: auto !important;
-  min-height: 0 !important;
-  -webkit-column-count: calc(var(--grid-cols, 4) + 2);
-  column-count: calc(var(--grid-cols, 4) + 2);
-  -webkit-column-gap: 2rem;
-  column-gap: 2rem;
   padding: 80px var(--page-gutter) calc(80px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   animation: none !important;
   transform: none !important;
-}
-@media (min-width: 1440px) {
-  #deriveView #galleryGrid.journal-mode {
-    -webkit-column-gap: 2.5rem;
-    column-gap: 2.5rem;
-  }
-}
-@media (max-width: 1024px) {
-  #deriveView #galleryGrid.journal-mode {
-    -webkit-column-gap: 1.5rem;
-    column-gap: 1.5rem;
-    padding: 60px var(--page-gutter) calc(80px + env(safe-area-inset-bottom));
-  }
+  -webkit-column-count: unset;
+  column-count: unset;
+  -webkit-column-gap: 0;
+  column-gap: 0;
 }
 
-/* Items Journal : margin-bottom légèrement réduite (items plus petits, même
-   ratio gap/item) ; reste statique, cliquable, pas coupé entre colonnes. */
+/* Mode canvas (desktop) : grille magnétique en fond + items en absolu */
+#deriveView #galleryGrid.journal-canvas {
+  position: relative;
+  min-height: 200vh;
+  background-size: var(--grid-step) var(--grid-step);
+  background-image:
+    linear-gradient(to right, var(--border-light) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-light) 1px, transparent 1px);
+  background-position: var(--page-gutter) 80px;     /* aligne le quadrillage avec le padding */
+}
+body.dark-mode #deriveView #galleryGrid.journal-canvas {
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px);
+}
+
+/* Items Journal — par défaut (desktop canvas) : position absolue */
 .journal-item {
-  position: relative !important;
-  transform: none !important;
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
-  margin: 0 0 3rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
   display: block;
-  width: 100%;
-  cursor: zoom-in;
+  cursor: grab;
+  border: none;
   border-radius: 0;
   overflow: visible;
   animation: none !important;
-  transition: opacity 0.2s ease, box-shadow 0.15s ease;
+  transition: opacity 0.18s ease, box-shadow 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
-@media (min-width: 1440px) { .journal-item { margin-bottom: 4rem; } }
-@media (max-width: 1024px) { .journal-item { margin-bottom: 2.25rem; } }
 .journal-item:active { cursor: grabbing; }
 .journal-item.journal-note { cursor: pointer; }     /* notes : édition, pas zoom */
 
-/* Grain papier sur chaque item — même technique que .card .card-grain */
-.journal-item .card-grain {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.12;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='jn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23jn)'/%3E%3C/svg%3E");
-}
-body.dark-mode .journal-item .card-grain {
-  opacity: 0.18;
-  mix-blend-mode: overlay;
-}
-.journal-item img,
-.journal-item .journal-caption,
-.journal-item .journal-note-inner { position: relative; z-index: 1; }
-/* Pendant le drag : item fantôme estompé */
+/* 3 classes de tailles fondées sur le grid-step (40px) */
+.journal-item.size-1 { width: calc(var(--grid-step) * 6); }     /* 240px */
+.journal-item.size-2 { width: calc(var(--grid-step) * 8); }     /* 320px */
+.journal-item.size-3 { width: calc(var(--grid-step) * 12); }    /* 480px */
+
+/* Pendant un drag : item allégé pour visualiser le mouvement */
 .journal-item.journal-dragging {
-  opacity: 0.35;
+  opacity: 0.55;
   cursor: grabbing;
+  z-index: 50;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  transition: none;
 }
-/* Marqueurs d'insertion : trait fin Cormorant-noir au bord cible */
-.journal-item.journal-drop-before {
-  box-shadow: 0 -3px 0 0 var(--text);
-}
-.journal-item.journal-drop-after {
-  box-shadow: 0 3px 0 0 var(--text);
-}
-body.dark-mode .journal-item.journal-drop-before,
-body.dark-mode .journal-item.journal-drop-after {
-  box-shadow-color: var(--text);  /* var(--text) suffit, garde la cohérence */
-}
-/* Désactive la sélection de texte/image pendant l'interaction drag */
-.journal-item img { user-select: none; -webkit-user-drag: none; }
-.journal-item:hover { opacity: 0.85; }
+
+/* Image : largeur 100% du conteneur (donc dépend de la classe size) */
 .journal-item img {
   width: 100%;
   height: auto;
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;     /* l'image ne capte pas le mousedown — laisse le parent gérer */
+}
+.journal-item .journal-caption,
+.journal-item .journal-note-inner { position: relative; z-index: 1; }
+
+/* ── Fallback mobile (< 768px) : on désactive tout le canvas ──────────────
+   Items en flux relatif, pleine largeur, gap vertical simple. */
+@media (max-width: 768px) {
+  #deriveView #galleryGrid.journal-canvas,
+  #deriveView #galleryGrid.journal-mode {
+    background-image: none !important;
+    min-height: 0 !important;
+    padding: 32px 16px calc(80px + env(safe-area-inset-bottom));
+  }
+  .journal-item {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    margin-bottom: 2rem !important;
+    cursor: pointer;
+  }
+  .journal-item.size-1,
+  .journal-item.size-2,
+  .journal-item.size-3 { width: 100% !important; }
+  .journal-item img { pointer-events: auto; }    /* clic OK sur mobile */
 }
 .journal-caption {
   font-family: 'Feroniapi', serif;
