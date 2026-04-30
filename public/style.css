@@ -6828,7 +6828,7 @@ body.dark-mode .con-panier {
   background: rgba(18, 16, 14, 0.90);
 }
 body.dark-mode .bottom-nav {
-  background: rgba(14, 12, 11, 0.85) !important;
+  background: transparent !important;       /* continuité bg-base + grain dark */
 }
 
 /* ── Modales standard ── */
