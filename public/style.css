@@ -4015,6 +4015,9 @@ body.dark-mode .journal-item.journal-drop-after {
 }
 .gallery-scroll::-webkit-scrollbar { display: none; }
 body.dark-mode .gallery-scroll { background: #F8F8F8; }
+/* Journal : fond transparent — la galerie hérite du bg de la page (clair ou dark) */
+#deriveView .gallery-scroll,
+body.dark-mode #deriveView .gallery-scroll { background: transparent; }
 
 /* Surface — occupe 100% du viewport, aucune transformation CSS */
 .gallery-grid {
