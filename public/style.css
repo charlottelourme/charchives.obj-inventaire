@@ -6155,13 +6155,20 @@ body.dark-mode .global-footer {
   padding: 0 8px;
 }
 .bottom-nav .view-tab {
-  font-size: 12px;
-  padding: 0 16px;
-  color: var(--text-2);  /* plus contrasté */
+  font-family: 'Inter', sans-serif !important;     /* clinique : pas de Feroniapi dans le footer */
+  font-style: normal !important;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  color: var(--text-3);
   border-bottom: none;
-  border-top: 2px solid transparent;
-  letter-spacing: .07em;
-  height: 100%;
+  border-top: none;
+  height: auto;
+  background: none;
+  cursor: pointer;
+  transition: color .15s;
 }
 .bottom-nav .view-tab:hover { color: var(--text); background: none; }
 .bottom-nav .view-tab.active {
@@ -6172,9 +6179,17 @@ body.dark-mode .global-footer {
   text-decoration: none;
 }
 .bottom-nav .view-tab.active::after { display: none; }
+.bottom-nav-views {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+}
 
-/* Padding bas pour ne pas cacher le contenu */
-body { padding-bottom: 44px; }
+/* Padding bas pour ne pas cacher le contenu — calculé dynamiquement selon
+   la hauteur réelle du footer (breadcrumb visible ou non). 64px = approx
+   1 ligne d'outils + breadcrumb si visible. */
+body { padding-bottom: 64px; }
 
 /* Dark mode bottom-nav → voir règle principale ci-dessus */
 
