@@ -9986,7 +9986,7 @@ body.dark-mode .section-header {
 #dioramaView {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 52px);
+  height: calc(100dvh - var(--header-h));
 }
 
 /* ── Grille de 20 slots persistés + bouton temporaire ── */
