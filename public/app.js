@@ -5665,7 +5665,13 @@ function openNew() {
   renderExpoChipsPicker();
   switchModalTab('public');
   document.getElementById('editModal').style.display = 'flex';
-  setTimeout(()=>document.getElementById('fName').focus(),50);
+  // Reset du scroll : on veut toujours voir la zone Photos en haut quand on ouvre la fiche
+  const _mbNew = document.querySelector('#editModal .modal-body');
+  if (_mbNew) _mbNew.scrollTop = 0;
+  // Auto-focus sur le nom — desktop uniquement.
+  // Sur mobile, le focus ouvre le clavier iOS qui fait scroller la modale et masque la zone Photos.
+  const _isMobileNew = window.matchMedia && window.matchMedia('(max-width: 520px)').matches;
+  if (!_isMobileNew) setTimeout(()=>document.getElementById('fName').focus(),50);
 }
 
 function openEdit(id) {
