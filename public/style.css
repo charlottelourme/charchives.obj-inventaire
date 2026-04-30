@@ -1141,10 +1141,9 @@ body.dark-mode .card .card-grain {
   overflow: visible;
 }
 /* Le « blob » coloré flou — duotone INVERSÉ : fond foncé (--verbe-dark), texte
-   clair (--verbe-light). Forme strictement ellipsoïdale (border-radius 50 %)
-   pour les deux couches, gros flou pour les bords. Pas de mask-image (qui
-   créait un léger contour visible) — la forme ellipse + le blur suffisent à
-   faire fondre les bords. */
+   clair (--verbe-light). Forme RECTANGLE (coins légèrement arrondis), bords
+   franchement floutés. Le blur + un border-radius modéré adoucissent les
+   angles sans transformer la fenêtre en ovale. */
 .card-poem-overlay::before {
   content: '';
   position: absolute;
