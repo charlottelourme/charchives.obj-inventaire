@@ -3122,6 +3122,48 @@ function renderJournal(filtered) {
   // Drag canvas (desktop seulement)
   if (!isMobile) _bindJournalCanvasDrag(grid);
 
+  // Picker de taille : clic sur un dot change la taille de l'item + persiste
+  grid.querySelectorAll('.journal-size-picker .jsp-dot').forEach(dot => {
+    // mousedown stoppé pour empêcher le drag de démarrer
+    dot.addEventListener('mousedown', e => e.stopPropagation());
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = dot.closest('.journal-item');
+      if (!item) return;
+      const newSize = dot.dataset.size;
+      const id = item.dataset.id;
+      const obj = state.collections.find(c => c.id === id);
+      if (!obj || !_JOURNAL_SIZE_KEYS.includes(newSize)) return;
+      // Reset toutes les classes size-* puis ajoute la nouvelle
+      _JOURNAL_SIZE_KEYS.forEach(s => item.classList.remove(s));
+      item.classList.add(newSize);
+      // Mets à jour les dots actifs
+      item.querySelectorAll('.jsp-dot').forEach(d =>
+        d.classList.toggle('active', d.dataset.size === newSize)
+      );
+      // Clamp X si l'item dépasse maintenant le canvas (élargissement)
+      const newW = _JOURNAL_SIZE_WIDTHS[newSize];
+      const canvasW = grid.clientWidth;
+      const currentX = parseFloat(item.dataset.canvasX) || 0;
+      const currentY = parseFloat(item.dataset.canvasY) || 0;
+      const maxX = Math.max(0, canvasW - newW);
+      const clampedX = currentX > maxX ? _journalSnap(maxX) : currentX;
+      if (clampedX !== currentX) {
+        item.style.transform = `translate(${clampedX}px, ${currentY}px)`;
+        item.dataset.canvasX = clampedX;
+      }
+      // Persiste {size, x clampé, y inchangé}
+      obj.journalCanvas = {
+        ...(obj.journalCanvas || {}),
+        size: newSize,
+        x: clampedX,
+        y: currentY,
+      };
+      api.put(`/api/collections/${id}`, { journalCanvas: obj.journalCanvas })
+         .catch(err => console.error('Persist resize failed for', id, err));
+    });
+  });
+
   // Bouton "×" sur les photos de contexte → suppression
   grid.querySelectorAll('.journal-remove-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
