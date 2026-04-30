@@ -2024,16 +2024,28 @@ function cardHTML(c) {
       <div class="card-grain" aria-hidden="true"></div>
       ${photo
         ? (() => {
-            // Switch Light/Dark : en Light on affiche photos[idx] (originale).
-            // En Dark on bascule sur la version PNG détourée si elle existe
-            // (même convention que le Diorama : un .png dans c.photos[]).
-            // Le toggle est géré 100% en CSS via .img-standard / .img-cutout.
+            // ── Mobile swipe : conteneur .card-swipe-container scroll-snap.
+            // - Slide 1 (main) : img standard + img cutout (toggle Light/Dark).
+            // - Slide 2 (poème) : description sur fond verbe-accent, mobile uniquement.
+            // - Slides 3+ : autres photos de l'objet pour le swipe (mobile only).
+            // Sur desktop, CSS hide tous les slides sauf le premier — la carrousel
+            // ‹/› continue de fonctionner (updateCardThumb swap img-standard.src).
             const cutout = (photos.find(p => p && p.toLowerCase().endsWith('.png')) || null);
             const standardImg = `<img class="card-thumb img-standard" src="${photoUrl(photo)}" alt="" loading="lazy">`;
             const cutoutImg = (cutout && cutout !== photo)
               ? `<img class="card-thumb img-cutout" src="${photoUrl(cutout)}" alt="" loading="lazy" aria-hidden="true">`
               : '';
-            return standardImg + cutoutImg;
+            const mainSlide = `<div class="swipe-slide swipe-slide-main">${standardImg}${cutoutImg}</div>`;
+            const poemSlide = (c.description && c.description.trim())
+              ? `<div class="swipe-slide poem-slide" data-intention="${esc(c.category||'')}"><p class="swipe-poem-text">${esc(c.description)}</p></div>`
+              : '';
+            // Slides additionnels = photos[1..n], en sautant la photo principale (photo[idx])
+            // et le cutout déjà utilisé en slide 1.
+            const extraSlides = photos
+              .filter((p, i) => i !== idx && p !== cutout)
+              .map(p => `<div class="swipe-slide swipe-slide-extra"><img src="${photoUrl(p)}" alt="" loading="lazy"></div>`)
+              .join('');
+            return `<div class="card-swipe-container">${mainSlide}${poemSlide}${extraSlides}</div>`;
           })()
         : `<div class="card-thumb-placeholder">◻</div>`}
       ${hasMultiple ? `<div class="card-nav">
