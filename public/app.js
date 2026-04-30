@@ -8644,6 +8644,25 @@ function setupSearch() {
   });
 }
 
+// ── Body class « modal-open » : ajoutée dès qu'un .modal-overlay devient
+// visible. Permet de neutraliser proprement l'inventaire derrière (poem-overlays
+// qui transparaissent à travers le backdrop-filter du modal, hover-scaling des
+// cartes, etc.).
+function _setupModalOpenObserver() {
+  const overlays = document.querySelectorAll('.modal-overlay');
+  if (!overlays.length) return;
+  const update = () => {
+    const anyOpen = [...document.querySelectorAll('.modal-overlay')].some(o => {
+      const cs = window.getComputedStyle(o);
+      return cs.display !== 'none' && cs.visibility !== 'hidden';
+    });
+    document.body.classList.toggle('modal-open', anyOpen);
+  };
+  const mo = new MutationObserver(update);
+  overlays.forEach(o => mo.observe(o, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] }));
+  update(); // état initial
+}
+
 // ── Inventaire : 2 piliers Feroniapi (Intentions / Objets) ────────────────────
 // Pillar Intentions ouvre #invDropdownIntention (verbes en Feroniapi).
 // Pillar Objets ouvre #invDropdownObjet (Index typologies — search + groupes).
