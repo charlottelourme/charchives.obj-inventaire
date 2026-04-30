@@ -9136,6 +9136,10 @@ function bindEvents() {
   document.getElementById('viewCalendar').addEventListener('click', () => setView('calendar'));
   document.getElementById('viewCatalogue').addEventListener('click', () => setView('catalogue'));
   document.getElementById('viewStats').addEventListener('click', () => setView('stats'));
+  // Mobile footer — mêmes vues, IDs distincts pour éviter les doublons HTML
+  document.getElementById('mfnViewCalendar')?.addEventListener('click', () => setView('calendar'));
+  document.getElementById('mfnViewCatalogue')?.addEventListener('click', () => setView('catalogue'));
+  document.getElementById('mfnViewStats')?.addEventListener('click', () => setView('stats'));
 
   // Derive segmented control
   document.querySelectorAll('.derive-seg-btn').forEach(btn => {
