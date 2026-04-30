@@ -6533,7 +6533,8 @@ body.dark-mode .bottom-nav { background: rgba(24,24,24,.96); }
     -webkit-overflow-scrolling: touch;
   }
   #detailModal .modal-header {
-    padding: 10px 16px;
+    /* safe-area-inset-top : descend le header sous la dynamic island sur iPhone */
+    padding: calc(10px + env(safe-area-inset-top)) 16px 10px;
     flex-shrink: 0;
     background: rgba(250,249,246,.96);
     position: sticky;
