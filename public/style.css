@@ -3642,11 +3642,12 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
   min-height: calc(100dvh - var(--header-h) - 68px);
   position: static !important;
 }
-/* Grille Journal : alignée EXACTEMENT sur les principes de la grille Inventaire.
-   - column-count piloté par --grid-cols (var globale, 5/4/3 selon viewport)
-   - column-gap = margin-bottom des items (rythme régulier)
-   - padding 80px var(--page-gutter) calc(80px + safe-area)
-   Voir .grid (Inventaire) pour la référence canonique. */
+/* Grille Journal : SYNCHRONISÉE avec la grille Inventaire (.grid).
+   Toute évolution de .grid doit être répercutée ICI à l'identique.
+   - column-count : var(--grid-cols) — piloté par les media queries Inventaire + slider
+   - column-gap : 2rem / 2.5rem (1440+) / 1.5rem (≤1024)
+   - margin-bottom item : 4rem / 5rem (1440+) / 3rem (≤1024)
+   - padding : 80px var(--page-gutter) / 60px var(--page-gutter) (≤1024) */
 #deriveView #galleryGrid.journal-mode {
   display: block !important;
   position: static !important;
@@ -3655,8 +3656,8 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
   min-height: 0 !important;
   -webkit-column-count: var(--grid-cols, 4);
   column-count: var(--grid-cols, 4);
-  -webkit-column-gap: 72px;
-  column-gap: 72px;
+  -webkit-column-gap: 2rem;
+  column-gap: 2rem;
   padding: 80px var(--page-gutter) calc(80px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   animation: none !important;
@@ -3664,41 +3665,26 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
 }
 @media (min-width: 1440px) {
   #deriveView #galleryGrid.journal-mode {
-    -webkit-column-gap: 96px;
-    column-gap: 96px;
+    -webkit-column-gap: 2.5rem;
+    column-gap: 2.5rem;
   }
 }
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (max-width: 1024px) {
   #deriveView #galleryGrid.journal-mode {
-    -webkit-column-gap: 52px;
-    column-gap: 52px;
+    -webkit-column-gap: 1.5rem;
+    column-gap: 1.5rem;
     padding: 60px var(--page-gutter) calc(80px + env(safe-area-inset-bottom));
   }
 }
-@media (min-width: 521px) and (max-width: 768px) {
-  #deriveView #galleryGrid.journal-mode {
-    -webkit-column-gap: 16px;
-    column-gap: 16px;
-    padding: 16px 20px calc(88px + env(safe-area-inset-bottom));
-  }
-}
-@media (max-width: 520px) {
-  #deriveView #galleryGrid.journal-mode {
-    -webkit-column-gap: 16px;
-    column-gap: 16px;
-    padding: 16px 16px calc(88px + env(safe-area-inset-bottom));
-  }
-}
 
-/* Items Journal : statique, pas coupé entre colonnes, grain papier hérité.
-   margin-bottom égale exactement column-gap (calque Inventaire). */
+/* Items Journal : aération verticale éditoriale = celle des .card Inventaire */
 .journal-item {
   position: relative !important;
   transform: none !important;
   break-inside: avoid;
   -webkit-column-break-inside: avoid;
   page-break-inside: avoid;
-  margin-bottom: 72px;
+  margin: 0 0 4rem;
   display: block;
   width: 100%;
   cursor: grab;
@@ -3707,9 +3693,8 @@ body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
   animation: none !important;
   transition: opacity 0.2s ease, box-shadow 0.15s ease;
 }
-@media (min-width: 1440px) { .journal-item { margin-bottom: 96px; } }
-@media (min-width: 769px) and (max-width: 1024px) { .journal-item { margin-bottom: 52px; } }
-@media (max-width: 768px) { .journal-item { margin-bottom: 48px; } }
+@media (min-width: 1440px) { .journal-item { margin-bottom: 5rem; } }
+@media (max-width: 1024px) { .journal-item { margin-bottom: 3rem; } }
 .journal-item:active { cursor: grabbing; }
 
 /* Grain papier sur chaque item — même technique que .card .card-grain */
