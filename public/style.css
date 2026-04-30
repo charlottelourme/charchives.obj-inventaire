@@ -3591,36 +3591,29 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #080809; }
    - Items break-inside avoid, grain papier hérité, zéro animation/floating */
 
 /* Actions Journal : conteneur centré au-dessus de la grille */
+/* Bandeau d'actions Journal : transparent (hérite du fond de page),
+   boutons stylés comme "+ objet" de l'Inventaire (.btn.btn-primary). */
 .journal-actions {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 1rem;
   margin: 2rem 0;
+  padding: 0;
+  background: transparent;
   flex-wrap: wrap;
 }
 .journal-action-btn {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
   font-size: 12px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--text-2);
-  background: transparent;
-  border: 1px solid var(--border-light);
-  border-radius: 0;
-  padding: 10px 18px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: none;             /* "+ photo" / "+ note" en minuscules comme "+ objet" */
+  padding: 12px 22px;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.journal-action-btn:hover {
-  color: var(--text);
-  border-color: var(--border);
-}
-body.dark-mode .journal-action-btn { border-color: var(--border); }
-body.dark-mode .journal-action-btn:hover { border-color: var(--text-3); }
 @media (max-width: 768px) {
-  .journal-actions { gap: 1rem; margin: 1.25rem 0; }
-  .journal-action-btn { font-size: 11px; padding: 8px 14px; }
+  .journal-actions { gap: 0.75rem; margin: 1.25rem 0; }
+  .journal-action-btn { padding: 10px 18px; }
 }
 /* Masque la sous-navigation Nuée/Constellation et le pane Constellation */
 #deriveView #deriveReseauPane,
