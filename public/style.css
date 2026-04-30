@@ -2264,7 +2264,7 @@ body.dark-mode .sfb-pill-selection.active .ast-icon.sel-ast .ast-s { stroke: #18
 #timelineView {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 52px);
+  height: calc(100dvh - var(--header-h));
 }
 .tl-chrono-scroll {
   flex: 1;
