@@ -6236,7 +6236,7 @@ body.dark-mode .canvas-editor-overlay { background: var(--bg); }
   background-color: transparent !important;
   border-top: none;
   box-shadow: none;
-  padding: 0.6rem 2rem;
+  padding: 0.6rem 2rem 1.4rem;          /* + de respiration en bas */
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
