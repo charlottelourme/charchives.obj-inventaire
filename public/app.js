@@ -10083,6 +10083,8 @@ function _bindBugReport() {
   fab.addEventListener('mouseleave', () => { clearTimeout(pressTimer); });
   // Right-click = historique direct
   fab.addEventListener('contextmenu', e => { e.preventDefault(); openBugHistory(); });
+  // Bouton historique dédié (à côté de l'insecte)
+  document.getElementById('bugHistoryBtn')?.addEventListener('click', openBugHistory);
   // Modale signalement
   document.getElementById('bugReportClose')?.addEventListener('click', closeBugReport);
   document.getElementById('bugReportCancel')?.addEventListener('click', closeBugReport);
