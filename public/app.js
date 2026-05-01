@@ -9812,15 +9812,34 @@ function renderMobileFooterNav() {
   if (!bc) return;
   const crumbs = state.breadcrumb || [];
   if (crumbs.length === 0) {
-    bc.innerHTML = '<span class="mfn-item">Inventaire</span>';
+    bc.innerHTML = '<span class="mfn-item mfn-current">Inventaire</span>';
     return;
   }
-  // Derniers 3 items, séparés par ›
-  const visible = crumbs.slice(-3);
-  bc.innerHTML = visible.map((c, i) =>
-    (i > 0 ? '<span class="mfn-sep">›</span>' : '') +
-    `<span class="mfn-item">${esc(c.label)}</span>`
-  ).join('');
+  // Affiche TOUS les items — le scroll horizontal natif permet de remonter le fil.
+  // Le dernier reçoit .mfn-current (non cliquable). Les autres sont cliquables et
+  // taper dessus pop le breadcrumb à ce niveau (même comportement que desktop).
+  const lastIdx = crumbs.length - 1;
+  bc.innerHTML = crumbs.map((c, i) => {
+    const isCurrent = i === lastIdx;
+    const sep = i > 0 ? '<span class="mfn-sep">›</span>' : '';
+    const cls = 'mfn-item' + (isCurrent ? ' mfn-current' : '');
+    return `${sep}<span class="${cls}" data-bc-idx="${i}">${esc(c.label)}</span>`;
+  }).join('');
+  // Wire les clics : tap sur un item passé → tronque l'historique + rejoue backAction
+  bc.querySelectorAll('.mfn-item:not(.mfn-current)').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx  = parseInt(el.dataset.bcIdx);
+      const item = state.breadcrumb[idx];
+      if (!item) return;
+      state.breadcrumb = state.breadcrumb.slice(0, idx + 1);
+      renderBreadcrumbBar();
+      renderMobileFooterNav();
+      if (typeof item.backAction === 'function') item.backAction();
+    });
+  });
+  // Auto-scroll à droite : montre le crumb courant au chargement
+  // (sinon sur un long fil, l'utilisateur voit le début, pas où il est).
+  requestAnimationFrame(() => { bc.scrollLeft = bc.scrollWidth; });
 }
 
 function renderBreadcrumbBar() {
