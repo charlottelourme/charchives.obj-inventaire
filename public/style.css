@@ -597,21 +597,9 @@ html::before {
   pointer-events: none;
 }
 html:has(body.dark-mode)::before { background: #080809; }
-body.dark-mode header { background-color: var(--bg); }   /* opaque dark — masque le scroll */
+body.dark-mode header { background: transparent !important; }
 
-/* Grain miroir de bg-grain pour conserver la continuité visuelle avec la page */
-header::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
-  opacity: 0.78;
-  mix-blend-mode: multiply;
-}
-body.dark-mode header::before { mix-blend-mode: overlay; opacity: 0.40; }
+/* Plus de grain local sur le header — assuré par body::after global. */
 
 header > * { position: relative; z-index: 1; }
 header h1 {
