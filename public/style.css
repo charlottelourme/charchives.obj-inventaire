@@ -8205,9 +8205,11 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   letter-spacing: .01em;
 }
 .trios-link-pre {
+  /* Compagnon-Roman = famille Compagnon + weight 400 normal */
   font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-style: normal;
   font-size: 9px;
-  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .14em;
   color: var(--text-3);
