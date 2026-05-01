@@ -2027,14 +2027,16 @@ function cardHTML(c) {
             // Stratégie d'affichage :
             // - DARK mode : la version PNG détourée (s'il en existe une) est l'image
             //   principale → CSS `body.dark-mode … .img-cutout { display: block }`.
-            // - LIGHT mode : la PHOTO ORIGINALE (photo[idx]) est l'image principale,
-            //   MAIS si l'objet a un PNG détouré, on le rend AUSSI en .img-cutout
-            //   visible (overlay positionné absolu sur l'image standard, avec
-            //   mix-blend pour que le fond blanc/clair s'efface). C'est ce qui
-            //   manquait : avant on cachait le PNG en light mode.
+            // - LIGHT mode : photo originale (photos[idx]) visible.
+            // - DARK mode : si un PNG détouré existe dans c.photos, il devient
+            //   AUTOMATIQUEMENT l'image principale (CSS swap .img-standard /
+            //   .img-cutout). On rend TOUJOURS .img-cutout dès qu'un PNG existe,
+            //   même si c'est aussi photos[idx] — comme ça la règle dark mode
+            //   `.img-cutout { display: block }` trouve toujours sa cible et
+            //   le swap est garanti, sans dépendre du fallback :has().
             const cutout = (photos.find(p => p && p.toLowerCase().endsWith('.png')) || null);
             const standardImg = `<img class="card-thumb img-standard" src="${photoUrl(photo)}" alt="" loading="lazy">`;
-            const cutoutImg = (cutout && cutout !== photo)
+            const cutoutImg = cutout
               ? `<img class="card-thumb img-cutout" src="${photoUrl(cutout)}" alt="" loading="lazy">`
               : '';
             const mainSlide = `<div class="swipe-slide swipe-slide-main">${standardImg}${cutoutImg}</div>`;
