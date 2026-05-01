@@ -575,7 +575,7 @@ header {
   min-height: calc(148px + env(safe-area-inset-top));
   height: auto;
   display: flex;
-  align-items: center;
+  align-items: baseline;             /* unique règle de construction : baseline commune partout */
   justify-content: space-between;
   gap: 16px;
   box-sizing: border-box;
