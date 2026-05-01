@@ -9073,7 +9073,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   padding: 1px 4px;
   border-radius: 2px;
   transition: color .12s, opacity .12s;
-  max-width: 28ch;
+  max-width: 44ch;
   overflow: hidden;
   text-overflow: ellipsis;
 }
