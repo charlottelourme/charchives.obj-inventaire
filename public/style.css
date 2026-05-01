@@ -610,8 +610,8 @@ header h1 {
   text-transform: none;                    /* HTML écrit en casse douce : "Charchives . obj" */
   color: #0A0A0A !important;               /* GRIS LE PLUS FONCÉ — repère visuel principal */
   flex-shrink: 0;
-  display: flex !important;
-  align-items: center;
+  display: inline-block !important;        /* baseline propre — aligne avec nav et search */
+  line-height: 1.1;
   margin: 0;
 }
 body.dark-mode header h1 { color: #F4F4F5 !important; }
