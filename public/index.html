@@ -958,21 +958,35 @@
      sélection de bugs au format prompt Claude (« bug* sur cette discussion »).
      ══════════════════════════════════════════════════════════════════════════ -->
 
-<!-- Bouton flottant (insecte) — fixed bottom-right, discret -->
-<button id="bugReportBtn" class="bug-fab" type="button" aria-label="Signaler un bug" title="Signaler un bug">
-  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <!-- Petit insecte stylisé (Lucide bug) -->
-    <rect x="8" y="6" width="8" height="14" rx="4"/>
-    <path d="M19 7l-3 2"/>
-    <path d="M5 7l3 2"/>
-    <path d="M19 13h-3"/>
-    <path d="M8 13H5"/>
-    <path d="M19 19l-3-2"/>
-    <path d="M5 19l3-2"/>
-    <path d="M12 6V4"/>
-    <path d="M9 4l3-2 3 2"/>
-  </svg>
-</button>
+<!-- Cluster de boutons flottants — fixed bottom-right, discret -->
+<div class="bug-fab-cluster">
+  <!-- Bouton historique : ouvre la liste des bugs enregistrés -->
+  <button id="bugHistoryBtn" class="bug-fab bug-fab-history" type="button" aria-label="Historique des bugs" title="Voir l'historique des bugs">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="8" y1="6" x2="20" y2="6"/>
+      <line x1="8" y1="12" x2="20" y2="12"/>
+      <line x1="8" y1="18" x2="20" y2="18"/>
+      <line x1="4" y1="6" x2="4.01" y2="6"/>
+      <line x1="4" y1="12" x2="4.01" y2="12"/>
+      <line x1="4" y1="18" x2="4.01" y2="18"/>
+    </svg>
+  </button>
+  <!-- Bouton signalement : ouvre la modale "Signaler un bug" -->
+  <button id="bugReportBtn" class="bug-fab" type="button" aria-label="Signaler un bug" title="Signaler un bug">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <!-- Petit insecte stylisé (Lucide bug) -->
+      <rect x="8" y="6" width="8" height="14" rx="4"/>
+      <path d="M19 7l-3 2"/>
+      <path d="M5 7l3 2"/>
+      <path d="M19 13h-3"/>
+      <path d="M8 13H5"/>
+      <path d="M19 19l-3-2"/>
+      <path d="M5 19l3-2"/>
+      <path d="M12 6V4"/>
+      <path d="M9 4l3-2 3 2"/>
+    </svg>
+  </button>
+</div>
 
 <!-- Modale de signalement -->
 <div id="bugReportModal" class="modal-overlay bug-modal-overlay" hidden>
