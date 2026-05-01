@@ -2785,14 +2785,33 @@ function _drawConGraph(canvas, nodes, links) {
   // ── Simulation — grappes serrées ──
   const R_collide = HALF + 6;
 
-  // Spawn initial proche du cluster X de la catégorie (sera affiné par la
-  // force forceX ci-dessous) — évite l'effet « tout converge au centre puis
-  // se disperse » au premier tick.
+  // ── Distribution horizontale des clusters par intention (calculée AVANT
+  //    le spawn pour pouvoir initialiser chaque nœud près de SA colonne X). */
+  const _conCategories = (() => {
+    if (_conAffinityType !== 'intention') return [];
+    const seen = new Set();
+    const ordered = [];
+    nodes.forEach(n => {
+      const cat = n.category || '__nocat__';
+      if (!seen.has(cat)) { seen.add(cat); ordered.push(cat); }
+    });
+    return ordered;
+  })();
+  const _conCatX = new Map();
+  if (_conCategories.length) {
+    const padX = Math.min(120, W * 0.08);
+    const usableW = Math.max(W - padX * 2, 200);
+    _conCategories.forEach((cat, i) => {
+      const x = padX + (i + 0.5) * (usableW / _conCategories.length);
+      _conCatX.set(cat, x);
+    });
+  }
+
+  // Spawn initial proche du cluster X de la catégorie — évite l'effet
+  // « tout converge au centre puis se disperse » au premier tick.
   nodes.forEach(n => {
     const cat = n.category || '__nocat__';
-    const initX = (typeof _conCatX !== 'undefined' && _conCatX && _conCatX.get)
-      ? (_conCatX.get(cat) ?? W / 2)
-      : W / 2;
+    const initX = _conCatX.get(cat) ?? W / 2;
     if (n.x === undefined) n.x = initX + (Math.random() - 0.5) * 80;
     if (n.y === undefined) n.y = H / 2 + (Math.random() - 0.5) * 200;
   });
