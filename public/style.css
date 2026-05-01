@@ -1201,14 +1201,14 @@ body.dark-mode .card .card-grain {
 .card-poem-overlay {
   position: absolute;
   top: 50%;
-  left: 78%;                             /* ancré sur le bord droit de la carte */
-  width: 340px;                          /* fenêtre plus généreuse */
+  left: calc(100% + 16px);              /* posé À CÔTÉ de la carte, 16px de gap, AUCUN chevauchement */
+  width: 340px;
   max-height: min(75vh, 520px);
-  transform: translate(-12px, -50%) scale(0.96);
+  transform: translate(-12px, -50%) scale(0.96);   /* léger slide-in à l'animation */
   transform-origin: left center;
   z-index: 1000;
   padding: 2rem 2.25rem;
-  background: transparent;               /* pas de fond direct — c'est ::before qui peint */
+  background: transparent;
   border: none;
   opacity: 0;
   visibility: hidden;
