@@ -9209,54 +9209,56 @@ function bindEvents() {
     _renderTriosActions();
   });
 
-  // Affinités — sélection d'une règle (affiche le sélecteur de valeur, ne génère pas encore)
+  // Affinités — clic sur une pill : peuple + ouvre/ferme le dropdown attaché.
   document.querySelectorAll('.trios-rule-pill').forEach(pill => {
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.trios-rule-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      _resetTriosLocks();
+    pill.addEventListener('click', e => {
+      e.stopPropagation();
       const rule = pill.dataset.rule;
-      _populateTriosRuleValues(rule);
-      const sel = document.getElementById('triosRuleValue');
-      if (sel) sel.value = '';
-      const ruleControls = document.getElementById('triosRuleControls');
-      if (ruleControls) ruleControls.style.display = '';
-      // Si aucune valeur n'a ≥3 objets, le select n'a que l'option (au hasard) → message
-      const opts = sel ? sel.querySelectorAll('option').length : 0;
+      const dd = document.querySelector(`.trios-rule-dropdown[data-rule="${rule}"]`);
+      const wasOpen = pill.getAttribute('aria-expanded') === 'true';
+      _closeTriosRuleDropdowns();
+      if (wasOpen) return;                       // toggle off
+      _populateTriosRuleDropdown(rule);
+      pill.setAttribute('aria-expanded', 'true');
+      if (dd) dd.hidden = false;
+      // Message si aucune valeur ≥3 objets (le dropdown ne contient que l'option « au hasard »)
       const desc = document.getElementById('triosRuleDesc');
-      if (opts <= 1) {
-        if (desc) desc.textContent = 'Aucune valeur ne réunit assez d\'objets pour cette règle.';
-      } else if (desc) {
-        desc.textContent = '';
-      }
-      // Pas de génération immédiate : on attend le clic sur "Composer"
-      document.getElementById('triosResult').style.display = 'none';
-      document.getElementById('triosLinkBar').innerHTML = '';
-      _currentTrio = null;
-      _renderTriosActions();
+      const optionCount = dd ? dd.querySelectorAll('.trios-rule-option').length : 0;
+      if (desc) desc.textContent = optionCount <= 1
+        ? 'Aucune valeur ne réunit assez d\'objets pour cette règle.'
+        : '';
     });
   });
 
-  // Affinités — Composer avec règle + valeur
-  document.getElementById('triosRuleComposeBtn')?.addEventListener('click', () => {
-    _resetTriosLocks();
-    const activePill = document.querySelector('.trios-rule-pill.active');
-    if (!activePill) return;
-    const rule = activePill.dataset.rule;
-    const value = document.getElementById('triosRuleValue')?.value || '';
-    const trio = _generateTrioByRule(rule, value);
-    if (!trio) {
-      _showTriosToast('Pas assez d\'objets pour cette règle.');
-      document.getElementById('triosResult').style.display = 'none';
+  // Affinités — clic sur une option : génère le trio + ferme le dropdown + marque la pill active.
+  document.addEventListener('click', e => {
+    const opt = e.target.closest('.trios-rule-option');
+    if (opt) {
+      e.stopPropagation();
+      const rule  = opt.dataset.rule;
+      const value = opt.dataset.value || '';
+      _resetTriosLocks();
+      const trio = _generateTrioByRule(rule, value);
+      _closeTriosRuleDropdowns();
+      if (!trio) {
+        _showTriosToast('Pas assez d\'objets pour cette règle.');
+        document.getElementById('triosResult').style.display = 'none';
+        _renderTriosActions();
+        return;
+      }
+      const desc = document.getElementById('triosRuleDesc');
+      if (desc) desc.textContent = '';
+      _currentTrio = trio;
+      document.querySelectorAll('.trios-rule-pill').forEach(p =>
+        p.classList.toggle('active', p.dataset.rule === rule));
+      _setTriosLinkBar(trio);
+      _renderTriosCards(trio.objects);
+      document.getElementById('triosResult').style.display = '';
       _renderTriosActions();
       return;
     }
-    document.getElementById('triosRuleDesc').textContent = '';
-    _currentTrio = trio;
-    _setTriosLinkBar(trio);
-    _renderTriosCards(trio.objects);
-    document.getElementById('triosResult').style.display = '';
-    _renderTriosActions();
+    // Clic en dehors d'une pill ou de son dropdown → ferme tout
+    if (!e.target.closest('.trios-rule-wrap')) _closeTriosRuleDropdowns();
   });
 
   // Re-piocher — préserve les slots verrouillés sur les 3 onglets génératifs
