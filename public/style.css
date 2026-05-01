@@ -11506,3 +11506,15 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
     scroll-snap-stop: always;
   }
 }
+
+/* Override avec spécificité plus haute (#categoryFilterBar) — bat
+   `.inv-dropdown .status-filter-bar { display: flex !important }` qui force
+   sinon le flex sur la liste des verbes. */
+#categoryFilterBar.inv-dd-list-feronia {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.5rem 0.75rem !important;
+  justify-content: stretch !important;
+  justify-items: center !important;
+  width: 100%;
+}
