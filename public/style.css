@@ -8422,13 +8422,13 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .trios-filter-sel {
   font-family: 'Compagnon', monospace;
   font-size: 12px;
-  padding: 9px 24px 9px 4px;       /* room à droite pour le triangle */
+  padding: 9px 14px 9px 4px;       /* triangle quasi collé au mot (cf. caret Inventaire) */
   border: none;                     /* contour supprimé */
   background-color: transparent;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M0 0l5 6 5-6z' fill='%2352525B'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 6px center;
-  background-size: 8px 5px;
+  background-position: right 2px center;
+  background-size: 6px 4px;
   color: var(--text);
   cursor: pointer;
   min-width: 130px;
