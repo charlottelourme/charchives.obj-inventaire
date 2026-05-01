@@ -8625,29 +8625,27 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   outline-color: var(--text);
 }
 
-/* ── Trios — Barre d'actions sous le trio (Re-piocher) ── */
+/* ── Trios — Barre d'actions sous le trio (Re-piocher) ──
+   Style aligné sur .trios-compose-btn (Compagnon-Roman, casse normale, sans contour) */
 .trios-actions {
   display: flex;
   justify-content: center;
-  margin: 8px 0 28px;
+  margin: 4px 0 20px;
 }
 .trios-repick-btn {
   font-family: 'Compagnon', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  padding: 10px 24px;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 13px;
+  letter-spacing: .02em;
+  padding: 10px 14px;
   background: transparent;
   color: var(--text);
-  border: 1px solid var(--text);
+  border: none;
   cursor: pointer;
-  transition: opacity .2s, background .2s, color .2s;
+  transition: opacity .2s, color .2s;
 }
-.trios-repick-btn:hover:not(:disabled) {
-  background: var(--text);
-  color: var(--bg);
-}
+.trios-repick-btn:hover:not(:disabled) { color: var(--text-2); }
 .trios-repick-btn:disabled {
   opacity: .35;
   cursor: not-allowed;
