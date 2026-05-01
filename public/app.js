@@ -2535,14 +2535,14 @@ function _drawConGraph(canvas, nodes, links) {
   const IMG  = 72;
   const HALF = IMG / 2;
 
-  // SVG remplit entièrement le canvas — D3 zoom gère le pan et le zoom
+  // SVG remplit entièrement le canvas — D3 zoom gère le pan et le zoom.
+  // (Précédemment on partait à opacity:0 puis on faisait un fade-in via 2 RAF —
+  //  parfois le 2e RAF ne firait pas et la constellation restait invisible.
+  //  On supprime ce fade pour garantir l'affichage.)
   const svg = d3.select(canvas).append('svg')
     .attr('width',  W)
     .attr('height', H)
-    .style('display', 'block')
-    .style('opacity', '0')
-    .style('transition', 'opacity .42s ease');
-  requestAnimationFrame(() => requestAnimationFrame(() => svg.style('opacity', '1')));
+    .style('display', 'block');
 
   // Calque transformé par d3.zoom — tout le contenu est ici
   const zoomLayer = svg.append('g').attr('class', 'con-zoom-layer');
