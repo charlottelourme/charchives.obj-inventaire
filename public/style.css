@@ -627,8 +627,8 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   padding: 0;
   flex: 1;
   justify-content: center;
-  align-self: stretch;
-  align-items: center;
+  align-items: baseline;             /* enfants alignés sur baseline (cohérent avec header) */
+  align-self: baseline;              /* container lui-même sur la baseline du header */
   /* order par défaut (0) → nav centrée via flex:1 entre titre et search */
 }
 .view-tab {
