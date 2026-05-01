@@ -4775,61 +4775,7 @@ function _fillTrioWithLocks(pool, prevObjects, locked, pickStrategy) {
   return result;
 }
 
-function _generateTrio(prevObjects, locked) {
-  const cols = state.collections.filter(c => c.type !== 'note' && c.type !== 'journal-photo');
-  if (cols.length < 3) return null;
-
-  // Stratégie : seed + (n-1) objets les plus affins (top 10 mélangé)
-  const seedAffinityPick = (available, needed) => {
-    for (let attempt = 0; attempt < 30; attempt++) {
-      const seed = available[Math.floor(Math.random() * available.length)];
-      const seedFp = _fingerprint(seed);
-      if (seedFp.size === 0) continue;
-      const others = available.filter(c => c.id !== seed.id);
-      if (others.length < needed - 1) continue;
-      const candidates = others
-        .map(c => ({ obj: c, shared: _sharedTags(seedFp, _fingerprint(c)) }))
-        .filter(x => x.shared.length > 0);
-      if (candidates.length < needed - 1) continue;
-      candidates.sort((a, b) => b.shared.length - a.shared.length);
-      const top = candidates.slice(0, Math.min(10, candidates.length));
-      const shuffled = [...top].sort(() => Math.random() - 0.5).slice(0, needed - 1);
-      return [seed, ...shuffled.map(c => c.obj)];
-    }
-    return [...available].sort(() => Math.random() - 0.5).slice(0, needed);
-  };
-
-  const objects = _fillTrioWithLocks(cols, prevObjects, locked, seedAffinityPick);
-  if (!objects) return null;
-  const fp = objects.map(_fingerprint);
-  const triCommon = [...fp[0]].filter(t => fp[1].has(t) && fp[2].has(t));
-  const linkTags = triCommon.slice(0, 3).map(_tagLabel).filter(Boolean);
-  return { objects, linkTags: [...new Set(linkTags)] };
-}
-
 // ── Trios helpers ─────────────────────────────────────────────────────────────
-
-// Mode Collisions : filtres aléatoires (préserve les slots verrouillés)
-function _generateTrioFiltered(matiere, teinte, intention, prevObjects, locked) {
-  const pool = state.collections.filter(c => {
-    if (c.type === 'note' || c.type === 'journal-photo')                 return false;
-    if (matiere   && !(c.attributes?.matieres||[]).includes(matiere))    return false;
-    if (teinte    && !(c.attributes?.couleurs||[]).includes(teinte))     return false;
-    if (intention && c.category !== intention)                           return false;
-    return true;
-  });
-  const objects = _fillTrioWithLocks(pool, prevObjects, locked);
-  if (!objects) return null;
-  const fp = objects.map(_fingerprint);
-  const common = [...fp[0]].filter(t => fp[1].has(t) && fp[2].has(t));
-  return {
-    objects,
-    linkTags: common.slice(0, 3).map(_tagLabel).filter(Boolean),
-    _matiere: matiere || '',
-    _teinte: teinte || '',
-    _intention: intention || ''
-  };
-}
 
 // Mode Affinités : règle + valeur précise (ou aléatoire si value vide)
 function _generateTrioByRule(rule, value, prevObjects, locked) {
