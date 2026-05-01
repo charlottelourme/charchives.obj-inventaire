@@ -8630,7 +8630,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
 .trios-actions {
   display: flex;
   justify-content: center;
-  margin: 4px 0 20px;
+  margin: 0 0 20px;
 }
 .trios-repick-btn {
   font-family: 'Compagnon', monospace;
