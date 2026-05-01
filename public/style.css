@@ -11011,19 +11011,29 @@ body.dark-mode .inv-dd-panel {
   font-family: 'Compagnon', monospace;
   font-style: normal;
   font-weight: 400;
-  font-size: 1.35rem;
+  font-size: 1rem;                /* réduit (était 1.35rem) */
   letter-spacing: 0;
   text-transform: none;
   background: transparent;
   border: none;
   color: var(--text);
-  padding: 0.35rem 0.9rem;
+  padding: 0.3rem 0.5rem;
   height: auto;
   transition: opacity .2s ease;
+  text-align: center;
 }
 .inv-dd-list-feronia .sfb-pill:hover { opacity: 0.65; background: transparent; }
 .inv-dd-list-feronia .sfb-pill.active { opacity: 1; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
-.inv-dd-list-feronia { gap: 0.4rem 1.2rem !important; justify-content: center !important; }
+/* Liste des verbes : grille 3 colonnes — les 8 entrées (Toutes + 7 verbes)
+   tiennent en 3 lignes (3+3+2). Plus de wrap auto en flex. */
+.inv-dd-list-feronia {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.5rem 0.75rem !important;
+  justify-content: stretch !important;
+  justify-items: center !important;
+  width: 100%;
+}
 
 .inv-dropdown .sfb-label,
 .inv-dropdown .tfb-label {
