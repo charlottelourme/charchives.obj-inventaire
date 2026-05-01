@@ -10056,30 +10056,33 @@ async function exportBugsToClaude() {
   }
 }
 
-// Bind événements bug report (appelé une fois au chargement)
+// Bind événements bug report (idempotent — peut être appelé plusieurs fois)
 function _bindBugReport() {
-  // Bouton flottant : clic court = signaler, clic long / Shift+clic = historique
   const fab = document.getElementById('bugReportBtn');
-  if (fab) {
-    let pressTimer = null;
-    let longPressed = false;
-    const handleOpen = (longPress) => {
-      if (longPress || event?.shiftKey) openBugHistory();
-      else openBugReport();
-    };
-    fab.addEventListener('click', e => {
-      if (longPressed) { longPressed = false; return; }
-      if (e.shiftKey) openBugHistory();
-      else openBugReport();
-    });
-    fab.addEventListener('mousedown', () => {
-      pressTimer = setTimeout(() => { longPressed = true; openBugHistory(); }, 600);
-    });
-    fab.addEventListener('mouseup', () => { clearTimeout(pressTimer); });
-    fab.addEventListener('mouseleave', () => { clearTimeout(pressTimer); });
-    // Right-click = historique direct
-    fab.addEventListener('contextmenu', e => { e.preventDefault(); openBugHistory(); });
+  // Si le DOM n'est pas encore prêt, on retente au prochain tick
+  if (!fab) {
+    setTimeout(_bindBugReport, 200);
+    return;
   }
+  // Anti double-bind
+  if (fab._bugBound) return;
+  fab._bugBound = true;
+
+  // Bouton flottant : clic court = signaler, clic long / Shift+clic = historique
+  let pressTimer = null;
+  let longPressed = false;
+  fab.addEventListener('click', e => {
+    if (longPressed) { longPressed = false; return; }
+    if (e.shiftKey) openBugHistory();
+    else openBugReport();
+  });
+  fab.addEventListener('mousedown', () => {
+    pressTimer = setTimeout(() => { longPressed = true; openBugHistory(); }, 600);
+  });
+  fab.addEventListener('mouseup', () => { clearTimeout(pressTimer); });
+  fab.addEventListener('mouseleave', () => { clearTimeout(pressTimer); });
+  // Right-click = historique direct
+  fab.addEventListener('contextmenu', e => { e.preventDefault(); openBugHistory(); });
   // Modale signalement
   document.getElementById('bugReportClose')?.addEventListener('click', closeBugReport);
   document.getElementById('bugReportCancel')?.addEventListener('click', closeBugReport);
