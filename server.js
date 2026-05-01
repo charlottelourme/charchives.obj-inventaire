@@ -47,7 +47,17 @@ app.use((req, res, next) => {
 
 // ── Middlewares communs ───────────────────────────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+// Static : force les bons MIME + Cache-Control pour les fonts (iOS Safari pinaille
+// sans Content-Type explicite ; CORS Allow * pour respecter le crossorigin du preload).
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    if (/\.woff2?$/.test(filePath)) {
+      res.setHeader('Content-Type', filePath.endsWith('.woff2') ? 'font/woff2' : 'font/woff');
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+  }
+}));
 app.use('/uploads', express.static(UPLOADS_DIR));
 
 // ── Middleware : garde-fou DB ─────────────────────────────────────────────────
@@ -64,8 +74,16 @@ function requireDb(req, res, next) {
 }
 
 // ── Health check (Render le fait au boot, pas de garde-fou dbReady) ───────────
+// Expose le statut des deux dépendances critiques (MongoDB + Cloudinary) pour
+// pouvoir vérifier en un coup d'œil sur /api/health que la persistance est OK.
 app.get('/api/health', (_, res) => {
-  res.json({ ok: true, dbReady, mongoRequired: MONGO_REQUIRED, ts: Date.now() });
+  res.json({
+    ok:            true,
+    dbReady,
+    mongoRequired: MONGO_REQUIRED,
+    cloudinary:    !!cloudinary,   // true → uploads pérennes ; false → disque éphémère
+    ts:            Date.now()
+  });
 });
 
 // ── MongoDB ───────────────────────────────────────────────────────────────────
@@ -245,6 +263,13 @@ app.post('/api/collections', requireDb, async (req, res) => {
       private:           b.private           || {},
       type:              b.type              || 'item',
       textContent:       b.textContent       || '',
+      content:           b.content           || '',
+      noteFont:          b.noteFont          || '',
+      noteWidth:         b.noteWidth         || '',
+      noteSize:          b.noteSize          || '',
+      notePos:           b.notePos           ?? null,
+      inJournal:         b.inJournal         || false,
+      journalCanvas:     (b.journalCanvas && typeof b.journalCanvas === 'object') ? b.journalCanvas : null,
       backgroundColor:   b.backgroundColor   || '',
       expositions:       Array.isArray(b.expositions) ? b.expositions : [],
       createdAt:         new Date().toISOString()
@@ -330,7 +355,22 @@ async function _deletePhotoRef(ref) {
 // ── Photos ────────────────────────────────────────────────────────────────────
 // Upload : Multer intercepte → buffer en RAM → Cloudinary.
 // Si Cloudinary absent (dev) : fichier local dans UPLOADS_DIR.
-app.post('/api/upload', upload.array('photos', 20), async (req, res) => {
+//
+// Garde-fou prod : si Cloudinary disparaît en production (variables d'env retirées
+// par accident sur Render), on REFUSE l'upload plutôt que de fall-back en silence
+// vers le disque éphémère qui sera wipé au prochain redéploiement. Le client reçoit
+// un 503 explicite, l'utilisateur voit immédiatement le problème.
+function requireCloudinaryInProd(req, res, next) {
+  if (MONGO_REQUIRED && !cloudinary) {
+    return res.status(503).json({
+      error:   'cloudinary_not_configured',
+      message: 'Stockage photos non configuré (Cloudinary). Vérifie les variables CLOUDINARY_* sur Render.'
+    });
+  }
+  next();
+}
+
+app.post('/api/upload', requireCloudinaryInProd, upload.array('photos', 20), async (req, res) => {
   try {
     if (cloudinary) {
       // Envoi direct vers Cloudinary, on ne garde QUE la secure_url
@@ -339,6 +379,7 @@ app.post('/api/upload', upload.array('photos', 20), async (req, res) => {
       );
       res.json({ filenames: urls });
     } else {
+      // Dev local uniquement (pas de MONGO_REQUIRED) : disque local
       res.json({ filenames: req.files.map(f => f.filename) });
     }
   } catch (err) { res.status(500).json({ error: err.message }); }
