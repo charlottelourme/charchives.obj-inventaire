@@ -11538,7 +11538,7 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
 /* Mobile : scroll-snap horizontal natif + cache la scrollbar. */
 @media (max-width: 767px) {
   .card-swipe-container {
-    display: flex;
+    display: flex !important;       /* défensif : empêche un override par inadvertance */
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -11551,10 +11551,21 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
     flex: 0 0 100%;
     scroll-snap-align: start;
     scroll-snap-stop: always;
+    /* Toutes les slides au même aspect-ratio que le poème (3/4) — sinon le
+       carrousel expand verticalement quand on swipe entre photo landscape
+       et poème portrait, ce qui donne l'impression que la description
+       "déborde en dessous" en mode 2-colonnes. */
+    aspect-ratio: 3 / 4;
+    position: relative;
+    overflow: hidden;
   }
+  /* Image principale + cutout : remplit la slide en respectant son ratio */
+  .swipe-slide-main img,
   .swipe-slide-extra img {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
     object-fit: contain;
   }
