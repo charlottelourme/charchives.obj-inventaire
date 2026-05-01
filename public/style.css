@@ -636,9 +636,9 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   background: transparent !important;
   border: none;
   padding: 0 6px;
-  height: 100%;
-  display: flex;
-  align-items: center;
+  /* hauteur libérée — la baseline du texte aligne nav, titre et search */
+  display: inline-flex;
+  align-items: baseline;
   /* ── Navigation : Compagnon Light italic, plus clair que le titre ── */
   font-family: 'Compagnon', monospace;
   font-style: italic;
