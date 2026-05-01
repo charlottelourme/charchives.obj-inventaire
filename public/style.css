@@ -10226,7 +10226,7 @@ body.dark-mode .trios-tabs-nav { border-bottom-color: var(--border); }
   font-size: 18px !important;
 }
 /* Marge au-dessus du bandeau d'onglets Triptyque (respiration depuis le header). */
-#triosView > .trios-tabs-nav { margin-top: 16px; }
+#triosView > .trios-tabs-nav { margin-top: 8px; }
 .derive-seg-btn:hover,
 .trios-tab-btn:hover { color: var(--text-2) !important; }
 
