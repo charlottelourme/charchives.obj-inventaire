@@ -11648,3 +11648,44 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
   justify-items: center !important;
   width: 100%;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PNG DÉTOURÉ EN LIGHT MODE — visible en surimpression sur l'image standard
+   ══════════════════════════════════════════════════════════════════════════
+   Avant : on cachait la version PNG en light mode (display:none) → l'utilisatrice
+   ne voyait jamais le détourage. Maintenant, en light mode, .img-cutout est
+   visible en SURIMPRESSION (position absolu sur la photo standard) avec
+   mix-blend: multiply pour effacer son fond blanc et ne laisser apparaître que
+   l'objet détouré « par-dessus » la photo originale.
+   En dark mode, le comportement précédent reste actif (cf. règles plus haut). */
+
+/* On force position relative sur le slide main (parent) pour que l'absolute
+   du cutout se cale dessus. */
+#gridView .grid .swipe-slide-main { position: relative !important; }
+
+/* Light mode (par défaut) : .img-cutout EST visible, posée par-dessus.
+   Override des `display:none` accumulés ci-dessus avec une spécificité haute. */
+html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-cutout,
+body:not(.dark-mode) #gridView .grid .card-thumb-area .img-cutout {
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: multiply;        /* fond blanc/clair du PNG → invisible sur fond cream */
+  filter: contrast(1.08);          /* léger boost pour pousser les off-whites vers le blanc pur */
+}
+/* Dark mode : on conserve l'ancien comportement déjà en place — pas de
+   surimpression, swap pur (.img-standard caché, .img-cutout en image principale).
+   On supprime les surcharges de positionnement pour qu'il occupe le slide. */
+body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
+  position: relative !important;
+  inset: auto !important;
+  height: auto !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  z-index: auto;
+}
