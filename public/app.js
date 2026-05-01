@@ -2807,13 +2807,17 @@ function _drawConGraph(canvas, nodes, links) {
     });
   }
 
-  // Spawn initial proche du cluster X de la catégorie — évite l'effet
-  // « tout converge au centre puis se disperse » au premier tick.
+  // Spawn initial proche du cluster X de la catégorie — on force la position
+  // à chaque rendu (et plus seulement si undefined) pour que les changements
+  // d'affinité, de filtre, ou la première sortie de scope mode toggle
+  // repositionnent correctement les nœuds dans leur colonne.
   nodes.forEach(n => {
     const cat = n.category || '__nocat__';
     const initX = _conCatX.get(cat) ?? W / 2;
-    if (n.x === undefined) n.x = initX + (Math.random() - 0.5) * 80;
-    if (n.y === undefined) n.y = H / 2 + (Math.random() - 0.5) * 200;
+    n.x = initX + (Math.random() - 0.5) * 80;
+    n.y = H / 2 + (Math.random() - 0.5) * 200;
+    n.vx = 0; n.vy = 0;
+    n.fx = null; n.fy = null;
   });
 
   // Nœud-aimant répulsif invisible à la position de chaque titre de cluster
