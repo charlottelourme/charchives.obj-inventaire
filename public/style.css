@@ -8469,21 +8469,75 @@ body.dark-mode .trios-filter-sel {
   justify-content: center;
   margin-bottom: 14px;
 }
+.trios-rule-wrap { position: relative; }
 .trios-rule-pill {
   font-family: 'Compagnon', monospace;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 500;                     /* graisse identique état idle/actif */
   letter-spacing: .05em;
   padding: 9px 14px;
   background: transparent;
   border: none;
   cursor: pointer;
   border-radius: 0;
-  transition: color .18s, opacity .18s;
+  transition: color .18s;
   color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 .trios-rule-pill:hover { color: var(--text-2); }
-.trios-rule-pill.active { color: var(--text); font-weight: 600; }
+.trios-rule-pill.active { color: var(--text); }   /* uniquement la couleur change */
+.trios-rule-pill-text { display: inline-block; }
+.trios-rule-pill-caret {
+  font-family: 'Compagnon', monospace;
+  font-size: 0.7em;
+  font-weight: 300;
+  display: inline-block;
+  transition: transform .25s ease;
+  transform-origin: center 60%;
+}
+.trios-rule-pill[aria-expanded="true"] .trios-rule-pill-caret { transform: rotate(180deg); }
+
+/* Dropdown sous chaque pill — fond papier, options listées */
+.trios-rule-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  padding: 6px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.trios-rule-dropdown[hidden] { display: none; }
+body.dark-mode .trios-rule-dropdown {
+  background: var(--surface);
+  border-color: var(--border);
+}
+.trios-rule-option {
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: .02em;
+  padding: 8px 12px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+.trios-rule-option:hover { background: var(--tag-bg); color: var(--text); }
+.trios-rule-option-count { color: var(--text-3); margin-left: 4px; }
 .trios-rule-desc {
   text-align: center;
   font-family: 'Compagnon', monospace;
