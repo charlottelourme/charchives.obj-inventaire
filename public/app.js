@@ -2133,6 +2133,7 @@ function bindCardEvents(el) {
 // dépasserait la fenêtre, et leur ajoute la classe `card-poem-flip-left` qui
 // bascule la fenêtre à gauche. Recalculé au render et au resize.
 const _POEM_PANEL_W = 340;            // doit matcher la width CSS de .card-poem-overlay
+const _POEM_GAP     = 16;             // doit matcher le `calc(100% + 16px)` CSS
 const _POEM_VIEWPORT_MARGIN = 24;     // marge de sécurité depuis le bord du viewport
 function _positionPoemOverlays(scope) {
   const root = scope || document;
@@ -2140,7 +2141,8 @@ function _positionPoemOverlays(scope) {
     if (!card.querySelector('.card-poem-overlay')) return;
     const r = card.getBoundingClientRect();
     if (r.width === 0) return; // carte non visible
-    const panelEndIfRight = r.left + r.width * 0.78 + _POEM_PANEL_W;
+    // Le panneau commence APRÈS le bord droit de la carte + gap (pas de chevauchement).
+    const panelEndIfRight = r.right + _POEM_GAP + _POEM_PANEL_W;
     const overflowsRight  = panelEndIfRight > window.innerWidth - _POEM_VIEWPORT_MARGIN;
     card.classList.toggle('card-poem-flip-left', overflowsRight);
   });
