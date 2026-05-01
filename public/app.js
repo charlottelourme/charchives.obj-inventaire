@@ -2555,15 +2555,13 @@ function _drawConGraph(canvas, nodes, links) {
     return '#9ca3af';
   }
 
-  // ── Liens ──
+  // ── Liens : retirés du visuel — les regroupements par zone (clusters
+  //   horizontaux par intention) suffisent à montrer l'affinité. On garde
+  //   `linkEl` comme sélection vide pour ne pas casser le tick (qui itérait
+  //   `linkEl.attr('x1'…)`). */
   const linksG = zoomLayer.append('g').attr('class', 'con-links-group');
-  const linkEl = linksG.selectAll('line')
-    .data(links)
-    .join('line')
-    .attr('class', 'con-link')
-    .attr('stroke', linkColor)
-    .attr('stroke-width', d => Math.max(1.5, Math.sqrt(d.strength) * 1.5))
-    .attr('stroke-opacity', 0.38);
+  const linkEl = linksG.selectAll('line').data([]).join('line');
+  void linkColor; // référence retirée mais on garde la fonction au cas où
 
   // ── Halos Soft Block conditionnels (affinité = intention uniquement) ──
   const halosG = zoomLayer.append('g').attr('class', 'con-halos-group');
