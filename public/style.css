@@ -629,7 +629,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   justify-content: center;
   align-self: stretch;
   align-items: center;
-  order: 2;            /* nav après search dans la ligne unique du header */
+  /* order par défaut (0) → nav centrée via flex:1 entre titre et search */
 }
 .view-tab {
   position: relative;              /* contexte de positionnement pour le halo ::before */
