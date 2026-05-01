@@ -3698,17 +3698,79 @@ function _dioSave() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Helper : sélectionne la photo "sans fond" d'un objet pour le Diorama.
-// Convention projet : un PNG dans c.photos[] = version sans fond.
-// Si imageMode === 'cutout' (tag explicite), on fait confiance à photos[0].
-// Retourne null si aucune photo PNG/cutout n'est dispo (l'objet sera exclu
-// de la bibliothèque Diorama — pas d'image avec fond admise).
+// DIORAMA — Détection automatique de transparence (PNG détouré)
+//
+// Le filtre par extension `.png` ne suffit pas : "la plupart des PNG du projet
+// ont un fond" (cf. commentaire sur imageMode plus haut). On vérifie donc le
+// canal alpha en samplant l'image dans un canvas 64×64. Un PNG est considéré
+// "détouré" s'il a au moins 5% de pixels alpha < 250.
+//
+// Le résultat est mis en cache (Map en mémoire) pour éviter de re-tester à
+// chaque render. La cache stocke soit une Promise (vérif en cours), soit un
+// boolean (résultat final).
+//
+// Si imageMode === 'cutout' (tag explicite dans les données), on bypasse le
+// test et on fait confiance à photos[0].
+const _dioAlphaCache = new Map(); // filename → Promise<bool> | bool
+
+function _dioCheckTransparent(filename) {
+  const cached = _dioAlphaCache.get(filename);
+  if (cached !== undefined) return Promise.resolve(cached);
+  const url = photoUrl(filename);
+  const promise = new Promise(resolve => {
+    const img = new Image();
+    // crossOrigin uniquement si URL externe (Cloudinary). Pour /uploads/ on
+    // est same-origin et activer crossOrigin déclencherait une requête CORS
+    // potentiellement bloquée par le serveur.
+    if (url.startsWith('http') && !url.startsWith(location.origin)) {
+      img.crossOrigin = 'anonymous';
+    }
+    img.onload = () => {
+      try {
+        const W = 64, H = 64;
+        const canvas = document.createElement('canvas');
+        canvas.width = W; canvas.height = H;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, W, H);
+        ctx.drawImage(img, 0, 0, W, H);
+        const data = ctx.getImageData(0, 0, W, H).data;
+        let transparent = 0;
+        const total = W * H;
+        for (let i = 3; i < data.length; i += 4) {
+          if (data[i] < 250) transparent++;
+        }
+        resolve(transparent / total > 0.05);
+      } catch (e) {
+        // Canvas tainted (CORS) ou autre erreur → on assume "avec fond"
+        // (plus safe d'exclure que d'inclure une image douteuse)
+        console.warn('[diorama] alpha check failed:', filename, e);
+        resolve(false);
+      }
+    };
+    img.onerror = () => resolve(false);
+    img.src = url;
+  }).then(result => {
+    _dioAlphaCache.set(filename, result);
+    return result;
+  });
+  _dioAlphaCache.set(filename, promise);
+  return promise;
+}
+
+// Helper sync : retourne la photo "détourée" d'un objet pour le Diorama.
+// - imageMode === 'cutout' → photos[0] (tag explicite, on fait confiance)
+// - sinon → le premier PNG dont la transparence a été VÉRIFIÉE (cache hit
+//   avec valeur === true). Les PNG non encore vérifiés ou opaques sont
+//   ignorés. La vérif est lancée par renderDiorama() qui re-rend ensuite.
 function _dioPhotoFor(c) {
   const photos = (c && c.photos) || [];
   if (!photos.length) return null;
   if (c.imageMode === 'cutout') return photos[0];
-  const png = photos.find(p => p && p.toLowerCase().endsWith('.png'));
-  return png || null;
+  for (const p of photos) {
+    if (!p || !p.toLowerCase().endsWith('.png')) continue;
+    if (_dioAlphaCache.get(p) === true) return p;
+  }
+  return null;
 }
 
 function renderDiorama() {
