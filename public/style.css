@@ -571,8 +571,8 @@ header {
   max-width: 100vw;
   margin: 0;
   /* Padding vertical généreux — le header respire largement, façon fronton de catalogue */
-  padding: calc(env(safe-area-inset-top) + 44px) var(--page-gutter) 28px;
-  min-height: calc(178px + env(safe-area-inset-top));
+  padding: calc(env(safe-area-inset-top) + 56px) var(--page-gutter) 28px;
+  min-height: calc(190px + env(safe-area-inset-top));
   height: auto;
   display: flex;
   align-items: baseline;             /* unique règle de construction : baseline commune partout */
