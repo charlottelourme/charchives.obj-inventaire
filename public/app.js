@@ -5079,20 +5079,14 @@ function renderTrios() {
     if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
     else result.style.display = 'none';
   } else if (_triosActiveTab === 'regles') {
-    // Restaure pill active + select de valeur si une règle est en mémoire
-    const ruleControls = document.getElementById('triosRuleControls');
+    // Restaure la pill active si une règle est en mémoire (les dropdowns restent fermés)
     if (_currentTrio?._rule) {
       document.querySelectorAll('.trios-rule-pill').forEach(p =>
         p.classList.toggle('active', p.dataset.rule === _currentTrio._rule));
-      if (ruleControls) ruleControls.style.display = '';
-      _populateTriosRuleValues(_currentTrio._rule);
-      const sel = document.getElementById('triosRuleValue');
-      if (sel && _currentTrio._ruleValue) sel.value = _currentTrio._ruleValue;
       _setTriosLinkBar(_currentTrio);
       _renderTriosCards(_currentTrio.objects);
       result.style.display = '';
     } else {
-      if (ruleControls) ruleControls.style.display = 'none';
       result.style.display = 'none';
     }
   } else {
