@@ -2872,7 +2872,7 @@ function _updateClusterLabels(labelsG, nodes) {
   const applyTypo = (sel) => sel
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
-    .style('font-family', "'Feroniapi', serif")
+    .style('font-family', "'Compagnon', serif")
     .style('font-style', 'italic')
     .style('font-size', '22px')
     .style('font-weight', '400')
