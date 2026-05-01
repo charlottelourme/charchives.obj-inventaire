@@ -139,11 +139,18 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
    saturée de cette couleur (--page-verbe-typo) pour créer une unité.
    ══════════════════════════════════════════════════════════════════════════ */
 /* ══════════════════════════════════════════════════════════════════════════
-   THÉMATISATION VERBE — Sandwich de 3 calques fixes
-   Structure : #bgLayers > .bg-base + .bg-radial + .bg-grain
-   Couleurs injectées en HEX direct via style inline depuis app.js.
+   #bgLayers — DÉSACTIVÉ : unité de fond confiée à body + body::after.
+   Le sandwich de calques (vignette, radial verbe, grain) est masqué pour
+   éviter toute démarcation. Conservé dans le DOM pour ne pas casser le JS
+   qui set encore .bg-radial inline (applyVerbePageTheme).
    ══════════════════════════════════════════════════════════════════════════ */
 #bgLayers {
+  display: none !important;
+}
+#bgLayers, #bgLayers * { display: none !important; }
+/* (les anciennes règles bg-base / bg-vignette / bg-radial / bg-grain restent
+    déclarées plus bas mais sont neutralisées par le display:none ci-dessus) */
+#bgLayers_legacy_anchor {
   position: fixed;
   inset: 0;
   width: 100%;
