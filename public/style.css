@@ -6231,16 +6231,18 @@ body.dark-mode .canvas-editor-overlay { background: var(--bg); }
   left: 0;
   right: 0;
   z-index: 98;
-  background: var(--bg);                  /* OPAQUE — pas de transparence */
-  border-top: 1px solid var(--border-light, #E8E4DE);
+  background: transparent !important;
+  background-color: transparent !important;
+  border-top: none;
+  box-shadow: none;
   padding: 0.6rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 body.dark-mode .global-footer {
-  background: var(--bg);
-  border-top-color: var(--border, #27272A);
+  background: transparent !important;
+  border-top: none;
 }
 
 /* Ligne 1 : breadcrumb intégré au footer (plus de position:fixed séparé).
