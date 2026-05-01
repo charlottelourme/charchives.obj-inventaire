@@ -639,14 +639,14 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   height: 100%;
   display: flex;
   align-items: center;
-  /* ── Navigation : Compagnon Light italic, présence éditoriale ── */
+  /* ── Navigation : Compagnon Light italic, plus clair que le titre ── */
   font-family: 'Compagnon', monospace;
   font-style: italic;
-  font-size: clamp(1.4rem, 2vw, 2.1rem);
+  font-size: clamp(1.15rem, 1.5vw, 1.6rem);
   font-weight: 300;
   line-height: 1.1;
   cursor: pointer;
-  color: var(--text-3);
+  color: #71717A;                  /* gris plus clair que le titre (#0A0A0A) */
   transition: color .2s ease, opacity .2s ease;
   white-space: nowrap;
   letter-spacing: 0;
