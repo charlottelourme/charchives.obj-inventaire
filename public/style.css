@@ -8470,9 +8470,10 @@ body.dark-mode .trios-filter-sel {
 .trios-rule-wrap { position: relative; }
 .trios-rule-pill {
   font-family: 'Compagnon', monospace;
-  font-size: 12px;
-  font-weight: 500;                     /* graisse identique état idle/actif */
-  letter-spacing: .05em;
+  font-weight: 400;                     /* Compagnon-Roman, idle = active (pas de graisse qui change) */
+  font-style: normal;
+  font-size: 13px;
+  letter-spacing: .02em;
   padding: 9px 14px;
   background: transparent;
   border: none;
