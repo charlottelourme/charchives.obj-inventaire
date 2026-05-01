@@ -673,7 +673,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
 .search-wrap {
   position: relative;
   flex-shrink: 0;
-  order: 1;            /* après le logo, avant la nav (titre / Rechercher / nav / actions) */
+  order: 10;           /* à droite : titre / nav (centrée) / Rechercher / actions */
 }
 
 /* Barre principale — identique au champ inline "Rechercher" */
