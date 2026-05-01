@@ -6229,7 +6229,9 @@ body.dark-mode .global-footer {
   border-top-color: var(--border, #27272A);
 }
 
-/* Ligne 1 : breadcrumb intégré au footer (plus de position:fixed séparé). */
+/* Ligne 1 : breadcrumb intégré au footer (plus de position:fixed séparé).
+   padding-left: 12px → "..." aligné sur le "C" de Calendrier (= view-tab inner padding).
+   min-width: 50% → fil d'Ariane long, occupe au moins la moitié du site. */
 .global-footer-breadcrumb {
   position: static !important;
   bottom: auto !important;
@@ -6240,9 +6242,10 @@ body.dark-mode .global-footer {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border-top: none !important;
-  padding: 0 !important;
+  padding: 0 0 0 12px !important;
   z-index: auto !important;
   align-self: stretch;
+  min-width: 50%;
 }
 
 /* Ligne 2 : outils en flex space-between. INVERSION : Vues à gauche, Exports à droite. */
