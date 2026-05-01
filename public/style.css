@@ -663,7 +663,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   color: #2A2A2E;
 }
 .view-tab.active {
-  color: #18181b;        /* contraste pur — couleur signe l'actif (poids reste 300 italic) */
+  color: #3F3F46;        /* actif distingué mais reste plus clair que le titre */
   font-weight: 300;
   text-decoration: none;
   filter: none !important;
