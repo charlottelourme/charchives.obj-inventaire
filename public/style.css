@@ -237,6 +237,20 @@ body::after {
 }
 body.dark-mode::after { mix-blend-mode: overlay; opacity: 0.28; }
 
+/* ══ Atténuation du grain sur mobile ═══════════════════════════════════════
+   Sur écran Retina + proche de l'œil, les 3 couches de grain (body::after,
+   bg-grain, card-grain) cumulent un bruit perçu beaucoup plus dense qu'en
+   desktop. On les divise toutes par ~2 sous 520px pour retrouver la sensation
+   "papier discret" du desktop. Le grain reste présent — juste moins agressif. */
+@media (max-width: 520px) {
+  body::after            { opacity: 0.20; }
+  body.dark-mode::after  { opacity: 0.14; }
+  #bgLayers .bg-grain    { opacity: 0.40; }
+  body.dark-mode #bgLayers .bg-grain { opacity: 0.20; }
+  .card .card-grain      { opacity: 0.25; }
+  body.dark-mode .card .card-grain { opacity: 0.12; }
+}
+
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
       Tous les conteneurs intermédiaires (main, grid, toolbars, filtres)
       passent en transparent pour laisser voir #bgLayers derrière.
