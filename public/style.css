@@ -1254,7 +1254,7 @@ body.dark-mode .card .card-grain {
    marges du grid (qui restent symétriques). */
 .card.card-poem-flip-left .card-poem-overlay {
   left: auto;
-  right: 78%;
+  right: calc(100% + 16px);             /* gap 16px à gauche, AUCUN chevauchement */
   transform-origin: right center;
   transform: translate(12px, -50%) scale(0.96);
 }
