@@ -11994,3 +11994,23 @@ body.dark-mode .bug-fab:hover { color: var(--text); }
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   REVERT — Plus de surimpression PNG en light mode (assombrissait les photos)
+   ══════════════════════════════════════════════════════════════════════════
+   Le mix-blend: multiply sur .img-cutout overlay assombrissait les photos
+   originales (les pixels foncés du PNG noircissaient la photo en dessous).
+   On revient au comportement initial :
+   - Light mode : .img-cutout cachée, l'utilisatrice voit la photo originale
+     intacte. Le PNG reste accessible via le carrousel ‹/› (qui cycle sur
+     toutes les photos de c.photos[], y compris le .png).
+   - Dark mode : .img-cutout en image principale (.img-standard cachée). */
+
+body:not(.dark-mode) #gridView .grid .card-thumb-area .img-cutout,
+html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-cutout {
+  display: none !important;
+  position: static !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  z-index: auto !important;
+}
