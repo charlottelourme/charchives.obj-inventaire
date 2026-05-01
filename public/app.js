@@ -2787,8 +2787,10 @@ function _drawConGraph(canvas, nodes, links) {
 
   // ── Distribution horizontale des clusters par intention (calculée AVANT
   //    le spawn pour pouvoir initialiser chaque nœud près de SA colonne X). */
+  // On distribue par catégorie d'intention quel que soit l'affinityType
+  // (matière/identité affinent les liens, mais le cluster spatial reste par
+  // verbe pour garder la lecture en zones).
   const _conCategories = (() => {
-    if (_conAffinityType !== 'intention') return [];
     const seen = new Set();
     const ordered = [];
     nodes.forEach(n => {
