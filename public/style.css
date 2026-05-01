@@ -8442,9 +8442,11 @@ body.dark-mode .trios-filter-sel {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M0 0l5 6 5-6z' fill='%23A1A1AA'/></svg>");
 }
 .trios-compose-btn {
+  /* Compagnon-Roman = famille Compagnon + weight 400 normal */
   font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-style: normal;
   font-size: 12px;
-  font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
   padding: 10px 14px;
