@@ -592,11 +592,11 @@ html::before {
   left: 0;
   right: 0;
   height: env(safe-area-inset-top);
-  background: #E0E0E0;                  /* matche bg-base — couvre la safe-area iOS */
-  z-index: 1001;                        /* au-dessus du header pour couvrir tout jour */
+  background: transparent;              /* unité totale : seul body porte la couleur */
+  z-index: 1001;
   pointer-events: none;
 }
-html:has(body.dark-mode)::before { background: #080809; }
+html:has(body.dark-mode)::before { background: transparent; }
 body.dark-mode header { background: transparent !important; }
 
 /* Plus de grain local sur le header — assuré par body::after global. */
