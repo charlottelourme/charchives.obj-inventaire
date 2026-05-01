@@ -608,7 +608,7 @@ header h1 {
   font-weight: 300;                        /* Light */
   letter-spacing: 0;
   text-transform: none;                    /* HTML écrit en casse douce : "Charchives . obj" */
-  color: #0A0A0A !important;               /* GRIS LE PLUS FONCÉ — repère visuel principal */
+  color: #2A2A2E !important;               /* anthracite — JAMAIS de noir pur en mode normal */
   flex-shrink: 0;
   display: inline-block !important;        /* baseline propre — aligne avec nav et search */
   line-height: 1.1;
