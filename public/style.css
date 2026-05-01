@@ -11693,11 +11693,18 @@ body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
 /* ══════════════════════════════════════════════════════════════════════════
    BUG REPORT — Bouton flottant + modales + historique
    ══════════════════════════════════════════════════════════════════════════ */
-.bug-fab {
+/* Cluster de boutons flottants : historique au-dessus + insecte en dessous */
+.bug-fab-cluster {
   position: fixed;
   bottom: calc(20px + env(safe-area-inset-bottom));
   right: 20px;
   z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.bug-fab {
   width: 38px;
   height: 38px;
   border: 1px solid var(--border);
@@ -11709,6 +11716,7 @@ body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
   color: var(--text-3);
   transition: color 0.18s, background 0.18s, border-color 0.18s, transform 0.2s ease;
   opacity: 0.55;
+  position: relative;
 }
 .bug-fab:hover {
   opacity: 1;
@@ -11716,6 +11724,9 @@ body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
   border-color: var(--border-strong);
   transform: scale(1.05);
 }
+.bug-fab-cluster:hover .bug-fab { opacity: 0.85; }
+.bug-fab-cluster:hover .bug-fab:hover { opacity: 1; }
+.bug-fab-history { width: 32px; height: 32px; }
 body.dark-mode .bug-fab {
   background: var(--surface);
   border-color: var(--border);
@@ -11723,12 +11734,12 @@ body.dark-mode .bug-fab {
 }
 body.dark-mode .bug-fab:hover { color: var(--text); }
 @media (max-width: 520px) {
-  .bug-fab {
+  .bug-fab-cluster {
     bottom: calc(76px + env(safe-area-inset-bottom));
     right: 12px;
-    width: 34px;
-    height: 34px;
   }
+  .bug-fab { width: 34px; height: 34px; }
+  .bug-fab-history { width: 28px; height: 28px; }
 }
 
 /* Modales bug : overlay + panneau */
