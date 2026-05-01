@@ -8214,8 +8214,11 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 /* ── Triptyque — règle d'équilibre ──────────────────────────────────────────
    1. Aucun halo (Soft Block) : lecture pure des images
    2. Dimensions rigoureusement identiques pour les 3 slots
+   3. Aucun overlay « poème » au hover (rectangle flou + description) :
+      réservé à l'Inventaire pour préserver la lecture pure des compositions.
    ─────────────────────────────────────────────────────────────────────────── */
 .trios-grid .card::before { display: none !important; }
+.trios-grid .card-poem-overlay { display: none !important; }
 .trios-grid .trios-slot-wrap {
   display: flex;
   flex-direction: column;
