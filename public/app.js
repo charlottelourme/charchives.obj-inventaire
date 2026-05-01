@@ -4804,25 +4804,6 @@ function _generateTrioByRule(rule, value, prevObjects, locked) {
   }
 }
 
-// Peupler les filtres du mode 1
-function _populateTriosFilters() {
-  const mSet = new Set(), tSet = new Set(), iSet = new Set();
-  state.collections.forEach(c => {
-    (c.attributes?.matieres||[]).forEach(m => mSet.add(m));
-    (c.attributes?.couleurs||[]).forEach(t => tSet.add(t));
-    if (c.category) iSet.add(c.category);
-  });
-  const fill = (id, placeholder, set) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.innerHTML = `<option value="">${placeholder}</option>` +
-      [...set].sort().map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
-  };
-  fill('trioFiltMatiere', 'Matière', mSet);
-  fill('trioFiltTeinte', 'Teinte', tSet);
-  fill('trioFiltIntention', 'Intention', iSet);
-}
-
 // Peuple le select de valeur en mode Affinités selon la règle (couleurs / origine / matières) — ne montre que les valeurs ayant ≥3 objets.
 function _populateTriosRuleValues(rule) {
   const sel = document.getElementById('triosRuleValue');
