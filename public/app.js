@@ -10124,7 +10124,18 @@ function _bindBugReport() {
     else if (!document.getElementById('bugHistoryModal')?.hidden) closeBugHistory();
   });
 }
-// Bind au chargement (DOM déjà prêt vu la position de ce bloc)
-_bindBugReport();
+// Bind après que le DOM soit complètement parsé : les éléments bug-report
+// sont en fin de body, APRÈS la balise <script src="app.js"> du milieu de body.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _bindBugReport);
+} else {
+  // Si déjà chargé (rare ici), on bind directement.
+  // window.load garantit que TOUT (scripts différés, etc.) est prêt.
+  window.addEventListener('load', _bindBugReport);
+  // Retry après un tick si l'élément n'existe pas encore
+  setTimeout(() => {
+    if (!document.getElementById('bugReportBtn')?._bugBound) _bindBugReport();
+  }, 100);
+}
 
 init();
