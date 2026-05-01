@@ -5117,17 +5117,16 @@ function renderTrios() {
   // Applique la visibilité des onglets (Paramètres > Onglets Triptyque > Masquer)
   _syncTriosTabLabels();
   // Si l'onglet actif est masqué, bascule sur le premier visible
-  const tabIdxMap = { hasard: 0, regles: 1, manuel: 2, aleatoire: 3 };
+  const tabIdxMap = { hasard: 0, regles: 1, manuel: 2 };
   const activeIdx = tabIdxMap[_triosActiveTab];
   if (activeIdx != null && isTriosTabHidden(activeIdx)) {
-    const firstVisible = ['hasard', 'regles', 'manuel', 'aleatoire'].find((t, i) => !isTriosTabHidden(i));
+    const firstVisible = ['hasard', 'regles', 'manuel'].find((t, i) => !isTriosTabHidden(i));
     if (firstVisible) {
       _triosActiveTab = firstVisible;
       document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === firstVisible));
       document.getElementById('triosPanelHashard').style.display    = firstVisible === 'hasard'    ? '' : 'none';
       document.getElementById('triosPanelRegles').style.display     = firstVisible === 'regles'    ? '' : 'none';
       document.getElementById('triosPanelManuel').style.display     = firstVisible === 'manuel'    ? '' : 'none';
-      document.getElementById('triosPanelAleatoire').style.display  = firstVisible === 'aleatoire' ? '' : 'none';
     }
   }
   const result  = document.getElementById('triosResult');
@@ -5136,11 +5135,12 @@ function renderTrios() {
     result.style.display = 'none'; empty.style.display = ''; _renderTriosActions(); return;
   }
   empty.style.display = 'none';
-  _populateTriosFilters();
 
   if (_triosActiveTab === 'hasard') {
-    if (!_currentTrio) _currentTrio = _generateTrio();
+    // Collisions : génération aléatoire à l'arrivée si pas de trio courant
+    if (!_currentTrio) _currentTrio = _generateAleatoireTrio();
     if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
+    else result.style.display = 'none';
   } else if (_triosActiveTab === 'regles') {
     // Restaure pill active + select de valeur si une règle est en mémoire
     const ruleControls = document.getElementById('triosRuleControls');
