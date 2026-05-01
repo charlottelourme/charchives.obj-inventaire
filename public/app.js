@@ -7317,7 +7317,7 @@ function renderStats() {
   if (!total || !topKws.length) return;
 
   // Mots-clés — Chart.js horizontal bar (épuré)
-  Chart.defaults.font.family="'Inter',-apple-system,BlinkMacSystemFont,sans-serif";
+  Chart.defaults.font.family="'Compagnon',-apple-system,BlinkMacSystemFont,sans-serif";
   Chart.defaults.font.size=11; Chart.defaults.color='#a8a49e';
   const gridColor='#edeae5';
 
