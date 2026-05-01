@@ -5013,7 +5013,7 @@ body.dark-mode #deriveView .gallery-scroll { background: transparent; }
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
-  order: 3;        /* en bout de ligne : titre / Rechercher / nav / actions */
+  order: 11;       /* tout à droite, après Rechercher (order 10) */
 }
 .btn-icon {
   padding: 5px 9px;
