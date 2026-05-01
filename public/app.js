@@ -9118,8 +9118,9 @@ function bindEvents() {
       document.getElementById('triosPanelManuel').style.display     = _triosActiveTab === 'manuel'    ? '' : 'none';
       // Reset visuel de la section Affinités à chaque changement d'onglet
       document.querySelectorAll('.trios-rule-pill').forEach(p => p.classList.remove('active'));
-      const ruleControls = document.getElementById('triosRuleControls');
-      if (ruleControls) ruleControls.style.display = 'none';
+      _closeTriosRuleDropdowns();
+      const ruleDesc = document.getElementById('triosRuleDesc');
+      if (ruleDesc) ruleDesc.textContent = '';
       if (_triosActiveTab !== 'manuel') {
         document.getElementById('triosResult').style.display = 'none';
         document.getElementById('triosLinkBar').innerHTML = '';
