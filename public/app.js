@@ -9260,12 +9260,14 @@ function bindEvents() {
     }
   });
 
-  // Bouton "Tirer une composition" (Aléatoire) ─ pioche dans tous les "Disponible"
-  document.getElementById('triosAleatoireBtn')?.addEventListener('click', () => {
+  // Collisions — Tirer une composition (pioche aléatoire dans tout l'inventaire)
+  document.getElementById('triosComposeBtn')?.addEventListener('click', () => {
     _resetTriosLocks();
     const trio = _generateAleatoireTrio();
     if (!trio) {
-      _showTriosToast('Pas assez d\'objets disponibles pour piocher.');
+      _showTriosToast('Pas assez d\'objets pour composer.');
+      document.getElementById('triosResult').style.display = 'none';
+      _renderTriosActions();
       return;
     }
     _currentTrio = trio;
@@ -9273,23 +9275,6 @@ function bindEvents() {
     _renderTriosCards(trio.objects);
     document.getElementById('triosResult').style.display = '';
     _renderTriosActions();
-  });
-
-  // Collisions — Composer (filtres aléatoires)
-  document.getElementById('triosComposeBtn').addEventListener('click', () => {
-    _resetTriosLocks();
-    const matiere   = document.getElementById('trioFiltMatiere').value;
-    const teinte    = document.getElementById('trioFiltTeinte').value;
-    const intention = document.getElementById('trioFiltIntention').value;
-    const trio = _generateTrioFiltered(matiere, teinte, intention);
-    if (!trio) {
-      _showTriosToast('Pas assez d\'objets pour ces filtres. Essaie d\'en retirer un.');
-      document.getElementById('triosResult').style.display = 'none';
-      _renderTriosActions();
-      return;
-    }
-    _currentTrio = trio;
-    renderTrios();
   });
 
   // Affinités — sélection d'une règle (affiche le sélecteur de valeur, ne génère pas encore)
