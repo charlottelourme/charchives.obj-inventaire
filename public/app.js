@@ -9789,4 +9789,340 @@ if (typeof ResizeObserver !== 'undefined') {
   if (_headerEl) new ResizeObserver(updateHeaderHeightVar).observe(_headerEl);
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// BUG REPORT — Signalement + historique exportable au format Claude
+// ══════════════════════════════════════════════════════════════════════════
+const BUG_STORAGE_KEY = 'charchives_bug_reports';
+
+// Charge / sauvegarde la liste depuis localStorage
+function _bugLoad() {
+  try { return JSON.parse(localStorage.getItem(BUG_STORAGE_KEY)) || []; }
+  catch (e) { return []; }
+}
+function _bugSave(list) {
+  try { localStorage.setItem(BUG_STORAGE_KEY, JSON.stringify(list)); }
+  catch (e) { console.warn('bug save failed', e); }
+}
+
+// Détecte automatiquement le contexte courant (page, vue, filtre, viewport)
+function _bugDetectContext() {
+  const v = state.view || 'grid';
+  const labels = {
+    grid: 'Inventaire', derive: 'Journal', trios: 'Triptyque',
+    diorama: 'Diorama', calendar: 'Calendrier', catalogue: 'Catalogue', stats: 'Stats'
+  };
+  let pageLabel = labels[v] || v;
+  // Sous-mode Inventaire (Grille / Constellation)
+  if (v === 'grid' && state.inventoryMode === 'constellation') pageLabel += ' · Constellation';
+  else if (v === 'grid') pageLabel += ' · Grille';
+  // Filtre intention actif
+  if (v === 'grid' && state.categoryFilter) pageLabel += ` · ${state.categoryFilter}`;
+
+  return {
+    page: pageLabel,
+    view: v,
+    inventoryMode: state.inventoryMode || null,
+    categoryFilter: state.categoryFilter || null,
+    statusFilter: state.statusFilter || null,
+    typoFilter: state.typoFilter || null,
+    bookmarkFilter: !!state.bookmarkFilter,
+    darkMode: !!state.darkMode,
+    url: window.location.href,
+    viewport: `${window.innerWidth}×${window.innerHeight}`,
+    userAgent: navigator.userAgent,
+    timestamp: new Date().toISOString()
+  };
+}
+
+// Rend le bloc contexte dans la modale signalement
+function _bugRenderContext() {
+  const el = document.getElementById('bugContext');
+  if (!el) return;
+  const ctx = _bugDetectContext();
+  el.innerHTML = `
+    <div class="bug-ctx-line"><span class="bug-ctx-key">Page</span><span class="bug-ctx-val">${esc(ctx.page)}</span></div>
+    <div class="bug-ctx-line"><span class="bug-ctx-key">Viewport</span><span class="bug-ctx-val">${ctx.viewport}</span></div>
+    <div class="bug-ctx-line"><span class="bug-ctx-key">Thème</span><span class="bug-ctx-val">${ctx.darkMode ? 'Dark mode' : 'Light mode'}</span></div>
+    ${ctx.statusFilter ? `<div class="bug-ctx-line"><span class="bug-ctx-key">Statut</span><span class="bug-ctx-val">${esc(ctx.statusFilter)}</span></div>` : ''}
+    ${ctx.typoFilter   ? `<div class="bug-ctx-line"><span class="bug-ctx-key">Typologie</span><span class="bug-ctx-val">${esc(ctx.typoFilter)}</span></div>` : ''}
+  `;
+}
+
+// Ouvre la modale de signalement
+function openBugReport() {
+  const m = document.getElementById('bugReportModal');
+  const desc = document.getElementById('bugReportDesc');
+  if (!m) return;
+  if (desc) desc.value = '';
+  _bugRenderContext();
+  m.hidden = false;
+  setTimeout(() => desc?.focus(), 80);
+}
+function closeBugReport() {
+  const m = document.getElementById('bugReportModal');
+  if (m) m.hidden = true;
+}
+
+// Enregistre un bug
+function submitBugReport() {
+  const desc = (document.getElementById('bugReportDesc')?.value || '').trim();
+  if (!desc) {
+    document.getElementById('bugReportDesc')?.focus();
+    return;
+  }
+  const ctx = _bugDetectContext();
+  const bug = {
+    id: 'bug-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+    description: desc,
+    ...ctx,
+    status: 'open',
+    selected: false
+  };
+  const list = _bugLoad();
+  list.unshift(bug);   // plus récent en haut
+  _bugSave(list);
+  closeBugReport();
+  // Toast de confirmation
+  _bugToast(`Bug enregistré (${list.length} au total)`);
+}
+
+// Petit toast non-bloquant
+function _bugToast(msg) {
+  let t = document.getElementById('bugToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'bugToast';
+    t.className = 'bug-toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── HISTORIQUE ─────────────────────────────────────────────────────────────
+function openBugHistory() {
+  const m = document.getElementById('bugHistoryModal');
+  if (!m) return;
+  _renderBugHistory();
+  m.hidden = false;
+}
+function closeBugHistory() {
+  const m = document.getElementById('bugHistoryModal');
+  if (m) m.hidden = true;
+}
+
+function _renderBugHistory() {
+  const list = _bugLoad();
+  const ul = document.getElementById('bugHistoryList');
+  const empty = document.getElementById('bugHistoryEmpty');
+  const countEl = document.getElementById('bugHistoryCount');
+  if (countEl) countEl.textContent = list.length ? `(${list.length})` : '';
+  if (!ul) return;
+  if (!list.length) {
+    ul.innerHTML = '';
+    if (empty) empty.style.display = '';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  ul.innerHTML = list.map(b => {
+    const dt = new Date(b.timestamp);
+    const dateStr = dt.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) + ' · ' +
+                    dt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const statusBadge = b.status === 'resolved'
+      ? '<span class="bug-badge bug-badge-resolved">Résolu</span>'
+      : '<span class="bug-badge bug-badge-open">Ouvert</span>';
+    return `
+      <li class="bug-item${b.selected ? ' selected' : ''}${b.status === 'resolved' ? ' resolved' : ''}" data-id="${esc(b.id)}">
+        <label class="bug-item-check">
+          <input type="checkbox" data-bug-check="${esc(b.id)}" ${b.selected ? 'checked' : ''}>
+        </label>
+        <div class="bug-item-body">
+          <div class="bug-item-meta">
+            <span class="bug-item-page">${esc(b.page || '—')}</span>
+            <span class="bug-item-date">${dateStr}</span>
+            ${statusBadge}
+          </div>
+          <p class="bug-item-desc">${esc(b.description)}</p>
+        </div>
+        <div class="bug-item-actions">
+          <button class="bug-item-btn" data-bug-toggle-status="${esc(b.id)}" title="${b.status === 'resolved' ? 'Marquer ouvert' : 'Marquer résolu'}">${b.status === 'resolved' ? '↺' : '✓'}</button>
+          <button class="bug-item-btn bug-item-del" data-bug-del="${esc(b.id)}" title="Supprimer">×</button>
+        </div>
+      </li>`;
+  }).join('');
+
+  // Bind checkboxes
+  ul.querySelectorAll('[data-bug-check]').forEach(cb => {
+    cb.addEventListener('change', e => {
+      const id = cb.dataset.bugCheck;
+      const all = _bugLoad();
+      const bug = all.find(x => x.id === id);
+      if (bug) {
+        bug.selected = cb.checked;
+        _bugSave(all);
+        cb.closest('.bug-item')?.classList.toggle('selected', cb.checked);
+      }
+    });
+  });
+  // Bind toggle status
+  ul.querySelectorAll('[data-bug-toggle-status]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.bugToggleStatus;
+      const all = _bugLoad();
+      const bug = all.find(x => x.id === id);
+      if (bug) {
+        bug.status = bug.status === 'resolved' ? 'open' : 'resolved';
+        _bugSave(all);
+        _renderBugHistory();
+      }
+    });
+  });
+  // Bind delete
+  ul.querySelectorAll('[data-bug-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.bugDel;
+      const all = _bugLoad().filter(x => x.id !== id);
+      _bugSave(all);
+      _renderBugHistory();
+    });
+  });
+}
+
+// Sélection / désélection en masse
+function _bugSelectAll(state_) {
+  const all = _bugLoad();
+  all.forEach(b => { b.selected = state_; });
+  _bugSave(all);
+  _renderBugHistory();
+}
+
+// Export sélection au format Claude (copie dans le presse-papiers)
+async function exportBugsToClaude() {
+  const all = _bugLoad();
+  const selected = all.filter(b => b.selected);
+  if (!selected.length) {
+    _bugToast('Sélectionne au moins un bug à envoyer.');
+    return;
+  }
+  const lines = [
+    '# Bugs à corriger — Charchives',
+    '',
+    `${selected.length} bug${selected.length > 1 ? 's' : ''} signalé${selected.length > 1 ? 's' : ''} par Charlotte.`,
+    'Chacun inclut le contexte automatiquement détecté au moment du signalement.',
+    '',
+    '---',
+    ''
+  ];
+  selected.forEach((b, i) => {
+    const dt = new Date(b.timestamp);
+    lines.push(`## Bug ${i + 1} — ${b.page || '—'}`);
+    lines.push('');
+    lines.push(`**Description** : ${b.description}`);
+    lines.push('');
+    lines.push('**Contexte** :');
+    lines.push(`- Page : ${b.page || '—'}`);
+    lines.push(`- Vue : ${b.view || '—'}${b.inventoryMode ? ` (${b.inventoryMode})` : ''}`);
+    if (b.categoryFilter) lines.push(`- Intention : ${b.categoryFilter}`);
+    if (b.statusFilter)   lines.push(`- Statut filtre : ${b.statusFilter}`);
+    if (b.typoFilter)     lines.push(`- Typologie : ${b.typoFilter}`);
+    lines.push(`- Thème : ${b.darkMode ? 'Dark mode' : 'Light mode'}`);
+    lines.push(`- Viewport : ${b.viewport}`);
+    lines.push(`- Date : ${dt.toLocaleString('fr-FR')}`);
+    lines.push('');
+    lines.push('---');
+    lines.push('');
+  });
+  const text = lines.join('\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    _bugToast(`${selected.length} bug${selected.length > 1 ? 's' : ''} copié${selected.length > 1 ? 's' : ''} dans le presse-papiers — colle-les dans Claude après "bug*".`);
+  } catch (e) {
+    // Fallback : ouvre une textarea pour copie manuelle
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.top = '50%'; ta.style.left = '50%';
+    ta.style.transform = 'translate(-50%,-50%)';
+    ta.style.width = '80vw'; ta.style.height = '60vh';
+    ta.style.zIndex = '99999';
+    document.body.appendChild(ta);
+    ta.select();
+    _bugToast('Sélectionne le texte et copie-le manuellement.');
+    setTimeout(() => ta.remove(), 30000);
+  }
+}
+
+// Bind événements bug report (appelé une fois au chargement)
+function _bindBugReport() {
+  // Bouton flottant : clic court = signaler, clic long / Shift+clic = historique
+  const fab = document.getElementById('bugReportBtn');
+  if (fab) {
+    let pressTimer = null;
+    let longPressed = false;
+    const handleOpen = (longPress) => {
+      if (longPress || event?.shiftKey) openBugHistory();
+      else openBugReport();
+    };
+    fab.addEventListener('click', e => {
+      if (longPressed) { longPressed = false; return; }
+      if (e.shiftKey) openBugHistory();
+      else openBugReport();
+    });
+    fab.addEventListener('mousedown', () => {
+      pressTimer = setTimeout(() => { longPressed = true; openBugHistory(); }, 600);
+    });
+    fab.addEventListener('mouseup', () => { clearTimeout(pressTimer); });
+    fab.addEventListener('mouseleave', () => { clearTimeout(pressTimer); });
+    // Right-click = historique direct
+    fab.addEventListener('contextmenu', e => { e.preventDefault(); openBugHistory(); });
+  }
+  // Modale signalement
+  document.getElementById('bugReportClose')?.addEventListener('click', closeBugReport);
+  document.getElementById('bugReportCancel')?.addEventListener('click', closeBugReport);
+  document.getElementById('bugReportSubmit')?.addEventListener('click', submitBugReport);
+  document.getElementById('bugReportModal')?.addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeBugReport();
+  });
+  // Modale historique
+  document.getElementById('bugHistoryClose')?.addEventListener('click', closeBugHistory);
+  document.getElementById('bugHistoryModal')?.addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeBugHistory();
+  });
+  document.getElementById('bugHistorySelectAll')?.addEventListener('click', () => {
+    const all = _bugLoad();
+    const allSelected = all.length > 0 && all.every(b => b.selected);
+    _bugSelectAll(!allSelected);
+  });
+  document.getElementById('bugHistoryClear')?.addEventListener('click', () => {
+    if (!confirm('Supprimer tout l\'historique des bugs ? Cette action est irréversible.')) return;
+    _bugSave([]);
+    _renderBugHistory();
+  });
+  document.getElementById('bugHistoryNew')?.addEventListener('click', () => {
+    closeBugHistory();
+    openBugReport();
+  });
+  document.getElementById('bugHistoryDelete')?.addEventListener('click', () => {
+    const all = _bugLoad();
+    const remaining = all.filter(b => !b.selected);
+    if (remaining.length === all.length) {
+      _bugToast('Sélectionne au moins un bug à supprimer.');
+      return;
+    }
+    _bugSave(remaining);
+    _renderBugHistory();
+  });
+  document.getElementById('bugHistoryExport')?.addEventListener('click', exportBugsToClaude);
+  // Échap ferme les modales bug
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (!document.getElementById('bugReportModal')?.hidden) closeBugReport();
+    else if (!document.getElementById('bugHistoryModal')?.hidden) closeBugHistory();
+  });
+}
+// Bind au chargement (DOM déjà prêt vu la position de ce bloc)
+_bindBugReport();
+
 init();
