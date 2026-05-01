@@ -3788,10 +3788,31 @@ function renderDiorama() {
     _dioRenderDecorBar(decBar, backdrop);
   }
 
+  // ── Vérification transparence (async) ──
+  // Pour chaque PNG candidat pas encore vérifié, lance le test alpha en
+  // arrière-plan. Quand tous les checks pending sont terminés, re-render
+  // pour faire apparaître les nouveaux items détourés validés.
+  const pendingChecks = [];
+  state.collections.forEach(c => {
+    if (c.type === 'note' || c.type === 'fragment' || c.type === 'journal-photo') return;
+    if (c.imageMode === 'cutout') return; // bypass : tag explicite
+    (c.photos || []).forEach(p => {
+      if (p && p.toLowerCase().endsWith('.png') && !_dioAlphaCache.has(p)) {
+        pendingChecks.push(_dioCheckTransparent(p));
+      }
+    });
+  });
+  if (pendingChecks.length > 0) {
+    Promise.all(pendingChecks).then(() => {
+      // Re-render uniquement si on est toujours sur la vue Diorama
+      if (state.view === 'diorama') renderDiorama();
+    });
+  }
+
   // ── Sidebar bibliothèque ──
   // Toute la bibliothèque d'Inventaire, mais uniquement la version PNG
-  // sans fond (sélectionnée auto via _dioPhotoFor). Un objet sans PNG
-  // est exclu : "pas les images avec fond" (cf. brief Charlotte).
+  // sans fond (sélectionnée auto via _dioPhotoFor + alpha-check). Un objet
+  // sans PNG détouré est exclu : "pas les images avec fond" (cf. Charlotte).
   const pngItems = state.collections.filter(c =>
     c.type !== 'note' && c.type !== 'fragment' && c.type !== 'journal-photo' &&
     !!_dioPhotoFor(c)
