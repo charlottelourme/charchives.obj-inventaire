@@ -4917,7 +4917,7 @@ function _lockSvg(closed) {
 function _renderTriosActions() {
   const actions = document.getElementById('triosActions');
   if (!actions) return;
-  const isGenerative = ['hasard', 'regles', 'aleatoire'].includes(_triosActiveTab);
+  const isGenerative = ['hasard', 'regles'].includes(_triosActiveTab);
   const result = document.getElementById('triosResult');
   const hasTrio = !!_currentTrio && result && result.style.display !== 'none';
   if (!isGenerative || !hasTrio) {
