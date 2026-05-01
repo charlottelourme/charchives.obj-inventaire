@@ -9185,13 +9185,11 @@ function bindEvents() {
       document.getElementById('triosPanelHashard').style.display    = _triosActiveTab === 'hasard'    ? '' : 'none';
       document.getElementById('triosPanelRegles').style.display     = _triosActiveTab === 'regles'    ? '' : 'none';
       document.getElementById('triosPanelManuel').style.display     = _triosActiveTab === 'manuel'    ? '' : 'none';
-      const aleaPanel = document.getElementById('triosPanelAleatoire');
-      if (aleaPanel) aleaPanel.style.display = _triosActiveTab === 'aleatoire' ? '' : 'none';
       // Reset visuel de la section Affinités à chaque changement d'onglet
       document.querySelectorAll('.trios-rule-pill').forEach(p => p.classList.remove('active'));
       const ruleControls = document.getElementById('triosRuleControls');
       if (ruleControls) ruleControls.style.display = 'none';
-      if (_triosActiveTab !== 'manuel' && _triosActiveTab !== 'aleatoire') {
+      if (_triosActiveTab !== 'manuel') {
         document.getElementById('triosResult').style.display = 'none';
         document.getElementById('triosLinkBar').innerHTML = '';
       }
