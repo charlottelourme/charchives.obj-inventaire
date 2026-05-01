@@ -8243,7 +8243,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   padding: 16px;
-  max-width: 820px;
+  max-width: 1025px;                 /* +25% (820 → 1025) pour grossir les cartes */
   margin: 0 auto;
   border: none;
   align-items: stretch;
