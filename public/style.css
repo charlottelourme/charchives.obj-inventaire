@@ -6455,12 +6455,12 @@ body { padding-bottom: 64px; }
   .hu-btn#searchToggleBtn .hu-label { display: none; }
   .hu-btn#searchToggleBtn { padding: 6px; }
   .hu-btn#searchToggleBtn .hu-icon { width: 18px; height: 18px; }
-  body.dark-mode header { background-color: var(--bg) !important; }
+  body.dark-mode header,
   body.dark-mode header > *,
   body.dark-mode .search-wrap,
   body.dark-mode .search-bar { background: transparent !important; }
 
-  /* Enfants du header restent transparents — seul le header lui-même est opaque */
+  /* Toute la stack header reste transparente — seul body porte la couleur */
   header > *, .search-wrap, .search-bar { background: transparent; }
   .header-sep { display: none; }
 
