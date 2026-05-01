@@ -2828,13 +2828,42 @@ function _drawConGraph(canvas, nodes, links) {
     }
   }
 
+  // ── Distribution horizontale des clusters par intention ──────────────────
+  // Au lieu d'un seul forceCenter qui empile tout au milieu, on assigne à
+  // chaque catégorie une position X répartie sur toute la largeur. Le forceX
+  // par nœud tire chaque image vers le centre de SA colonne d'intention →
+  // les regroupements occupent toute la largeur disponible.
+  const _conCategories = (() => {
+    if (_conAffinityType !== 'intention') return [];
+    const seen = new Set();
+    const ordered = [];
+    nodes.forEach(n => {
+      const cat = n.category || '__nocat__';
+      if (!seen.has(cat)) { seen.add(cat); ordered.push(cat); }
+    });
+    return ordered;
+  })();
+  const _conCatX = new Map();
+  if (_conCategories.length) {
+    const padX = Math.min(120, W * 0.08);
+    const usableW = Math.max(W - padX * 2, 200);
+    _conCategories.forEach((cat, i) => {
+      const x = padX + (i + 0.5) * (usableW / _conCategories.length);
+      _conCatX.set(cat, x);
+    });
+  }
+
   _conSim = d3.forceSimulation(nodes)
-    // Liens courts (80) et forts (0.85) → les objets liés se collent
-    .force('link',    d3.forceLink(links).id(d => d.id).distance(80).strength(0.85))
-    // Répulsion faible (−80) + portée limitée → les nœuds acceptent la proximité
-    .force('charge',  d3.forceManyBody().strength(-80).distanceMax(260))
-    .force('center',  d3.forceCenter(W / 2, H / 2).strength(0.05))
-    // Collision stricte — jamais de superposition totale des images
+    // Liens existent toujours en data (utiles pour _buildConGraph) mais sans
+    // attraction visuelle forte — les clusters sont désormais portés par forceX.
+    .force('link',    d3.forceLink(links).id(d => d.id).distance(60).strength(0.15))
+    // Répulsion modérée + portée limitée
+    .force('charge',  d3.forceManyBody().strength(-90).distanceMax(220))
+    // Centrage Y uniquement — les X sont gérés par cluster
+    .force('y',       d3.forceY(H / 2).strength(0.04))
+    // Cluster horizontal : chaque nœud tiré vers la colonne X de sa catégorie
+    .force('x',       d3.forceX(d => _conCatX.get(d.category || '__nocat__') ?? W / 2).strength(0.18))
+    // Collision stricte
     .force('collide', d3.forceCollide(R_collide).strength(1))
     // Protection des titres de cluster (mode "intention")
     .force('titleShield', titleRepulsion)
