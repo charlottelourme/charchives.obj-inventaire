@@ -8197,20 +8197,20 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 .trios-link-bar {
   text-align: center;
   margin-bottom: 40px;
+  /* Compagnon-Roman partout dans la link-bar (héritage pour tag + amp) */
   font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-style: normal;
   font-size: 18px;
-  font-weight: 300;
   color: var(--text-2);
   letter-spacing: .01em;
 }
 .trios-link-pre {
-  /* Compagnon-Roman = famille Compagnon + weight 400 normal */
   font-family: 'Compagnon', monospace;
   font-weight: 400;
   font-style: normal;
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: .14em;
+  font-size: 11px;
+  letter-spacing: .04em;
   color: var(--text-3);
   display: block;
   margin-bottom: 8px;
