@@ -8237,12 +8237,14 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   font-size: 14px;
   margin: 0 4px;
 }
-/* grid 3 cartes */
+/* grid 3 cartes — légèrement compactée pour que tout tienne sur un écran */
 .trios-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-  padding: 32px;
+  gap: 20px;
+  padding: 16px;
+  max-width: 820px;
+  margin: 0 auto;
   border: none;
   align-items: stretch;
 }
