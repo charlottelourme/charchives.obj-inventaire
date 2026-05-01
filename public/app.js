@@ -9196,22 +9196,8 @@ function bindEvents() {
     }
   });
 
-  // Collisions — Tirer une composition (pioche aléatoire dans tout l'inventaire)
-  document.getElementById('triosComposeBtn')?.addEventListener('click', () => {
-    _resetTriosLocks();
-    const trio = _generateAleatoireTrio();
-    if (!trio) {
-      _showTriosToast('Pas assez d\'objets pour composer.');
-      document.getElementById('triosResult').style.display = 'none';
-      _renderTriosActions();
-      return;
-    }
-    _currentTrio = trio;
-    _setTriosLinkBar(trio);
-    _renderTriosCards(trio.objects);
-    document.getElementById('triosResult').style.display = '';
-    _renderTriosActions();
-  });
+  // Note : Collisions n'a plus de bouton "Tirer une composition" — Re-piocher
+  // (sous le trio) joue ce rôle. Le trio initial est généré dans renderTrios().
 
   // Affinités — clic sur une pill : peuple + ouvre/ferme le dropdown attaché.
   document.querySelectorAll('.trios-rule-pill').forEach(pill => {
