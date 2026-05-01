@@ -289,16 +289,30 @@
         </div>
       </div>
 
-      <!-- Panel : Affinités (anciennement Règles d'Art) -->
+      <!-- Panel : Affinités — chaque pill ouvre un dropdown avec ses valeurs -->
       <div class="trios-tab-panel" id="triosPanelRegles" style="display:none">
         <div class="trios-rules-pills">
-          <button class="trios-rule-pill" data-rule="monochrome">Monochrome</button>
-          <button class="trios-rule-pill" data-rule="epoque">Même Époque</button>
-          <button class="trios-rule-pill" data-rule="matiere">Même Matière</button>
-        </div>
-        <div class="trios-rule-controls" id="triosRuleControls" style="display:none">
-          <select class="trios-filter-sel" id="triosRuleValue"></select>
-          <button class="trios-compose-btn" id="triosRuleComposeBtn">Composer</button>
+          <div class="trios-rule-wrap">
+            <button class="trios-rule-pill" data-rule="monochrome" type="button" aria-haspopup="true" aria-expanded="false">
+              <span class="trios-rule-pill-text">Monochrome</span>
+              <span class="trios-rule-pill-caret">▾</span>
+            </button>
+            <div class="trios-rule-dropdown" data-rule="monochrome" hidden></div>
+          </div>
+          <div class="trios-rule-wrap">
+            <button class="trios-rule-pill" data-rule="epoque" type="button" aria-haspopup="true" aria-expanded="false">
+              <span class="trios-rule-pill-text">Même Époque</span>
+              <span class="trios-rule-pill-caret">▾</span>
+            </button>
+            <div class="trios-rule-dropdown" data-rule="epoque" hidden></div>
+          </div>
+          <div class="trios-rule-wrap">
+            <button class="trios-rule-pill" data-rule="matiere" type="button" aria-haspopup="true" aria-expanded="false">
+              <span class="trios-rule-pill-text">Même Matière</span>
+              <span class="trios-rule-pill-caret">▾</span>
+            </button>
+            <div class="trios-rule-dropdown" data-rule="matiere" hidden></div>
+          </div>
         </div>
         <div class="trios-rule-desc" id="triosRuleDesc"></div>
       </div>
