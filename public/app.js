@@ -5158,8 +5158,6 @@ function renderTrios() {
       if (ruleControls) ruleControls.style.display = 'none';
       result.style.display = 'none';
     }
-  } else if (_triosActiveTab === 'aleatoire') {
-    _renderTriosAleatoireState();
   } else {
     _renderTriosManualState();
   }
@@ -5167,44 +5165,22 @@ function renderTrios() {
   _renderTriosActions();
 }
 
-// ── Onglet Aléatoire : pioche 3 objets parmi tous les "Disponible" de l'Inventaire
-function _renderTriosAleatoireState() {
-  const pool = state.collections.filter(c =>
-    c.type !== 'note' && c.type !== 'journal-photo' && c.itemStatus === 'Disponible'
-  );
-  const emptyEl = document.getElementById('triosAleatoireEmpty');
-  const result  = document.getElementById('triosResult');
-  if (pool.length < 3) {
-    if (emptyEl) emptyEl.style.display = '';
-    if (result)  result.style.display  = 'none';
-    _renderTriosActions();
-    return;
-  }
-  if (emptyEl) emptyEl.style.display = 'none';
-  // Garde le _currentTrio si déjà généré pour cette session
-  if (_currentTrio && _currentTrio._fromAleatoire) {
-    _setTriosLinkBar(_currentTrio);
-    _renderTriosCards(_currentTrio.objects);
-    if (result) result.style.display = '';
-  } else if (result) {
-    result.style.display = 'none';
-  }
-  _renderTriosActions();
-}
-
-// Génère un trio aléatoire depuis les objets "Disponible" de l'Inventaire (préserve les verrouillés)
+// Génère un trio aléatoire — pool large (tout l'inventaire hors notes/photos).
+// Calcule les tags communs aux 3 objets pour alimenter le lien narratif "Triptyque lié par xxx".
 function _generateAleatoireTrio(prevObjects, locked) {
   const pool = state.collections.filter(c =>
-    c.type !== 'note' && c.type !== 'journal-photo' && c.itemStatus === 'Disponible'
+    c.type !== 'note' && c.type !== 'journal-photo'
   );
   if (pool.length < 3) return null;
   const objects = _fillTrioWithLocks(pool, prevObjects, locked);
   if (!objects) return null;
+  const fp = objects.map(_fingerprint);
+  const common = [...fp[0]].filter(t => fp[1].has(t) && fp[2].has(t));
   return {
     objects,
+    linkTags: common.slice(0, 3).map(_tagLabel).filter(Boolean),
     rule: 'aleatoire',
-    label: 'Composition aléatoire',
-    _fromAleatoire: true
+    label: 'Composition aléatoire'
   };
 }
 
