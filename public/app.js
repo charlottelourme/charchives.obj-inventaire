@@ -2024,25 +2024,27 @@ function cardHTML(c) {
       <div class="card-grain" aria-hidden="true"></div>
       ${photo
         ? (() => {
-            // ── Mobile swipe : conteneur .card-swipe-container scroll-snap.
-            // - Slide 1 (main) : img standard + img cutout (toggle Light/Dark).
-            // - Slide 2 (poème) : description sur fond verbe-accent, mobile uniquement.
-            // - Slides 3+ : autres photos de l'objet pour le swipe (mobile only).
-            // Sur desktop, CSS hide tous les slides sauf le premier — la carrousel
-            // ‹/› continue de fonctionner (updateCardThumb swap img-standard.src).
+            // Stratégie d'affichage :
+            // - DARK mode : la version PNG détourée (s'il en existe une) est l'image
+            //   principale → CSS `body.dark-mode … .img-cutout { display: block }`.
+            // - LIGHT mode : la PHOTO ORIGINALE (photo[idx]) est l'image principale,
+            //   MAIS si l'objet a un PNG détouré, on le rend AUSSI en .img-cutout
+            //   visible (overlay positionné absolu sur l'image standard, avec
+            //   mix-blend pour que le fond blanc/clair s'efface). C'est ce qui
+            //   manquait : avant on cachait le PNG en light mode.
             const cutout = (photos.find(p => p && p.toLowerCase().endsWith('.png')) || null);
             const standardImg = `<img class="card-thumb img-standard" src="${photoUrl(photo)}" alt="" loading="lazy">`;
             const cutoutImg = (cutout && cutout !== photo)
-              ? `<img class="card-thumb img-cutout" src="${photoUrl(cutout)}" alt="" loading="lazy" aria-hidden="true">`
+              ? `<img class="card-thumb img-cutout" src="${photoUrl(cutout)}" alt="" loading="lazy">`
               : '';
             const mainSlide = `<div class="swipe-slide swipe-slide-main">${standardImg}${cutoutImg}</div>`;
             const poemSlide = (c.description && c.description.trim())
               ? `<div class="swipe-slide poem-slide" data-intention="${esc(c.category||'')}"><p class="swipe-poem-text">${esc(c.description)}</p></div>`
               : '';
-            // Slides additionnels = photos[1..n], en sautant la photo principale (photo[idx])
-            // et le cutout déjà utilisé en slide 1.
+            // Slides additionnels (mobile swipe) = toutes les autres photos, y
+            // compris le PNG détouré (pour qu'il soit accessible via swipe en light mode).
             const extraSlides = photos
-              .filter((p, i) => i !== idx && p !== cutout)
+              .filter((p, i) => i !== idx)
               .map(p => `<div class="swipe-slide swipe-slide-extra"><img src="${photoUrl(p)}" alt="" loading="lazy"></div>`)
               .join('');
             return `<div class="card-swipe-container">${mainSlide}${poemSlide}${extraSlides}</div>`;
