@@ -214,10 +214,28 @@ body.dark-mode #bgLayers .bg-grain {
   opacity: 0.40;                  /* dark mode : poussé pour bruit visible sans griser le fond */
 }
 
-/* Body : transparent en tout temps (le fond est piloté par #bgLayers) */
-body { background: transparent !important; }
-html { background: #E0E0E0; }
+/* ══ MUR DE FOND UNIQUE ═══════════════════════════════════════════════════
+      Le body est le SEUL élément qui dicte la couleur de la page.
+      Tous les autres conteneurs sont transparents.
+      body::after pose un grain global en position:fixed sur l'écran entier. */
+body { background-color: var(--bg) !important; }
+html { background: var(--bg); }
 html:has(body.dark-mode) { background: #080809; }
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;          /* clique-traversant */
+  z-index: 9999;                  /* par-dessus tout */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+}
+body.dark-mode::after { mix-blend-mode: overlay; opacity: 0.28; }
 
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
       Tous les conteneurs intermédiaires (main, grid, toolbars, filtres)
