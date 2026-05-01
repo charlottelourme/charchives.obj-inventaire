@@ -10096,7 +10096,7 @@ body.dark-mode .mfn-row-tools { border-top-color: var(--border, #27272A); }
 .mfn-darkmode:hover { color: var(--text); }
 .mfn-darkmode:active { opacity: .6; }
 
-/* ── Breadcrumb (ligne 1) ── */
+/* ── Breadcrumb (ligne 1) — petit, scroll latéral, items navigables ── */
 .mfn-breadcrumb {
   flex: 1;
   min-width: 0;
@@ -10106,15 +10106,26 @@ body.dark-mode .mfn-row-tools { border-top-color: var(--border, #27272A); }
   /* Typographie éditoriale — sérif italique (cohérence avec titres d'intentions) */
   font-family: 'Compagnon', monospace;
   font-style: italic;
-  font-size: 14px;
+  font-size: 11px;                       /* réduit (avant : 14px) — plus discret */
   letter-spacing: 0;
   text-transform: none;
   color: var(--text-3);
+  padding: 0 4px;                        /* respiration au début/fin du scroll */
+  -webkit-overflow-scrolling: touch;     /* inertie iOS pour scroller le fil */
 }
 .mfn-breadcrumb::-webkit-scrollbar { display: none; }
-.mfn-breadcrumb .mfn-sep { opacity: 0.5; margin: 0 6px; font-style: normal; }
-.mfn-breadcrumb .mfn-item { color: var(--text-2); }
-.mfn-breadcrumb .mfn-item:last-child { color: var(--text); font-weight: 500; }
+.mfn-breadcrumb .mfn-sep { opacity: 0.5; margin: 0 5px; font-style: normal; }
+.mfn-breadcrumb .mfn-item {
+  color: var(--text-2);
+  cursor: pointer;                       /* tap = remonter à ce niveau */
+  padding: 2px 0;                        /* hitbox tactile sans casser la ligne */
+}
+.mfn-breadcrumb .mfn-item:not(.mfn-current):active { opacity: 0.55; }
+.mfn-breadcrumb .mfn-current {
+  color: var(--text);
+  font-weight: 500;
+  cursor: default;                       /* le crumb actuel n'est pas cliquable */
+}
 
 /* ── Boutons outils (ligne 2 — Calendrier / Catalogue / Stats) ── */
 .mfn-tool-btn {
