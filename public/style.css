@@ -11735,12 +11735,19 @@ body.dark-mode .bug-fab {
 }
 body.dark-mode .bug-fab:hover { color: var(--text); }
 @media (max-width: 520px) {
+  /* Affiché ici (caché par défaut au-dessus). Repositionné en bas-GAUCHE
+     pour ne pas chevaucher le FAB +Inventaire ni le footer mobile.
+     Plus discret : taille réduite, opacity de base abaissée. */
   .bug-fab-cluster {
-    bottom: calc(76px + env(safe-area-inset-bottom));
-    right: 12px;
+    display: flex;
+    bottom: calc(96px + env(safe-area-inset-bottom));   /* au-dessus du footer ~84px */
+    left: 12px;
+    right: auto;
+    align-items: flex-start;                            /* clip aligné à gauche */
   }
-  .bug-fab { width: 34px; height: 34px; }
-  .bug-fab-history { width: 28px; height: 28px; }
+  .bug-fab          { width: 28px; height: 28px; opacity: 0.32; }
+  .bug-fab:hover    { opacity: 0.85; }
+  .bug-fab-history  { width: 24px; height: 24px; opacity: 0.28; }
 }
 
 /* Modales bug : overlay + panneau */
