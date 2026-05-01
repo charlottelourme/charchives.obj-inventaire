@@ -4804,21 +4804,31 @@ function _generateTrioByRule(rule, value, prevObjects, locked) {
   }
 }
 
-// Peuple le select de valeur en mode Affinités selon la règle (couleurs / origine / matières) — ne montre que les valeurs ayant ≥3 objets.
-function _populateTriosRuleValues(rule) {
-  const sel = document.getElementById('triosRuleValue');
-  if (!sel) return;
+// Peuple le dropdown d'une pill Affinités avec les valeurs ayant ≥3 objets,
+// précédées d'une option « (au hasard) » qui laisse le tirage piocher.
+function _populateTriosRuleDropdown(rule) {
+  const dd = document.querySelector(`.trios-rule-dropdown[data-rule="${rule}"]`);
+  if (!dd) return;
   const cols = state.collections.filter(c => c.type !== 'note' && c.type !== 'journal-photo');
   let getter, placeholder;
-  if (rule === 'monochrome') { getter = c => c.attributes?.couleurs; placeholder = 'Toutes les teintes'; }
-  else if (rule === 'epoque')  { getter = c => c.attributes?.origine;  placeholder = 'Toutes les époques'; }
-  else if (rule === 'matiere') { getter = c => c.attributes?.matieres; placeholder = 'Toutes les matières'; }
-  else { sel.innerHTML = ''; return; }
+  if (rule === 'monochrome') { getter = c => c.attributes?.couleurs; placeholder = 'Toutes les teintes (au hasard)'; }
+  else if (rule === 'epoque')  { getter = c => c.attributes?.origine;  placeholder = 'Toutes les époques (au hasard)'; }
+  else if (rule === 'matiere') { getter = c => c.attributes?.matieres; placeholder = 'Toutes les matières (au hasard)'; }
+  else { dd.innerHTML = ''; return; }
   const counts = {};
   cols.forEach(c => (getter(c)||[]).forEach(v => { counts[v] = (counts[v]||0) + 1; }));
   const eligible = Object.entries(counts).filter(([_, n]) => n >= 3).sort((a, b) => a[0].localeCompare(b[0], 'fr'));
-  sel.innerHTML = `<option value="">${esc(placeholder)} (au hasard)</option>` +
-    eligible.map(([v, n]) => `<option value="${esc(v)}">${esc(v)} (${n})</option>`).join('');
+  dd.innerHTML =
+    `<button type="button" class="trios-rule-option" data-rule="${rule}" data-value="">${esc(placeholder)}</button>` +
+    eligible.map(([v, n]) =>
+      `<button type="button" class="trios-rule-option" data-rule="${rule}" data-value="${esc(v)}">${esc(v)}<span class="trios-rule-option-count">(${n})</span></button>`
+    ).join('');
+}
+
+// Ferme tous les dropdowns Affinités (utilisé sur clic dehors / changement d'onglet / sélection).
+function _closeTriosRuleDropdowns() {
+  document.querySelectorAll('.trios-rule-pill').forEach(p => p.setAttribute('aria-expanded', 'false'));
+  document.querySelectorAll('.trios-rule-dropdown').forEach(d => { d.hidden = true; });
 }
 
 // Reset des verrous (slots) — appelé sur changement d'onglet, Composer, Tirer, changement de pill.
