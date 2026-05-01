@@ -1,6 +1,16 @@
 // CHARCHIVES — Minimal Service Worker for PWA installability
-const CACHE_NAME = 'charchives-v325';
-const PRECACHE = ['/', '/style.css', '/app.js'];
+const CACHE_NAME = 'charchives-v326';
+const PRECACHE = [
+  '/',
+  '/style.css',
+  '/app.js',
+  // Polices Compagnon — précachées pour rendu instantané au 2e load
+  '/fonts/Compagnon-Light.woff2',
+  '/fonts/Compagnon-Roman.woff2',
+  '/fonts/Compagnon-Italic.woff2',
+  '/fonts/Compagnon-Medium.woff2',
+  '/fonts/Compagnon-Bold.woff2',
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(
