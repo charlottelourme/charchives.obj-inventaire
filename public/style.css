@@ -10409,8 +10409,8 @@ body.dark-mode .section-header {
 /* ── Grille de 20 slots persistés + bouton temporaire ── */
 .diorama-decor-bar {
   display: flex;
-  gap: 10px;
-  padding: 12px 16px;
+  gap: 8px;
+  padding: 10px 16px;             /* compact : aligné sur slots 48h */
   overflow-x: auto;
   scrollbar-width: none;
   border-bottom: 1px solid var(--border);
