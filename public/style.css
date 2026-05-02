@@ -10508,25 +10508,26 @@ body.dark-mode .section-header {
 .dio-slot:hover .dio-slot-del,
 .dio-slot:hover .dio-slot-replace { opacity: 1; }
 
-/* Bouton import temporaire — design inversé (contour noir, fond blanc) */
+/* Bouton import temporaire — design inversé (contour noir, fond blanc).
+   Hauteur alignée sur celle des slots compacts (48px). */
 .dio-temp-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 14px;
-  height: 64px;
+  padding: 0 12px;
+  height: 48px;
   flex-shrink: 0;
   border: 1.5px solid var(--text);
   border-radius: 0;
   background: var(--bg);
   color: var(--text);
   font-family: 'Compagnon', monospace;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
   cursor: pointer;
-  margin-left: 8px;
+  margin-left: 6px;
   transition: background .12s, color .12s;
   white-space: nowrap;
 }
