@@ -10418,11 +10418,11 @@ body.dark-mode .section-header {
   background: var(--bg);
   align-items: stretch;
 }
-.diorama-decor-bar.diorama-slot-grid { gap: 8px; }
+.diorama-decor-bar.diorama-slot-grid { gap: 6px; }
 .dio-slot {
   position: relative;
-  width: 88px;
-  height: 64px;
+  width: 64px;            /* Compact — ratio 4:3 préservé */
+  height: 48px;
   flex-shrink: 0;
   border: 1px solid var(--border);
   border-radius: 0;              /* angles 90° — brutalisme */
