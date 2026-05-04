@@ -4252,18 +4252,15 @@ function _dioInitZoom(wrap) {
     });
   d3.select(wrap).call(_dioZoom);
 
-  // Quand le décor change d'image, recalcule et applique le minScale initial
-  bdrop?.addEventListener('load', () => {
-    const ms = minScale();
-    const vw = wrap.clientWidth;
-    const vh = wrap.clientHeight;
-    d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.translate(0, 0).scale(ms));
-  });
-  // Applique le zoom initial si l'image est déjà chargée
-  if (bdrop?.complete && bdrop.naturalWidth) {
-    const ms = minScale();
-    d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.translate(0, 0).scale(ms));
+  // Centre l'image au chargement initial — applique le scale "fit" (contain).
+  // Le centrage X/Y est fait automatiquement par le handler on('zoom') via la
+  // branche iw<=vw / ih<=vh.
+  function applyFit() {
+    const fs = fitScale();
+    d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.scale(fs));
   }
+  bdrop?.addEventListener('load', applyFit);
+  if (bdrop?.complete && bdrop.naturalWidth) applyFit();
 }
 
 function _initGalleryParallax() {
