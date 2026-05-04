@@ -3840,6 +3840,24 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
 .journal-item .journal-caption,
 .journal-item .journal-note-inner { position: relative; z-index: 1; }
 
+/* ── Journal : grayscale par défaut, couleur au hover (moodboard archive)
+   Même principe que les .card de l'Inventaire en dark mode. */
+.journal-item.journal-photo-ctx img,
+.journal-item.journal-photo-obj img {
+  filter: grayscale(100%) contrast(1.05) brightness(1.05);
+  transition: filter 0.35s ease;
+}
+body.dark-mode .journal-item.journal-photo-ctx img,
+body.dark-mode .journal-item.journal-photo-obj img {
+  filter: grayscale(100%) contrast(1.08) brightness(1.12);
+}
+.journal-item.journal-photo-ctx:hover img,
+.journal-item.journal-photo-obj:hover img,
+body.dark-mode .journal-item.journal-photo-ctx:hover img,
+body.dark-mode .journal-item.journal-photo-obj:hover img {
+  filter: none;
+}
+
 /* ── Fallback mobile (< 768px) : on désactive tout le canvas ──────────────
    Items en flux relatif, pleine largeur, gap vertical simple. */
 @media (max-width: 768px) {
