@@ -1701,10 +1701,6 @@ function _applyGridCols() {
   else                cols = Math.max(2, Math.round(5 - ratio * 3));
   document.documentElement.style.setProperty('--grid-cols', String(cols));
   document.querySelectorAll('#gridView .grid').forEach(g => {
-    // Plus de fallback grid-css ni d'inline column-count/height : la CSS gère
-    // tout via display:grid + grid-template-columns: repeat(var(--grid-cols), 1fr).
-    // Cap local : si moins d'items que de colonnes, on réduit pour ne pas
-    // laisser de colonnes vides en bout de ligne.
     g.classList.remove('grid-css');
     g.style.gridTemplateColumns = '';
     g.style.columnCount         = '';
@@ -1712,7 +1708,17 @@ function _applyGridCols() {
     g.style.columnFill          = '';
     g.style.height              = '';
     const itemCount = g.querySelectorAll(':scope > .card').length;
-    const effective = Math.max(1, Math.min(cols, itemCount || cols));
+    // Cap local : si la grille contient MOINS d'items que de colonnes, on
+    // réduit cols au nb d'items (évite des colonnes vides en bout).
+    // EXCEPTION : quand on est dans un cluster .cat-group (tri par intention),
+    // on garde la pleine valeur de cols → toutes les sous-grilles ont la
+    // même taille de carte, cohérent avec la vue inventaire classique. Sans
+    // cette exception, un cluster avec 2 cartes les afficherait sur 2 colonnes
+    // = cartes énormes (« trop gros, trop zoomé »).
+    const isInCatGroup = !!g.closest('.cat-group');
+    const effective = isInCatGroup
+      ? cols
+      : Math.max(1, Math.min(cols, itemCount || cols));
     g.style.setProperty('--grid-cols', String(effective));
   });
 }
