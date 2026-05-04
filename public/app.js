@@ -3981,11 +3981,23 @@ function renderDiorama() {
         const inv = t.invert([sx, sy]);
         sx = inv[0]; sy = inv[1];
       }
+      // ── Auto-fit : l'objet posé fait ~12% de la largeur du backdrop ──
+      // Sans ce calcul, l'objet ferait toujours 120 unités scène → ridiculement
+      // petit sur un backdrop 4000px, ridiculement grand sur un 600px.
+      // Min 80 unités pour rester manipulable même sur petits backdrops.
+      const bdrop = document.getElementById('dioBackdrop');
+      const bdW = bdrop?.naturalWidth || 1200;
+      const targetW = Math.max(80, bdW * 0.12);
+      const initialScale = targetW / 120; // 120 = baseline width à scale 1
       state.diorama.items.push({
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         collectionId: colId,
-        x: sx - 60, y: sy - 60,
-        scale: 1, rotation: 0,
+        // Centre l'objet sur le curseur (approximation : on suppose ratio ~1
+        // car la vraie height dépend du PNG et n'est connue qu'au render)
+        x: sx - targetW / 2,
+        y: sy - targetW / 2,
+        scale: initialScale,
+        rotation: 0,
         zIndex: state.diorama.nextZ++
       });
       _dioSave();
