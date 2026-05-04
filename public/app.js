@@ -8921,6 +8921,12 @@ function bindEvents() {
   document.getElementById('fabBtn')?.addEventListener('click', openNew);
   document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
   document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+  // Logo "Charchives . obj" → bascule vers Journal (vue Dérive)
+  const _siteTitleEl = document.getElementById('siteTitle');
+  if (_siteTitleEl) {
+    _siteTitleEl.style.cursor = 'pointer';
+    _siteTitleEl.addEventListener('click', () => setView('derive'));
+  }
 
   // ── Bandeau Inventaire : 2 piliers Feroniapi (Intention / Objet) ─────────
   _setupInvPillars();
