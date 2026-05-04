@@ -11754,7 +11754,7 @@ body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
    Desktop : caché (le user trouve ça intrusif). Mobile uniquement. */
 .bug-fab-cluster {
   position: fixed;
-  bottom: calc(20px + env(safe-area-inset-bottom));
+  bottom: calc(110px + env(safe-area-inset-bottom));   /* au-dessus du footer (Photos ZIP) */
   right: 20px;
   z-index: 9000;
   display: flex;                     /* visible partout (desktop + mobile) */
