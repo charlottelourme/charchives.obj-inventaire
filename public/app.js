@@ -3920,9 +3920,13 @@ function renderDiorama() {
     c.type !== 'note' && c.type !== 'fragment' && c.type !== 'journal-photo' &&
     !!_dioPhotoFor(c)
   );
+  // Suggestions aléatoires (matières / couleurs / intentions / etc.) — rendues
+  // une fois par session de vue, pour ne pas re-shuffler à chaque keystroke.
+  _dioRenderSuggestions();
+
   libList.innerHTML = '';
   const searchQ = (document.getElementById('dioSearch')?.value || '').toLowerCase().trim();
-  const filtered = searchQ ? pngItems.filter(c => (c.name||'').toLowerCase().includes(searchQ)) : pngItems;
+  const filtered = searchQ ? pngItems.filter(c => _dioMatchSearch(c, searchQ)) : pngItems;
   filtered.forEach(c => {
     const photo = _dioPhotoFor(c);
     const el = document.createElement('div');
