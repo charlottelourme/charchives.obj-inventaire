@@ -1378,12 +1378,16 @@ body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
   filter: contrast(1.12) brightness(1.04);
 }
 /* Dark mode : multiply écraserait totalement l'image (blanc × fond très sombre = sombre).
-   On revient en rendu naturel — le PNG garde son fond mais reste lisible. */
+   On revient en rendu naturel + grayscale (ponctuation colorée révélée au hover). */
 body.dark-mode .card-thumb-area--detoured .card-thumb,
 body.dark-mode .card-thumb-area--cutout .card-thumb {
   mix-blend-mode: normal;
-  filter: none;
+  filter: grayscale(100%) contrast(1.08) brightness(1.12);
 }
+body.dark-mode .card-thumb-area--detoured:hover .card-thumb,
+body.dark-mode .card-thumb-area--cutout:hover .card-thumb,
+body.dark-mode .card:hover .card-thumb-area--detoured .card-thumb,
+body.dark-mode .card:hover .card-thumb-area--cutout .card-thumb { filter: none; }
 .card-thumb-area--detoured:hover .card-thumb,
 .card-thumb-area--cutout:hover .card-thumb {
   transform: none;
