@@ -1381,13 +1381,13 @@ body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
    On revient en rendu naturel + grayscale (ponctuation colorée révélée au hover). */
 body.dark-mode .card-thumb-area--detoured .card-thumb,
 body.dark-mode .card-thumb-area--cutout .card-thumb {
-  mix-blend-mode: normal;
-  filter: grayscale(100%) contrast(1.08) brightness(1.12);
+  mix-blend-mode: normal !important;
+  filter: grayscale(100%) contrast(1.08) brightness(1.12) !important;
 }
 body.dark-mode .card-thumb-area--detoured:hover .card-thumb,
 body.dark-mode .card-thumb-area--cutout:hover .card-thumb,
 body.dark-mode .card:hover .card-thumb-area--detoured .card-thumb,
-body.dark-mode .card:hover .card-thumb-area--cutout .card-thumb { filter: none; }
+body.dark-mode .card:hover .card-thumb-area--cutout .card-thumb { filter: none !important; }
 .card-thumb-area--detoured:hover .card-thumb,
 .card-thumb-area--cutout:hover .card-thumb {
   transform: none;
