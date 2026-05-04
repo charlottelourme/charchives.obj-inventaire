@@ -11786,8 +11786,8 @@ body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
 .bug-fab-cluster:hover .bug-fab:hover { opacity: 1; }
 .bug-fab-history { width: 32px; height: 32px; }
 body.dark-mode .bug-fab {
-  background: var(--surface);
-  border-color: var(--border);
+  background: transparent;
+  border: none;
   color: var(--text-3);
 }
 body.dark-mode .bug-fab:hover { color: var(--text); }
