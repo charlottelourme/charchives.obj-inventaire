@@ -10895,11 +10895,11 @@ body.dark-mode .section-header {
     margin-top: 8px !important;
     background: transparent !important;
   }
-  /* Images mobile : simples, sans blend-mode ni filtre (sinon disparaissent) */
+  /* Images mobile : pas de blend-mode (canal alpha iOS). Le filtre grayscale
+     dark-mode reste autorisé — il revient au hover pour la révélation couleur. */
   .grid .card-thumb-area img,
   .grid .card .card-thumb {
     mix-blend-mode: normal !important;
-    filter: none !important;
     object-fit: contain !important;
     background: transparent !important;
     z-index: 10 !important;
