@@ -3744,13 +3744,13 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #2A2A2E; }
 
 /* Mode canvas (desktop) : grille magnétique invisible — items en absolu.
    Plus de lignes : juste de petits points gris aux intersections, espacés
-   d'un multiple du grid-step (80px = 2 × 40px) → dots clairsemés, suggestion
-   discrète de la trame, le snap reste à 40px côté JS. */
+   d'un multiple du grid-step (160px = 4 × 40px) → dots très clairsemés,
+   suggestion discrète de la trame, le snap reste à 40px côté JS. */
 #deriveView #galleryGrid.journal-canvas {
   position: relative;
   min-height: 200vh;
   background-image: radial-gradient(circle, rgba(0,0,0,0.22) 1px, transparent 1.5px);
-  background-size: calc(var(--grid-step) * 2) calc(var(--grid-step) * 2);
+  background-size: calc(var(--grid-step) * 4) calc(var(--grid-step) * 4);
   background-position: var(--page-gutter) 80px;
 }
 body.dark-mode #deriveView #galleryGrid.journal-canvas {
