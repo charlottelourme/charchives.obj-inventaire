@@ -168,7 +168,7 @@ body.dark-mode .gallery-item.g-note::before { filter: blur(18px) !important; }
   background: #E0E0E0;
   transition: background 0.4s ease;
 }
-body.dark-mode #bgLayers .bg-base { background: #080809; }
+body.dark-mode #bgLayers .bg-base { background: #2A2A2E; }
 
 /* Calque 2 : vignette claire — voile lumineux étendu aux 4 extrémités.
       Centre transparent (laisse voir bg-base), bords virant blanc/gris clair.
@@ -220,7 +220,7 @@ body.dark-mode #bgLayers .bg-grain {
       body::after pose un grain global en position:fixed sur l'écran entier. */
 body { background-color: var(--bg) !important; }
 html { background: var(--bg); }
-html:has(body.dark-mode) { background: #080809; }
+html:has(body.dark-mode) { background: #2A2A2E; }
 
 body::after {
   content: "";
@@ -1178,7 +1178,7 @@ body.dark-mode .card .card-grain {
     opacity: 1 !important;
   }
   body.dark-mode:not(.verbe-active) .card:hover::before {
-    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #080809 68%) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #2A2A2E 68%) !important;
   }
   /* 2. Pages Intentions : pas de halo sur les cartes — le dégradé vertical
         haut/bas du fond porte la couleur du verbe à lui seul. */
@@ -3660,7 +3660,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 body.dark-mode .card-journal-toggle { background: rgba(24,24,27,0.92); }
 body.dark-mode .cjt-track { background: var(--border-strong); }
 body.dark-mode .card-journal-toggle.on .cjt-track { background: #F4F4F5; }
-body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #080809; }
+body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #2A2A2E; }
 
 /* ══ JOURNAL — Masonry statique style Tumblr/Moodboard ════════════════════
    - Bandeau d'actions centré (Inter), pas de titre redondant
@@ -7098,7 +7098,7 @@ body.dark-mode .fs-pill.active {
 body.dark-mode .btn-primary,
 body.dark-mode .hu-primary {
   background: #F4F4F5 !important;
-  color: #080809 !important;
+  color: #2A2A2E !important;
 }
 
 /* ── RESTAURATION : halos Soft Block originaux (colorés, blurrés, éditoriaux) ──
@@ -9883,7 +9883,7 @@ body.dark-mode .mobile-action-bar { border-bottom-color: var(--border); }
   box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
 }
 body.dark-mode .fs-panel {
-  background: #080809;
+  background: #2A2A2E;
 }
 .fs-handle {
   width: 40px;
@@ -9995,7 +9995,7 @@ body.dark-mode .fs-panel {
   border-left: 1px solid var(--border-light);
 }
 body.dark-mode .hd-panel {
-  background: #080809;
+  background: #2A2A2E;
   border-left-color: var(--border);
 }
 .hd-close {
@@ -10862,7 +10862,7 @@ body.dark-mode .section-header {
     pointer-events: none;
   }
   body.dark-mode .grid .card::before {
-    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #080809 68%) !important;
+    background: color-mix(in srgb, var(--verbe-accent, #3F3F46) 32%, #2A2A2E 68%) !important;
     opacity: 0.92 !important;
   }
   /* Mobile — pages Intention : halo désactivé (le dégradé vertical porte la couleur) */
