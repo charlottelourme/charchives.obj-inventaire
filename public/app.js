@@ -1410,6 +1410,15 @@ function setView(v, _silent = false) {
     if (el) el.classList.add('active');
   });
 
+  // Si on entre dans Diorama → reset les suggestions pour qu'elles soient
+  // re-shufflées au prochain renderDiorama (sinon elles persistent entre visites).
+  if (v === 'diorama') {
+    const sug = document.getElementById('dioSuggestions');
+    if (sug) sug.innerHTML = '';
+    const search = document.getElementById('dioSearch');
+    if (search) search.value = '';
+  }
+
   // Si on entre dans Dérive → réinitialiser tous les filtres Inventaire
   if (v === 'derive') {
     state.categoryFilter    = '';
