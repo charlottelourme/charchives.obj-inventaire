@@ -2862,19 +2862,20 @@ function _drawConGraph(canvas, nodes, links) {
     }
   }
 
+  // ── SIMULATION STATIQUE ─────────────────────────────────────────────────
+  // Avant : la simulation D3 tournait visuellement (alpha=1 → 0) → les images
+  // « tremblaient » pour s'organiser à l'arrivée. Ce n'était pas le but.
+  // Maintenant on PRÉ-TICK la simulation 300 fois en mémoire pour qu'elle
+  // converge vers son état d'équilibre, puis on la stoppe (alpha=0) et on
+  // applique les positions finales en UNE fois → grille libre figée, sans
+  // animation au render. Le drag utilisateur déclenchera de nouveau la sim
+  // au besoin (alphaTarget(0.25) dans le drag start handler).
   _conSim = d3.forceSimulation(nodes)
-    // Liens existent toujours en data (utiles pour _buildConGraph) mais sans
-    // attraction visuelle forte — les clusters sont désormais portés par forceX.
     .force('link',    d3.forceLink(links).id(d => d.id).distance(60).strength(0.15))
-    // Répulsion modérée + portée limitée
     .force('charge',  d3.forceManyBody().strength(-90).distanceMax(220))
-    // Centrage Y uniquement — les X sont gérés par cluster
     .force('y',       d3.forceY(H / 2).strength(0.04))
-    // Cluster horizontal : chaque nœud tiré vers la colonne X de sa catégorie
     .force('x',       d3.forceX(d => _conCatX.get(d.category || '__nocat__') ?? W / 2).strength(0.18))
-    // Collision stricte
     .force('collide', d3.forceCollide(R_collide).strength(1))
-    // Protection des titres de cluster (mode "intention")
     .force('titleShield', titleRepulsion)
     .alphaDecay(0.022)
     .velocityDecay(0.35)
@@ -2882,12 +2883,23 @@ function _drawConGraph(canvas, nodes, links) {
       linkEl.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
             .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
       nodeEl.attr('transform', d => `translate(${d.x},${d.y})`);
-      // Halos + labels : uniquement quand l'affinité est "intention"
       if (_conAffinityType === 'intention') {
         haloEl.attr('cx', d => d.x).attr('cy', d => d.y);
         _updateClusterLabels(labelsG, nodes);
       }
     });
+  // Pré-tick synchrone pour atteindre l'équilibre AVANT le premier paint.
+  // 300 ticks = bien au-delà du seuil de convergence (alphaMin=0.001 atteint
+  // vers ~150 ticks avec alphaDecay=0.022). Aucun rendu n'est forcé pendant
+  // les ticks (le tick handler est attaché après le warmup).
+  _conSim.stop();
+  for (let i = 0; i < 300; i++) _conSim.tick();
+  // Maintenant on déclenche UNE fois le tick handler pour positionner le DOM
+  nodeEl.attr('transform', d => `translate(${d.x},${d.y})`);
+  if (_conAffinityType === 'intention') {
+    haloEl.attr('cx', d => d.x).attr('cy', d => d.y);
+    _updateClusterLabels(labelsG, nodes);
+  }
 }
 
 // ── Labels de cluster Constellation — Cormorant italique
