@@ -11765,22 +11765,22 @@ body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
 .bug-fab {
   width: 38px;
   height: 38px;
-  border: 1px solid var(--border);
-  background: var(--surface);
+  border: none;                      /* plus de carré de contour */
+  background: transparent;            /* plus de fond visible */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-3);
-  transition: color 0.18s, background 0.18s, border-color 0.18s, transform 0.2s ease;
+  transition: color 0.18s, transform 0.2s ease, opacity 0.18s;
   opacity: 0.55;
   position: relative;
+  padding: 0;
 }
 .bug-fab:hover {
   opacity: 1;
   color: var(--text);
-  border-color: var(--border-strong);
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 .bug-fab-cluster:hover .bug-fab { opacity: 0.85; }
 .bug-fab-cluster:hover .bug-fab:hover { opacity: 1; }
