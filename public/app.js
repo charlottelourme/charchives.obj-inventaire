@@ -4196,18 +4196,19 @@ function _dioInitZoom(wrap) {
   const scene   = document.getElementById('dioScene');
   const bdrop   = document.getElementById('dioBackdrop');
 
-  // Calcule le zoom minimum pour que le décor couvre 100% du viewport (style cover)
-  function minScale() {
+  // Calcule le zoom "fit-to-screen" (CONTAIN) : l'image entière rentre dans
+  // la viewport, en laissant éventuellement des bandes (letterbox) sur les
+  // côtés ou en haut/bas. C'est le zoom de référence pour le rendu initial.
+  function fitScale() {
     const vw = wrap.clientWidth  || 800;
     const vh = wrap.clientHeight || 600;
     const iw = bdrop?.naturalWidth  || 1200;
     const ih = bdrop?.naturalHeight || 800;
-    // cover = max(vw/iw, vh/ih) → le plus petit zoom autorisé
-    return Math.max(vw / iw, vh / ih, 0.3);
+    return Math.min(vw / iw, vh / ih);
   }
 
   _dioZoom = d3.zoom()
-    .scaleExtent([0.3, 4])  // sera contraint dynamiquement dans on('zoom')
+    .scaleExtent([0.1, 4])  // borne basse permissive — fit peut être < 0.3 sur grandes images
     .filter(event => {
       if (event.type === 'wheel') return true;
       if (event.type === 'touchstart') return true;
@@ -4219,17 +4220,29 @@ function _dioInitZoom(wrap) {
     })
     .on('zoom', event => {
       let { x, y, k } = event.transform;
-      const ms = minScale();
-      k = Math.max(k, ms);
+      // Zoom min = la moitié du fit (laisse une marge de dézoom raisonnable)
+      const fs = fitScale();
+      k = Math.max(k, fs * 0.5);
 
-      // Contraintes de pan : le décor ne sort jamais du viewport
       const vw = wrap.clientWidth;
       const vh = wrap.clientHeight;
       const iw = (bdrop?.naturalWidth  || 1200) * k;
       const ih = (bdrop?.naturalHeight || 800)  * k;
-      // x doit rester entre -(iw - vw) et 0 (le décor couvre toujours le viewport)
-      x = Math.min(0, Math.max(x, vw - iw));
-      y = Math.min(0, Math.max(y, vh - ih));
+
+      // Si l'image (scaled) est plus petite que la viewport sur un axe →
+      // on la CENTRE (pas de pan possible sur cet axe). Sinon, on contraint
+      // pour que l'image reste collée aux bords (l'image ne peut pas sortir
+      // du viewport, mais peut occuper toute la largeur/hauteur si zoomée).
+      if (iw <= vw) {
+        x = (vw - iw) / 2;
+      } else {
+        x = Math.min(0, Math.max(x, vw - iw));
+      }
+      if (ih <= vh) {
+        y = (vh - ih) / 2;
+      } else {
+        y = Math.min(0, Math.max(y, vh - ih));
+      }
 
       scene.style.transform = `translate(${x}px, ${y}px) scale(${k})`;
       // Synchronise le transform D3 réel pour que le prochain événement parte du bon état
