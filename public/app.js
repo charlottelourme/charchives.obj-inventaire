@@ -3793,6 +3793,89 @@ function _dioPhotoFor(c) {
   return null;
 }
 
+// ─────────────────────────────────────────────────────────────
+// Match étendu pour la barre "Filtrer" du Diorama : on cherche dans le nom,
+// l'intention (category), la sous-catégorie, les mots-clés, et tous les
+// attributs (matières/couleurs/origine/etc.). Permet aux suggestions
+// (matière/couleur/intention) de réellement filtrer la lib.
+function _dioMatchSearch(c, q) {
+  if (!q) return true;
+  const a = c.attributes || {};
+  const haystack = [
+    c.name,
+    c.category,
+    c.subcategory,
+    ...(c.keywords || []),
+    ...(a.matieres   || []),
+    ...(a.couleurs   || []),
+    ...(a.origine    || []),
+    ...(a.etat_traces|| []),
+    ...(a.usage      || []),
+    ...(a.motifs     || []),
+  ].filter(Boolean).join(' ').toLowerCase();
+  return haystack.includes(q);
+}
+
+// Collecte tous les termes uniques exploitables comme suggestions, depuis
+// les objets effectivement présents dans la lib Diorama (PNG sans fond).
+function _dioCollectTerms() {
+  const set = new Set();
+  state.collections.forEach(c => {
+    if (c.type === 'note' || c.type === 'fragment' || c.type === 'journal-photo') return;
+    if (!_dioPhotoFor(c)) return;
+    const push = v => {
+      if (!v) return;
+      const t = String(v).trim();
+      if (t.length >= 2) set.add(t);
+    };
+    push(c.category);
+    push(c.subcategory);
+    (c.keywords || []).forEach(push);
+    const a = c.attributes || {};
+    (a.matieres   || []).forEach(push);
+    (a.couleurs   || []).forEach(push);
+    (a.origine    || []).forEach(push);
+    (a.etat_traces|| []).forEach(push);
+    (a.usage      || []).forEach(push);
+    (a.motifs     || []).forEach(push);
+  });
+  return [...set];
+}
+
+// Pioche 6 suggestions au hasard et les rend dans #dioSuggestions.
+// Le rendu n'est fait qu'une fois par session de vue (skip si déjà rempli)
+// pour ne pas re-shuffler à chaque keystroke dans la barre Filtrer.
+function _dioRenderSuggestions() {
+  const container = document.getElementById('dioSuggestions');
+  if (!container) return;
+  if (container.children.length) return; // déjà rendu
+
+  const terms = _dioCollectTerms();
+  if (!terms.length) { container.innerHTML = ''; return; }
+
+  // Mélange Fisher-Yates (suffisant pour 50-200 termes)
+  const shuffled = terms.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  const picks = shuffled.slice(0, 6);
+
+  container.innerHTML = picks
+    .map(t => `<button class="diorama-sidebar-suggestion" type="button" data-term="${esc(t)}">${esc(t)}</button>`)
+    .join('');
+
+  container.querySelectorAll('.diorama-sidebar-suggestion').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const search = document.getElementById('dioSearch');
+      if (search) {
+        search.value = btn.dataset.term;
+        renderDiorama();
+      }
+    });
+  });
+}
+
 function renderDiorama() {
   // Injecte la description éditable
   const dioDescEl = document.getElementById('dioramaDesc');
