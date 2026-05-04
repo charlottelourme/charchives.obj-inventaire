@@ -103,27 +103,42 @@ body {
 img { transition: filter .4s ease; }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   DARK MODE — Ponctuation colorée
-   Règle par défaut : grayscale sur toutes les images d'objets.
-   La couleur revient UNIQUEMENT comme révélation : hover grille, fiche produit,
-   vue Triptyque, et notes (qui conservent leur halo verbe).
+   PHOTOS — Grayscale par défaut, couleur en révélation au hover
+   S'applique en mode normal ET dark mode sur l'Inventaire, le Journal Nuée
+   et la Constellation. La couleur revient UNIQUEMENT en hover, en fiche
+   produit, en Triptyque, et sur les notes (qui conservent leur halo verbe).
    ══════════════════════════════════════════════════════════════════════════ */
-body.dark-mode img,
-body.dark-mode .con-node image {
-  filter: grayscale(100%) contrast(1.08) brightness(1.12);
+.card .card-thumb,
+.gallery-item:not(.g-note) img,
+.con-node image {
+  filter: grayscale(100%) contrast(1.05) brightness(1.05);
   transition: filter .22s ease;
 }
+body.dark-mode .card .card-thumb,
+body.dark-mode .gallery-item:not(.g-note) img,
+body.dark-mode .con-node image {
+  filter: grayscale(100%) contrast(1.08) brightness(1.12);
+}
 /* 1. Survol d'un objet dans la grille Inventaire — couleur d'origine */
+.card:hover .card-thumb,
 body.dark-mode .card:hover .card-thumb { filter: none; }
 /* 2. Survol d'un objet dans la Dérive Nuée */
+.gallery-item:not(.g-note):hover img,
 body.dark-mode .gallery-item:not(.g-note):hover img { filter: none; }
 /* 3. Survol d'un nœud Constellation */
+.con-node:hover image,
 body.dark-mode .con-node:hover image { filter: none; }
 /* 4. Fiche produit (modale détail) — toujours en couleur, halo inclus */
+#detailModal img,
+#detailModal .portrait-main-img,
+#detailModal .portrait-thumb,
 body.dark-mode #detailModal img,
 body.dark-mode #detailModal .portrait-main-img,
 body.dark-mode #detailModal .portrait-thumb { filter: none !important; }
 /* 5. Triptyque — comparaison toujours en couleur */
+#triosView img,
+.trios-slot-wrap img,
+.trios-grid img,
 body.dark-mode #triosView img,
 body.dark-mode .trios-slot-wrap img,
 body.dark-mode .trios-grid img { filter: none !important; }
