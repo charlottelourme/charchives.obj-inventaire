@@ -11802,16 +11802,20 @@ body:not(.dark-mode) #gridView .grid .card-thumb-area .img-cutout {
   mix-blend-mode: multiply;        /* fond blanc/clair du PNG → invisible sur fond cream */
   filter: contrast(1.08);          /* léger boost pour pousser les off-whites vers le blanc pur */
 }
-/* Dark mode : on conserve l'ancien comportement déjà en place — pas de
-   surimpression, swap pur (.img-standard caché, .img-cutout en image principale).
-   On supprime les surcharges de positionnement pour qu'il occupe le slide. */
+/* Dark mode : swap pur (.img-standard caché, .img-cutout en image principale).
+   Grayscale par défaut (cohérent avec la ponctuation colorée du dark mode),
+   couleur révélée au hover. Suppression des surcharges de positionnement. */
 body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
   position: relative !important;
   inset: auto !important;
   height: auto !important;
   mix-blend-mode: normal !important;
-  filter: none !important;
+  filter: grayscale(100%) contrast(1.08) brightness(1.12) !important;
+  transition: filter .22s ease;
   z-index: auto;
+}
+body.dark-mode #gridView .grid .card:hover .card-thumb-area .img-cutout {
+  filter: none !important;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
