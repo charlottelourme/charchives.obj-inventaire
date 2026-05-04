@@ -11753,7 +11753,7 @@ body.dark-mode #gridView .grid .card-thumb-area .img-cutout {
   bottom: calc(20px + env(safe-area-inset-bottom));
   right: 20px;
   z-index: 9000;
-  display: none;                     /* caché par défaut — affiché uniquement en mobile */
+  display: flex;                     /* visible partout (desktop + mobile) */
   flex-direction: column;
   align-items: flex-end;
   gap: 6px;
