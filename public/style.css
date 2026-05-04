@@ -11140,19 +11140,36 @@ body.dark-mode .section-header {
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+/* Panneau dropdown : effet « Soft Block » fondu pour s'aligner sur la grammaire
+   visuelle des fenêtres poème (cartes inventaire). Plus de fond opaque, plus
+   de bordure dure : un blob blanc/surface flou, posé derrière les mots, avec
+   bords adoucis par filter: blur(). Le contenu (pills) reste net au-dessus. */
 .inv-dd-panel {
-  background: var(--surface, #fff);
-  border: 1px solid var(--border-light, #E8E4DE);
+  background: transparent;          /* le fond est désormais peint par ::before */
+  border: none;
   padding: 1.1rem 1.3rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 0.75rem;
   align-items: center;
   justify-content: center;
+  position: relative;
+  isolation: isolate;               /* contexte d'empilement pour ::before z:-1 */
 }
-body.dark-mode .inv-dd-panel {
+.inv-dd-panel::before {
+  content: '';
+  position: absolute;
+  inset: -10px -16px;               /* débord doux pour que le flou ait de la marge */
+  background: var(--surface, #fff);
+  filter: blur(22px);               /* bords franchement fondus */
+  opacity: 0.92;
+  border-radius: 18px;              /* rectangle légèrement arrondi */
+  z-index: -1;
+  pointer-events: none;
+}
+body.dark-mode .inv-dd-panel::before {
   background: var(--surface);
-  border-color: var(--border);
+  opacity: 0.88;
 }
 .inv-dd-panel-objet {
   flex-direction: column;
