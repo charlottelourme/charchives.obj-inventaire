@@ -2803,7 +2803,7 @@ function _drawConGraph(canvas, nodes, links) {
   })();
   const _conCatX = new Map();
   if (_conCategories.length) {
-    const padX = Math.min(120, W * 0.08);
+    const padX = Math.min(40, W * 0.03);
     const usableW = Math.max(W - padX * 2, 200);
     _conCategories.forEach((cat, i) => {
       const x = padX + (i + 0.5) * (usableW / _conCategories.length);
