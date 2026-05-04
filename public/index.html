@@ -250,8 +250,11 @@
 
   <!-- ── Diorama — Canvas interactif ── -->
   <div id="dioramaView" style="display:none">
-    <!-- STRATE 3 : ToolBar (décors + bouton temporaire) -->
-    <div class="diorama-decor-bar toolbar-strate" id="dioDecorBar"></div>
+    <!-- STRATE 3 : ToolBar (décors + bouton temporaire).
+         NB : pas de classe .toolbar-strate ici — la barre décor a sa propre
+         hauteur (~70px, slots 48 + padding) et NE DOIT PAS être contrainte
+         à 52px comme les autres bandeaux à onglets. -->
+    <div class="diorama-decor-bar" id="dioDecorBar"></div>
     <!-- Layout principal : sidebar + scène -->
     <div class="diorama-layout">
       <!-- Bibliothèque d'objets PNG -->
