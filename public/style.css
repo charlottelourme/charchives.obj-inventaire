@@ -10752,6 +10752,11 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   border: none !important;
   box-shadow: none !important;
   transform-origin: center center;
+  /* Bloque le drag natif HTML5 — sinon Chrome peint un "ghost" rectangle
+     gris à la place du PNG transparent (bug "carrés gris" rapporté). */
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
 }
 .diorama-item img {
   display: block;
@@ -10759,6 +10764,9 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   height: auto;
   pointer-events: none;
   background: transparent;
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
 }
 /* Sélection */
 .diorama-item.dio-selected {
