@@ -11870,14 +11870,14 @@ body.dark-mode .bug-fab {
 }
 body.dark-mode .bug-fab:hover { color: var(--text); }
 @media (max-width: 520px) {
-  /* Mobile : centré côte à côte, juste au-dessus du footer mobile (~84px). */
+  /* Mobile : aligné à droite côte à côte, juste au-dessus du footer mobile (~84px). */
   .bug-fab-cluster {
     display: flex;
     flex-direction: row;
     bottom: calc(96px + env(safe-area-inset-bottom));
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
+    right: 12px;
+    left: auto;
+    transform: none;
     align-items: center;
     gap: 8px;
   }
