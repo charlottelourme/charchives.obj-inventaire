@@ -4176,6 +4176,10 @@ function _dioRenderItems(scene) {
       el = document.createElement('div');
       el.className = 'diorama-item';
       el.dataset.dioId = item.id;
+      // draggable=false sur le wrapper ET l'image — sinon Chrome déclenche un
+      // drag natif HTML5 lors du pointerdown, qui peint un "ghost" rectangle
+      // gris à la place du PNG transparent (= bug "carrés gris" rapporté).
+      el.draggable = false;
       el.innerHTML = `
         <img src="${photoUrl(photo)}" alt="${esc(col.name||'')}" draggable="false">
         <div class="dio-handle dio-handle-nw"></div>
@@ -4184,6 +4188,8 @@ function _dioRenderItems(scene) {
         <div class="dio-handle dio-handle-se"></div>
         <div class="dio-handle-rot"></div>`;
       scene.appendChild(el);
+      // Bloque tout dragstart natif résiduel (filet de sécurité multi-browser)
+      el.addEventListener('dragstart', e => e.preventDefault());
       _dioMakeMovable(el, item);
       _dioMakeResizable(el, item);
       _dioMakeRotatable(el, item);
