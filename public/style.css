@@ -11831,12 +11831,12 @@ body.dark-mode #gridView .grid .card:hover .card-thumb-area .img-cutout {
 .bug-fab-cluster {
   position: fixed;
   bottom: calc(110px + env(safe-area-inset-bottom));   /* au-dessus du footer (Photos ZIP) */
-  left: 50%;
-  transform: translateX(-50%);                          /* centré horizontalement sur la page */
-  right: auto;
+  right: 20px;                                          /* aligné à droite */
+  left: auto;
+  transform: none;
   z-index: 9000;
   display: flex;
-  flex-direction: row;                                  /* côte à côte (et non plus empilés) */
+  flex-direction: row;                                  /* côte à côte */
   align-items: center;
   gap: 10px;
 }
