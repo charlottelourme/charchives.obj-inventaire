@@ -10773,41 +10773,71 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   outline: 1px dashed rgba(255,255,255,.5);
   outline-offset: 4px;
 }
-/* Handles de resize (visibles uniquement sur l'item sélectionné) */
+/* Handles de resize (visibles uniquement sur l'item sélectionné).
+   14×14 visuels + hit-area invisible étendue de 8px tout autour via ::before
+   → zone cliquable réelle de 30×30, beaucoup plus pratique au pointeur fin. */
 .dio-handle {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   background: #fff;
-  border: 1.5px solid #333;
+  border: 2px solid #1A1A1A;
   border-radius: 50%;
   cursor: nwse-resize;
   z-index: 10;
   display: none;
   pointer-events: all;
+  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+}
+/* Hit-area invisible étendue — facilite le clic au pointeur fin / trackpad */
+.dio-handle::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
 }
 .dio-selected .dio-handle { display: block; }
-.dio-handle-nw { top: -5px;  left: -5px;  cursor: nwse-resize; }
-.dio-handle-ne { top: -5px;  right: -5px; cursor: nesw-resize; }
-.dio-handle-sw { bottom: -5px; left: -5px;  cursor: nesw-resize; }
-.dio-handle-se { bottom: -5px; right: -5px; cursor: nwse-resize; }
-/* Handle de rotation */
+.dio-handle-nw { top: -7px;  left: -7px;  cursor: nwse-resize; }
+.dio-handle-ne { top: -7px;  right: -7px; cursor: nesw-resize; }
+.dio-handle-sw { bottom: -7px; left: -7px;  cursor: nesw-resize; }
+.dio-handle-se { bottom: -7px; right: -7px; cursor: nwse-resize; }
+/* Handle de rotation — plus gros et plus visible que les angles, avec un
+   symbole ↻ pour indiquer clairement sa fonction. */
 .dio-handle-rot {
   position: absolute;
-  top: -24px;
+  top: -32px;
   left: 50%;
   transform: translateX(-50%);
-  width: 12px;
-  height: 12px;
+  width: 20px;
+  height: 20px;
   background: #fff;
-  border: 1.5px solid #333;
+  border: 2px solid #1A1A1A;
   border-radius: 50%;
   cursor: grab;
   z-index: 10;
   display: none;
+  align-items: center;
+  justify-content: center;
   pointer-events: all;
+  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+  font-family: 'Compagnon', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1A1A;
+  line-height: 1;
 }
-.dio-selected .dio-handle-rot { display: block; }
+.dio-handle-rot::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+}
+.dio-handle-rot::after {
+  content: '↻';
+  pointer-events: none;
+}
+.dio-handle-rot:active { cursor: grabbing; }
+.dio-selected .dio-handle-rot { display: flex; }
 
 /* ── Loading + Crédits ── */
 .diorama-loading {
