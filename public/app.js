@@ -4265,7 +4265,9 @@ function _dioMakeResizable(el, item) {
       const origScale = item.scale;
       const onMove = ev => {
         const dist = _dioDistFromCenter(el, ev);
-        item.scale = Math.max(0.15, Math.min(5, origScale * (dist / startDist)));
+        // Plancher 0.4 = ~48px à baseline 120 — assez petit pour un détail,
+        // assez grand pour rester lisible et manipulable. Plafond 5×.
+        item.scale = Math.max(0.4, Math.min(5, origScale * (dist / startDist)));
         el.style.width = Math.round(120 * item.scale) + 'px';
       };
       const onUp = () => {
