@@ -11,6 +11,7 @@ const PAGE_DESCRIPTIONS_DEFAULTS = {
   constellation: 'Vos objets reliés par leurs intentions, matières ou identités.',
   triptyque:     'Sélection et composition de trois objets en regard.',
   diorama:       'Mise en scène d\'objets dans des intérieurs d\'archives.',
+  oracle:        'Confiez une pensée. Trois objets entrent en résonance.',
   parametres:    'Gérez vos catégories, typologies et duotones.',
 };
 // Proxy rétrocompat : PAGE_DESCRIPTIONS.xxx retourne l'override utilisateur si défini
