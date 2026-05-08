@@ -9572,6 +9572,15 @@ function bindEvents() {
   document.getElementById('viewDerive').addEventListener('click', () => setView('derive'));
   document.getElementById('viewAtelier').addEventListener('click', () => { _currentTrio = null; setView('trios'); });
   document.getElementById('viewDiorama').addEventListener('click', () => setView('diorama'));
+  document.getElementById('viewOracle')?.addEventListener('click', () => {
+    setView('oracle');
+    // Focus sur le champ après que la vue soit affichée
+    setTimeout(() => document.getElementById('oracleInput')?.focus(), 80);
+  });
+  // Oracle — soumission par Entrée
+  document.getElementById('oracleInput')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); _oracleSubmit(); }
+  });
   document.getElementById('viewCalendar').addEventListener('click', () => setView('calendar'));
   document.getElementById('viewCatalogue').addEventListener('click', () => setView('catalogue'));
   document.getElementById('viewStats').addEventListener('click', () => setView('stats'));
