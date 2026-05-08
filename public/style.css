@@ -12340,7 +12340,8 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
   background: transparent;
   border: none;
   cursor: pointer;
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -12350,7 +12351,8 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
 }
 .oracle-action:hover { color: var(--text, #1A1A1A); }
 .oracle-action-sep {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
   color: var(--text-3, #A1A1AA);
   opacity: 0.5;
   user-select: none;
