@@ -5414,6 +5414,74 @@ let _oracleQuery   = '';     // dernière saisie validée
 let _oracleResults = [];     // 3 objets sortis par l'oracle
 let _oracleAnswered = false; // une fois validé, le champ se décale vers le haut
 
+// Thésaurus sémantique — chargé asynchroniquement depuis /data/thesaurus.json.
+// Format : { "mot-clé": ["synonyme1", "synonyme2", ...] }
+// État : null avant chargement, {} si fichier absent / illisible (fallback safe).
+let _oracleThesaurus    = null;
+let _oracleFamilyIndex  = null;       // Map<word, Set<family>> — index inverse pour lookup O(1)
+let _oracleThesaurusPromise = null;   // Promesse de chargement en cours (singleton)
+
+// Construit l'index inverse : pour chaque mot (clé OU valeur), liste des autres
+// mots de sa famille. Permet d'étendre une requête à toute sa famille en O(1).
+function _buildOracleFamilyIndex(thesaurus) {
+  const idx = new Map();
+  if (!thesaurus || typeof thesaurus !== 'object') return idx;
+  for (const [key, values] of Object.entries(thesaurus)) {
+    // Robustesse : ignore les clés meta (_comment, etc.) ou valeurs malformées
+    if (!Array.isArray(values)) continue;
+    const family = new Set([
+      _normalize(key),
+      ...values.map(v => _normalize(String(v)))
+    ].filter(Boolean));
+    family.forEach(word => {
+      if (!idx.has(word)) idx.set(word, new Set());
+      const set = idx.get(word);
+      family.forEach(w => set.add(w));
+    });
+  }
+  return idx;
+}
+
+// Charge le thésaurus une seule fois (singleton). Idempotent : appelable plusieurs
+// fois sans refetch. En cas d'échec (404, JSON invalide, hors-ligne), pose un
+// objet vide → l'oracle continue de fonctionner sur les mots exacts uniquement.
+async function loadThesaurus() {
+  if (_oracleThesaurus !== null)   return _oracleThesaurus;
+  if (_oracleThesaurusPromise)     return _oracleThesaurusPromise;
+  _oracleThesaurusPromise = (async () => {
+    try {
+      const res = await fetch('/data/thesaurus.json', { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      _oracleThesaurus = (data && typeof data === 'object' && !Array.isArray(data)) ? data : {};
+      _oracleFamilyIndex = _buildOracleFamilyIndex(_oracleThesaurus);
+      const families = [...new Set([..._oracleFamilyIndex.values()].map(s => [...s].join(',')))].length;
+      console.info(`[Oracle] Thésaurus chargé — ${families} famille(s), ${_oracleFamilyIndex.size} mot(s) indexé(s).`);
+    } catch (e) {
+      // Fallback silencieux : l'oracle marche, juste sans expansion sémantique.
+      console.warn('[Oracle] thesaurus.json indisponible — recherche sur mots exacts uniquement.', e.message);
+      _oracleThesaurus = {};
+      _oracleFamilyIndex = new Map();
+    }
+    return _oracleThesaurus;
+  })();
+  return _oracleThesaurusPromise;
+}
+
+// Étend une liste de tokens avec leurs familles sémantiques.
+// Ex: ["espace"] → ["espace", "cosmonaute", "etoile", "galaxie", ...]
+// Si le thésaurus n'est pas chargé OU si aucun token n'a de famille, retourne
+// les tokens tels quels (zéro overhead).
+function _oracleExpandTokens(tokens) {
+  if (!_oracleFamilyIndex || _oracleFamilyIndex.size === 0) return tokens;
+  const expanded = new Set(tokens);
+  for (const tok of tokens) {
+    const family = _oracleFamilyIndex.get(tok);
+    if (family) family.forEach(w => expanded.add(w));
+  }
+  return [...expanded];
+}
+
 // Mots de liaison à exclure (français) — l'oracle cherche des résonances
 // concrètes, pas des mots-outils.
 const ORACLE_STOPWORDS = new Set([
