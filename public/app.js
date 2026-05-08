@@ -9649,6 +9649,9 @@ function bindEvents() {
   document.getElementById('viewDiorama').addEventListener('click', () => setView('diorama'));
   document.getElementById('viewOracle')?.addEventListener('click', () => {
     setView('oracle');
+    // Filet de sécurité : si le préchargement initial a raté, retente.
+    // Idempotent — n'effectue aucun refetch si déjà chargé.
+    loadThesaurus();
     // Focus sur le champ après que la vue soit affichée
     setTimeout(() => document.getElementById('oracleInput')?.focus(), 80);
   });
