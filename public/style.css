@@ -12273,9 +12273,10 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
   border-bottom-color: var(--border-light, #E8E4DE);
 }
 
-/* Hint discret "Entrée ↵" — Cutive Mono uppercase (cohérent avec §4 du CLAUDE.md) */
+/* Hint discret "Entrée ↵" — Compagnon Roman uppercase, ténu */
 .oracle-hint {
-  font-family: 'Cutive Mono', monospace;
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
