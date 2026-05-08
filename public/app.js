@@ -677,6 +677,11 @@ async function init(attempt = 0) {
     _syncTriosTabLabels();
     renderMobileFooterNav();
 
+    // Oracle — précharge le thésaurus en arrière-plan (non bloquant).
+    // Si l'utilisateur ouvre l'Oracle avant la fin du fetch, le fallback
+    // (recherche sur mots exacts) prend le relai sans erreur.
+    loadThesaurus();
+
   } catch (err) {
     const isRetryable = err.type === 'starting' || err.type === 'network' || err.status === 503 || err.status === 502;
     if (isRetryable && attempt < _INIT_MAX_RETRIES) {
