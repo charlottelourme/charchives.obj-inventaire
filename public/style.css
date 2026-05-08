@@ -12248,8 +12248,8 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
   border: none;
   border-bottom: 1px solid var(--border-light, #E8E4DE);
   outline: none;
-  /* Cormorant italic — ce qui est PENSÉ par un humain (cohérent avec CLAUDE.md §4) */
-  font-family: 'Cormorant Garamond', 'Compagnon', serif;
+  /* Compagnon Light italic — la "voix" poétique de l'utilisatrice. */
+  font-family: 'Compagnon', monospace;
   font-style: italic;
   font-weight: 300;
   font-size: clamp(1.6rem, 3.2vw, 3rem);
