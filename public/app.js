@@ -5405,6 +5405,200 @@ function _generateAleatoireTrio(prevObjects, locked) {
   };
 }
 
+// ══ ORACLE — Générateur de Triptyque par texte libre ═══════════════════════
+// L'utilisateur écrit un mot, une phrase ou une pensée. Un algorithme de
+// scoring lexical parcourt la description (poèmes), l'intention, les
+// attributs (matière, couleur, identité, usage), les typologies et les tags
+// pour faire émerger 3 objets en résonance.
+let _oracleQuery   = '';     // dernière saisie validée
+let _oracleResults = [];     // 3 objets sortis par l'oracle
+let _oracleAnswered = false; // une fois validé, le champ se décale vers le haut
+
+// Mots de liaison à exclure (français) — l'oracle cherche des résonances
+// concrètes, pas des mots-outils.
+const ORACLE_STOPWORDS = new Set([
+  'le','la','les','un','une','des','du','de','d','l',
+  'et','ou','mais','donc','car','ni','or',
+  'a','à','au','aux','en','dans','sur','sous','par','pour','avec','sans','vers','chez',
+  'est','sont','etre','être','ete','été','suis','es','sommes','etes','êtes',
+  'ai','as','avons','avez','ont','avoir',
+  'ce','cet','cette','ces','ceux','celles','celui','celle',
+  'qui','que','quoi','dont','où','quand','comment','pourquoi',
+  'mon','ma','mes','ton','ta','tes','son','sa','ses','notre','votre','leur','leurs',
+  'je','tu','il','elle','on','nous','vous','ils','elles','me','te','se','y',
+  'ne','pas','plus','moins','très','tres','si','non','oui',
+  'aussi','encore','déjà','deja','bien','tout','toute','tous','toutes',
+  'comme','même','meme','autre','autres','tel','telle',
+  'the','of','and','in','on','at','for','to','is','it','an','a'
+]);
+
+// Tokenise une chaîne — retire ponctuation/diacritiques, élimine les mots vides.
+function _oracleTokenize(text) {
+  return _normalize(text)
+    .replace(/[.,;:!?'"`’()\[\]{}«»…–—-]/g, ' ')
+    .split(/\s+/)
+    .filter(t => t.length >= 2 && !ORACLE_STOPWORDS.has(t));
+}
+
+// Calcule un score de résonance entre un objet et les tokens de la requête.
+// Logique :
+//   - Description (poèmes) : 6 pts par occurrence (champ le plus précieux)
+//   - Nom de l'objet : 5 pts par occurrence
+//   - Catégorie / Intention : 4 pts par match
+//   - Typologies (subcategory/subcategories) : 3 pts par match
+//   - Attributs (matières, couleurs, identité, univers, usage) : 3 pts par match
+//   - Tags libres (keywords) : 2 pts par match
+// Bonus +1 pour chaque token unique trouvé dans plusieurs champs (densité).
+function _oracleScoreItem(item, tokens) {
+  if (!tokens.length) return 0;
+  // Champs textuels concaténés par poids
+  const fieldGroups = [
+    { weight: 6, text: item.description || '' },
+    { weight: 5, text: item.name || '' },
+    { weight: 4, text: item.category || '' },
+    { weight: 3, text: [
+        item.subcategory,
+        item.subcategoryCustom,
+        ...(Array.isArray(item.subcategories) ? item.subcategories : [])
+      ].filter(Boolean).join(' ') },
+    { weight: 3, text: [
+        ...(item.attributes?.matieres || []),
+        ...(item.attributes?.couleurs || []),
+        ...(item.attributes?.origine  || []),
+        ...(item.attributes?.usage    || []),
+        ...(item.attributes?.etat_traces || []),
+        ...(item.univers || [])
+      ].join(' ') },
+    { weight: 2, text: (item.keywords || []).join(' ') }
+  ];
+  // Normalise une seule fois chaque champ
+  const normFields = fieldGroups.map(g => ({
+    weight: g.weight,
+    norm: _normalize(g.text)
+  }));
+
+  let score = 0;
+  const matchedTokens = new Set();
+  for (const tok of tokens) {
+    let tokenHit = false;
+    for (const f of normFields) {
+      if (!f.norm) continue;
+      // Compte les occurrences (recherche par sous-chaîne, pas par mot entier
+      // pour attraper les radicaux : "lumière" → "lumineux", "rouge" → "rougi").
+      const occurrences = f.norm.split(tok).length - 1;
+      if (occurrences > 0) {
+        score += occurrences * f.weight;
+        tokenHit = true;
+      }
+    }
+    if (tokenHit) matchedTokens.add(tok);
+  }
+  // Bonus densité : plus l'objet matche de tokens distincts, plus il résonne.
+  if (matchedTokens.size > 1) score += matchedTokens.size * 2;
+  return score;
+}
+
+// Retourne les 3 objets les plus en résonance avec inputText.
+// Si moins de 3 ont un score > 0, complète aléatoirement avec d'autres objets.
+function getOracleMatches(inputText, items) {
+  const pool = (items || state.collections).filter(c =>
+    c.type !== 'note' && c.type !== 'journal-photo'
+  );
+  if (!pool.length) return [];
+
+  const tokens = _oracleTokenize(inputText || '');
+  // Pas de tokens significatifs → 3 objets aléatoires
+  if (!tokens.length) {
+    return [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
+  }
+
+  // Score chaque objet
+  const scored = pool.map(item => ({
+    item,
+    score: _oracleScoreItem(item, tokens)
+  }));
+
+  // Tri décroissant ; si égalité, on mélange (ordre stable dépendant du hasard)
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return Math.random() - 0.5;
+  });
+
+  // Top 3 avec score > 0
+  const winners = scored.filter(s => s.score > 0).slice(0, 3).map(s => s.item);
+
+  // Compléter aléatoirement si moins de 3
+  if (winners.length < 3) {
+    const remaining = pool.filter(p => !winners.includes(p));
+    const shuffled = remaining.sort(() => Math.random() - 0.5);
+    while (winners.length < 3 && shuffled.length) {
+      winners.push(shuffled.shift());
+    }
+  }
+  return winners;
+}
+
+function renderOracle() {
+  const view = document.getElementById('oracleView');
+  if (!view) return;
+
+  // Synchronise les classes selon l'état (initial vs répondu)
+  const stage = document.getElementById('oracleStage');
+  const wrap  = document.getElementById('oracleInputWrap');
+  const result = document.getElementById('oracleResult');
+  const input  = document.getElementById('oracleInput');
+  if (!stage || !wrap || !result || !input) return;
+
+  stage.classList.toggle('oracle-answered', _oracleAnswered);
+  if (input.value !== _oracleQuery) input.value = _oracleQuery;
+
+  if (!_oracleAnswered || !_oracleResults.length) {
+    result.innerHTML = '';
+    return;
+  }
+
+  // Triptyque — 3 cartes alignées au centre
+  const cardsHTML = _oracleResults.map(c => cardHTML(c)).join('');
+  result.innerHTML = `
+    <div class="oracle-triptyque">${cardsHTML}</div>
+    <div class="oracle-actions">
+      <button class="oracle-action" id="oracleRepick" type="button">Re-piocher</button>
+      <span class="oracle-action-sep">·</span>
+      <button class="oracle-action" id="oracleClear" type="button">Effacer</button>
+    </div>
+  `;
+
+  // Bind clics sur les cartes (ouverture fiche détail, navigation)
+  bindCardEvents(result);
+
+  // Re-piocher : nouveau tirage avec la même query (utile pour re-randomiser
+  // en cas d'égalités de score)
+  document.getElementById('oracleRepick')?.addEventListener('click', () => {
+    _oracleResults = getOracleMatches(_oracleQuery, state.collections);
+    renderOracle();
+  });
+  // Effacer : retour à l'état initial
+  document.getElementById('oracleClear')?.addEventListener('click', () => {
+    _oracleQuery = '';
+    _oracleResults = [];
+    _oracleAnswered = false;
+    renderOracle();
+    document.getElementById('oracleInput')?.focus();
+  });
+}
+
+// Soumission de l'oracle — appelé sur Enter
+function _oracleSubmit() {
+  const input = document.getElementById('oracleInput');
+  if (!input) return;
+  const q = (input.value || '').trim();
+  if (!q) return;
+  _oracleQuery = q;
+  _oracleResults = getOracleMatches(q, state.collections);
+  _oracleAnswered = true;
+  renderOracle();
+}
+
 // ── Icône "+" "Coup de cœur" — cross unifiée (identique à .sel-ast) ──────
 // 2 branches (vertical + horizontal), taille 10×10, stroke 1.4 round
 // Partagée entre la pill Sélection, les cartes, la Dérive et la Constellation
