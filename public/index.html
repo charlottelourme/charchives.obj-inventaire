@@ -279,6 +279,26 @@
     </div>
   </div>
 
+  <!-- ── Oracle view — Générateur de Triptyque par texte libre ── -->
+  <div id="oracleView" class="oracle-view" style="display:none">
+    <div class="oracle-stage" id="oracleStage">
+      <!-- Zone de saisie : input pleine largeur, sans bordure, juste une fine ligne sous le curseur -->
+      <div class="oracle-input-wrap" id="oracleInputWrap">
+        <input
+          type="text"
+          id="oracleInput"
+          class="oracle-input"
+          placeholder="Confiez une pensée, un mot, une couleur…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Saisie de l'Oracle">
+        <div class="oracle-hint" id="oracleHint">Entrée ↵</div>
+      </div>
+      <!-- Résultat : 3 cartes alignées en triptyque + lien Re-piocher / Effacer -->
+      <div class="oracle-result" id="oracleResult"></div>
+    </div>
+  </div>
+
   <!-- ── Trios view ── -->
   <div id="triosView" style="display:none">
     <!-- STRATE 3 : ToolBar universelle (onglets du Triptyque) -->
