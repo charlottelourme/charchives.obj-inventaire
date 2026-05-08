@@ -5574,11 +5574,13 @@ function getOracleMatches(inputText, items) {
   );
   if (!pool.length) return [];
 
-  const tokens = _oracleTokenize(inputText || '');
+  const baseTokens = _oracleTokenize(inputText || '');
   // Pas de tokens significatifs → 3 objets aléatoires
-  if (!tokens.length) {
+  if (!baseTokens.length) {
     return [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
   }
+  // Expansion sémantique via thesaurus.json (silencieux si non chargé)
+  const tokens = _oracleExpandTokens(baseTokens);
 
   // Score chaque objet
   const scored = pool.map(item => ({
