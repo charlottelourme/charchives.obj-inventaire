@@ -4093,9 +4093,19 @@ function _dioMakeLibItem(c) {
   el.className = 'diorama-lib-item';
   el.draggable = true;
   el.innerHTML = `<img src="${photoUrl(photo)}" alt="${esc(c.name||'')}"><div class="dio-lib-name">${esc(c.name||'')}</div>`;
+  const imgEl = el.querySelector('img');
   el.addEventListener('dragstart', e => {
     e.dataTransfer.setData('text/plain', c.id);
     e.dataTransfer.effectAllowed = 'copy';
+    // Ghost image = juste le PNG détouré, sans le label ni le cadre de la card.
+    // Sinon le browser capture toute la card (image + texte) → un rectangle
+    // apparaît pendant le drag (bug rapporté Charlotte).
+    if (imgEl && imgEl.complete && imgEl.naturalWidth > 0) {
+      const r = imgEl.getBoundingClientRect();
+      try {
+        e.dataTransfer.setDragImage(imgEl, r.width / 2, r.height / 2);
+      } catch (_) { /* certains browsers refusent — fallback : ghost par défaut */ }
+    }
     requestAnimationFrame(() => el.classList.add('dragging'));
   });
   el.addEventListener('dragend', () => el.classList.remove('dragging'));
