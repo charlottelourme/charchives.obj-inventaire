@@ -244,15 +244,16 @@ body.dark-mode::after { mix-blend-mode: overlay; opacity: 0.28; }
    bg-grain, card-grain) cumulent un bruit perçu beaucoup plus dense qu'en
    desktop. Deux ajustements pour retrouver la sensation "papier discret" :
    1. Opacity divisée par ~2 (couches moins présentes)
-   2. background-size 160px → 80px → la tuile SVG du bruit est rendue 2× plus
-      petite, donc chaque speck devient ~2× plus petit visuellement (grain fin,
-      texture papier proche, au lieu de tâches grossières). */
+   2. background-size 160px → 48px → la tuile SVG est rendue ~3× plus petite.
+      À cette échelle, la tuile fait ~12% de la largeur iPhone (393px), proche
+      du ratio desktop où 160px fait ~8% d'un 1920px. Le grain devient une
+      fibre fine, plus une texture qu'un motif visible. */
 @media (max-width: 520px) {
-  body::after            { opacity: 0.20; background-size: 80px 80px; }
+  body::after            { opacity: 0.20; background-size: 48px 48px; }
   body.dark-mode::after  { opacity: 0.14; }
-  #bgLayers .bg-grain    { opacity: 0.40; background-size: 80px 80px; }
+  #bgLayers .bg-grain    { opacity: 0.40; background-size: 48px 48px; }
   body.dark-mode #bgLayers .bg-grain { opacity: 0.20; }
-  .card .card-grain      { opacity: 0.25; background-size: 80px 80px; }
+  .card .card-grain      { opacity: 0.25; background-size: 48px 48px; }
   body.dark-mode .card .card-grain { opacity: 0.12; }
 }
 
