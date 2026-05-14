@@ -294,32 +294,49 @@
   </div>
 
   <!-- ── Diorama — Canvas interactif ── -->
-  <div id="dioramaView" style="display:none">
-    <!-- STRATE 3 : ToolBar (décors + bouton temporaire).
-         NB : pas de classe .toolbar-strate ici — la barre décor a sa propre
-         hauteur (~70px, slots 48 + padding) et NE DOIT PAS être contrainte
-         à 52px comme les autres bandeaux à onglets. -->
+  <div id="dioramaView" class="diorama-view" style="display:none">
+    <!-- Sous-menu interne (esthétique Oracle) — positionné absolute top-right
+         pour "tomber" sous le mot Diorama du header. -->
+    <div class="diorama-subnav">
+      <button class="diorama-tab active" data-mode="nouvelle" type="button">Nouvelle composition</button>
+      <button class="diorama-tab" data-mode="compositions" type="button">Compositions</button>
+    </div>
+
+    <!-- Décor bar (visible uniquement en mode "Nouvelle composition") -->
     <div class="diorama-decor-bar" id="dioDecorBar"></div>
-    <!-- Layout principal : sidebar + scène -->
-    <div class="diorama-layout">
-      <!-- Bibliothèque d'objets PNG -->
-      <div class="diorama-sidebar" id="dioSidebar">
-        <div class="diorama-sidebar-header">
-          <span class="diorama-sidebar-title">Objets</span>
-          <input type="text" class="diorama-sidebar-search" id="dioSearch" placeholder="Filtrer…" autocomplete="off">
-          <!-- Suggestions aléatoires : matière / couleur / intention / époque, etc.
-               Cliquer une suggestion remplit la barre et filtre la lib. -->
-          <div class="diorama-sidebar-suggestions" id="dioSuggestions"></div>
+
+    <!-- MODE 1 : Nouvelle composition — scène + 2 bibliothèques latérales -->
+    <div id="dioModeNouvelle" class="diorama-mode diorama-mode-nouvelle">
+      <div class="diorama-layout">
+        <!-- Bibliothèque GAUCHE — première moitié des intentions -->
+        <div class="diorama-sidebar diorama-sidebar-left" id="dioSidebarLeft">
+          <div class="diorama-sidebar-header">
+            <input type="text" class="diorama-sidebar-search" id="dioSearch" placeholder="Filtrer…" autocomplete="off">
+            <div class="diorama-sidebar-suggestions" id="dioSuggestions"></div>
+          </div>
+          <div class="diorama-sidebar-list diorama-sidebar-list-grouped" id="dioLibListLeft"></div>
         </div>
-        <div class="diorama-sidebar-list" id="dioLibList"></div>
-      </div>
-      <!-- Scène (drop zone + pan/zoom D3) -->
-      <div class="diorama-scene-wrap" id="dioSceneWrap">
-        <div class="diorama-scene" id="dioScene">
-          <img class="diorama-backdrop" id="dioBackdrop" alt="" draggable="false">
-          <!-- Items placés sont ajoutés ici dynamiquement -->
+
+        <!-- Scène (drop zone + pan/zoom D3) -->
+        <div class="diorama-scene-wrap" id="dioSceneWrap">
+          <div class="diorama-scene" id="dioScene">
+            <img class="diorama-backdrop" id="dioBackdrop" alt="" draggable="false">
+            <!-- Items placés sont ajoutés ici dynamiquement -->
+          </div>
+          <!-- Bouton flottant : enregistrer la composition courante -->
+          <button class="diorama-save-btn" id="dioSaveBtn" type="button" title="Enregistrer cette composition">Enregistrer</button>
+        </div>
+
+        <!-- Bibliothèque DROITE — seconde moitié des intentions -->
+        <div class="diorama-sidebar diorama-sidebar-right" id="dioSidebarRight">
+          <div class="diorama-sidebar-list diorama-sidebar-list-grouped" id="dioLibListRight"></div>
         </div>
       </div>
+    </div>
+
+    <!-- MODE 2 : Compositions enregistrées (galerie) -->
+    <div id="dioModeCompositions" class="diorama-mode diorama-mode-compositions" hidden>
+      <div class="diorama-gallery" id="dioGallery"></div>
     </div>
   </div>
 
