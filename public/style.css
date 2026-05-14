@@ -244,16 +244,16 @@ body.dark-mode::after { mix-blend-mode: overlay; opacity: 0.28; }
    bg-grain, card-grain) cumulent un bruit perçu beaucoup plus dense qu'en
    desktop. Deux ajustements pour retrouver la sensation "papier discret" :
    1. Opacity divisée par ~2 (couches moins présentes)
-   2. background-size 160px → 48px → la tuile SVG est rendue ~3× plus petite.
-      À cette échelle, la tuile fait ~12% de la largeur iPhone (393px), proche
-      du ratio desktop où 160px fait ~8% d'un 1920px. Le grain devient une
-      fibre fine, plus une texture qu'un motif visible. */
+   2. background-size 160px → 32px → la tuile SVG est rendue 5× plus petite.
+      À cette échelle, la tuile fait ~8% de la largeur iPhone (393px), soit
+      le MÊME ratio que le desktop (160px sur 1920px = 8%). Le grain devient
+      une fibre extrêmement fine — texture papier impalpable. */
 @media (max-width: 520px) {
-  body::after            { opacity: 0.20; background-size: 48px 48px; }
+  body::after            { opacity: 0.20; background-size: 32px 32px; }
   body.dark-mode::after  { opacity: 0.14; }
-  #bgLayers .bg-grain    { opacity: 0.40; background-size: 48px 48px; }
+  #bgLayers .bg-grain    { opacity: 0.40; background-size: 32px 32px; }
   body.dark-mode #bgLayers .bg-grain { opacity: 0.20; }
-  .card .card-grain      { opacity: 0.25; background-size: 48px 48px; }
+  .card .card-grain      { opacity: 0.25; background-size: 32px 32px; }
   body.dark-mode .card .card-grain { opacity: 0.12; }
 }
 
