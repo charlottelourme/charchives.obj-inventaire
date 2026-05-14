@@ -6419,10 +6419,15 @@ body.dark-mode .canvas-editor-overlay { background: var(--bg); }
   background-color: transparent !important;
   border-top: none;
   box-shadow: none;
-  padding: 0.6rem 2rem 2rem;            /* + de respiration en bas */
+  /* Grille Absolue : alignement latéral commun avec header et main */
+  padding-top: 0.6rem !important;
+  padding-right: var(--grid-margin-x) !important;
+  padding-bottom: 2rem !important;
+  padding-left: var(--grid-margin-x) !important;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  box-sizing: border-box;
 }
 body.dark-mode .global-footer {
   background: transparent !important;
