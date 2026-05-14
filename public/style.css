@@ -11565,6 +11565,43 @@ body.dark-mode .diorama-save-btn:hover { background: #fff; color: #1A1A1A; }
   gap: 8px;
   background: var(--bg);
 }
+
+/* Preview visuelle d'une composition (fond + objets posés en miniature).
+   .dgcp = Diorama Gallery Card Preview. */
+.dgcp {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #f0f0f0;
+  isolation: isolate;          /* contient les z-index des items */
+  border: 1px solid var(--border-light);
+}
+body.dark-mode .dgcp { background: #1A1A1A; border-color: var(--border); }
+.dgcp-backdrop {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+.dgcp-item {
+  position: absolute;
+  transform-origin: center center;
+  pointer-events: none;
+  background: transparent;
+  /* Pas de filter/blur — rendu propre des PNG détourés */
+}
+.dgcp-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  font-family: 'Compagnon', monospace;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--text-3);
+}
 .diorama-gallery-name {
   font-family: 'Compagnon', monospace;
   font-style: normal;
