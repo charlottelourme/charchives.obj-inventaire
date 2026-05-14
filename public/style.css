@@ -12089,7 +12089,7 @@ body.dark-mode .inv-dd-panel::after {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.35rem var(--page-gutter, 24px) 0.6rem;
+  padding: 0 0 0.6rem 0;             /* aligné latéralement par main (Grille Absolue), collé sous la nav */
   margin: 0;
   border: none;
   background: transparent;
