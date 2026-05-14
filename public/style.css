@@ -749,6 +749,46 @@ header.global-header {
   z-index: -1;
   pointer-events: none;
 }
+
+/* ══ HALO ACTIF UNIVERSEL — principe esthétique partagé site-wide ════════
+   Tout élément en état actif/sélectionné porte un halo rectangulaire flou
+   discret derrière le texte. Cohérence avec les halos Soft Block des
+   cartes Inventaire. Aucun fond plein, aucun rectangle net. */
+.sfb-pill.active,
+.tfb-pill.active,
+.mf-btn.mf-active,
+.attr-chip.selected,
+.view-tab.active,
+.inv-pillar.is-open,
+.invt-select:focus {
+  position: relative;
+  z-index: 0;
+}
+.sfb-pill.active::before,
+.tfb-pill.active::before,
+.mf-btn.mf-active::before,
+.attr-chip.selected::before,
+.view-tab.active::before,
+.inv-pillar.is-open::before {
+  content: '';
+  position: absolute;
+  inset: -4px -10px;
+  background: rgba(42, 42, 46, 0.10);
+  filter: blur(10px);
+  z-index: -1;
+  pointer-events: none;
+}
+/* Dark mode : halo en gris clair pour rester visible sur fond sombre */
+body.dark-mode .global-header .nav-principale .nav-link.active::before,
+body.dark-mode .global-header .nav-experimentale .nav-link.active::before,
+body.dark-mode .sfb-pill.active::before,
+body.dark-mode .tfb-pill.active::before,
+body.dark-mode .mf-btn.mf-active::before,
+body.dark-mode .attr-chip.selected::before,
+body.dark-mode .view-tab.active::before,
+body.dark-mode .inv-pillar.is-open::before {
+  background: rgba(244, 244, 245, 0.14);
+}
 /* Compensation de la hauteur du header fixed — repose sur --header-h
    (mesurée dynamiquement par JS, fallback CSS via :root). */
 body { padding-top: var(--header-h); }
