@@ -5614,64 +5614,60 @@ function _deleteOracleReading(entryId) {
   _renderOracleGallery();
 }
 
-// Rend la galerie des lectures archivées (toujours appelée par renderOracle).
+// Rend le Registre des Réminiscences — liste textuelle minimaliste.
+// Chaque ligne = date · Pensée · 3 miniatures grayscale (couleur au hover).
 function _renderOracleGallery() {
-  const section = document.getElementById('oracleGallery');
-  const list    = document.getElementById('oracleGalleryList');
-  const empty   = document.getElementById('oracleGalleryEmpty');
-  if (!section || !list) return;
-  // Visibilité gérée par le mode sub-nav : caché en mode 'tirage', visible en 'reminiscence'.
-  section.hidden = (_oracleMode !== 'reminiscence');
-  // Empty state : message poétique si on est en Réminiscences sans archive.
+  const registry = document.getElementById('reminiscenceRegistry');
+  const empty    = document.getElementById('reminiscenceEmpty');
+  if (!registry) return;
+  // Empty state : message poétique si pas d'archive
   if (!_oracleArchive.length) {
-    list.innerHTML = '';
+    registry.innerHTML = '';
     if (empty) empty.hidden = false;
     return;
   }
   if (empty) empty.hidden = true;
 
-  list.innerHTML = _oracleArchive.map(entry => {
+  registry.innerHTML = _oracleArchive.map(entry => {
     const objects = entry.objectIds
       .map(id => state.collections.find(c => c.id === id))
       .filter(Boolean);
     const thumbs = objects.map(obj => {
       const photo = obj?.photos?.[0];
-      const bg = getVerbeBgColor(obj?.category) || 'rgba(0,0,0,0.06)';
-      return `<div class="orc-arch-thumb" style="--orc-thumb-col:${bg}">
-        ${photo ? `<img src="${photoUrl(photo)}" alt="" loading="lazy">` : '<div class="orc-arch-thumb-empty"></div>'}
+      return `<div class="reminiscence-thumb">
+        ${photo ? `<img src="${photoUrl(photo)}" alt="" loading="lazy">` : '<div class="reminiscence-thumb-empty"></div>'}
       </div>`;
     }).join('');
-    // Si certains objets ont disparu, on remplit avec des slots vides
+    // Si certains objets ont disparu entre-temps : slot pointillé
     const missing = entry.objectIds.length - objects.length;
     const missingHTML = Array(missing).fill(0).map(() =>
-      '<div class="orc-arch-thumb orc-arch-thumb-missing"><div class="orc-arch-thumb-empty">○</div></div>'
+      '<div class="reminiscence-thumb reminiscence-thumb-missing"></div>'
     ).join('');
+    // Date en SMALL CAPS Compagnon Roman uppercase
     const date = new Date(entry.savedAt).toLocaleDateString('fr-FR', {
-      day: 'numeric', month: 'long', year: 'numeric'
-    });
-    return `<article class="orc-arch-item" data-id="${esc(entry.id)}" role="button" tabindex="0">
-      <div class="orc-arch-thumbs">${thumbs}${missingHTML}</div>
-      <div class="orc-arch-meta">
-        <p class="orc-arch-query">« ${esc(entry.query)} »</p>
-        <span class="orc-arch-date">${date}</span>
-      </div>
-      <button class="orc-arch-delete" data-id="${esc(entry.id)}" aria-label="Supprimer cette lecture" title="Supprimer">×</button>
+      day: '2-digit', month: 'short', year: 'numeric'
+    }).toUpperCase().replace(/\./g, '');
+    return `<article class="reminiscence-row" data-id="${esc(entry.id)}" role="button" tabindex="0">
+      <span class="reminiscence-date">${date}</span>
+      <p class="reminiscence-pensee">${esc(entry.query)}</p>
+      <div class="reminiscence-thumbnails">${thumbs}${missingHTML}</div>
+      <button class="reminiscence-delete" data-id="${esc(entry.id)}" aria-label="Supprimer cette réminiscence" title="Supprimer">×</button>
     </article>`;
   }).join('');
 
-  // Clic sur la ligne → restitue ; Enter sur focus → restitue
-  list.querySelectorAll('.orc-arch-item').forEach(item => {
+  // Clic sur la ligne → restitue le tirage ; Enter/Space sur focus → idem
+  registry.querySelectorAll('.reminiscence-row').forEach(row => {
     const restore = e => {
-      if (e.target.closest('.orc-arch-delete')) return;
-      _restoreOracleReading(item.dataset.id);
+      if (e.target.closest('.reminiscence-delete')) return;
+      _restoreOracleReading(row.dataset.id);
     };
-    item.addEventListener('click', restore);
-    item.addEventListener('keydown', e => {
+    row.addEventListener('click', restore);
+    row.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); restore(e); }
     });
   });
   // Bouton supprimer
-  list.querySelectorAll('.orc-arch-delete').forEach(btn => {
+  registry.querySelectorAll('.reminiscence-delete').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       _deleteOracleReading(btn.dataset.id);
@@ -5679,13 +5675,13 @@ function _renderOracleGallery() {
   });
 }
 
-// Bascule entre les deux modes de l'Oracle ('tirage' ↔ 'reminiscence').
-// Met à jour l'état actif du sub-nav et rappelle renderOracle().
+// Bascule entre les deux modes de l'Oracle ('nouveau' ↔ 'reminiscences').
+// Met à jour l'état actif des onglets et affiche/masque les sous-sections.
 function _setOracleMode(mode) {
-  if (mode !== 'tirage' && mode !== 'reminiscence') return;
+  if (mode !== 'nouveau' && mode !== 'reminiscences') return;
   _oracleMode = mode;
-  document.querySelectorAll('.oracle-subnav-link').forEach(link => {
-    link.classList.toggle('active', link.dataset.oracleMode === mode);
+  document.querySelectorAll('.oracle-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.target === mode);
   });
   renderOracle();
 }
