@@ -12592,18 +12592,35 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
 .oracle-triptyque {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(20px, 3.5vw, 56px);
+  gap: clamp(14px, 2vw, 36px);
   width: 100%;
-  max-width: 1180px;
+  max-width: 980px;
   margin: 0 auto;
   align-items: start;
   justify-items: center;
 }
 .oracle-triptyque .card {
   width: 100%;
-  max-width: 340px;
+  max-width: clamp(180px, 22vw, 280px);
   /* Animation de fondu en cascade — 3 délais */
   animation: oracleCardFade .9s cubic-bezier(.2,.7,.2,1) both;
+}
+/* Cartes Oracle : masquer les contrôles interactifs (toggle Journal, bookmark)
+   et le footer (prix/date) pour rester compact et focaliser sur l'image + nom. */
+.oracle-triptyque .card-journal-row,
+.oracle-triptyque .card-bookmark-btn,
+.oracle-triptyque .card-footer-row { display: none !important; }
+.oracle-triptyque .card-body {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.oracle-triptyque .card-meta-row {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+.oracle-triptyque .card-name {
+  font-size: clamp(13px, 1.2vw, 15px);
+  line-height: 1.25;
 }
 .oracle-triptyque .card:nth-child(1) { animation-delay: .25s; }
 .oracle-triptyque .card:nth-child(2) { animation-delay: .45s; }
