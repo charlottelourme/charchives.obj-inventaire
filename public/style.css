@@ -620,7 +620,7 @@ body.dark-mode header { background: transparent !important; }
 header > * { position: relative; z-index: 1; }
 header h1 {
   font-family: 'Compagnon', monospace;     /* identité Compagnon Light — wordmark posé */
-  font-size: 18px;
+  font-size: 14px;                          /* plus petit que la nav — modeste */
   font-weight: 300;                        /* Light */
   letter-spacing: 0;
   text-transform: none;                    /* HTML écrit en casse douce : "Charchives . obj" */
