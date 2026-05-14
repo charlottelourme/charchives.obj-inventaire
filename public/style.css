@@ -8827,6 +8827,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
 .trios-inventory-strip {
   display: flex;
   gap: 8px;
+  justify-content: center;              /* vignettes centrées */
   overflow-x: auto;
   padding-bottom: 14px;
   margin-bottom: 28px;
