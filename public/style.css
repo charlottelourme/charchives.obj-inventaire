@@ -10623,12 +10623,13 @@ body[data-view="diorama"] header {
   line-height: 1;
   font-weight: 300;
 }
-/* Boutons d'action sur les slots remplis (remplacer / supprimer) — overlay
-   en haut-droite, fond noir translucide, blanc, visibles seulement au hover. */
-.dio-slot-del,
-.dio-slot-replace {
+/* Bouton de suppression sur les slots remplis — overlay en haut-droite,
+   fond noir translucide, blanc, visible uniquement au hover.
+   Pour remplacer un fond : supprimer (×) puis ré-ajouter via le +. */
+.dio-slot-del {
   position: absolute;
   top: 2px;
+  right: 2px;
   width: 16px;
   height: 16px;
   border: none;
@@ -10645,10 +10646,7 @@ body[data-view="diorama"] header {
   align-items: center;
   justify-content: center;
 }
-.dio-slot-replace { right: 20px; }      /* à gauche du × */
-.dio-slot-del     { right: 2px; }
-.dio-slot:hover .dio-slot-del,
-.dio-slot:hover .dio-slot-replace { opacity: 1; }
+.dio-slot:hover .dio-slot-del { opacity: 1; }
 
 /* Bouton import temporaire — design inversé (contour noir, fond blanc).
    Hauteur alignée sur celle des slots compacts (48px). */
