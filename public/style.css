@@ -317,6 +317,49 @@ body.dark-mode.verbe-active {
   background-image: none !important;
   background-color: transparent !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HALOS LATÉRAUX — Pages Intention
+   Même principe esthétique que les halos cartes (.card::before) :
+   un bandeau coloré rectangulaire HEAVY-BLUR (Soft Block), pas un dégradé
+   dur. Deux bandes verticales à gauche et à droite qui débordent légèrement
+   dans le viewport, puis se diluent vers le centre via le blur.
+   ══════════════════════════════════════════════════════════════════════════ */
+body.verbe-active::before {
+  content: '';
+  position: fixed;
+  inset: -80px;                       /* déborde pour que le blur ne révèle pas de bord */
+  pointer-events: none;
+  z-index: -1;
+  /* Deux bandes colorées (gauche + droite), centre transparent.
+     Le filter: blur(80px) transforme les transitions hard en halo organique. */
+  background: linear-gradient(
+    to right,
+    var(--page-verbe-main, transparent) 0%,
+    var(--page-verbe-main, transparent) 7%,
+    transparent 22%,
+    transparent 78%,
+    var(--page-verbe-main, transparent) 93%,
+    var(--page-verbe-main, transparent) 100%
+  );
+  filter: blur(80px);
+  opacity: 0.85;
+  transition: opacity 0.5s ease;
+}
+/* Dark mode : couleur foncée saturée (textColor) — visible sur zinc-950 */
+body.dark-mode.verbe-active::before {
+  background: linear-gradient(
+    to right,
+    var(--page-verbe-typo, transparent) 0%,
+    var(--page-verbe-typo, transparent) 7%,
+    transparent 22%,
+    transparent 78%,
+    var(--page-verbe-typo, transparent) 93%,
+    var(--page-verbe-typo, transparent) 100%
+  );
+  opacity: 0.75;
+}
+
 /* Transition douce sur tous les textes qui adoptent la teinte */
 body.verbe-active,
 body.verbe-active .card-name,
