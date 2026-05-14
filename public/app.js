@@ -10649,19 +10649,30 @@ function bindEvents() {
     _regenerateTrio();
   });
 
-  // Mode 3 — Sauvegarder composition (localStorage)
-  document.getElementById('triosSaveBtn').addEventListener('click', () => {
-    const filled = _triosManualSlots.filter(Boolean);
-    if (filled.length < 3) { alert('Place 3 objets pour sauvegarder la composition.'); return; }
+  // Sauvegarder composition — universel : mode manuel (slots) OU mode auto (_currentTrio).
+  document.getElementById('triosSaveBtn')?.addEventListener('click', () => {
+    let objects;
+    if (_triosActiveTab === 'manuel') {
+      objects = _triosManualSlots.filter(Boolean);
+    } else if (_currentTrio?.objects) {
+      objects = _currentTrio.objects.filter(Boolean);
+    } else {
+      objects = [];
+    }
+    if (objects.length < 3) {
+      _showTriosToast('Compose un trio de 3 objets avant de sauvegarder.');
+      return;
+    }
     _savedTrios.unshift({
       id: Date.now().toString(36) + Math.random().toString(36).slice(2),
       savedAt: new Date().toISOString(),
-      objectIds: filled.map(o => o.id)
+      objectIds: objects.map(o => o.id)
     });
     _persistSavedTrios();
     const btn = document.getElementById('triosSaveBtn');
-    btn.textContent = '✓ Sauvegardée !';
-    setTimeout(() => { btn.textContent = 'Sauvegarder la composition'; }, 2200);
+    const prev = btn.textContent;
+    btn.textContent = 'Sauvegardé';
+    setTimeout(() => { btn.textContent = prev || 'Sauvegarder'; }, 1800);
     _renderSavedTrios();
   });
 
