@@ -3660,10 +3660,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   margin-top: 16px !important;
 }
 .trios-selection-info {
+  /* Aligné sur .invt-count (Inventaire : "24 objets") */
   font-family: 'Compagnon', monospace;
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--text-3);
 }
 .trios-aleatoire-controls {
