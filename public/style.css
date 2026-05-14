@@ -10936,7 +10936,7 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   width: 100%;
   display: block;
   object-fit: contain;
-  background: var(--tag-bg);
+  background: transparent;           /* PNG détouré flotte sans rectangle gris */
   pointer-events: none;
 }
 .diorama-lib-item .dio-lib-name {
