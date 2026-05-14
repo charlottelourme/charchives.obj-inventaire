@@ -1908,13 +1908,12 @@ function renderInventoryConstellation(items) {
 function renderGrid(items) {
   const el = document.getElementById('gridView');
 
-  // Notes visibles uniquement si aucun filtre actif (vue globale)
-  const notesVisible = !state.categoryFilter
-    && !state.typoFilter
-    && !state.bookmarkFilter;
-  const notes = notesVisible
-    ? state.collections.filter(c => c.type === 'note')
-    : [];
+  // Notes : EXCLUSIVEMENT visibles dans le Journal (state.view === 'derive').
+  // L'Inventaire ne les intercale plus — on garde la mécanique
+  // (`_intercalateNotes(items, false)`) pour ne rien casser ailleurs, mais
+  // on coupe l'opt-in ici.
+  const notesVisible = false;
+  const notes = [];
 
   if (!items.length && !notes.length) {
     el.innerHTML='<div class="empty-state grid-empty">Aucun objet.</div>'; return;
