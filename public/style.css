@@ -11646,10 +11646,10 @@ body.dark-mode .inv-dd-panel::after {
 }
 
 /* ── Toolbar discrète juste au-dessus de la grille ────────────────────── */
-/* Toolbar Inventaire — Charte Triptyque (rôle = pills/labels/données) :
-   Compagnon Roman 400 normal, casse normale (jamais d'uppercase), pas de
-   letter-spacing, pas de fond, pas de bordure. États = couleur seule
-   (text-3 idle → text-2 hover → text actif). */
+/* Toolbar Inventaire — Charte Triptyque (rôle = pills/labels/données).
+   Layout : 23 objets · Plus récent ▾ · Tous ▾ groupés à GAUCHE (sous le logo)
+   — slider à DROITE (aligné sur le dernier élément du header).
+   Padding horizontal = --page-gutter (alignement strict avec le header). */
 .inv-toolbar {
   display: flex;
   align-items: center;
@@ -11661,20 +11661,20 @@ body.dark-mode .inv-dd-panel::after {
   background: transparent;
   font-family: 'Compagnon', monospace;
   font-style: normal;
-  font-size: 12px;                   /* Charte select-minimal */
-  font-weight: 400;                  /* Roman */
-  letter-spacing: 0;                 /* Charte : pas de letter-spacing */
-  text-transform: none;              /* Charte : jamais d'uppercase */
-  color: var(--text-3);              /* idle */
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-3);
 }
-.invt-count { white-space: nowrap; flex-shrink: 0; }
-.invt-mid {
-  display: flex;
+/* Bloc gauche : compteur + selects, groupés serré sous le logo */
+.invt-left {
+  display: inline-flex;
   align-items: baseline;
-  gap: 1.6rem;
-  flex: 1;
-  justify-content: center;
+  gap: 1.4rem;
+  flex-shrink: 0;
 }
+.invt-count { white-space: nowrap; flex-shrink: 0; color: var(--text-3); }
 
 /* SELECTS NATIFS « select-minimal » — Charte Triptyque :
    triangle SVG inline 6×4px collé, pas de cadre, pas de fond. */
