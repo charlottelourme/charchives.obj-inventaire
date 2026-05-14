@@ -5536,6 +5536,10 @@ function _generateAleatoireTrio(prevObjects, locked) {
 let _oracleQuery   = '';     // dernière saisie validée
 let _oracleResults = [];     // 3 objets sortis par l'oracle
 let _oracleAnswered = false; // une fois validé, le champ se décale vers le haut
+// Sub-navigation : deux modes de l'Oracle (sélecteur top-right sous l'onglet)
+//   'tirage'        → input + triptyque (mode principal)
+//   'reminiscence'  → galerie des lectures archivées
+let _oracleMode = 'tirage';
 // Archivage des lectures : tri-état pour la lecture courante.
 //   null  → question "Archiver ?" affichée
 //   true  → l'utilisatrice a dit Oui → "✓ Archivée"
