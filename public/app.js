@@ -232,8 +232,11 @@ const state = {
   gravityMode: false,   // true quand un verbe est actif → canvas orbital
   // Diorama — canvas interactif (collage façon "Les Sims")
   // mode : 'nouvelle' (scène + bibliothèques) | 'compositions' (galerie sauvegardes)
-  // savedCompositions : array de { id, name, items, backdropSlotId, backdropCredit, savedAt }
-  diorama: { backdrop: '', items: [], nextZ: 1, mode: 'nouvelle', savedCompositions: [] },
+  // byBackdrop : { [slotId]: { items, nextZ } } — chaque fond a sa propre
+  //   composition. `state.diorama.items` et `.nextZ` sont des GETTERS dynamiques
+  //   bindés par _dioBindStateGetters() : ils pointent vers byBackdrop[backdropSlotId].
+  // savedCompositions : { id, name, items, backdropSlotId, backdropCredit, savedAt }[]
+  diorama: { backdrop: '', byBackdrop: {}, mode: 'nouvelle', savedCompositions: [] },
 };
 
 // ══ THÉSAURUS SÉMANTIQUE — dictionnaire de synonymes / alias ════════════════
