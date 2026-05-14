@@ -5832,15 +5832,25 @@ function _renderTriosCards(objects) {
       card.addEventListener('click', e => { if (!e.target.closest('.trios-slot-remove')) openDetail(card.dataset.id); });
     });
   } else {
-    // Modes Hasard / Règles / Aléatoire — cartes wrappées avec verrou pour Re-piocher sélectif
+    // Modes Hasard / Règles / Aléatoire — verrou injecté DANS .card-thumb-area
+    // (l'image est décalée à droite via width: 85% + margin-left: auto sur .card-thumb-area,
+    //  donc positionner le bouton dans le wrap le placerait à gauche de l'image visible).
     grid.innerHTML = objects.map((c, i) => {
       const isLocked = !!_triosLockedSlots[i];
-      const lockTitle = isLocked ? 'Libérer cet objet' : 'Fixer cet objet';
       return `<div class="trios-slot-wrap auto${isLocked ? ' locked' : ''}" data-slot="${i}">
         ${cardHTML(c)}
-        <button class="trios-slot-lock" data-slot="${i}" title="${lockTitle}" aria-label="${lockTitle}" aria-pressed="${isLocked}" onclick="event.stopPropagation();">${_lockSvg(isLocked)}</button>
       </div>`;
     }).join('');
+    grid.querySelectorAll('.trios-slot-wrap.auto').forEach(wrap => {
+      const i = +wrap.dataset.slot;
+      const isLocked = !!_triosLockedSlots[i];
+      const lockTitle = isLocked ? 'Libérer cet objet' : 'Fixer cet objet';
+      const thumbArea = wrap.querySelector('.card-thumb-area');
+      if (!thumbArea) return;
+      thumbArea.insertAdjacentHTML('afterbegin',
+        `<button class="trios-slot-lock" data-slot="${i}" title="${lockTitle}" aria-label="${lockTitle}" aria-pressed="${isLocked}" onclick="event.stopPropagation();">${_lockSvg(isLocked)}</button>`
+      );
+    });
     grid.querySelectorAll('.trios-slot-wrap.auto .card').forEach(card => {
       card.addEventListener('click', e => {
         if (e.target.closest('.trios-slot-lock')) return;
