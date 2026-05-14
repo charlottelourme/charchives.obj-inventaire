@@ -741,17 +741,10 @@ header.global-header {
 .global-header .nav-principale .nav-link { position: relative; z-index: 0; }
 .global-header .nav-principale .nav-link:hover { color: #2A2A2E !important; }
 .global-header .nav-principale .nav-link.active { color: #2A2A2E !important; }
-.global-header .nav-principale .nav-link.active::before {
-  content: '';
-  position: absolute;
-  inset: -50%;
-  background: radial-gradient(ellipse at center,
-              rgba(42, 42, 46, 0.14) 0%,
-              rgba(42, 42, 46, 0.08) 35%,
-              transparent 70%);
-  z-index: -1;
-  pointer-events: none;
+.global-header .nav-principale .nav-link.active {
+  text-shadow: 0 0 16px rgba(42, 42, 46, 0.28);
 }
+.global-header .nav-principale .nav-link.active::before { content: none; }
 
 /* nav-experimentale alignée sur nav-principale : même typo Compagnon Bold,
    même taille 1.6rem, même casse (texte HTML respecté, plus de lowercase).
