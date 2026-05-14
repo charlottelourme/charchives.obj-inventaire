@@ -10804,66 +10804,61 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
 }
 
 /* ── Preview agrandie de la vignette (clic sur lib item) ───────────────
-   Overlay fixed plein écran, fond translucide ; card centrée qui affiche
-   l'image à 6× la taille de la vignette source. Click ailleurs / Esc / ×
-   → ferme. Brutalisme : pas d'arrondi, bordure noire, ombre marquée. */
+   Overlay fixed plein écran, fond translucide. PAS de card derrière l'image :
+   l'objet détouré flotte directement sur le voile noir. L'image est draggable
+   vers la scène (le drag masque automatiquement l'overlay). Click ailleurs /
+   Escape / × → ferme. */
 .dio-lib-preview-overlay {
   position: fixed;
   inset: 0;
   z-index: 9000;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 16px;
   padding: 40px 24px;
   cursor: zoom-out;
   animation: dioPreviewIn .12s ease-out;
 }
 @keyframes dioPreviewIn { from { opacity: 0; } to { opacity: 1; } }
-.dio-lib-preview-card {
-  position: relative;
-  background: var(--bg);
-  border: 1px solid #1A1A1A;
-  padding: 20px;
-  max-width: min(var(--dio-preview-w, 600px), calc(100vw - 80px));
-  max-height: calc(100vh - 80px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  cursor: default;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-}
-.dio-lib-preview-card img {
+.dio-lib-preview-img {
   display: block;
   width: var(--dio-preview-w, 600px);
-  max-width: 100%;
+  max-width: calc(100vw - 80px);
   max-height: calc(100vh - 180px);
   height: auto;
   object-fit: contain;
   user-select: none;
+  cursor: grab;             /* signifie "draggable" — peut être déposé sur la scène */
+  background: transparent;  /* l'image détourée flotte sans rectangle blanc */
+  -webkit-user-drag: element;
 }
+.dio-lib-preview-img:active { cursor: grabbing; }
 .dio-lib-preview-name {
   font-family: 'Compagnon', monospace;
   font-weight: 400;
   font-style: normal;
   font-size: 13px;
-  color: var(--text);
+  color: #fff;              /* sur fond noir translucide → texte blanc */
   text-align: center;
   max-width: 100%;
   word-break: break-word;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4);
+  pointer-events: none;     /* le label ne capture pas les clics → click traverse vers overlay */
 }
 .dio-lib-preview-close {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 28px;
-  height: 28px;
-  border: 1px solid #1A1A1A;
-  background: var(--bg);
-  color: #1A1A1A;
+  position: fixed;          /* coin écran, pas relatif à une card */
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #fff;
+  background: rgba(0,0,0,.4);
+  color: #fff;
   font-family: 'Compagnon', monospace;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
   padding: 0;
@@ -10871,14 +10866,12 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   align-items: center;
   justify-content: center;
   transition: background .12s, color .12s;
+  z-index: 9001;
 }
 .dio-lib-preview-close:hover {
-  background: #1A1A1A;
-  color: var(--bg);
+  background: #fff;
+  color: #1A1A1A;
 }
-body.dark-mode .dio-lib-preview-card { border-color: #fff; }
-body.dark-mode .dio-lib-preview-close { border-color: #fff; color: #fff; }
-body.dark-mode .dio-lib-preview-close:hover { background: #fff; color: #1A1A1A; }
 
 .diorama-sidebar-list {
   flex: 1;
