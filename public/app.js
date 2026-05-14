@@ -4158,15 +4158,17 @@ function _dioRenderGallery() {
 function _dioRestoreComposition(id) {
   const save = (state.diorama.savedCompositions || []).find(s => s.id === id);
   if (!save) return;
-  state.diorama.items = JSON.parse(JSON.stringify(save.items));
+  // IMPORTANT : on change le backdropSlotId AVANT d'assigner items/nextZ,
+  // car ces deux sont des GETTERS qui pointent vers byBackdrop[backdropSlotId].
+  // Sans ça, les items iraient dans l'ancien slot.
   state.diorama.backdropSlotId = save.backdropSlotId || null;
   state.diorama.backdropCredit = save.backdropCredit || '';
+  state.diorama.items = JSON.parse(JSON.stringify(save.items));
   state.diorama.nextZ = save.nextZ || 1;
   state.diorama.mode = 'nouvelle'; // bascule vers la scène
   _dioSave();
   // Force le re-rendu de la décor bar (pour re-sélectionner le bon slot)
   const decBar = document.getElementById('dioDecorBar');
-  const backdrop = document.getElementById('dioBackdrop');
   if (decBar) decBar.innerHTML = ''; // forcera _dioRenderDecorBar dans renderDiorama
   renderDiorama();
   _dioToast(`Composition "${save.name}" restaurée`);
