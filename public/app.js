@@ -10085,6 +10085,9 @@ function bindEvents() {
       const desc = document.getElementById('triosRuleDesc');
       if (desc) desc.textContent = '';
       _currentTrio = trio;
+      // Marque la pill active et remplace son texte par la valeur sélectionnée (ou label par défaut).
+      _resetTriosRulePillLabels();
+      _updateTriosRulePillLabel(rule, value);
       document.querySelectorAll('.trios-rule-pill').forEach(p =>
         p.classList.toggle('active', p.dataset.rule === rule));
       _setTriosLinkBar(trio);
