@@ -254,12 +254,12 @@ body.dark-mode::after { mix-blend-mode: overlay; opacity: 0.28; }
   .card .card-grain {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='cmob'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.2' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23cmob)'/%3E%3C/svg%3E") !important;
   }
-  body::after            { opacity: 0.06; background-size: 32px 32px; }
-  body.dark-mode::after  { opacity: 0.04; }
-  #bgLayers .bg-grain    { opacity: 0.12; background-size: 32px 32px; }
-  body.dark-mode #bgLayers .bg-grain { opacity: 0.06; }
-  .card .card-grain      { opacity: 0.08; background-size: 32px 32px; }
-  body.dark-mode .card .card-grain { opacity: 0.04; }
+  body::after            { opacity: 0.10; background-size: 32px 32px; }
+  body.dark-mode::after  { opacity: 0.06; }
+  #bgLayers .bg-grain    { opacity: 0.18; background-size: 32px 32px; }
+  body.dark-mode #bgLayers .bg-grain { opacity: 0.10; }
+  .card .card-grain      { opacity: 0.13; background-size: 32px 32px; }
+  body.dark-mode .card .card-grain { opacity: 0.07; }
 }
 
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
