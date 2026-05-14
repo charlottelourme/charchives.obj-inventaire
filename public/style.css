@@ -332,32 +332,35 @@ body.verbe-active::before {
   pointer-events: none;
   z-index: -1;
   /* Deux bandes colorées (gauche + droite), centre transparent.
+     Light mode : version CLAIRE pastel du duotone (--page-verbe-light)
+                  — bandes douces sur fond crème, jamais agressif.
+     Dark mode  : version FONCÉE saturée (--page-verbe-dark) — voir override en dessous.
      Le filter: blur(80px) transforme les transitions hard en halo organique. */
   background: linear-gradient(
     to right,
-    var(--page-verbe-main, transparent) 0%,
-    var(--page-verbe-main, transparent) 7%,
+    var(--page-verbe-light, transparent) 0%,
+    var(--page-verbe-light, transparent) 7%,
     transparent 22%,
     transparent 78%,
-    var(--page-verbe-main, transparent) 93%,
-    var(--page-verbe-main, transparent) 100%
+    var(--page-verbe-light, transparent) 93%,
+    var(--page-verbe-light, transparent) 100%
   );
   filter: blur(80px);
   opacity: 0.85;
   transition: opacity 0.5s ease;
 }
-/* Dark mode : couleur foncée saturée (textColor) — visible sur zinc-950 */
+/* Dark mode : couleur foncée saturée — visible sur zinc-950 */
 body.dark-mode.verbe-active::before {
   background: linear-gradient(
     to right,
-    var(--page-verbe-typo, transparent) 0%,
-    var(--page-verbe-typo, transparent) 7%,
+    var(--page-verbe-dark, transparent) 0%,
+    var(--page-verbe-dark, transparent) 7%,
     transparent 22%,
     transparent 78%,
-    var(--page-verbe-typo, transparent) 93%,
-    var(--page-verbe-typo, transparent) 100%
+    var(--page-verbe-dark, transparent) 93%,
+    var(--page-verbe-dark, transparent) 100%
   );
-  opacity: 0.75;
+  opacity: 0.65;
 }
 
 /* Transition douce sur tous les textes qui adoptent la teinte */
