@@ -8809,17 +8809,17 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
   font-family: 'Compagnon', monospace;
   font-weight: 400;                     /* Compagnon-Roman */
   font-style: normal;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: .02em;
-  padding: 10px 22px;
-  background: var(--text);
-  color: var(--bg);
+  padding: 10px 14px;
+  background: transparent;              /* bloc noir supprimé */
+  color: var(--text);
   border: none;
   cursor: pointer;
-  transition: opacity .2s;
+  transition: color .2s;
   white-space: nowrap;
 }
-.trios-save-btn:hover { opacity: .75; }
+.trios-save-btn:hover { color: var(--text-2); }
 .trios-inventory-strip {
   display: flex;
   gap: 8px;
