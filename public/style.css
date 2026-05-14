@@ -10954,7 +10954,7 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   flex: 1;
   overflow: hidden;
   position: relative;
-  background: #2A2A2E;
+  background: transparent;            /* plus de gris foncé en letterbox */
   touch-action: none;
   cursor: grab;
 }
