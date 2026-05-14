@@ -5592,7 +5592,8 @@ function _declineOracleArchive() {
   renderOracle();
 }
 
-// Restitue une lecture archivée : remplit l'input, repose les 3 cartes.
+// Restitue une lecture archivée : bascule en mode "nouveau", remplit l'input,
+// repose les 3 cartes du triptyque. Synchronise les onglets du sub-nav.
 function _restoreOracleReading(entryId) {
   const entry = _oracleArchive.find(e => e.id === entryId);
   if (!entry) return;
@@ -5602,6 +5603,7 @@ function _restoreOracleReading(entryId) {
     .filter(Boolean);
   _oracleAnswered = true;
   _oracleCurrentArchived = true;  // déjà dans l'archive
+  _oracleMode = 'nouveau';        // on bascule vers la sous-section du tirage
   renderOracle();
   // Remonte en haut pour voir le triptyque restitué
   window.scrollTo({ top: 0, behavior: 'smooth' });
