@@ -3373,6 +3373,28 @@ function renderJournal(filtered) {
     });
   });
 
+  // Bouton "premier plan" : passe l'item au-dessus de tous les autres (z-index max + 1)
+  grid.querySelectorAll('.journal-size-picker .jsp-front').forEach(btn => {
+    btn.addEventListener('mousedown', e => e.stopPropagation());
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = btn.closest('.journal-item');
+      if (!item) return;
+      const id = item.dataset.id;
+      const obj = state.collections.find(c => c.id === id);
+      if (!obj) return;
+      // Cherche le z max parmi tous les items du Journal
+      const allZ = state.collections
+        .filter(x => x.journalCanvas && typeof x.journalCanvas.z === 'number')
+        .map(x => x.journalCanvas.z);
+      const newZ = (allZ.length ? Math.max(...allZ) : 0) + 1;
+      item.style.zIndex = newZ;
+      obj.journalCanvas = { ...(obj.journalCanvas || {}), z: newZ };
+      api.put(`/api/collections/${id}`, { journalCanvas: obj.journalCanvas })
+         .catch(err => console.error('Persist z failed for', id, err));
+    });
+  });
+
   // Bouton "×" sur les photos de contexte → suppression
   grid.querySelectorAll('.journal-remove-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
