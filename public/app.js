@@ -4245,6 +4245,34 @@ function _dioDeselectAll(scene) {
   _dioSelectedItem = null;
 }
 
+// Supprime l'objet sélectionné de la scène (clavier Delete/Backspace).
+function _dioDeleteSelectedItem() {
+  if (!_dioSelectedItem) return false;
+  const dioId = _dioSelectedItem.dataset.dioId;
+  if (!dioId) return false;
+  state.diorama.items = state.diorama.items.filter(i => i.id !== dioId);
+  _dioSelectedItem.remove();
+  _dioSelectedItem = null;
+  _dioSave();
+  return true;
+}
+
+// Bind clavier global (idempotent — un seul listener par session).
+// Delete / Backspace sur Diorama avec item sélectionné → suppression.
+if (!window._dioKeyboardBound) {
+  window._dioKeyboardBound = true;
+  window.addEventListener('keydown', e => {
+    if (state.view !== 'diorama') return;
+    if (!_dioSelectedItem) return;
+    if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+    // Ne pas intercepter si l'utilisateur tape dans un champ texte
+    const tag = (e.target && e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || (e.target && e.target.isContentEditable)) return;
+    e.preventDefault();
+    _dioDeleteSelectedItem();
+  });
+}
+
 function _dioMakeMovable(el, item) {
   let startX, startY, origX, origY;
   el.addEventListener('pointerdown', e => {
