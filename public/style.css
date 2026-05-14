@@ -82,7 +82,7 @@
   --grid-margin-x: 4vw;                 /* règle latérale unique gauche/droite */
   --header-padding-top: 2rem;            /* paddingTop du header — figé */
   --nav-gap-y: 2rem;                     /* espace vertical L1/L2 du header */
-  --bandeau-vide-height: 4rem;           /* bandeau vide sous header (paddingBottom) */
+  --bandeau-vide-height: 0.75rem;        /* respiration minimale — chaque vue place sa propre toolbar directement sous la nav */
   /* Alias rétro-compat : on garde --page-gutter pour ne pas casser les règles
      historiques. Pointe désormais sur la nouvelle gouttière universelle. */
   --page-gutter: var(--grid-margin-x);
