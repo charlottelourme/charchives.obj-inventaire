@@ -681,6 +681,8 @@ async function init(attempt = 0) {
     // Si l'utilisateur ouvre l'Oracle avant la fin du fetch, le fallback
     // (recherche sur mots exacts) prend le relai sans erreur.
     loadThesaurus();
+    // Oracle — charge l'archive des lectures depuis localStorage (synchrone, instant).
+    _loadOracleArchive();
 
   } catch (err) {
     const isRetryable = err.type === 'starting' || err.type === 'network' || err.status === 503 || err.status === 502;
