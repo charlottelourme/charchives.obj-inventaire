@@ -10679,6 +10679,84 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   color: var(--text);
   border-color: var(--text);
 }
+
+/* ── Preview agrandie de la vignette (clic sur lib item) ───────────────
+   Overlay fixed plein écran, fond translucide ; card centrée qui affiche
+   l'image à 6× la taille de la vignette source. Click ailleurs / Esc / ×
+   → ferme. Brutalisme : pas d'arrondi, bordure noire, ombre marquée. */
+.dio-lib-preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  cursor: zoom-out;
+  animation: dioPreviewIn .12s ease-out;
+}
+@keyframes dioPreviewIn { from { opacity: 0; } to { opacity: 1; } }
+.dio-lib-preview-card {
+  position: relative;
+  background: var(--bg);
+  border: 1px solid #1A1A1A;
+  padding: 20px;
+  max-width: min(var(--dio-preview-w, 600px), calc(100vw - 80px));
+  max-height: calc(100vh - 80px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.dio-lib-preview-card img {
+  display: block;
+  width: var(--dio-preview-w, 600px);
+  max-width: 100%;
+  max-height: calc(100vh - 180px);
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+}
+.dio-lib-preview-name {
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 13px;
+  color: var(--text);
+  text-align: center;
+  max-width: 100%;
+  word-break: break-word;
+}
+.dio-lib-preview-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #1A1A1A;
+  background: var(--bg);
+  color: #1A1A1A;
+  font-family: 'Compagnon', monospace;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .12s, color .12s;
+}
+.dio-lib-preview-close:hover {
+  background: #1A1A1A;
+  color: var(--bg);
+}
+body.dark-mode .dio-lib-preview-card { border-color: #fff; }
+body.dark-mode .dio-lib-preview-close { border-color: #fff; color: #fff; }
+body.dark-mode .dio-lib-preview-close:hover { background: #fff; color: #1A1A1A; }
+
 .diorama-sidebar-list {
   flex: 1;
   overflow-y: auto;
