@@ -641,8 +641,8 @@ header.global-header {
 .global-header > .header-ligne-1 { align-items: center !important; }
 .global-header > .header-ligne-2 {
   align-items: baseline !important;
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 1.5rem !important;
+  border-bottom: none !important;       /* plus de filet — bandeau vide seul ancre la séparation */
+  padding-bottom: 0 !important;
 }
 
 /* Bloc outils (recherche + actions) reste à droite de L1 */
