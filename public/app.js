@@ -1474,6 +1474,8 @@ function setView(v, _silent = false) {
   if (typeof updateHeaderHeightVar === 'function') {
     requestAnimationFrame(updateHeaderHeightVar);
   }
+  // Coin droit du header (mobile) : nom de la page courante
+  if (typeof updatePageIndicator === 'function') updatePageIndicator();
 }
 
 // ── La Dérive : sub-mode Nuée / Constellation ──────────────────────────────
