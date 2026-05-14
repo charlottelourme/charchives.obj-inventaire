@@ -4147,11 +4147,18 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
   }
 }
 
-// Applique une URL comme fond du Diorama + persiste la sélection (pas le fichier)
+// Applique une URL comme fond du Diorama + persiste la sélection (pas le fichier).
+// On retire la classe `dio-ready` avant le changement de src : le backdrop
+// passe en opacity 0 le temps que la nouvelle image charge et que `applyCover`
+// soit appelé (déclenché par 'load'). Empêche le flash où la nouvelle image
+// apparaît brièvement à sa taille naturelle avant que le cover ne s'applique.
 function _dioApplyBackdrop(url, credit, backdropEl) {
   state.diorama.backdrop = url;
   state.diorama.backdropCredit = credit || '';
-  if (backdropEl) backdropEl.src = url;
+  if (backdropEl) {
+    backdropEl.classList.remove('dio-ready');  // hide pendant load
+    backdropEl.src = url;                       // déclenche 'load' → applyCover → re-add dio-ready
+  }
   _dioUpdateCredits(credit || '');
   _dioSave();
 }
