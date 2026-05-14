@@ -12793,43 +12793,34 @@ body.dark-mode .oracle-archive-status { color: var(--text-3, #A1A1AA); }
    Clic sur la ligne (hors ×) → restitue le triptyque.
    ══════════════════════════════════════════════════════════════════════════ */
 .oracle-gallery {
+  /* Désormais un MODE plein écran (pas une section sous le stage).
+     Plus de bordure-top de séparation, plus de header (label = sub-nav). */
   width: 100%;
   max-width: 1080px;
   margin: 0 auto;
-  padding: clamp(40px, 6vh, 72px) clamp(16px, 4vw, 48px) 80px;
-  border-top: 1px solid var(--border-light, #E8E4DE);
-}
-body.dark-mode .oracle-gallery { border-top-color: var(--border, #27272A); }
-
-.oracle-gallery-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: clamp(20px, 3vh, 32px);
-  gap: 16px;
-}
-.oracle-gallery-title {
-  font-family: 'Compagnon', monospace;
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
-  color: var(--text, #1A1A1A);
-}
-body.dark-mode .oracle-gallery-title { color: var(--text, #F4F4F5); }
-.oracle-gallery-count {
-  font-family: 'Compagnon', monospace;
-  font-weight: 400;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-3, #A1A1AA);
+  padding: clamp(60px, 9vh, 110px) clamp(16px, 4vw, 48px) 80px;
+  /* padding-top généreux : laisse respirer le sub-nav top-right */
 }
 
 .oracle-gallery-list {
   display: flex;
   flex-direction: column;
   gap: 0;
+  animation: oracleArchiveFade .5s ease both;
 }
+
+/* Empty state pour Réminiscences vides */
+.oracle-gallery-empty {
+  font-family: 'Compagnon', monospace;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  color: var(--text-3, #A1A1AA);
+  text-align: center;
+  padding: clamp(40px, 8vh, 80px) 16px;
+  opacity: 0.8;
+}
+body.dark-mode .oracle-gallery-empty { color: var(--text-3, #A1A1AA); }
 
 /* Une lecture archivée — une ligne cliquable */
 .orc-arch-item {
