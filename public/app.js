@@ -11028,6 +11028,17 @@ function _renderFiltersSheet() {
 
   fsBody.innerHTML = `
     <div class="fs-section">
+      <span class="fs-section-title">Trier par</span>
+      <select class="fs-select" id="fsSortSelect">
+        <option value="chrono-desc" ${currentSort==='chrono-desc'?'selected':''}>Plus récent</option>
+        <option value="chrono" ${currentSort==='chrono'?'selected':''}>Plus ancien</option>
+        <option value="alpha" ${currentSort==='alpha'?'selected':''}>Alphabétique</option>
+        <option value="category" ${currentSort==='category'?'selected':''}>Par intention</option>
+        <option value="price-asc" ${currentSort==='price-asc'?'selected':''}>Prix croissant</option>
+        <option value="price-desc" ${currentSort==='price-desc'?'selected':''}>Prix décroissant</option>
+      </select>
+    </div>
+    <div class="fs-section">
       <span class="fs-section-title">Intention</span>
       <div class="fs-pills" id="fsIntentionPills">
         <button class="fs-pill ${!currentCat ? 'active' : ''}" data-cat="">Toutes</button>
@@ -11043,17 +11054,6 @@ function _renderFiltersSheet() {
         <button class="fs-pill ${currentStatus==='Pas à vendre'?'active':''}" data-status="Pas à vendre">Pas à vendre</button>
         <button class="fs-pill ${currentStatus==='Brouillon'?'active':''}" data-status="Brouillon">Brouillon</button>
       </div>
-    </div>
-    <div class="fs-section">
-      <span class="fs-section-title">Trier par</span>
-      <select class="fs-select" id="fsSortSelect">
-        <option value="chrono-desc" ${currentSort==='chrono-desc'?'selected':''}>Plus récent</option>
-        <option value="chrono" ${currentSort==='chrono'?'selected':''}>Plus ancien</option>
-        <option value="alpha" ${currentSort==='alpha'?'selected':''}>Alphabétique</option>
-        <option value="category" ${currentSort==='category'?'selected':''}>Par intention</option>
-        <option value="price-asc" ${currentSort==='price-asc'?'selected':''}>Prix croissant</option>
-        <option value="price-desc" ${currentSort==='price-desc'?'selected':''}>Prix décroissant</option>
-      </select>
     </div>
   `;
 
