@@ -5214,6 +5214,30 @@ function _closeTriosRuleDropdowns() {
   document.querySelectorAll('.trios-rule-dropdown').forEach(d => { d.hidden = true; });
 }
 
+// Labels par défaut affichés sur chaque pill Affinités (référence pour restauration).
+const TRIOS_DEFAULT_RULE_LABELS = {
+  monochrome: 'Couleur',
+  epoque: 'Même Époque',
+  matiere: 'Même Matière'
+};
+
+// Affiche la valeur sélectionnée (ex: "Années 70") sur la pill ; vide → restaure le label par défaut.
+function _updateTriosRulePillLabel(rule, value) {
+  const pill = document.querySelector(`.trios-rule-pill[data-rule="${rule}"]`);
+  if (!pill) return;
+  const txt = pill.querySelector('.trios-rule-pill-text');
+  if (!txt) return;
+  txt.textContent = value || TRIOS_DEFAULT_RULE_LABELS[rule] || txt.textContent;
+}
+
+// Restaure le texte par défaut des 3 pills (changement d'onglet, reset).
+function _resetTriosRulePillLabels() {
+  Object.entries(TRIOS_DEFAULT_RULE_LABELS).forEach(([rule, label]) => {
+    const txt = document.querySelector(`.trios-rule-pill[data-rule="${rule}"] .trios-rule-pill-text`);
+    if (txt) txt.textContent = label;
+  });
+}
+
 // Reset des verrous (slots) — appelé sur changement d'onglet, Composer, Tirer, changement de pill.
 function _resetTriosLocks() {
   _triosLockedSlots = [false, false, false];
