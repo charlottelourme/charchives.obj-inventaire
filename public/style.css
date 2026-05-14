@@ -3963,6 +3963,89 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   position: relative;
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   CONSTELLATION FULL-SCREEN — Immersion HUD
+   ----------------------------------------------------------------------------
+   Active dès que body.con-fullscreen est posée (par render(), uniquement
+   quand state.view==='grid' && state.inventoryMode==='constellation').
+   • #conCanvas : détaché du flux, fixed 100vw × 100vh, en arrière-plan (z:0).
+   • .global-header / .global-footer / .inv-toolbar / .inv-pillars /
+     .inv-views-row / .inv-con-toolbar : HUD au-dessus (z:10+), conteneurs
+     transparents aux clics (pointer-events:none) — seuls les enfants
+     interactifs restent cliquables. Les objets peuvent donc passer derrière
+     les textes de navigation sans bloquer les actions UI.
+   • Le scroll de page est neutralisé : la D3 zoom gère pan & zoom intra-canvas.
+   ══════════════════════════════════════════════════════════════════════════ */
+body.con-fullscreen {
+  overflow: hidden !important;
+}
+body.con-fullscreen #gridView.inv-constellation-mode {
+  position: static !important;
+  padding: 0 !important;
+}
+body.con-fullscreen #gridView.inv-constellation-mode #conCanvas {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  z-index: 0 !important;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* HUD : conteneurs transparents aux clics, enfants interactifs cliquables.
+   On garde le z-index existant du header (1000) / footer (98) — pas besoin
+   d'override, juste s'assurer qu'ils sont au-dessus du canvas (z:0). */
+body.con-fullscreen .global-header,
+body.con-fullscreen .global-footer,
+body.con-fullscreen .inv-toolbar,
+body.con-fullscreen .inv-pillars,
+body.con-fullscreen .inv-views-row,
+body.con-fullscreen #gridView.inv-constellation-mode .inv-con-toolbar {
+  pointer-events: none;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+/* Le bandeau (toolbar + pillars + views-row) doit flotter au-dessus du canvas */
+body.con-fullscreen .inv-toolbar,
+body.con-fullscreen .inv-pillars,
+body.con-fullscreen .inv-views-row {
+  position: relative;
+  z-index: 10;
+}
+/* L'affinity bar (Intention/Matière/Identité) doit aussi flotter — c'est un
+   contrôle UI essentiel du mode Constellation. */
+body.con-fullscreen #gridView.inv-constellation-mode .inv-con-toolbar {
+  position: relative;
+  z-index: 10;
+  border-bottom: none !important;
+}
+
+/* Les éléments interactifs restent cliquables (override pointer-events:none) */
+body.con-fullscreen .global-header a,
+body.con-fullscreen .global-header button,
+body.con-fullscreen .global-header input,
+body.con-fullscreen .global-header select,
+body.con-fullscreen .global-header label,
+body.con-fullscreen .global-header .header-logo,
+body.con-fullscreen .global-header .view-tab,
+body.con-fullscreen .global-footer a,
+body.con-fullscreen .global-footer button,
+body.con-fullscreen .global-footer .view-tab,
+body.con-fullscreen .global-footer .breadcrumb-item,
+body.con-fullscreen .inv-toolbar select,
+body.con-fullscreen .inv-toolbar input,
+body.con-fullscreen .inv-toolbar button,
+body.con-fullscreen .inv-toolbar .invt-count,
+body.con-fullscreen .inv-pillars button,
+body.con-fullscreen .inv-views-row button,
+body.con-fullscreen #gridView.inv-constellation-mode .inv-con-toolbar button {
+  pointer-events: auto;
+}
+
 /* ══ Toggle "Journal" sur les cartes Inventaire ═══════════════════════════
    Petit switch on/off placé entre l'image et le corps de la carte, aligné à droite.
    - OFF : visible uniquement au survol de la carte
