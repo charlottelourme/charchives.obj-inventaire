@@ -11617,10 +11617,10 @@ body.dark-mode .inv-dd-panel::after {
 }
 
 /* ── Toolbar discrète juste au-dessus de la grille ────────────────────── */
-/* Toolbar : UNE SEULE ligne. Compteur (gauche) — Grille|Constellation
-   + Trier ▾ + Statut ▾ (centre, même bloc) — slider (droite).
-   Typo UNIFIÉE partout (police, taille, weight, letter-spacing) — toute la
-   ligne hérite de .inv-toolbar pour rester cohérente. */
+/* Toolbar Inventaire — Charte Triptyque (rôle = pills/labels/données) :
+   Compagnon Roman 400 normal, casse normale (jamais d'uppercase), pas de
+   letter-spacing, pas de fond, pas de bordure. États = couleur seule
+   (text-3 idle → text-2 hover → text actif). */
 .inv-toolbar {
   display: flex;
   align-items: center;
@@ -11632,18 +11632,13 @@ body.dark-mode .inv-dd-panel::after {
   background: transparent;
   font-family: 'Compagnon', monospace;
   font-style: normal;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: none;
-  color: var(--text-3);
+  font-size: 12px;                   /* Charte select-minimal */
+  font-weight: 400;                  /* Roman */
+  letter-spacing: 0;                 /* Charte : pas de letter-spacing */
+  text-transform: none;              /* Charte : jamais d'uppercase */
+  color: var(--text-3);              /* idle */
 }
-.invt-count {
-  white-space: nowrap;
-  flex-shrink: 0;
-  /* Hérite de la typo du parent — uniforme partout dans la toolbar */
-}
-/* Bloc central qui regroupe Grille/Constellation + Trier ▾ + Statut ▾ */
+.invt-count { white-space: nowrap; flex-shrink: 0; }
 .invt-mid {
   display: flex;
   align-items: baseline;
@@ -11651,46 +11646,42 @@ body.dark-mode .inv-dd-panel::after {
   flex: 1;
   justify-content: center;
 }
-/* Wrapper select + caret ▾ — caret COLLÉ au texte (même principe que .inv-pillar) */
-.invt-select-wrap {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.1rem;
-  position: relative;
-  cursor: pointer;
-}
-.invt-select {
-  font: inherit;                    /* hérite de .inv-toolbar — typo uniforme */
-  color: inherit;
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 0.15rem 0;
+
+/* SELECTS NATIFS « select-minimal » — Charte Triptyque :
+   triangle SVG inline 6×4px collé, pas de cadre, pas de fond. */
+.invt-select.select-minimal,
+.select-minimal {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  border: none;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M0 0l5 6 5-6z' fill='%2352525B'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  background-size: 6px 4px;
+  padding: 6px 14px 6px 4px;         /* place pour la flèche à droite */
+  font: inherit;                      /* hérite de .inv-toolbar */
+  color: var(--text-3);
+  cursor: pointer;
+  outline: none;
   text-transform: none;
+  transition: color .2s;
 }
-/* Caret ▾ collé au texte — même style que .inv-pillar-caret */
-.invt-select-caret {
-  font-family: 'Compagnon', monospace;
-  font-size: 0.7em;
-  color: inherit;
-  pointer-events: none;
-  line-height: 1;
-  margin-left: -0.1rem;             /* léger « kerning » pour vraiment coller */
-  display: inline-block;
+.invt-select.select-minimal:hover { color: var(--text-2); }
+.invt-select.select-minimal:focus { color: var(--text); }
+.invt-select.select-minimal option { color: var(--text); text-transform: none; }
+/* Dark mode : triangle plus clair (Charte) */
+body.dark-mode .invt-select.select-minimal,
+body.dark-mode .select-minimal {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M0 0l5 6 5-6z' fill='%23A1A1AA'/></svg>");
 }
-.invt-select-wrap:hover { color: var(--text); }
-.invt-select-wrap:hover .invt-select,
-.invt-select-wrap:hover .invt-select-caret { color: var(--text); }
-.invt-select option { color: var(--text); }
-/* Toggle vue en TEXTE — typo IDENTIQUE aux selects (font: inherit) */
+
+/* Toggle vue Grille | Constellation — typo IDENTIQUE aux selects (Charte) */
 .inv-toolbar .inventory-view-toggle {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.45rem;
+  gap: 0.4rem;
   background: transparent;
   border: none;
   padding: 0;
@@ -11701,10 +11692,11 @@ body.dark-mode .inv-dd-panel::after {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0.15rem 0;
-  transition: color .15s ease;
+  padding: 0.1rem 0;
+  text-transform: none;
+  transition: color .2s;
 }
-.inv-toolbar .inventory-view-toggle .ivt-btn:hover { color: var(--text); }
+.inv-toolbar .inventory-view-toggle .ivt-btn:hover { color: var(--text-2); }
 .inv-toolbar .inventory-view-toggle .ivt-btn.active { color: var(--text); }
 .inv-toolbar .inventory-view-toggle .ivt-sep {
   color: var(--text-3);
