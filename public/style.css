@@ -10431,13 +10431,20 @@ body.dark-mode .section-header {
 .diorama-decor-bar {
   display: flex;
   gap: 8px;
-  padding: 10px 16px;             /* compact : aligné sur slots 48h */
+  padding: 4px 16px;              /* compact serré : ras du header */
   overflow-x: auto;
   scrollbar-width: none;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   background: var(--bg);
   align-items: stretch;
+}
+
+/* En vue Diorama uniquement : on serre le bas du header pour rapprocher
+   les vignettes du contenu du header. Ne touche pas les autres vues
+   (Inventaire / Journal / Triptyque / Oracle gardent leur respiration). */
+body[data-view="diorama"] header {
+  padding-bottom: 8px;
 }
 .diorama-decor-bar.diorama-slot-grid { gap: 6px; }
 .dio-slot {
