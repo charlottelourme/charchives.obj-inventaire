@@ -1403,7 +1403,7 @@ function setView(v, _silent = false) {
     if (el) el.style.display = k === v ? '' : 'none';
   });
 
-  document.querySelectorAll('.view-tab').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.view-tab, .nav-link').forEach(btn => btn.classList.remove('active'));
   // Une vue peut avoir plusieurs boutons miroirs (header desktop + footer mobile).
   // Tous reçoivent .active simultanément.
   const tabs = {
