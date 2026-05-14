@@ -11369,16 +11369,44 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
 .toolbar.toolbar-strate { display: none !important; }
 
 /* ── Piliers centraux ─────────────────────────────────────────────────── */
+/* Bandeau central : Objets ▾ — Grille — Constellation — Intentions ▾
+   tout sur UNE ligne, centré, baseline commune. */
 .inv-pillars {
   display: flex;
   justify-content: center;
   align-items: baseline;
-  gap: 2.4rem;
-  margin: 0 0 0.4rem;               /* top à 0 → piliers tout en haut */
+  gap: 1.8rem;                       /* gap resserré pour densité visuelle */
+  margin: 0 0 0.4rem;
   position: relative;
   z-index: 50;
   padding: 0 var(--page-gutter, 24px);
 }
+/* Toggle Grille/Constellation INLINE entre les 2 piliers — typo « Piocher »
+   du Triptyque : Compagnon Roman 400 normal 13px, couleur unie var(--text). */
+.inv-pillars-views {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.9rem;                       /* espace propre entre Grille et Constellation, sans séparateur */
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.inv-pillars-views .ivt-btn {
+  font-family: 'Compagnon', monospace;
+  font-style: normal;
+  font-weight: 400;                  /* Roman, comme .trios-repick-btn */
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--text-3);              /* idle */
+  cursor: pointer;
+  text-transform: none;
+  transition: color .2s;
+}
+.inv-pillars-views .ivt-btn:hover { color: var(--text-2); }
+.inv-pillars-views .ivt-btn.active { color: var(--text); }
 /* Charte Triptyque : onglets gros titres = italic 500 24px (20px mobile).
    Casse normale, pas de fond/bordure. États = couleur seule. */
 .inv-pillar {
