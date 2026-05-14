@@ -663,7 +663,7 @@ header.global-header {
   padding-right: var(--grid-margin-x) !important;
   padding-bottom: var(--bandeau-vide-height) !important;
   padding-left: var(--grid-margin-x) !important;
-  min-height: calc(190px + env(safe-area-inset-top));
+  min-height: 0;                     /* hauteur strictement = contenu (pas de min imposé) */
   height: auto;
   display: flex !important;
   flex-direction: column !important;
