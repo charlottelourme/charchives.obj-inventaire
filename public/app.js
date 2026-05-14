@@ -5677,6 +5677,17 @@ function _renderOracleGallery() {
   });
 }
 
+// Bascule entre les deux modes de l'Oracle ('tirage' ↔ 'reminiscence').
+// Met à jour l'état actif du sub-nav et rappelle renderOracle().
+function _setOracleMode(mode) {
+  if (mode !== 'tirage' && mode !== 'reminiscence') return;
+  _oracleMode = mode;
+  document.querySelectorAll('.oracle-subnav-link').forEach(link => {
+    link.classList.toggle('active', link.dataset.oracleMode === mode);
+  });
+  renderOracle();
+}
+
 // Thésaurus sémantique — chargé asynchroniquement depuis /data/thesaurus.json.
 // Format : { "mot-clé": ["synonyme1", "synonyme2", ...] }
 // État : null avant chargement, {} si fichier absent / illisible (fallback safe).
