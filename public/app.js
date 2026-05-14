@@ -3958,6 +3958,14 @@ function renderDiorama() {
       requestAnimationFrame(() => el.classList.add('dragging'));
     });
     el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    // Click sur la vignette → preview 6× (HTML5 : click n'est PAS émis après
+    // un drag réussi, donc pas de conflit avec le drag-and-drop vers la scène).
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const rect = el.getBoundingClientRect();
+      _dioShowLibPreview(c, photoUrl(photo), rect.width);
+    });
     libList.appendChild(el);
   });
 
