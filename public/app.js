@@ -5725,15 +5725,17 @@ function _resetTriosLocks() {
   _triosLockedSlots = [false, false, false];
 }
 
-// SVG cadenas — brutaliste, stroke 1.4 round, traits francs.
+// SVG cadenas — brutaliste, stroke 2 round, traits francs.
+// Dimensionné 10×10 pour matcher le SVG `+` du bouton .card-bookmark-btn,
+// afin que le cadenas (gauche) et le + (droite) se répondent en vis-à-vis.
 function _lockSvg(closed) {
   if (closed) {
-    return `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    return `<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <rect x="6" y="11" width="12" height="9"/>
       <path d="M9 11V7a3 3 0 0 1 6 0v4"/>
     </svg>`;
   }
-  return `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  return `<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <rect x="6" y="11" width="12" height="9"/>
     <path d="M9 11V7a3 3 0 0 1 6 0v2"/>
   </svg>`;
