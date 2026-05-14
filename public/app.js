@@ -3904,29 +3904,40 @@ function _dioRenderSuggestions() {
 
 // ─────────────────────────────────────────────────────────────
 // Preview agrandie (6×) de l'objet de la bibliothèque latérale.
-// Au clic sur une vignette → overlay flottant centré qui affiche l'image en
-// 6× la largeur de la vignette source. Click ailleurs / Escape → ferme.
-// Pas en conflit avec le drag-and-drop : HTML5 garantit que `click` n'est
-// PAS émis après un drag réussi.
+// Au clic sur une vignette → l'image détourée s'affiche au centre de l'écran,
+// flottant sur le fond translucide — PAS de card/rectangle blanc derrière,
+// uniquement le PNG sans fond. L'image est draggable : on peut la glisser
+// directement vers la scène depuis cet état agrandi (l'overlay se masque
+// au début du drag pour laisser voir la scène).
+// Click ailleurs / Escape / drag → ferme.
 function _dioShowLibPreview(col, photoSrc, sourceWidth) {
   _dioHideLibPreview(); // ferme un éventuel preview précédent
   const overlay = document.createElement('div');
   overlay.className = 'dio-lib-preview-overlay';
   overlay.innerHTML = `
-    <div class="dio-lib-preview-card" role="dialog" aria-label="Aperçu agrandi">
-      <button class="dio-lib-preview-close" type="button" aria-label="Fermer">×</button>
-      <img src="${esc(photoSrc)}" alt="${esc(col.name||'')}" draggable="false">
-      <div class="dio-lib-preview-name">${esc(col.name||'')}</div>
-    </div>`;
+    <button class="dio-lib-preview-close" type="button" aria-label="Fermer">×</button>
+    <img class="dio-lib-preview-img" src="${esc(photoSrc)}" alt="${esc(col.name||'')}" draggable="true">
+    <div class="dio-lib-preview-name">${esc(col.name||'')}</div>`;
   // Largeur cible = 6× la vignette source
   overlay.style.setProperty('--dio-preview-w', `${Math.round((sourceWidth || 100) * 6)}px`);
   document.body.appendChild(overlay);
-  // Click sur l'overlay (mais PAS sur la card) → ferme
+  // Click sur l'overlay (mais PAS sur l'image elle-même) → ferme
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay || e.target.classList.contains('dio-lib-preview-close')) {
       _dioHideLibPreview();
     }
   });
+  // Drag de l'image depuis la preview → drop sur la scène crée l'objet.
+  // On masque l'overlay au tick suivant (le browser a déjà capturé le ghost
+  // image pour le drag visuel).
+  const img = overlay.querySelector('.dio-lib-preview-img');
+  if (img) {
+    img.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', col.id);
+      e.dataTransfer.effectAllowed = 'copy';
+      requestAnimationFrame(() => _dioHideLibPreview());
+    });
+  }
   // Esc → ferme
   const escHandler = (e) => {
     if (e.key === 'Escape') {
