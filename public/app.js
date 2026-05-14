@@ -3244,14 +3244,24 @@ function renderJournal(filtered) {
       item.dataset.canvasY = cv.y;
       const itemH = 320;    // approximation pour étendre min-height (note : la hauteur réelle dépend de l'image)
       if (cv.y + itemH > maxY) maxY = cv.y + itemH;
+      // Applique le z-index persisté (premier plan/arrière plan)
+      if (typeof cv.z === 'number') {
+        item.style.zIndex = cv.z;
+      }
     }
 
-    // Picker de taille (4 dots) — visible uniquement en canvas mode (desktop)
+    // Picker de taille (4 dots) + bouton "premier plan" — visible uniquement en canvas mode (desktop)
     const sizePickerHTML = !isMobile
       ? `<div class="journal-size-picker" aria-label="Modifier la taille">
           ${_JOURNAL_SIZE_KEYS.map((s, i) =>
             `<button type="button" class="jsp-dot${s === (c.journalCanvas?.size || 'size-2') ? ' active' : ''}" data-size="${s}" aria-label="Taille ${i + 1} sur 4" title="Taille ${i + 1}/4"></button>`
           ).join('')}
+          <span class="jsp-sep" aria-hidden="true"></span>
+          <button type="button" class="jsp-front" aria-label="Mettre au premier plan" title="Premier plan">
+            <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 12V3M4 7l4-4 4 4"/>
+            </svg>
+          </button>
         </div>`
       : '';
 
