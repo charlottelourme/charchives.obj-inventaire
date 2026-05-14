@@ -12684,7 +12684,7 @@ body.dark-mode .oracle-action:hover { color: var(--text, #F4F4F5); }
   align-items: center;
   justify-content: center;
   gap: 14px;
-  margin-top: clamp(24px, 4vh, 40px);
+  margin-top: 0;          /* Plus de marge : empilé dans .oracle-controls qui a son propre gap */
   animation: oracleArchiveFade .6s ease both;
 }
 @keyframes oracleArchiveFade {
