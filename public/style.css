@@ -9114,6 +9114,7 @@ body.dark-mode .trios-slot-wrap.auto.locked > .card {
 .trios-actions {
   display: flex;
   justify-content: center;
+  gap: 24px;                            /* écart entre Re-piocher et Sauvegarder */
   margin: 0 0 6px;
 }
 .trios-repick-btn {
