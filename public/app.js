@@ -2612,8 +2612,12 @@ function renderConstellation(filtered) {
 function _drawConGraph(canvas, nodes, links) {
   if (!window.d3) { canvas.innerHTML = '<div class="con-empty">D3.js non chargé.</div>'; return; }
 
-  const W = canvas.clientWidth  || 800;
-  const H = canvas.clientHeight || 600;
+  // ── Immersion full-screen : si body.con-fullscreen est actif, on bascule
+  //    sur les dimensions du viewport entier (le canvas est en position:fixed
+  //    100vw/100vh via CSS). Sinon on garde la taille mesurée du conteneur.
+  const _conFullscreen = document.body.classList.contains('con-fullscreen');
+  const W = _conFullscreen ? window.innerWidth  : (canvas.clientWidth  || 800);
+  const H = _conFullscreen ? window.innerHeight : (canvas.clientHeight || 600);
 
   // ── Taille image : moodboard flottant ──
   const IMG  = 72;
