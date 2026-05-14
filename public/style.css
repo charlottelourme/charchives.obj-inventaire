@@ -593,7 +593,7 @@ header {
   display: flex;
   align-items: baseline;             /* unique règle de construction : baseline commune partout */
   justify-content: space-between;
-  gap: 16px;
+  gap: clamp(28px, 3vw, 56px);       /* respiration entre titre / nav / search / actions */
   box-sizing: border-box;
 }
 /* Compensation de la hauteur du header fixed — repose sur --header-h
