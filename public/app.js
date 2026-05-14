@@ -4324,19 +4324,20 @@ function _dioInitZoom(wrap) {
   const scene   = document.getElementById('dioScene');
   const bdrop   = document.getElementById('dioBackdrop');
 
-  // Calcule le zoom "fit-to-screen" (CONTAIN) : l'image entière rentre dans
-  // la viewport, en laissant éventuellement des bandes (letterbox) sur les
-  // côtés ou en haut/bas. C'est le zoom de référence pour le rendu initial.
-  function fitScale() {
+  // Calcule le zoom MINIMUM "cover" : l'image couvre 100% du viewport sur les
+  // deux axes (jamais de bande grise visible). Le user peut zoomer plus mais
+  // pas moins — on ne peut PAS dézoomer au-delà des limites de l'image, on
+  // reste toujours "dans l'image" (cf. brief Charlotte).
+  function coverScale() {
     const vw = wrap.clientWidth  || 800;
     const vh = wrap.clientHeight || 600;
     const iw = bdrop?.naturalWidth  || 1200;
     const ih = bdrop?.naturalHeight || 800;
-    return Math.min(vw / iw, vh / ih);
+    return Math.max(vw / iw, vh / ih);
   }
 
   _dioZoom = d3.zoom()
-    .scaleExtent([0.1, 4])  // borne basse permissive — fit peut être < 0.3 sur grandes images
+    .scaleExtent([0.1, 4])  // borne basse permissive — sera contrainte dynamiquement
     .filter(event => {
       if (event.type === 'wheel') return true;
       if (event.type === 'touchstart') return true;
@@ -4348,29 +4349,21 @@ function _dioInitZoom(wrap) {
     })
     .on('zoom', event => {
       let { x, y, k } = event.transform;
-      // Zoom min = la moitié du fit (laisse une marge de dézoom raisonnable)
-      const fs = fitScale();
-      k = Math.max(k, fs * 0.5);
+      // Plancher de zoom = cover : on ne descend JAMAIS sous le niveau qui
+      // garantit que l'image couvre tout le viewport (pas de bande grise).
+      const cs = coverScale();
+      k = Math.max(k, cs);
 
       const vw = wrap.clientWidth;
       const vh = wrap.clientHeight;
       const iw = (bdrop?.naturalWidth  || 1200) * k;
       const ih = (bdrop?.naturalHeight || 800)  * k;
 
-      // Si l'image (scaled) est plus petite que la viewport sur un axe →
-      // on la CENTRE (pas de pan possible sur cet axe). Sinon, on contraint
-      // pour que l'image reste collée aux bords (l'image ne peut pas sortir
-      // du viewport, mais peut occuper toute la largeur/hauteur si zoomée).
-      if (iw <= vw) {
-        x = (vw - iw) / 2;
-      } else {
-        x = Math.min(0, Math.max(x, vw - iw));
-      }
-      if (ih <= vh) {
-        y = (vh - ih) / 2;
-      } else {
-        y = Math.min(0, Math.max(y, vh - ih));
-      }
+      // Contraintes de pan : l'image reste toujours collée aux bords du
+      // viewport — pas de zone grise visible. En cover (k >= cs) on a
+      // garanti iw >= vw et ih >= vh, donc les bornes sont négatives.
+      x = Math.min(0, Math.max(x, vw - iw));
+      y = Math.min(0, Math.max(y, vh - ih));
 
       scene.style.transform = `translate(${x}px, ${y}px) scale(${k})`;
       // Synchronise le transform D3 réel pour que le prochain événement parte du bon état
@@ -4380,15 +4373,14 @@ function _dioInitZoom(wrap) {
     });
   d3.select(wrap).call(_dioZoom);
 
-  // Centre l'image au chargement initial — applique le scale "fit" (contain).
-  // Le centrage X/Y est fait automatiquement par le handler on('zoom') via la
-  // branche iw<=vw / ih<=vh.
-  function applyFit() {
-    const fs = fitScale();
-    d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.scale(fs));
+  // Au chargement / changement de décor : applique le scale cover initial.
+  // L'image couvre tout le viewport et le pan est contraint dans ses limites.
+  function applyCover() {
+    const cs = coverScale();
+    d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.scale(cs));
   }
-  bdrop?.addEventListener('load', applyFit);
-  if (bdrop?.complete && bdrop.naturalWidth) applyFit();
+  bdrop?.addEventListener('load', applyCover);
+  if (bdrop?.complete && bdrop.naturalWidth) applyCover();
 }
 
 function _initGalleryParallax() {
