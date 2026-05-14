@@ -5899,16 +5899,18 @@ function renderOracle() {
     archiveBlock = `<div class="oracle-archive-status">✓ Lecture archivée</div>`;
   }
 
-  // Triptyque — 3 cartes alignées au centre + question d'archivage + actions
+  // Ordre visuel : actions + archive AU-DESSUS du triptyque (decision-first)
   const cardsHTML = _oracleResults.map(c => cardHTML(c)).join('');
   result.innerHTML = `
-    <div class="oracle-triptyque">${cardsHTML}</div>
-    ${archiveBlock}
-    <div class="oracle-actions">
-      <button class="oracle-action" id="oracleRepick" type="button">Re-piocher</button>
-      <span class="oracle-action-sep">·</span>
-      <button class="oracle-action" id="oracleClear" type="button">Effacer</button>
+    <div class="oracle-controls">
+      <div class="oracle-actions">
+        <button class="oracle-action" id="oracleRepick" type="button">Re-piocher</button>
+        <span class="oracle-action-sep">·</span>
+        <button class="oracle-action" id="oracleClear" type="button">Effacer</button>
+      </div>
+      ${archiveBlock}
     </div>
+    <div class="oracle-triptyque">${cardsHTML}</div>
   `;
 
   // Bind clics sur les cartes (ouverture fiche détail, navigation)
