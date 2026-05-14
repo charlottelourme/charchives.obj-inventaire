@@ -12949,13 +12949,21 @@ body.dark-mode .orc-arch-delete:hover { color: var(--text, #F4F4F5); }
   .oracle-stage { min-height: calc(100vh - 180px); }
   .oracle-input { font-size: clamp(1.2rem, 5.5vw, 1.9rem); }
   .oracle-stage.oracle-answered .oracle-input { font-size: 1.05rem; }
-  /* Galerie mobile : items plus compacts */
-  .oracle-gallery { padding: 32px 16px 60px; }
-  .oracle-gallery-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
+  /* Sub-nav mobile : se replie en ligne horizontale en haut */
+  .oracle-subnav {
+    position: relative;
+    top: auto;
+    right: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    padding: 8px 0 12px;
+    margin-bottom: 4px;
   }
+  .oracle-subnav-link { font-size: 14px; }
+  /* Galerie mobile : items plus compacts */
+  .oracle-gallery { padding: 24px 16px 60px; }
   .orc-arch-item {
     grid-template-columns: auto 1fr;
     gap: 14px;
