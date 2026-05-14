@@ -848,7 +848,7 @@ header.global-header {
 .dp-month.selected,
 .vpt-pill.active,
 .btn-ghost.active {
-  text-shadow: 0 0 14px rgba(42, 42, 46, 0.34);
+  text-shadow: 0 0 14px rgba(42, 42, 46, 0.48);
 }
 /* Plus de ::before — on annule l'ancienne version pour éviter tout résidu. */
 .sfb-pill.active::before,
