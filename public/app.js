@@ -2662,7 +2662,9 @@ function _drawConGraph(canvas, nodes, links) {
   nodeEl.each(function(d) {
     const g   = d3.select(this);
     const bg  = getVerbeBgColor(d.category) || '#9ca3af';
-    const src = d.photos[0] ? photoUrl(d.photos[0]) : null;
+    // Constellation = exclusivement les PNG détourés (sans fond), comme le Diorama.
+    const cutoutPath = _dioPhotoFor(d);
+    const src = cutoutPath ? photoUrl(cutoutPath) : null;
 
     const drawFallbackRect = () => {
       g.append('rect')
