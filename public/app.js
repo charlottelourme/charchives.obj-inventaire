@@ -4119,7 +4119,7 @@ function _dioSaveComposition() {
   _dioToast(`Composition "${finalName}" enregistrée`);
 }
 
-function _dioRenderGallery() {
+async function _dioRenderGallery() {
   const gallery = document.getElementById('dioGallery');
   if (!gallery) return;
   const saves = state.diorama.savedCompositions || [];
@@ -4129,16 +4129,13 @@ function _dioRenderGallery() {
   }
   // Plus récentes en premier
   const sorted = saves.slice().sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
-  gallery.innerHTML = sorted.map(s => `
-    <div class="diorama-gallery-card" data-id="${esc(s.id)}">
-      <div class="diorama-gallery-name">${esc(s.name)}</div>
-      <div class="diorama-gallery-meta">${s.items.length} objet${s.items.length > 1 ? 's' : ''} · ${new Date(s.savedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-      <div class="diorama-gallery-actions">
-        <button class="diorama-gallery-restore" type="button">Restaurer</button>
-        <button class="diorama-gallery-delete" type="button">Supprimer</button>
-      </div>
-    </div>
-  `).join('');
+
+  // Construit les cards en parallèle (récupération async des backdrops IndexedDB).
+  // Affiche un placeholder en attendant que toutes les previews soient prêtes.
+  gallery.innerHTML = `<div class="diorama-gallery-empty">Chargement…</div>`;
+  const cards = await Promise.all(sorted.map(_dioBuildGalleryCard));
+  gallery.innerHTML = '';
+  cards.forEach(card => gallery.appendChild(card));
 
   gallery.querySelectorAll('.diorama-gallery-restore').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -4152,6 +4149,74 @@ function _dioRenderGallery() {
       _dioDeleteComposition(id);
     });
   });
+}
+
+// Construit une card de galerie avec preview visuelle : fond (récupéré depuis
+// IndexedDB) + objets posés (en positionnement absolu, % du backdrop natural
+// pour rester proportionnel à l'image source quel que soit le zoom de la card).
+async function _dioBuildGalleryCard(save) {
+  const card = document.createElement('div');
+  card.className = 'diorama-gallery-card';
+  card.dataset.id = save.id;
+
+  // Récupère le blob du backdrop depuis IndexedDB + ses dimensions naturelles
+  let bdUrl = null, bdW = 1200, bdH = 800;
+  if (save.backdropSlotId) {
+    try {
+      const slot = await _dioSlotGet(save.backdropSlotId);
+      if (slot?.blob) {
+        bdUrl = _dioSlotURL(save.backdropSlotId, slot.blob);
+        // Mesure les dimensions natives via Image preload
+        await new Promise(resolve => {
+          const img = new Image();
+          img.onload = () => {
+            if (img.naturalWidth)  bdW = img.naturalWidth;
+            if (img.naturalHeight) bdH = img.naturalHeight;
+            resolve();
+          };
+          img.onerror = resolve; // fallback dims par défaut
+          img.src = bdUrl;
+        });
+      }
+    } catch (e) { /* ignore — preview sans backdrop */ }
+  }
+
+  // Reproduit chaque item en position absolute, exprimé en % du backdrop.
+  // Comme le backdrop dans la card est à width:100%, les % collent au scaling.
+  const itemsHTML = save.items.map(item => {
+    const col = state.collections.find(c => c.id === item.collectionId);
+    const photo = col ? _dioPhotoFor(col) : null;
+    if (!col || !photo) return '';
+    const widthScene = 120 * item.scale;        // largeur en coords scène
+    return `<img class="dgcp-item" src="${photoUrl(photo)}" alt="" style="
+      left:${(item.x / bdW) * 100}%;
+      top:${(item.y / bdH) * 100}%;
+      width:${(widthScene / bdW) * 100}%;
+      transform:rotate(${item.rotation || 0}deg);
+      z-index:${item.zIndex || 1};
+    ">`;
+  }).join('');
+
+  const date = new Date(save.savedAt).toLocaleDateString('fr-FR', {
+    day: '2-digit', month: 'short', year: 'numeric'
+  });
+
+  card.innerHTML = `
+    <div class="dgcp" style="aspect-ratio: ${bdW} / ${bdH};">
+      ${bdUrl
+        ? `<img class="dgcp-backdrop" src="${bdUrl}" alt="" loading="lazy">`
+        : `<div class="dgcp-empty">Fond manquant</div>`
+      }
+      ${itemsHTML}
+    </div>
+    <div class="diorama-gallery-name">${esc(save.name)}</div>
+    <div class="diorama-gallery-meta">${save.items.length} objet${save.items.length > 1 ? 's' : ''} · ${date}</div>
+    <div class="diorama-gallery-actions">
+      <button class="diorama-gallery-restore" type="button">Restaurer</button>
+      <button class="diorama-gallery-delete" type="button">Supprimer</button>
+    </div>
+  `;
+  return card;
 }
 
 function _dioRestoreComposition(id) {
