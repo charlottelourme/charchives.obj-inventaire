@@ -1,5 +1,5 @@
 // CHARCHIVES — Minimal Service Worker for PWA installability
-const CACHE_NAME = 'charchives-v435';
+const CACHE_NAME = 'charchives-v436';
 const PRECACHE = [
   '/',
   '/style.css',
