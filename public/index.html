@@ -305,9 +305,17 @@
           aria-label="Saisie de l'Oracle">
         <div class="oracle-hint" id="oracleHint">Entrée ↵</div>
       </div>
-      <!-- Résultat : 3 cartes alignées en triptyque + lien Re-piocher / Effacer -->
+      <!-- Résultat : 3 cartes alignées en triptyque + question d'archivage + actions -->
       <div class="oracle-result" id="oracleResult"></div>
     </div>
+    <!-- Galerie des lectures archivées — discret en bas de page, scrollable -->
+    <section class="oracle-gallery" id="oracleGallery" hidden>
+      <header class="oracle-gallery-header">
+        <span class="oracle-gallery-title">Lectures archivées</span>
+        <span class="oracle-gallery-count" id="oracleGalleryCount"></span>
+      </header>
+      <div class="oracle-gallery-list" id="oracleGalleryList"></div>
+    </section>
   </div>
 
   <!-- ── Trios view ── -->
