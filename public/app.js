@@ -2490,7 +2490,8 @@ function _buildConGraph(items, affinityType) {
   // Deep-copy so D3 can mutate positions
   const nodes = items.map(c => ({
     id: c.id, name: c.name || '—', category: c.category || '',
-    photos: c.photos || [], attributes: c.attributes || {}
+    photos: c.photos || [], attributes: c.attributes || {},
+    imageMode: c.imageMode || null
   }));
 
   const links = [];
