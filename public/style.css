@@ -8768,6 +8768,8 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
    ─────────────────────────────────────────────────────────────────────────── */
 .trios-grid .card::before { display: none !important; }
 .trios-grid .card-poem-overlay { display: none !important; }
+/* Le toggle "Ajouter au Journal" est réservé à l'Inventaire — caché dans le Triptyque. */
+.trios-grid .card-journal-toggle { display: none !important; }
 .trios-grid .trios-slot-wrap {
   display: flex;
   flex-direction: column;
