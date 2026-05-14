@@ -1388,6 +1388,14 @@ const VIEW_LABELS = {
   calendar: 'Calendrier', catalogue: 'Catalogue', stats: 'Stats'
 };
 
+// Met à jour l'indicateur de page dans le coin droit du header (mobile).
+// Appelée à chaque setView et au boot.
+function updatePageIndicator() {
+  const el = document.getElementById('currentPageIndicator');
+  if (!el) return;
+  el.textContent = VIEW_LABELS[state.view] || '';
+}
+
 function setView(v, _silent = false) {
   if (v === 'timeline')       v = 'calendar';   // frise fusionnée
   if (v === 'gallery')        { v = 'derive'; state.deriveMode = 'nuee'; }
