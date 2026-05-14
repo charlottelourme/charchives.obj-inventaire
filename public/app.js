@@ -4049,7 +4049,6 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
       if (isActive) cell.classList.add('active');
       cell.innerHTML = `
         <img class="dio-slot-thumb" src="${url}" alt="${id}">
-        <span class="dio-slot-label">SLOT ${i + 1}</span>
         <label class="dio-slot-replace" title="Remplacer ce fond">
           <span aria-hidden="true">↑</span>
           <input type="file" accept="image/*" class="dio-slot-replace-input" hidden>
