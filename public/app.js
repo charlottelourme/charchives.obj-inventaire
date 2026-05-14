@@ -1785,6 +1785,12 @@ function render() {
 
   applyVerbePageTheme();
 
+  // Mode plein écran HUD : actif uniquement dans Inventaire/Constellation.
+  // Active la classe globale qui (1) détache #conCanvas en position:fixed 100vw/vh
+  // (2) transforme header/footer/bandeau en HUD (pointer-events filtrés).
+  const _isConFullscreen = (state.view === 'grid' && state.inventoryMode === 'constellation');
+  document.body.classList.toggle('con-fullscreen', _isConFullscreen);
+
   const filtered = getFiltered();
   state.detailList = filtered;
   const countText = `${filtered.length} objet${filtered.length!==1?'s':''}`;
