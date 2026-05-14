@@ -12958,7 +12958,7 @@ body.dark-mode .reminiscence-delete:hover { color: var(--text, #F4F4F5); }
   .oracle-stage { min-height: calc(100vh - 180px); }
   .oracle-input { font-size: clamp(1.2rem, 5.5vw, 1.9rem); }
   .oracle-stage.oracle-answered .oracle-input { font-size: 1.05rem; }
-  /* Sub-nav mobile : se replie en ligne horizontale en haut */
+  /* Sub-nav mobile : repose en ligne horizontale en haut (toujours aligné droit) */
   .oracle-subnav {
     position: relative;
     top: auto;
@@ -12967,28 +12967,35 @@ body.dark-mode .reminiscence-delete:hover { color: var(--text, #F4F4F5); }
     align-items: center;
     justify-content: flex-end;
     gap: 18px;
-    padding: 8px 0 12px;
-    margin-bottom: 4px;
+    margin-top: 0.5rem;
+    margin-right: 1rem;
+    padding: 4px 0 10px;
   }
-  .oracle-subnav-link { font-size: 14px; }
-  /* Galerie mobile : items plus compacts */
-  .oracle-gallery { padding: 24px 16px 60px; }
-  .orc-arch-item {
-    grid-template-columns: auto 1fr;
-    gap: 14px;
-    padding: 14px 0;
+  .oracle-tab { font-size: 13px; }
+  /* Registre des Réminiscences sur mobile : 2 lignes par item, thumbnails petites */
+  #oracle-reminiscences { padding-top: 32px; padding-bottom: 60px; }
+  .reminiscence-registry { padding: 0 16px; }
+  .reminiscence-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "date     delete"
+      "pensee   pensee"
+      "thumbs   thumbs";
+    gap: 8px 12px;
+    padding: 16px 0;
   }
-  .orc-arch-delete {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: end;
-    align-self: start;
+  .reminiscence-date       { grid-area: date; }
+  .reminiscence-pensee     { grid-area: pensee; font-size: 1.1rem; }
+  .reminiscence-thumbnails { grid-area: thumbs; }
+  .reminiscence-delete     {
+    grid-area: delete;
+    opacity: 0.5;   /* visible par défaut sur mobile (pas de hover possible) */
     width: 28px;
     height: 28px;
     font-size: 20px;
   }
-  .orc-arch-meta { grid-column: 1 / -1; }
-  .orc-arch-thumb { width: 44px; height: 44px; }
-  .orc-arch-query { font-size: 1rem; }
+  .reminiscence-thumb { width: 36px; height: 36px; }
+  /* Sur mobile : thumbnails toujours en couleur (pas de hover possible) */
+  .reminiscence-thumb img { filter: grayscale(0%); }
 }
 
