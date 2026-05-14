@@ -11378,23 +11378,30 @@ body.dark-mode .dio-lib-preview-close:hover { background: #fff; color: #1A1A1A; 
   z-index: 50;
   padding: 0 var(--page-gutter, 24px);
 }
+/* Charte Triptyque : onglets gros titres = italic 500 24px (20px mobile).
+   Casse normale, pas de fond/bordure. États = couleur seule. */
 .inv-pillar {
   background: transparent;
   border: none;
   cursor: pointer;
   font-family: 'Compagnon', monospace;
-  font-style: normal;
-  font-size: clamp(15px, 1.7vw, 20px); /* encore réduit */
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 500;
   line-height: 1;
-  color: var(--text);
+  color: var(--text-3);
   display: inline-flex;
   align-items: baseline;
   gap: 0.2rem;
   padding: 0.15rem 0.3rem;
-  transition: opacity .25s ease;
+  text-transform: none;
+  transition: color .2s ease;
 }
-.inv-pillar:hover { opacity: 0.78; }
-.inv-pillar[aria-expanded="true"] { opacity: 1; }
+.inv-pillar:hover { color: var(--text-2); opacity: 1; }
+.inv-pillar[aria-expanded="true"] { color: var(--text); opacity: 1; }
+@media (max-width: 768px) {
+  .inv-pillar { font-size: 20px; }
+}
 .inv-pillar-text { display: inline-block; }
 .inv-pillar-caret {
   font-family: 'Compagnon', monospace;
