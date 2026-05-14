@@ -9969,6 +9969,7 @@ function bindEvents() {
       // Reset visuel de la section Affinités à chaque changement d'onglet
       document.querySelectorAll('.trios-rule-pill').forEach(p => p.classList.remove('active'));
       _closeTriosRuleDropdowns();
+      _resetTriosRulePillLabels();
       const ruleDesc = document.getElementById('triosRuleDesc');
       if (ruleDesc) ruleDesc.textContent = '';
       if (_triosActiveTab !== 'manuel') {
