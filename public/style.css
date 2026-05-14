@@ -11407,100 +11407,98 @@ body.dark-mode .inv-dd-panel::after {
 }
 
 /* ── Toolbar discrète juste au-dessus de la grille ────────────────────── */
-/* Toolbar 2 lignes alignées sur le bandeau header (même --page-gutter horizontal). */
+/* Toolbar : UNE SEULE ligne. Compteur (gauche) — Grille|Constellation
+   + Trier ▾ + Statut ▾ (centre, même bloc) — slider (droite).
+   Typo UNIFIÉE partout (police, taille, weight, letter-spacing) — toute la
+   ligne hérite de .inv-toolbar pour rester cohérente. */
 .inv-toolbar {
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.4rem var(--page-gutter, 24px) 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem var(--page-gutter, 24px) 0.6rem;
   margin: 0;
   border: none;
   background: transparent;
   font-family: 'Compagnon', monospace;
+  font-style: normal;
   font-size: 11px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: none;
   color: var(--text-3);
 }
-/* Ligne 1 : toggle Grille / Constellation, centré */
-.invt-row-views { display: flex; justify-content: center; align-items: center; }
-/* Ligne 2 : compteur (gauche) — tools (centre) — slider (droite) */
-.invt-row-tools {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+.invt-count {
+  white-space: nowrap;
+  flex-shrink: 0;
+  /* Hérite de la typo du parent — uniforme partout dans la toolbar */
 }
-.invt-count { white-space: nowrap; flex-shrink: 0; }
+/* Bloc central qui regroupe Grille/Constellation + Trier ▾ + Statut ▾ */
 .invt-mid {
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  align-items: baseline;
+  gap: 1.6rem;
   flex: 1;
   justify-content: center;
 }
-/* Wrapper select + caret ▾ pour signaler le déroulant */
+/* Wrapper select + caret ▾ — caret COLLÉ au texte (même principe que .inv-pillar) */
 .invt-select-wrap {
   display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
+  align-items: baseline;
+  gap: 0.1rem;
   position: relative;
+  cursor: pointer;
 }
 .invt-select {
-  font-family: 'Compagnon', monospace;
-  font-size: 11px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--text-3);
+  font: inherit;                    /* hérite de .inv-toolbar — typo uniforme */
+  color: inherit;
   background: transparent;
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 0.25rem 0.2rem;
+  padding: 0.15rem 0;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  text-transform: none;
 }
+/* Caret ▾ collé au texte — même style que .inv-pillar-caret */
 .invt-select-caret {
   font-family: 'Compagnon', monospace;
-  font-size: 9px;
-  color: var(--text-3);
+  font-size: 0.7em;
+  color: inherit;
   pointer-events: none;
   line-height: 1;
+  margin-left: -0.1rem;             /* léger « kerning » pour vraiment coller */
+  display: inline-block;
 }
-.invt-select:hover, .invt-select-wrap:hover .invt-select { color: var(--text-2); }
-.invt-select:hover + .invt-select-caret,
-.invt-select-wrap:hover .invt-select-caret { color: var(--text-2); }
-.invt-select:focus { color: var(--text); }
-.invt-select option { text-transform: none; letter-spacing: 0; color: var(--text); }
-/* Toggle vue en TEXTE (Grille / Constellation au lieu des SVG) */
+.invt-select-wrap:hover { color: var(--text); }
+.invt-select-wrap:hover .invt-select,
+.invt-select-wrap:hover .invt-select-caret { color: var(--text); }
+.invt-select option { color: var(--text); }
+/* Toggle vue en TEXTE — typo IDENTIQUE aux selects (font: inherit) */
 .inv-toolbar .inventory-view-toggle {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.45rem;
   background: transparent;
   border: none;
   padding: 0;
 }
 .inv-toolbar .inventory-view-toggle .ivt-btn {
-  font-family: 'Compagnon', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font: inherit;
+  color: var(--text-3);
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0.2rem 0.4rem;
-  color: var(--text-3);
+  padding: 0.15rem 0;
   transition: color .15s ease;
 }
-.inv-toolbar .inventory-view-toggle .ivt-btn:hover { color: var(--text-2); }
+.inv-toolbar .inventory-view-toggle .ivt-btn:hover { color: var(--text); }
 .inv-toolbar .inventory-view-toggle .ivt-btn.active { color: var(--text); }
 .inv-toolbar .inventory-view-toggle .ivt-sep {
   color: var(--text-3);
   opacity: 0.5;
-  font-size: 11px;
   user-select: none;
 }
 .inv-toolbar .card-size-slider {
