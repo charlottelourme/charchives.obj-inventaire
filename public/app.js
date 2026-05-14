@@ -1695,6 +1695,15 @@ function applyVerbePageTheme() {
       root.style.setProperty('--page-verbe-mid',    lightColor);
       root.style.setProperty('--page-verbe-soft',   lightColor);
       root.style.setProperty('--page-verbe-soft-dk', lightColor);
+      // Duotone normalisé par luminance (idem .card) — robuste quelle que soit
+      // la config bgColor/textColor du verbe (clair-sur-foncé OU foncé-sur-clair).
+      // Utilisé par les halos latéraux body.verbe-active::before.
+      const _lumA = _luminance(lightColor);
+      const _lumB = _luminance(darkColor);
+      const verbeLightSrc = _lumA > _lumB ? lightColor : darkColor;
+      const verbeDarkSrc  = _lumA > _lumB ? darkColor  : lightColor;
+      root.style.setProperty('--page-verbe-light', verbeLightSrc);
+      root.style.setProperty('--page-verbe-dark',  verbeDarkSrc);
 
       document.body.classList.add('verbe-active');
       return;
@@ -1705,7 +1714,8 @@ function applyVerbePageTheme() {
   document.body.classList.remove('verbe-active');
   ['--page-verbe-bg','--page-verbe-text','--page-verbe-main',
    '--page-verbe-strong','--page-verbe-mid',
-   '--page-verbe-soft','--page-verbe-soft-dk','--page-verbe-typo']
+   '--page-verbe-soft','--page-verbe-soft-dk','--page-verbe-typo',
+   '--page-verbe-light','--page-verbe-dark']
     .forEach(k => root.style.removeProperty(k));
 }
 
