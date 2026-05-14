@@ -28,32 +28,44 @@
   <div class="bg-grain"></div>        <!-- Calque 4 : grain papier (SVG inline) -->
 </div>
 
-<header>
-  <!-- ── LIGNE 1 : Logo + Navigation + Search + Actions (layout simple, tout sur une ligne) ── -->
-  <h1 id="siteTitle">Charchives . obj</h1>
-  <div class="search-wrap" id="searchWrap">
-    <div class="search-bar" id="searchBar">
-      <div class="search-active-tags" id="searchActiveTags"></div>
-      <input class="search-input-inner" type="text" id="searchInput" placeholder="Rechercher" autocomplete="off" spellcheck="false">
-    </div>
-    <div class="search-dropdown" id="searchDropdown">
-      <div class="search-dd-results" id="searchKwList"></div>
-      <div class="search-index-footer">
-        <button class="search-index-link" id="searchIndexLink">+ Parcourir les typologies</button>
+<header class="global-header">
+  <!-- ══ LIGNE 1 : Institution (logo gauche) + Utilitaires (droite) ══ -->
+  <div class="header-ligne-1">
+    <h1 id="siteTitle">Charchives . obj</h1>
+    <div class="header-utilitaires">
+      <div class="search-wrap" id="searchWrap">
+        <div class="search-bar" id="searchBar">
+          <div class="search-active-tags" id="searchActiveTags"></div>
+          <input class="search-input-inner" type="text" id="searchInput" placeholder="Rechercher" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="search-dropdown" id="searchDropdown">
+          <div class="search-dd-results" id="searchKwList"></div>
+          <div class="search-index-footer">
+            <button class="search-index-link" id="searchIndexLink">+ Parcourir les typologies</button>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost btn-icon-only" id="settingsBtn" title="Paramètres">⚙</button>
+        <button class="btn btn-ghost btn-icon-only" id="darkModeBtn" title="Mode sombre">◑</button>
+        <button class="btn btn-primary" id="newBtn">+ objet</button>
       </div>
     </div>
   </div>
-  <div class="view-tabs">
-    <button class="view-tab active" id="viewInventaire">Inventaire</button>
-    <button class="view-tab" id="viewDerive">Journal</button>
-    <button class="view-tab" id="viewAtelier">Triptyque</button>
-    <button class="view-tab" id="viewDiorama">Diorama</button>
-    <button class="view-tab" id="viewOracle">Oracle</button>
-  </div>
-  <div class="header-actions">
-    <button class="btn btn-ghost btn-icon-only" id="settingsBtn" title="Paramètres">⚙</button>
-    <button class="btn btn-ghost btn-icon-only" id="darkModeBtn" title="Mode sombre">◑</button>
-    <button class="btn btn-primary" id="newBtn">+ objet</button>
+
+  <!-- ══ LIGNE 2 : Navigation hiérarchisée — principale (gauche) / lentilles expérimentales (droite) ══ -->
+  <div class="header-ligne-2">
+    <nav class="nav-principale view-tabs">
+      <button class="view-tab nav-principale-tab active" id="viewInventaire">Inventaire</button>
+      <button class="view-tab nav-principale-tab" id="viewDerive">Journal</button>
+    </nav>
+    <nav class="nav-lentilles view-tabs">
+      <button class="view-tab nav-lentille-tab" id="viewAtelier">triptyque</button>
+      <span class="nav-lentille-sep" aria-hidden="true">·</span>
+      <button class="view-tab nav-lentille-tab" id="viewDiorama">diorama</button>
+      <span class="nav-lentille-sep" aria-hidden="true">·</span>
+      <button class="view-tab nav-lentille-tab" id="viewOracle">oracle</button>
+    </nav>
   </div>
 </header>
 
