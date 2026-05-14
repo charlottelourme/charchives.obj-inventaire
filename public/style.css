@@ -1016,20 +1016,27 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   body:not([data-view="grid"]) #newBtn { display: none; }
 }
 
-/* ── Layout — centré, gouttière déléguée à la grille (--page-gutter) ── */
-main {
-  padding: 0;
-  max-width: 1600px;
+/* ── Layout — Grille Absolue : tous les conteneurs majeurs partagent
+   --grid-margin-x pour un alignement vertical strict au pixel près. ── */
+main,
+#mainArea,
+#deriveView,
+#triosView,
+#dioramaView {
+  padding-left: var(--grid-margin-x) !important;
+  padding-right: var(--grid-margin-x) !important;
+  width: 100%;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
-  width: 100%;
   box-sizing: border-box;
 }
 #gridWrapper {
   display: block; /* JAMAIS flex — les barres de filtres et la grille doivent s'empiler */
-  padding: 0;
-  max-width: 1600px;
+  padding: 0;                /* hérite l'alignement de main → pas de double-padding */
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .toolbar {
