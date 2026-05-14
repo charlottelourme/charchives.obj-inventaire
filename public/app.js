@@ -9896,11 +9896,46 @@ function bindEvents() {
   document.getElementById('fabBtn')?.addEventListener('click', openNew);
   document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
   document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
-  // Logo "Charchives . obj" → bascule vers Journal (vue Dérive)
+  // Logo "Charchives . obj" :
+  //  - desktop  → bascule vers Journal (vue Dérive)
+  //  - mobile   → toggle le dropdown de navigation (cf. body.mobile-nav-open)
   const _siteTitleEl = document.getElementById('siteTitle');
   if (_siteTitleEl) {
     _siteTitleEl.style.cursor = 'pointer';
-    _siteTitleEl.addEventListener('click', () => setView('derive'));
+    // Inject le backdrop tap-to-close si absent
+    if (!document.querySelector('.mobile-nav-backdrop')) {
+      const _bd = document.createElement('div');
+      _bd.className = 'mobile-nav-backdrop';
+      _bd.addEventListener('click', () => document.body.classList.remove('mobile-nav-open'));
+      document.body.appendChild(_bd);
+    }
+    _siteTitleEl.addEventListener('click', (e) => {
+      const isMobile = window.matchMedia && window.matchMedia('(max-width: 520px)').matches;
+      if (isMobile) {
+        // Toggle le dropdown
+        e.stopPropagation();
+        document.body.classList.toggle('mobile-nav-open');
+      } else {
+        setView('derive');
+      }
+    });
+    // Sur mobile : tap sur un lien du dropdown → ferme le dropdown
+    // (les handlers setView restent ceux déjà câblés plus bas sur chaque #viewXxx)
+    document.querySelectorAll('.global-header .nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (document.body.classList.contains('mobile-nav-open')) {
+          document.body.classList.remove('mobile-nav-open');
+        }
+      });
+    });
+    // Tap n'importe où ailleurs sur la page → ferme aussi le dropdown
+    document.addEventListener('click', (e) => {
+      if (!document.body.classList.contains('mobile-nav-open')) return;
+      if (_siteTitleEl.contains(e.target)) return;
+      const ligne2 = document.querySelector('.global-header > .header-ligne-2');
+      if (ligne2 && ligne2.contains(e.target)) return;
+      document.body.classList.remove('mobile-nav-open');
+    });
   }
 
   // ── Bandeau Inventaire : 2 piliers Feroniapi (Intention / Objet) ─────────
