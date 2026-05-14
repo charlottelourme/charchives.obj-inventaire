@@ -8231,12 +8231,12 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 /* lien narratif */
 .trios-link-bar {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 12px;
   /* Compagnon-Roman partout dans la link-bar (héritage pour tag + amp) */
   font-family: 'Compagnon', monospace;
   font-weight: 400;
   font-style: normal;
-  font-size: 18px;
+  font-size: 16px;
   color: var(--text-2);
   letter-spacing: .01em;
 }
@@ -8248,7 +8248,7 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   letter-spacing: .04em;
   color: var(--text-3);
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 .trios-link-tag {
   color: var(--text);
