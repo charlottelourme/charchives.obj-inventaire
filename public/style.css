@@ -12544,7 +12544,8 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
   border-bottom-color: var(--text-2, #3F3F46);
 }
 .oracle-stage.oracle-answered .oracle-input {
-  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  padding: 8px 8px 6px;
   border-bottom-color: var(--border-light, #E8E4DE);
 }
 
