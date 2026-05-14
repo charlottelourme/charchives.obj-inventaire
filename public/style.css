@@ -4295,8 +4295,12 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   color: rgba(255,255,255,0.65);
   padding: 2px 4px;
   transition: color 0.15s;
+  pointer-events: auto;
 }
 .jsp-front:hover { color: #fff; }
+/* Le SVG ne doit pas intercepter les clics — ils doivent atteindre le <button> */
+.jsp-front svg,
+.jsp-front svg * { pointer-events: none; }
 
 /* Pendant un drag : item allégé pour visualiser le mouvement */
 .journal-item.journal-dragging {
