@@ -5893,13 +5893,25 @@ function renderOracle() {
   const input  = document.getElementById('oracleInput');
   if (!stage || !wrap || !result || !input) return;
 
+  // Sync sub-nav active state (au cas où on a setView('oracle') sans passer par _setOracleMode)
+  document.querySelectorAll('.oracle-subnav-link').forEach(link => {
+    link.classList.toggle('active', link.dataset.oracleMode === _oracleMode);
+  });
+
+  // Bascule visibilité stage / galerie selon le mode
+  if (_oracleMode === 'reminiscence') {
+    stage.style.display = 'none';
+    _renderOracleGallery();
+    return;
+  }
+  stage.style.display = '';
+
   stage.classList.toggle('oracle-answered', _oracleAnswered);
   if (input.value !== _oracleQuery) input.value = _oracleQuery;
 
   if (!_oracleAnswered || !_oracleResults.length) {
     result.innerHTML = '';
-    // La galerie reste accessible même en état initial (scroll vers le bas)
-    _renderOracleGallery();
+    _renderOracleGallery();   // garde la galerie à jour pour quand on bascule
     return;
   }
 
