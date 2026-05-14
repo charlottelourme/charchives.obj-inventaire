@@ -5408,6 +5408,136 @@ function _generateAleatoireTrio(prevObjects, locked) {
 let _oracleQuery   = '';     // dernière saisie validée
 let _oracleResults = [];     // 3 objets sortis par l'oracle
 let _oracleAnswered = false; // une fois validé, le champ se décale vers le haut
+// Archivage des lectures : tri-état pour la lecture courante.
+//   null  → question "Archiver ?" affichée
+//   true  → l'utilisatrice a dit Oui → "✓ Archivée"
+//   false → l'utilisatrice a dit Non → question masquée silencieusement
+let _oracleCurrentArchived = null;
+let _oracleArchive = [];     // [{ id, query, objectIds, savedAt }]
+const ORACLE_ARCHIVE_KEY = 'charchives_oracle_archive';
+
+// Charge l'archive depuis localStorage au démarrage (idempotent, safe).
+function _loadOracleArchive() {
+  try {
+    const raw = localStorage.getItem(ORACLE_ARCHIVE_KEY);
+    _oracleArchive = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(_oracleArchive)) _oracleArchive = [];
+  } catch(e) {
+    console.warn('[Oracle] archive corrompue — reset.', e);
+    _oracleArchive = [];
+  }
+}
+// Persiste l'archive dans localStorage.
+function _persistOracleArchive() {
+  try { localStorage.setItem(ORACLE_ARCHIVE_KEY, JSON.stringify(_oracleArchive)); }
+  catch(e) { console.warn('[Oracle] archive save failed', e); }
+}
+
+// Archive la lecture courante (phrase + ids des 3 objets + date ISO).
+// On stocke seulement les ids → l'archive reste valide même si les objets
+// sont édités plus tard. Si un objet est supprimé, il sera juste manquant
+// au moment de la restitution (filtré dans _renderOracleGallery).
+function _archiveOracleReading() {
+  if (_oracleCurrentArchived === true) return;
+  if (!_oracleQuery || !_oracleResults.length) return;
+  const entry = {
+    id: 'orc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+    query: _oracleQuery,
+    objectIds: _oracleResults.map(c => c.id),
+    savedAt: new Date().toISOString()
+  };
+  _oracleArchive.unshift(entry);  // newest first
+  _persistOracleArchive();
+  _oracleCurrentArchived = true;
+  renderOracle();
+}
+
+// Décline l'archivage — la question disparaît sans rien sauvegarder.
+function _declineOracleArchive() {
+  _oracleCurrentArchived = false;
+  renderOracle();
+}
+
+// Restitue une lecture archivée : remplit l'input, repose les 3 cartes.
+function _restoreOracleReading(entryId) {
+  const entry = _oracleArchive.find(e => e.id === entryId);
+  if (!entry) return;
+  _oracleQuery = entry.query;
+  _oracleResults = entry.objectIds
+    .map(id => state.collections.find(c => c.id === id))
+    .filter(Boolean);
+  _oracleAnswered = true;
+  _oracleCurrentArchived = true;  // déjà dans l'archive
+  renderOracle();
+  // Remonte en haut pour voir le triptyque restitué
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Supprime une entrée de l'archive.
+function _deleteOracleReading(entryId) {
+  _oracleArchive = _oracleArchive.filter(e => e.id !== entryId);
+  _persistOracleArchive();
+  _renderOracleGallery();
+}
+
+// Rend la galerie des lectures archivées (toujours appelée par renderOracle).
+function _renderOracleGallery() {
+  const section = document.getElementById('oracleGallery');
+  const list    = document.getElementById('oracleGalleryList');
+  const count   = document.getElementById('oracleGalleryCount');
+  if (!section || !list) return;
+  if (!_oracleArchive.length) { section.hidden = true; return; }
+  section.hidden = false;
+  if (count) count.textContent = `${_oracleArchive.length} lecture${_oracleArchive.length > 1 ? 's' : ''}`;
+
+  list.innerHTML = _oracleArchive.map(entry => {
+    const objects = entry.objectIds
+      .map(id => state.collections.find(c => c.id === id))
+      .filter(Boolean);
+    const thumbs = objects.map(obj => {
+      const photo = obj?.photos?.[0];
+      const bg = getVerbeBgColor(obj?.category) || 'rgba(0,0,0,0.06)';
+      return `<div class="orc-arch-thumb" style="--orc-thumb-col:${bg}">
+        ${photo ? `<img src="${photoUrl(photo)}" alt="" loading="lazy">` : '<div class="orc-arch-thumb-empty"></div>'}
+      </div>`;
+    }).join('');
+    // Si certains objets ont disparu, on remplit avec des slots vides
+    const missing = entry.objectIds.length - objects.length;
+    const missingHTML = Array(missing).fill(0).map(() =>
+      '<div class="orc-arch-thumb orc-arch-thumb-missing"><div class="orc-arch-thumb-empty">○</div></div>'
+    ).join('');
+    const date = new Date(entry.savedAt).toLocaleDateString('fr-FR', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+    return `<article class="orc-arch-item" data-id="${esc(entry.id)}" role="button" tabindex="0">
+      <div class="orc-arch-thumbs">${thumbs}${missingHTML}</div>
+      <div class="orc-arch-meta">
+        <p class="orc-arch-query">« ${esc(entry.query)} »</p>
+        <span class="orc-arch-date">${date}</span>
+      </div>
+      <button class="orc-arch-delete" data-id="${esc(entry.id)}" aria-label="Supprimer cette lecture" title="Supprimer">×</button>
+    </article>`;
+  }).join('');
+
+  // Clic sur la ligne → restitue ; Enter sur focus → restitue
+  list.querySelectorAll('.orc-arch-item').forEach(item => {
+    const restore = e => {
+      if (e.target.closest('.orc-arch-delete')) return;
+      _restoreOracleReading(item.dataset.id);
+    };
+    item.addEventListener('click', restore);
+    item.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); restore(e); }
+    });
+  });
+  // Bouton supprimer
+  list.querySelectorAll('.orc-arch-delete').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      _deleteOracleReading(btn.dataset.id);
+    });
+  });
+}
 
 // Thésaurus sémantique — chargé asynchroniquement depuis /data/thesaurus.json.
 // Format : { "mot-clé": ["synonyme1", "synonyme2", ...] }
