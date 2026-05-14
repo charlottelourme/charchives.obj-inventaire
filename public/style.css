@@ -10768,11 +10768,8 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   user-drag: none;
   -webkit-touch-callout: none;
 }
-/* Sélection */
-.diorama-item.dio-selected {
-  outline: 1px dashed rgba(255,255,255,.5);
-  outline-offset: 4px;
-}
+/* Sélection : cadre + halo défini plus bas (après les handles) pour rester
+   groupé avec eux. Ancien outline dashed semi-transparent retiré. */
 /* Handles de resize (visibles uniquement sur l'item sélectionné).
    18×18 visuels — point noir + halo blanc + ombre portée → lisible sur TOUS
    fonds (clair, sombre, coloré).
