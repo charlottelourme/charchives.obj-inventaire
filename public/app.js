@@ -4384,9 +4384,12 @@ function _dioInitZoom(wrap) {
 
   // Au chargement / changement de décor : applique le scale cover initial.
   // L'image couvre tout le viewport et le pan est contraint dans ses limites.
+  // On rajoute la classe `dio-ready` APRÈS application du transform → le
+  // backdrop apparaît en fade-in une fois bien positionné (anti-flash).
   function applyCover() {
     const cs = coverScale();
     d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.scale(cs));
+    bdrop?.classList.add('dio-ready');
   }
   bdrop?.addEventListener('load', applyCover);
   if (bdrop?.complete && bdrop.naturalWidth) applyCover();
