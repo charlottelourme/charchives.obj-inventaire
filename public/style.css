@@ -609,17 +609,21 @@ header.global-header {
   background-color: transparent !important;
   border-bottom: none !important;
   box-shadow: none !important;
-  width: 100vw;
+  width: 100% !important;
   max-width: 100vw;
   margin: 0;
-  padding: calc(env(safe-area-inset-top) + 40px) var(--page-gutter) 28px !important;
+  /* Grille absolue : padding piloté EXCLUSIVEMENT par les tokens :root */
+  padding-top: calc(env(safe-area-inset-top) + var(--header-padding-top)) !important;
+  padding-right: var(--grid-margin-x) !important;
+  padding-bottom: var(--bandeau-vide-height) !important;
+  padding-left: var(--grid-margin-x) !important;
   min-height: calc(190px + env(safe-area-inset-top));
   height: auto;
   display: flex !important;
   flex-direction: column !important;
   align-items: stretch !important;
   justify-content: flex-start !important;
-  gap: 2rem !important;
+  gap: var(--nav-gap-y) !important;
   box-sizing: border-box;
 }
 
