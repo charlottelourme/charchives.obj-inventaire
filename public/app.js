@@ -5593,7 +5593,7 @@ function _renderTriosCards(objects) {
       const lockTitle = isLocked ? 'Libérer cet objet' : 'Fixer cet objet';
       return `<div class="trios-slot-wrap auto${isLocked ? ' locked' : ''}" data-slot="${i}">
         ${cardHTML(c)}
-        <button class="trios-slot-lock" data-slot="${i}" title="${lockTitle}" aria-label="${lockTitle}" aria-pressed="${isLocked}">${_lockSvg(isLocked)}</button>
+        <button class="trios-slot-lock" data-slot="${i}" title="${lockTitle}" aria-label="${lockTitle}" aria-pressed="${isLocked}" onclick="event.stopPropagation();">${_lockSvg(isLocked)}</button>
       </div>`;
     }).join('');
     grid.querySelectorAll('.trios-slot-wrap.auto .card').forEach(card => {
