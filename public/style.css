@@ -242,14 +242,17 @@ body.dark-mode::after { mix-blend-mode: overlay; opacity: 0.28; }
 /* ══ Atténuation du grain sur mobile ═══════════════════════════════════════
    Sur écran Retina + proche de l'œil, les 3 couches de grain (body::after,
    bg-grain, card-grain) cumulent un bruit perçu beaucoup plus dense qu'en
-   desktop. On les divise toutes par ~2 sous 520px pour retrouver la sensation
-   "papier discret" du desktop. Le grain reste présent — juste moins agressif. */
+   desktop. Deux ajustements pour retrouver la sensation "papier discret" :
+   1. Opacity divisée par ~2 (couches moins présentes)
+   2. background-size 160px → 80px → la tuile SVG du bruit est rendue 2× plus
+      petite, donc chaque speck devient ~2× plus petit visuellement (grain fin,
+      texture papier proche, au lieu de tâches grossières). */
 @media (max-width: 520px) {
-  body::after            { opacity: 0.20; }
+  body::after            { opacity: 0.20; background-size: 80px 80px; }
   body.dark-mode::after  { opacity: 0.14; }
-  #bgLayers .bg-grain    { opacity: 0.40; }
+  #bgLayers .bg-grain    { opacity: 0.40; background-size: 80px 80px; }
   body.dark-mode #bgLayers .bg-grain { opacity: 0.20; }
-  .card .card-grain      { opacity: 0.25; }
+  .card .card-grain      { opacity: 0.25; background-size: 80px 80px; }
   body.dark-mode .card .card-grain { opacity: 0.12; }
 }
 
