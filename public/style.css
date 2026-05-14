@@ -11381,12 +11381,19 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   z-index: 50;
   padding: 0 var(--page-gutter, 24px);
 }
-/* Toggle Grille/Constellation INLINE entre les 2 piliers — typo « Piocher »
-   du Triptyque : Compagnon Roman 400 normal 13px, couleur unie var(--text). */
+/* Strate 3 : ligne dédiée centrée juste sous les piliers — Grille / Constellation. */
+.inv-views-row {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 0.6rem;                /* serré contre les piliers du dessus */
+  padding: 0 var(--page-gutter, 24px);
+}
+/* Toggle Grille / Constellation — typo « Piocher » du Triptyque :
+   Compagnon Roman 400 normal 13px, sans séparateur entre les deux mots. */
 .inv-pillars-views {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.9rem;                       /* espace propre entre Grille et Constellation, sans séparateur */
+  gap: 1.4rem;                       /* espace clair entre Grille et Constellation, sans séparateur */
   background: transparent;
   border: none;
   padding: 0;
