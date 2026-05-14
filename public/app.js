@@ -3960,17 +3960,120 @@ function _dioHideLibPreview() {
   overlay.remove();
 }
 
+// Crée un élément `.diorama-lib-item` cliquable + draggable pour la sidebar.
+// Factorisé pour pouvoir le réutiliser dans la sidebar gauche ET la droite.
+function _dioMakeLibItem(c) {
+  const photo = _dioPhotoFor(c);
+  const el = document.createElement('div');
+  el.className = 'diorama-lib-item';
+  el.draggable = true;
+  el.innerHTML = `<img src="${photoUrl(photo)}" alt="${esc(c.name||'')}"><div class="dio-lib-name">${esc(c.name||'')}</div>`;
+  el.addEventListener('dragstart', e => {
+    e.dataTransfer.setData('text/plain', c.id);
+    e.dataTransfer.effectAllowed = 'copy';
+    requestAnimationFrame(() => el.classList.add('dragging'));
+  });
+  el.addEventListener('dragend', () => el.classList.remove('dragging'));
+  // Click sur la vignette → preview 6× (HTML5 : click n'est PAS émis après
+  // un drag réussi, donc pas de conflit avec le drag-and-drop vers la scène).
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = el.getBoundingClientRect();
+    _dioShowLibPreview(c, photoUrl(photo), rect.width);
+  });
+  return el;
+}
+
+// Rend la liste des objets dans une sidebar, organisée en sections par
+// intention. `verbeNames` est la liste ordonnée des intentions à afficher
+// dans cette colonne. Les objets sans intention reconnue sont regroupés
+// sous "Autres" en fin de colonne (uniquement dans la dernière sidebar).
+function _dioRenderSidebarList(container, items, verbeNames, includeOrphans) {
+  if (!container) return;
+  container.innerHTML = '';
+  // Group items by intention
+  const byIntention = new Map();
+  const orphans = [];
+  items.forEach(c => {
+    const cat = c.category;
+    if (cat && verbeNames.includes(cat)) {
+      if (!byIntention.has(cat)) byIntention.set(cat, []);
+      byIntention.get(cat).push(c);
+    } else if (!verbeNames.length || !cat) {
+      orphans.push(c);
+    } else {
+      // l'objet appartient à une autre colonne, on l'ignore ici
+    }
+  });
+  // Render section par section dans l'ordre des verbes
+  verbeNames.forEach(name => {
+    const itemsOfIntent = byIntention.get(name);
+    if (!itemsOfIntent || !itemsOfIntent.length) return;
+    const section = document.createElement('div');
+    section.className = 'diorama-lib-section';
+    section.innerHTML = `<h3 class="diorama-lib-section-title">${esc(name)}</h3>`;
+    const itemsWrap = document.createElement('div');
+    itemsWrap.className = 'diorama-lib-section-items';
+    itemsOfIntent.forEach(c => itemsWrap.appendChild(_dioMakeLibItem(c)));
+    section.appendChild(itemsWrap);
+    container.appendChild(section);
+  });
+  // Section "Autres" (objets sans intention reconnue) — affichée uniquement
+  // dans la colonne marquée includeOrphans (typiquement la droite).
+  if (includeOrphans && orphans.length) {
+    const section = document.createElement('div');
+    section.className = 'diorama-lib-section';
+    section.innerHTML = `<h3 class="diorama-lib-section-title">Autres</h3>`;
+    const itemsWrap = document.createElement('div');
+    itemsWrap.className = 'diorama-lib-section-items';
+    orphans.forEach(c => itemsWrap.appendChild(_dioMakeLibItem(c)));
+    section.appendChild(itemsWrap);
+    container.appendChild(section);
+  }
+}
+
 function renderDiorama() {
-  // Injecte la description éditable
-  const dioDescEl = document.getElementById('dioramaDesc');
-  if (dioDescEl) dioDescEl.textContent = PAGE_DESCRIPTIONS.diorama || '';
-  const decBar  = document.getElementById('dioDecorBar');
-  const libList = document.getElementById('dioLibList');
-  const scene   = document.getElementById('dioScene');
-  const backdrop = document.getElementById('dioBackdrop');
+  const decBar       = document.getElementById('dioDecorBar');
+  const scene        = document.getElementById('dioScene');
+  const backdrop     = document.getElementById('dioBackdrop');
+  const leftList     = document.getElementById('dioLibListLeft');
+  const rightList    = document.getElementById('dioLibListRight');
+  const modeNouvelle = document.getElementById('dioModeNouvelle');
+  const modeCompos   = document.getElementById('dioModeCompositions');
   if (!decBar || !scene) return;
 
-  // ── Gestionnaire de collection (20 slots persistés IndexedDB) ──
+  // ── Mode courant : 'nouvelle' (scène + bibliothèques) | 'compositions' (galerie) ──
+  const mode = state.diorama.mode || 'nouvelle';
+  state.diorama.mode = mode;
+
+  // Toggle visibilité selon mode
+  if (modeNouvelle) modeNouvelle.hidden = mode !== 'nouvelle';
+  if (modeCompos)   modeCompos.hidden   = mode !== 'compositions';
+  if (decBar)       decBar.style.display = mode === 'nouvelle' ? '' : 'none';
+  document.querySelectorAll('.diorama-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.mode === mode);
+  });
+
+  // Bind onglets (idempotent)
+  document.querySelectorAll('.diorama-tab').forEach(tab => {
+    if (tab.dataset.bound === '1') return;
+    tab.dataset.bound = '1';
+    tab.addEventListener('click', () => {
+      state.diorama.mode = tab.dataset.mode;
+      _dioSave();
+      renderDiorama();
+    });
+  });
+
+  // Mode compositions → galerie + return
+  if (mode === 'compositions') {
+    _dioRenderGallery();
+    return;
+  }
+
+  // ── Mode "Nouvelle composition" ──────────────────────────────────────
+  // Gestionnaire de collection (20 slots persistés IndexedDB)
   if (!decBar.children.length) {
     _dioRenderDecorBar(decBar, backdrop);
   }
@@ -3991,54 +4094,46 @@ function renderDiorama() {
   });
   if (pendingChecks.length > 0) {
     Promise.all(pendingChecks).then(() => {
-      // Re-render uniquement si on est toujours sur la vue Diorama
       if (state.view === 'diorama') renderDiorama();
     });
   }
 
-  // ── Sidebar bibliothèque ──
+  // ── Bibliothèques (gauche + droite) — objets répartis par intention ──
   // Toute la bibliothèque d'Inventaire, mais uniquement la version PNG
-  // sans fond (sélectionnée auto via _dioPhotoFor + alpha-check). Un objet
-  // sans PNG détouré est exclu : "pas les images avec fond" (cf. Charlotte).
+  // sans fond (sélectionnée auto via _dioPhotoFor + alpha-check).
   const pngItems = state.collections.filter(c =>
     c.type !== 'note' && c.type !== 'fragment' && c.type !== 'journal-photo' &&
     !!_dioPhotoFor(c)
   );
-  // Suggestions aléatoires (matières / couleurs / intentions / etc.) — rendues
-  // une fois par session de vue, pour ne pas re-shuffler à chaque keystroke.
+  // Suggestions aléatoires (matières / couleurs / intentions / etc.)
   _dioRenderSuggestions();
 
-  libList.innerHTML = '';
   const searchQ = (document.getElementById('dioSearch')?.value || '').toLowerCase().trim();
   const filtered = searchQ ? pngItems.filter(c => _dioMatchSearch(c, searchQ)) : pngItems;
-  filtered.forEach(c => {
-    const photo = _dioPhotoFor(c);
-    const el = document.createElement('div');
-    el.className = 'diorama-lib-item';
-    el.draggable = true;
-    el.innerHTML = `<img src="${photoUrl(photo)}" alt="${esc(c.name||'')}"><div class="dio-lib-name">${esc(c.name||'')}</div>`;
-    el.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('text/plain', c.id);
-      e.dataTransfer.effectAllowed = 'copy';
-      requestAnimationFrame(() => el.classList.add('dragging'));
-    });
-    el.addEventListener('dragend', () => el.classList.remove('dragging'));
-    // Click sur la vignette → preview 6× (HTML5 : click n'est PAS émis après
-    // un drag réussi, donc pas de conflit avec le drag-and-drop vers la scène).
-    el.addEventListener('click', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      const rect = el.getBoundingClientRect();
-      _dioShowLibPreview(c, photoUrl(photo), rect.width);
-    });
-    libList.appendChild(el);
-  });
 
-  // Recherche live
+  // Répartit les intentions en deux moitiés : gauche / droite
+  const allVerbes = (typeof getVerbes === 'function' ? getVerbes() : []).map(v => v.name);
+  const half = Math.ceil(allVerbes.length / 2);
+  const leftVerbes  = allVerbes.slice(0, half);
+  const rightVerbes = allVerbes.slice(half);
+
+  // Sidebar gauche → première moitié des intentions
+  _dioRenderSidebarList(leftList, filtered, leftVerbes, /* orphans */ false);
+  // Sidebar droite → seconde moitié + section "Autres" (objets sans intention)
+  _dioRenderSidebarList(rightList, filtered, rightVerbes, /* orphans */ true);
+
+  // Recherche live (idempotent)
   const searchInput = document.getElementById('dioSearch');
   if (searchInput && !searchInput.dataset.bound) {
     searchInput.dataset.bound = '1';
     searchInput.addEventListener('input', () => renderDiorama());
+  }
+
+  // Bind bouton "Enregistrer" (idempotent)
+  const saveBtn = document.getElementById('dioSaveBtn');
+  if (saveBtn && !saveBtn.dataset.bound) {
+    saveBtn.dataset.bound = '1';
+    saveBtn.addEventListener('click', _dioSaveComposition);
   }
 
   // ── Rendu items placés ──
