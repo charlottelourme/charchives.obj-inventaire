@@ -240,17 +240,16 @@ body::after {
 body.dark-mode::after { mix-blend-mode: overlay; opacity: 0.28; }
 
 /* ══ Atténuation du grain sur mobile ═══════════════════════════════════════
-   3ᵉ pass : opacity divisée encore par ~2 ET tuile descendue à 24px.
-   Le grain devient quasi-imperceptible — sensation de texture papier ténue
-   plutôt que de motif visible. C'est le seuil bas raisonnable : en dessous,
-   la couche bg-grain disparaît à l'œil et seule la couleur de fond porte. */
+   4ᵉ pass : nudge final (~35-40% sur chaque opacity). Tuile reste à 24px
+   (ratio desktop atteint). À ces valeurs le grain est juste là pour casser
+   l'aplat parfait des aplats de couleur — totalement subliminal. */
 @media (max-width: 520px) {
-  body::after            { opacity: 0.10; background-size: 24px 24px; }
-  body.dark-mode::after  { opacity: 0.07; }
-  #bgLayers .bg-grain    { opacity: 0.20; background-size: 24px 24px; }
-  body.dark-mode #bgLayers .bg-grain { opacity: 0.10; }
-  .card .card-grain      { opacity: 0.12; background-size: 24px 24px; }
-  body.dark-mode .card .card-grain { opacity: 0.06; }
+  body::after            { opacity: 0.06; background-size: 24px 24px; }
+  body.dark-mode::after  { opacity: 0.04; }
+  #bgLayers .bg-grain    { opacity: 0.12; background-size: 24px 24px; }
+  body.dark-mode #bgLayers .bg-grain { opacity: 0.06; }
+  .card .card-grain      { opacity: 0.08; background-size: 24px 24px; }
+  body.dark-mode .card .card-grain { opacity: 0.04; }
 }
 
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
