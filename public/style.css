@@ -240,21 +240,17 @@ body::after {
 body.dark-mode::after { mix-blend-mode: overlay; opacity: 0.28; }
 
 /* ══ Atténuation du grain sur mobile ═══════════════════════════════════════
-   Sur écran Retina + proche de l'œil, les 3 couches de grain (body::after,
-   bg-grain, card-grain) cumulent un bruit perçu beaucoup plus dense qu'en
-   desktop. Deux ajustements pour retrouver la sensation "papier discret" :
-   1. Opacity divisée par ~2 (couches moins présentes)
-   2. background-size 160px → 32px → la tuile SVG est rendue 5× plus petite.
-      À cette échelle, la tuile fait ~8% de la largeur iPhone (393px), soit
-      le MÊME ratio que le desktop (160px sur 1920px = 8%). Le grain devient
-      une fibre extrêmement fine — texture papier impalpable. */
+   3ᵉ pass : opacity divisée encore par ~2 ET tuile descendue à 24px.
+   Le grain devient quasi-imperceptible — sensation de texture papier ténue
+   plutôt que de motif visible. C'est le seuil bas raisonnable : en dessous,
+   la couche bg-grain disparaît à l'œil et seule la couleur de fond porte. */
 @media (max-width: 520px) {
-  body::after            { opacity: 0.20; background-size: 32px 32px; }
-  body.dark-mode::after  { opacity: 0.14; }
-  #bgLayers .bg-grain    { opacity: 0.40; background-size: 32px 32px; }
-  body.dark-mode #bgLayers .bg-grain { opacity: 0.20; }
-  .card .card-grain      { opacity: 0.25; background-size: 32px 32px; }
-  body.dark-mode .card .card-grain { opacity: 0.12; }
+  body::after            { opacity: 0.10; background-size: 24px 24px; }
+  body.dark-mode::after  { opacity: 0.07; }
+  #bgLayers .bg-grain    { opacity: 0.20; background-size: 24px 24px; }
+  body.dark-mode #bgLayers .bg-grain { opacity: 0.10; }
+  .card .card-grain      { opacity: 0.12; background-size: 24px 24px; }
+  body.dark-mode .card .card-grain { opacity: 0.06; }
 }
 
 /* ══ ÉRADICATION des fonds opaques sur les conteneurs de contenu ══════════
