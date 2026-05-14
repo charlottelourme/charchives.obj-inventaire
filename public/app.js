@@ -2891,7 +2891,8 @@ function _drawConGraph(canvas, nodes, links) {
   })();
   const _conCatX = new Map();
   if (_conCategories.length) {
-    const padX = Math.min(40, W * 0.03);
+    // Padding 5% en mode fullscreen pour exploiter tout l'écran, 3% sinon.
+    const padX = _conFullscreen ? Math.max(40, W * 0.05) : Math.min(40, W * 0.03);
     const usableW = Math.max(W - padX * 2, 200);
     _conCategories.forEach((cat, i) => {
       const x = padX + (i + 0.5) * (usableW / _conCategories.length);
@@ -2903,11 +2904,15 @@ function _drawConGraph(canvas, nodes, links) {
   // à chaque rendu (et plus seulement si undefined) pour que les changements
   // d'affinité, de filtre, ou la première sortie de scope mode toggle
   // repositionnent correctement les nœuds dans leur colonne.
+  // En mode fullscreen : spread vertical = 70% de H (les objets peuvent
+  //   passer derrière le logo header / footer breadcrumb).
+  // En mode boxé : ancien comportement (±100px autour de H/2).
+  const _verticalSpread = _conFullscreen ? (H * 0.7) : 200;
   nodes.forEach(n => {
     const cat = n.category || '__nocat__';
     const initX = _conCatX.get(cat) ?? W / 2;
     n.x = initX + (Math.random() - 0.5) * 80;
-    n.y = H / 2 + (Math.random() - 0.5) * 200;
+    n.y = H / 2 + (Math.random() - 0.5) * _verticalSpread;
     n.vx = 0; n.vy = 0;
     n.fx = null; n.fy = null;
   });
