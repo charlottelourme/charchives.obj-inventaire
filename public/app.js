@@ -231,7 +231,9 @@ const state = {
   _shuffleOrder: null,  // tableau d'ids mélangés
   gravityMode: false,   // true quand un verbe est actif → canvas orbital
   // Diorama — canvas interactif (collage façon "Les Sims")
-  diorama: { backdrop: '', items: [], nextZ: 1 },
+  // mode : 'nouvelle' (scène + bibliothèques) | 'compositions' (galerie sauvegardes)
+  // savedCompositions : array de { id, name, items, backdropSlotId, backdropCredit, savedAt }
+  diorama: { backdrop: '', items: [], nextZ: 1, mode: 'nouvelle', savedCompositions: [] },
 };
 
 // ══ THÉSAURUS SÉMANTIQUE — dictionnaire de synonymes / alias ════════════════
