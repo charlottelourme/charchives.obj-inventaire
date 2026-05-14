@@ -12487,6 +12487,54 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   MOBILE — Header sans lignes + barre Rechercher repositionnée à gauche
+   ══════════════════════════════════════════════════════════════════════════
+   1. Suppression du trait sous la barre Rechercher (.search-bar border-bottom)
+   2. .header-ligne-1 passe en flex-wrap : la barre Rechercher saute sur sa
+      propre ligne, full-width alignée à gauche, sous le bloc Logo+Actions.
+   3. .header-outils devient display:contents pour libérer ses enfants dans
+      le flow de .header-ligne-1, ce qui permet de réordonner via flex order. */
+@media (max-width: 520px) {
+  /* (1) Plus de trait sous la barre Rechercher */
+  .global-header .search-bar {
+    border-bottom: none !important;
+  }
+  .global-header .search-bar:focus-within {
+    border-bottom: none !important;
+  }
+
+  /* (2)+(3) Restructure flex : logo+actions en haut, Rechercher full-width à gauche */
+  .global-header > .header-ligne-1 {
+    flex-wrap: wrap !important;
+    row-gap: 6px !important;
+  }
+  .global-header .header-outils {
+    display: contents !important;     /* libère search-wrap et header-actions */
+  }
+  .global-header .header-logo {
+    order: 1 !important;
+    flex: 0 0 auto !important;
+  }
+  .global-header .header-actions {
+    order: 2 !important;
+    margin-left: auto !important;      /* pousse les actions à droite */
+    flex: 0 0 auto !important;
+  }
+  .global-header .search-wrap {
+    order: 3 !important;
+    flex: 1 1 100% !important;         /* full-width → force le saut de ligne */
+    max-width: 100% !important;
+    margin: 4px 0 0 !important;
+  }
+  .global-header .search-bar {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 6px 0 !important;          /* aligne le texte à gauche pile au bord */
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
    MOBILE — Navigation déroulante depuis le logo Chacharlatan
    ══════════════════════════════════════════════════════════════════════════
    Sur mobile, .header-ligne-2 (qui contient nav-principale + nav-experimentale)
