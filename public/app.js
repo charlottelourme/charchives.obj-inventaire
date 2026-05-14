@@ -10113,44 +10113,64 @@ function bindEvents() {
   document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
   // Logo "Charchives . obj" :
   //  - desktop  → bascule vers Journal (vue Dérive)
-  //  - mobile   → toggle le dropdown de navigation (cf. body.mobile-nav-open)
+  //  - mobile   → ouvre l'overlay plein écran de navigation (5 onglets en gros au centre)
   const _siteTitleEl = document.getElementById('siteTitle');
   if (_siteTitleEl) {
     _siteTitleEl.style.cursor = 'pointer';
-    // Inject le backdrop tap-to-close si absent
-    if (!document.querySelector('.mobile-nav-backdrop')) {
-      const _bd = document.createElement('div');
-      _bd.className = 'mobile-nav-backdrop';
-      _bd.addEventListener('click', () => document.body.classList.remove('mobile-nav-open'));
-      document.body.appendChild(_bd);
+
+    // (a) Inject le bouton de fermeture X dans l'overlay (.header-ligne-2 sert d'overlay)
+    const _ligne2 = document.querySelector('.global-header > .header-ligne-2');
+    if (_ligne2 && !_ligne2.querySelector('.mobile-nav-close')) {
+      const _xBtn = document.createElement('button');
+      _xBtn.className = 'mobile-nav-close';
+      _xBtn.type = 'button';
+      _xBtn.setAttribute('aria-label', 'Fermer le menu');
+      _xBtn.innerHTML = '×';
+      _xBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.body.classList.remove('mobile-nav-open');
+      });
+      _ligne2.appendChild(_xBtn);
     }
+
+    // (b) Inject l'indicateur de page courante dans le coin droit du header
+    //     (avant les boutons d'actions ⚙ ◑ 🐛 …). Mis à jour par updatePageIndicator().
+    if (!document.getElementById('currentPageIndicator')) {
+      const _ind = document.createElement('span');
+      _ind.id = 'currentPageIndicator';
+      _ind.className = 'header-page-indicator';
+      _ind.textContent = '';
+      // Place-le juste avant .header-actions dans .header-outils
+      const _outils = document.querySelector('.global-header .header-outils');
+      const _actions = document.querySelector('.global-header .header-actions');
+      if (_outils && _actions) {
+        _outils.insertBefore(_ind, _actions);
+      } else if (_outils) {
+        _outils.appendChild(_ind);
+      }
+    }
+
+    // (c) Toggle de l'overlay au tap sur le titre (mobile uniquement)
     _siteTitleEl.addEventListener('click', (e) => {
       const isMobile = window.matchMedia && window.matchMedia('(max-width: 520px)').matches;
       if (isMobile) {
-        // Toggle le dropdown
         e.stopPropagation();
         document.body.classList.toggle('mobile-nav-open');
       } else {
         setView('derive');
       }
     });
-    // Sur mobile : tap sur un lien du dropdown → ferme le dropdown
-    // (les handlers setView restent ceux déjà câblés plus bas sur chaque #viewXxx)
+
+    // (d) Tap sur un lien de l'overlay → ferme l'overlay (les handlers setView
+    //     existants sur chaque #viewXxx feront la navigation)
     document.querySelectorAll('.global-header .nav-link').forEach(link => {
       link.addEventListener('click', () => {
-        if (document.body.classList.contains('mobile-nav-open')) {
-          document.body.classList.remove('mobile-nav-open');
-        }
+        document.body.classList.remove('mobile-nav-open');
       });
     });
-    // Tap n'importe où ailleurs sur la page → ferme aussi le dropdown
-    document.addEventListener('click', (e) => {
-      if (!document.body.classList.contains('mobile-nav-open')) return;
-      if (_siteTitleEl.contains(e.target)) return;
-      const ligne2 = document.querySelector('.global-header > .header-ligne-2');
-      if (ligne2 && ligne2.contains(e.target)) return;
-      document.body.classList.remove('mobile-nav-open');
-    });
+
+    // (e) Init du label de la page courante au boot
+    if (typeof updatePageIndicator === 'function') updatePageIndicator();
   }
 
   // ── Bandeau Inventaire : 2 piliers Feroniapi (Intention / Objet) ─────────
