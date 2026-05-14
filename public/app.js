@@ -4541,6 +4541,11 @@ function _dioApplyBackdrop(url, credit, backdropEl) {
   }
   _dioUpdateCredits(credit || '');
   _dioSave();
+  // Re-render les items associés au backdrop courant : chaque slot a sa
+  // propre composition (via byBackdrop[backdropSlotId]). Les getters
+  // state.diorama.items/.nextZ pointent désormais vers le nouveau slot.
+  const scene = document.getElementById('dioScene');
+  if (scene) _dioRenderItems(scene);
 }
 
 function _dioUpdateCredits(text) {
