@@ -5616,11 +5616,17 @@ function _deleteOracleReading(entryId) {
 function _renderOracleGallery() {
   const section = document.getElementById('oracleGallery');
   const list    = document.getElementById('oracleGalleryList');
-  const count   = document.getElementById('oracleGalleryCount');
+  const empty   = document.getElementById('oracleGalleryEmpty');
   if (!section || !list) return;
-  if (!_oracleArchive.length) { section.hidden = true; return; }
-  section.hidden = false;
-  if (count) count.textContent = `${_oracleArchive.length} lecture${_oracleArchive.length > 1 ? 's' : ''}`;
+  // Visibilité gérée par le mode sub-nav : caché en mode 'tirage', visible en 'reminiscence'.
+  section.hidden = (_oracleMode !== 'reminiscence');
+  // Empty state : message poétique si on est en Réminiscences sans archive.
+  if (!_oracleArchive.length) {
+    list.innerHTML = '';
+    if (empty) empty.hidden = false;
+    return;
+  }
+  if (empty) empty.hidden = true;
 
   list.innerHTML = _oracleArchive.map(entry => {
     const objects = entry.objectIds
