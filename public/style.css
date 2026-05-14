@@ -75,9 +75,17 @@
   /* ── Grille des filtres — alignement vertical strict ── */
   --filter-gutter: 12px; /* marge gauche réduite — aligne près du bord */
   --label-w: 96px;  /* largeur fixe de la colonne "INTENTION" / "OBJETS" */
-  /* ══ NEGATIVE SPACE — gouttière unique pour aligner logo / grille / filtres
-        au pixel près (axe vertical strict, façon galerie d'art) ══════════ */
-  --page-gutter: clamp(48px, 5vw, 96px);
+  /* ══ GRILLE ABSOLUE — Verrouillage géométrique pixel-précis ════════════════
+     Quatre variables intouchables pilotent l'alignement de TOUS les conteneurs
+     majeurs (header, main, vues, footer). Aucune marge ad-hoc ne doit jamais
+     y déroger : tout passe par ces tokens. */
+  --grid-margin-x: 4vw;                 /* règle latérale unique gauche/droite */
+  --header-padding-top: 2rem;            /* paddingTop du header — figé */
+  --nav-gap-y: 2rem;                     /* espace vertical L1/L2 du header */
+  --bandeau-vide-height: 4rem;           /* bandeau vide sous header (paddingBottom) */
+  /* Alias rétro-compat : on garde --page-gutter pour ne pas casser les règles
+     historiques. Pointe désormais sur la nouvelle gouttière universelle. */
+  --page-gutter: var(--grid-margin-x);
   /* ══ HAUTEUR DU HEADER — variable dynamique ════════════════════════════════
      Mesurée par JS (updateHeaderHeightVar) pour rester précise quand la barre
      de recherche s'ouvre/se ferme ou quand l'orientation change.
