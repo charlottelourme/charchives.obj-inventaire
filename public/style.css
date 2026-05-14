@@ -755,8 +755,8 @@ header.global-header {
    même rendu visuel — les 5 onglets sur un pied d'égalité. */
 .global-header .nav-experimentale .nav-link {
   font-family: 'Compagnon', monospace !important;
-  font-style: normal !important;
-  font-weight: 400 !important;                /* Compagnon Roman — régulier */
+  font-style: italic !important;
+  font-weight: 300 !important;                /* Compagnon Light italic */
   font-size: 1.6rem !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
