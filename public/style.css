@@ -729,7 +729,7 @@ header.global-header {
 .global-header .nav-principale .nav-link {
   font-family: 'Compagnon', monospace !important;
   font-style: normal !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;                /* Compagnon Roman — régulier */
   font-size: 1.6rem !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
