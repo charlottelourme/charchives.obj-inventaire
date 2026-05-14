@@ -901,50 +901,44 @@ header.global-header {
 .bottom-nav .view-tab:hover::before,
 .mfn-link:hover::before { content: none; }
 
-/* Dark mode : halo en gris clair pour rester visible sur fond sombre */
-body.dark-mode .global-header .nav-principale .nav-link.active::before,
-body.dark-mode .global-header .nav-experimentale .nav-link.active::before,
-body.dark-mode .sfb-pill.active::before,
-body.dark-mode .sfb-pill-verbe.active::before,
-body.dark-mode .sfb-pill-sm.active::before,
-body.dark-mode .sfb-pill-selection.active::before,
-body.dark-mode .sfb-pill-typo.active::before,
-body.dark-mode .tfb-pill.active::before,
-body.dark-mode .tfb-all.active::before,
-body.dark-mode .mf-btn.mf-active::before,
-body.dark-mode .attr-chip.selected::before,
-body.dark-mode .view-tab.active::before,
-body.dark-mode .inv-pillar.is-open::before,
-body.dark-mode .trios-tab-btn.active::before,
-body.dark-mode .derive-seg-btn.active::before,
-body.dark-mode .derive-shuffle-btn.active::before,
-body.dark-mode .cal-jump-btn.active::before,
-body.dark-mode .ivt-btn.active::before,
-body.dark-mode .con-aff-btn.active::before,
-body.dark-mode .note-opt-btn.active::before,
-body.dark-mode .modal-tab-settings.active::before,
-body.dark-mode .idx-alpha-pill.active::before,
-body.dark-mode .jsp-dot.active::before,
-body.dark-mode .mfn-link.active::before,
-body.dark-mode .sm-trios-tab.active::before,
-body.dark-mode .dp-month.selected::before,
-body.dark-mode .vpt-pill.active::before,
-body.dark-mode .btn-ghost.active::before {
-  background: radial-gradient(ellipse at center,
-              rgba(244, 244, 245, 0.18) 0%,
-              rgba(244, 244, 245, 0.10) 35%,
-              transparent 70%);
+/* Dark mode : halo en gris clair (text-shadow) pour rester visible sur fond sombre */
+body.dark-mode .global-header .nav-principale .nav-link.active,
+body.dark-mode .global-header .nav-experimentale .nav-link.active,
+body.dark-mode .sfb-pill.active,
+body.dark-mode .sfb-pill-verbe.active,
+body.dark-mode .sfb-pill-sm.active,
+body.dark-mode .sfb-pill-selection.active,
+body.dark-mode .sfb-pill-typo.active,
+body.dark-mode .tfb-pill.active,
+body.dark-mode .tfb-all.active,
+body.dark-mode .mf-btn.mf-active,
+body.dark-mode .attr-chip.selected,
+body.dark-mode .view-tab.active,
+body.dark-mode .inv-pillar.is-open,
+body.dark-mode .trios-tab-btn.active,
+body.dark-mode .derive-seg-btn.active,
+body.dark-mode .derive-shuffle-btn.active,
+body.dark-mode .cal-jump-btn.active,
+body.dark-mode .ivt-btn.active,
+body.dark-mode .con-aff-btn.active,
+body.dark-mode .note-opt-btn.active,
+body.dark-mode .modal-tab-settings.active,
+body.dark-mode .idx-alpha-pill.active,
+body.dark-mode .jsp-dot.active,
+body.dark-mode .mfn-link.active,
+body.dark-mode .sm-trios-tab.active,
+body.dark-mode .dp-month.selected,
+body.dark-mode .vpt-pill.active,
+body.dark-mode .btn-ghost.active {
+  text-shadow: 0 0 16px rgba(244, 244, 245, 0.32);
 }
-body.dark-mode .btn-primary:hover::before,
-body.dark-mode .btn-ghost:hover::before,
-body.dark-mode .btn-export:hover::before,
-body.dark-mode .btn-secondary:hover::before,
-body.dark-mode .bottom-nav .view-tab:hover::before,
-body.dark-mode .mfn-link:hover::before {
-  background: radial-gradient(ellipse at center,
-              rgba(244, 244, 245, 0.12) 0%,
-              rgba(244, 244, 245, 0.06) 40%,
-              transparent 75%);
+body.dark-mode .btn-primary:hover,
+body.dark-mode .btn-ghost:hover,
+body.dark-mode .btn-export:hover,
+body.dark-mode .btn-secondary:hover,
+body.dark-mode .bottom-nav .view-tab:hover,
+body.dark-mode .mfn-link:hover {
+  text-shadow: 0 0 12px rgba(244, 244, 245, 0.22);
 }
 /* Compensation de la hauteur du header fixed — repose sur --header-h
    (mesurée dynamiquement par JS, fallback CSS via :root). */
