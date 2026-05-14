@@ -12500,7 +12500,8 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
 }
 .oracle-stage.oracle-answered {
   justify-content: flex-start;      /* après validation : remonte */
-  padding-top: clamp(40px, 7vh, 80px);
+  padding-top: clamp(16px, 2.5vh, 36px);
+  padding-bottom: clamp(16px, 2vh, 28px);
 }
 
 /* ── Input — minimalisme absolu : ligne fine, pas de bordure ───────────── */
