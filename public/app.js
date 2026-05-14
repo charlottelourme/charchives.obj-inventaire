@@ -4357,9 +4357,11 @@ function _dioMakeResizable(el, item) {
       const origScale = item.scale;
       const onMove = ev => {
         const dist = _dioDistFromCenter(el, ev);
-        // Plancher 0.5 = 60px à baseline 120 — l'objet reste toujours visible
-        // à l'œil et manipulable, même sur un grand backdrop. Plafond 5×.
-        item.scale = Math.max(0.5, Math.min(5, origScale * (dist / startDist)));
+        // Plancher 0.7 = ~84px à baseline 120 — l'objet reste vraiment visible,
+        // jamais riquiqui (cf. brief Charlotte). Plafond 12× — généreux, on
+        // peut agrandir librement sans aller à l'infini (perf + handles
+        // doivent rester accessibles à l'écran).
+        item.scale = Math.max(0.7, Math.min(12, origScale * (dist / startDist)));
         el.style.width = Math.round(120 * item.scale) + 'px';
       };
       const onUp = () => {
