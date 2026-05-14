@@ -4275,6 +4275,28 @@ body.dark-mode #deriveView #galleryGrid.journal-canvas {
   border-color: #fff;
 }
 
+/* Séparateur entre les dots de taille et le bouton "premier plan" */
+.jsp-sep {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: rgba(255,255,255,0.28);
+  margin: 0 3px;
+}
+/* Bouton "premier plan" — flèche ↑ */
+.jsp-front {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.65);
+  padding: 2px 4px;
+  transition: color 0.15s;
+}
+.jsp-front:hover { color: #fff; }
+
 /* Pendant un drag : item allégé pour visualiser le mouvement */
 .journal-item.journal-dragging {
   opacity: 0.55;
