@@ -5892,24 +5892,27 @@ function renderOracle() {
   if (!stage || !wrap || !result || !input) return;
 
   // Sync sub-nav active state (au cas où on a setView('oracle') sans passer par _setOracleMode)
-  document.querySelectorAll('.oracle-subnav-link').forEach(link => {
-    link.classList.toggle('active', link.dataset.oracleMode === _oracleMode);
+  document.querySelectorAll('.oracle-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.target === _oracleMode);
   });
 
-  // Bascule visibilité stage / galerie selon le mode
-  if (_oracleMode === 'reminiscence') {
-    stage.style.display = 'none';
+  // Bascule visibilité des deux sous-sections internes selon le mode actif
+  const sectNouveau       = document.getElementById('oracle-nouveau');
+  const sectReminiscences = document.getElementById('oracle-reminiscences');
+  if (sectNouveau)       sectNouveau.style.display       = (_oracleMode === 'nouveau')       ? '' : 'none';
+  if (sectReminiscences) sectReminiscences.style.display = (_oracleMode === 'reminiscences') ? '' : 'none';
+
+  if (_oracleMode === 'reminiscences') {
     _renderOracleGallery();
     return;
   }
-  stage.style.display = '';
 
   stage.classList.toggle('oracle-answered', _oracleAnswered);
   if (input.value !== _oracleQuery) input.value = _oracleQuery;
 
   if (!_oracleAnswered || !_oracleResults.length) {
     result.innerHTML = '';
-    _renderOracleGallery();   // garde la galerie à jour pour quand on bascule
+    _renderOracleGallery();   // garde le registre à jour pour quand on bascule
     return;
   }
 
