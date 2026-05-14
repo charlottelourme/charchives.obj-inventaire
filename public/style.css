@@ -573,72 +573,83 @@ body.verbe-active .search-bar {
 /* ── Header — logo à gauche, nav au centre, recherche à droite ──
      Brutalisme Poétique : pas de border-bottom — la séparation se fait
      par le vide vertical (padding-bottom du header + padding-top du grid). */
+/* ══════════════════════════════════════════════════════════════════════════
+   HEADER "CARTEL DE MUSÉE" — Bulletproof
+   Deux étages horizontaux strictement superposés :
+   - L1 : logo (gauche) ↔ outils (droite)
+   - L2 : nav principale (gauche) ↔ nav expérimentale (droite)
+   Aucune ancienne règle .view-tabs / order: 10 n'a d'effet ici car les
+   éléments ne portent plus ces classes. Les enfants directs du header sont
+   les .header-ligne-* eux-mêmes (deux blocs flex full-width). */
 header,
 header.global-header {
-  position: fixed;
+  position: fixed !important;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
   background: transparent !important;
   background-color: transparent !important;
-  border-bottom: none;
-  box-shadow: none;
+  border-bottom: none !important;
+  box-shadow: none !important;
   width: 100vw;
   max-width: 100vw;
   margin: 0;
-  /* Padding généreux pour un "cartel de musée" qui respire */
-  padding: calc(env(safe-area-inset-top) + 40px) var(--page-gutter) 28px;
+  padding: calc(env(safe-area-inset-top) + 40px) var(--page-gutter) 28px !important;
   min-height: calc(190px + env(safe-area-inset-top));
   height: auto;
-  display: flex;
-  flex-direction: column;            /* deux lignes empilées : institution puis navigation */
-  align-items: stretch;
-  justify-content: flex-start;
-  gap: 2rem;                          /* respiration entre L1 et L2 */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 2rem !important;
   box-sizing: border-box;
 }
 
-/* ══ Ligne 1 : Logo (gauche) + Utilitaires (droite) ════════════════════════ */
-.global-header .header-ligne-1 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: clamp(16px, 2vw, 32px);
-  width: 100%;
+/* Les deux lignes sont des FULL-WIDTH flex space-between */
+.global-header > .header-ligne-1,
+.global-header > .header-ligne-2 {
+  display: flex !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
 }
-.global-header .header-utilitaires {
-  display: flex;
-  align-items: center;
-  gap: clamp(16px, 2vw, 28px);
+.global-header > .header-ligne-1 { align-items: center !important; }
+.global-header > .header-ligne-2 {
+  align-items: baseline !important;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 1.5rem !important;
 }
 
-/* ══ Ligne 2 : Navigation principale (gauche) + Lentilles (droite) ════════ */
-.global-header .header-ligne-2 {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: clamp(20px, 3vw, 48px);
-  width: 100%;
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 1.5rem;
+/* Bloc outils (recherche + actions) reste à droite de L1 */
+.global-header .header-outils {
+  display: flex !important;
+  align-items: center !important;
+  gap: clamp(16px, 2vw, 28px) !important;
+  order: 2 !important;             /* à droite */
 }
+.global-header .header-logo {
+  order: 1 !important;             /* à gauche */
+}
+
+/* Nav principale : deux ancres avec gros gap, alignées à gauche */
 .global-header .nav-principale {
-  display: flex;
-  align-items: baseline;
-  gap: 2rem;
-  flex: 0 0 auto;
-  justify-content: flex-start;
+  display: flex !important;
+  gap: 3rem !important;
+  align-items: baseline !important;
+  flex: 0 0 auto !important;
 }
-.global-header .nav-lentilles {
-  display: flex;
-  align-items: baseline;
-  gap: clamp(.6rem, 1vw, 1rem);
-  flex: 0 0 auto;
-  justify-content: flex-end;
+/* Nav expérimentale : ancres + dots, alignées à droite */
+.global-header .nav-experimentale {
+  display: flex !important;
+  gap: 1rem !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
 }
-/* Séparateur point médian — Compagnon Light, très discret */
-.global-header .nav-lentille-sep {
+.global-header .nav-experimentale .dot {
   font-family: 'Compagnon', monospace;
   font-weight: 300;
   font-size: 1rem;
@@ -647,34 +658,42 @@ header.global-header {
   user-select: none;
 }
 
-/* Navigation principale (Inventaire / Journal) — Compagnon Bold, grande */
-.global-header .nav-principale-tab {
+/* ══ Typographies des liens — règles bulletproof !important ══════════════ */
+.global-header .nav-principale .nav-link {
   font-family: 'Compagnon', monospace !important;
   font-style: normal !important;
   font-weight: 700 !important;
-  font-size: clamp(1.5rem, 2vw, 1.8rem) !important;
-  letter-spacing: 0 !important;
+  font-size: 1.6rem !important;
   text-transform: none !important;
-  color: var(--text) !important;
+  letter-spacing: 0 !important;
+  line-height: 1.1 !important;
+  color: #71717A !important;
+  background: transparent !important;
+  border: none !important;
   padding: 0 !important;
+  cursor: pointer;
+  text-decoration: none;
 }
-.global-header .nav-principale-tab.active { color: #2A2A2E !important; }
-.global-header .nav-principale-tab:not(.active) { color: #71717A !important; }
-.global-header .nav-principale-tab:hover { color: #2A2A2E !important; }
+.global-header .nav-principale .nav-link.active,
+.global-header .nav-principale .nav-link:hover { color: #2A2A2E !important; }
 
-/* Lentilles expérimentales (triptyque · diorama · oracle) — Compagnon Light Italic, petit, lowercase */
-.global-header .nav-lentille-tab {
+.global-header .nav-experimentale .nav-link {
   font-family: 'Compagnon', monospace !important;
   font-style: italic !important;
   font-weight: 300 !important;
-  font-size: clamp(.9rem, 1vw, 1rem) !important;
-  letter-spacing: .01em !important;
+  font-size: 1rem !important;
   text-transform: lowercase !important;
+  letter-spacing: .01em !important;
+  line-height: 1.1 !important;
   color: #71717A !important;
+  background: transparent !important;
+  border: none !important;
   padding: 0 !important;
+  cursor: pointer;
+  text-decoration: none;
 }
-.global-header .nav-lentille-tab.active { color: #2A2A2E !important; }
-.global-header .nav-lentille-tab:hover { color: #2A2A2E !important; }
+.global-header .nav-experimentale .nav-link.active,
+.global-header .nav-experimentale .nav-link:hover { color: #2A2A2E !important; }
 /* Compensation de la hauteur du header fixed — repose sur --header-h
    (mesurée dynamiquement par JS, fallback CSS via :root). */
 body { padding-top: var(--header-h); }
