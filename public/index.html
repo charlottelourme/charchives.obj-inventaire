@@ -107,12 +107,16 @@
         <button class="mab-filter-btn" id="mabFilterBtn">+ Filtres</button>
       </div>
     </div>
-    <!-- ══ BANDEAU : 2 piliers Feroniapi — Objets à gauche, Intentions à droite ══ -->
+    <!-- ══ BANDEAU : Objets ▾ · Grille · Constellation · Intentions ▾ — tout sur UNE ligne centrée ══ -->
     <div class="inv-pillars" id="invPillars">
       <button class="inv-pillar" id="invPillarObjet" type="button" aria-haspopup="true" aria-expanded="false">
         <span class="inv-pillar-text">Objets</span>
         <span class="inv-pillar-caret">▾</span>
       </button>
+      <div class="inventory-view-toggle inv-pillars-views" id="inventoryViewToggle" role="tablist">
+        <button class="ivt-btn active" data-mode="grid" type="button">Grille</button>
+        <button class="ivt-btn" data-mode="constellation" type="button">Constellation</button>
+      </div>
       <button class="inv-pillar" id="invPillarIntention" type="button" aria-haspopup="true" aria-expanded="false">
         <span class="inv-pillar-text">Intentions</span>
         <span class="inv-pillar-caret">▾</span>
