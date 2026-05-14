@@ -12618,39 +12618,54 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
   .card-swipe-container > .swipe-slide:not(:first-child) { display: none !important; }
 }
 
-/* Mobile : scroll-snap horizontal natif + cache la scrollbar. */
+/* Mobile : scroll-snap horizontal natif + cache la scrollbar.
+   Sélecteurs DOUBLEMENT spécifiés (.grid .card .card-swipe-container) pour
+   battre l'override `.grid .card-thumb-area img { position: relative !important }`
+   plus haut dans le fichier, qui sinon casse l'absolute des slides en 2-cols.
+   Mêmes règles en 1-col qu'en 2-col → comportement identique. */
 @media (max-width: 767px) {
+  .grid .card .card-swipe-container,
   .card-swipe-container {
-    display: flex !important;       /* défensif : empêche un override par inadvertance */
-    overflow-x: auto;
-    overflow-y: hidden;
+    display: flex !important;
+    flex-direction: row !important;       /* défensif : empêche le stack vertical */
+    flex-wrap: nowrap !important;          /* empêche les slides de wrap sur 2 lignes */
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;        /* Firefox */
+    scrollbar-width: none;
+    width: 100% !important;
   }
   .card-swipe-container::-webkit-scrollbar { display: none; }
-  .swipe-slide {
-    flex: 0 0 100%;
+  .grid .card .swipe-slide,
+  .card-swipe-container > .swipe-slide {
+    flex: 0 0 100% !important;             /* chaque slide = 100% de la largeur container */
+    min-width: 100% !important;
+    max-width: 100% !important;
     scroll-snap-align: start;
     scroll-snap-stop: always;
-    /* Toutes les slides au même aspect-ratio que le poème (3/4) — sinon le
-       carrousel expand verticalement quand on swipe entre photo landscape
-       et poème portrait, ce qui donne l'impression que la description
-       "déborde en dessous" en mode 2-colonnes. */
-    aspect-ratio: 3 / 4;
-    position: relative;
-    overflow: hidden;
+    /* Toutes les slides au même aspect-ratio (3/4) — sinon le carrousel
+       expand verticalement entre photo landscape et poème portrait, ce qui
+       donne l'impression que la description "déborde en dessous" en 2-cols. */
+    aspect-ratio: 3 / 4 !important;
+    height: auto !important;
+    position: relative !important;
+    overflow: hidden !important;
   }
-  /* Image principale + cutout : remplit la slide en respectant son ratio */
+  /* Image principale + cutout : remplit la slide en respectant son ratio.
+     `inset: 0` battu par les rules .grid .card-thumb-area img plus haut,
+     d'où le double sélecteur et !important. */
+  .grid .card .swipe-slide-main img,
+  .grid .card .swipe-slide-extra img,
   .swipe-slide-main img,
   .swipe-slide-extra img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    object-fit: contain !important;
   }
   /* En mobile, on cache la nav ‹/› (le swipe natif suffit) */
   .card-nav { display: none !important; }
