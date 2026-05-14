@@ -4035,9 +4035,9 @@ body.dark-mode .card-journal-toggle.on .cjt-thumb { background: #2A2A2E; }
    boutons stylés comme "+ objet" de l'Inventaire (.btn.btn-primary). */
 .journal-actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;       /* aligné à gauche sous la nav */
   gap: 1rem;
-  margin: 1rem 0;                    /* top : 1rem (16px) — cohérent avec Triptyque */
+  margin: 0 0 1rem 0;                /* collé sous la nav, respiration sous */
   padding: 0;
   background: transparent;
   flex-wrap: wrap;
