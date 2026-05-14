@@ -2544,9 +2544,38 @@ function renderConstellation(filtered) {
   if (_conSim) { _conSim.stop(); _conSim = null; }
   canvas.innerHTML = '';
 
-  const items = filtered || state.collections;
+  const rawItems = filtered || state.collections;
+
+  // ── Constellation = exclusivement les images détourées (PNG sans fond) ──
+  // Réutilise la même logique que le Diorama : on lance les checks alpha
+  // pour les PNG pas encore vérifiés, puis on re-render quand c'est terminé
+  // pour faire apparaître les nouveaux items détourés validés.
+  const pendingChecks = [];
+  rawItems.forEach(c => {
+    if (!c || c.type === 'note' || c.type === 'fragment' || c.type === 'journal-photo') return;
+    if (c.imageMode === 'cutout') return; // tag explicite, bypass
+    (c.photos || []).forEach(p => {
+      if (p && p.toLowerCase().endsWith('.png') && !_dioAlphaCache.has(p)) {
+        pendingChecks.push(_dioCheckTransparent(p));
+      }
+    });
+  });
+  if (pendingChecks.length > 0) {
+    Promise.all(pendingChecks).then(() => {
+      if (state.view === 'grid' && state.inventoryMode === 'constellation') {
+        renderConstellation(state.detailList.length ? state.detailList : state.collections);
+      }
+    });
+  }
+
+  // Ne garder que les objets avec un PNG détouré disponible
+  const items = rawItems.filter(c =>
+    c && c.type !== 'note' && c.type !== 'fragment' && c.type !== 'journal-photo' &&
+    !!_dioPhotoFor(c)
+  );
+
   if (!items.length) {
-    canvas.innerHTML = '<div class="con-empty">Aucun objet à afficher.</div>';
+    canvas.innerHTML = '<div class="con-empty">Aucun objet détouré à afficher.</div>';
     return;
   }
 
