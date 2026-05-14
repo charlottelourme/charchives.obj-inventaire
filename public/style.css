@@ -10774,44 +10774,47 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   outline-offset: 4px;
 }
 /* Handles de resize (visibles uniquement sur l'item sélectionné).
-   14×14 visuels + hit-area invisible étendue de 8px tout autour via ::before
-   → zone cliquable réelle de 30×30, beaucoup plus pratique au pointeur fin. */
+   18×18 visuels — point noir + halo blanc + ombre portée → lisible sur TOUS
+   fonds (clair, sombre, coloré).
+   Hit-area invisible étendue de 10px tout autour via ::before → zone
+   cliquable réelle ~38×38, très confortable au trackpad. */
 .dio-handle {
   position: absolute;
-  width: 14px;
-  height: 14px;
-  background: #fff;
-  border: 2px solid #1A1A1A;
+  width: 18px;
+  height: 18px;
+  background: #1A1A1A;             /* centre noir, plus visible que blanc */
+  border: 3px solid #fff;          /* anneau blanc — halo de contraste */
   border-radius: 50%;
   cursor: nwse-resize;
   z-index: 10;
   display: none;
   pointer-events: all;
-  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+  /* Triple ombrage : noir extérieur (contour) + ombre portée (relief) */
+  box-shadow: 0 0 0 1px #1A1A1A, 0 2px 6px rgba(0,0,0,.45);
 }
 /* Hit-area invisible étendue — facilite le clic au pointeur fin / trackpad */
 .dio-handle::before {
   content: '';
   position: absolute;
-  inset: -8px;
+  inset: -10px;
   border-radius: 50%;
 }
 .dio-selected .dio-handle { display: block; }
-.dio-handle-nw { top: -7px;  left: -7px;  cursor: nwse-resize; }
-.dio-handle-ne { top: -7px;  right: -7px; cursor: nesw-resize; }
-.dio-handle-sw { bottom: -7px; left: -7px;  cursor: nesw-resize; }
-.dio-handle-se { bottom: -7px; right: -7px; cursor: nwse-resize; }
-/* Handle de rotation — plus gros et plus visible que les angles, avec un
-   symbole ↻ pour indiquer clairement sa fonction. */
+.dio-handle-nw { top: -9px;  left: -9px;  cursor: nwse-resize; }
+.dio-handle-ne { top: -9px;  right: -9px; cursor: nesw-resize; }
+.dio-handle-sw { bottom: -9px; left: -9px;  cursor: nesw-resize; }
+.dio-handle-se { bottom: -9px; right: -9px; cursor: nwse-resize; }
+/* Handle de rotation — encore plus gros, avec un ↻ blanc bien lisible
+   pour signifier clairement sa fonction de rotation. */
 .dio-handle-rot {
   position: absolute;
-  top: -32px;
+  top: -38px;
   left: 50%;
   transform: translateX(-50%);
-  width: 20px;
-  height: 20px;
-  background: #fff;
-  border: 2px solid #1A1A1A;
+  width: 24px;
+  height: 24px;
+  background: #1A1A1A;
+  border: 3px solid #fff;
   border-radius: 50%;
   cursor: grab;
   z-index: 10;
@@ -10819,25 +10822,35 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   align-items: center;
   justify-content: center;
   pointer-events: all;
-  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+  box-shadow: 0 0 0 1px #1A1A1A, 0 2px 6px rgba(0,0,0,.45);
   font-family: 'Compagnon', monospace;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-  color: #1A1A1A;
+  color: #fff;
   line-height: 1;
 }
 .dio-handle-rot::before {
   content: '';
   position: absolute;
-  inset: -8px;
+  inset: -10px;
   border-radius: 50%;
 }
 .dio-handle-rot::after {
   content: '↻';
   pointer-events: none;
+  font-size: 15px;
+  line-height: 1;
 }
 .dio-handle-rot:active { cursor: grabbing; }
 .dio-selected .dio-handle-rot { display: flex; }
+
+/* Cadre de sélection plus marqué — double trait blanc/noir → lisible sur
+   tout fond. Remplace le ancien outline dashed semi-transparent. */
+.diorama-item.dio-selected {
+  outline: 1.5px solid #1A1A1A;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.85);
+}
 
 /* ── Loading + Crédits ── */
 .diorama-loading {
