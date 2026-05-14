@@ -12349,6 +12349,107 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   MOBILE — Navigation déroulante depuis le logo Chacharlatan
+   ══════════════════════════════════════════════════════════════════════════
+   Sur mobile, .header-ligne-2 (qui contient nav-principale + nav-experimentale)
+   est CACHÉE par défaut. Un tap sur #siteTitle ajoute la classe .mobile-nav-open
+   sur body → la ligne 2 se déplie comme un menu vertical sous le logo, en
+   absolute positioning pour ne pas pousser le contenu de la page.
+   Pas de séparateurs ni de bordures — pure typographie. */
+@media (max-width: 520px) {
+  /* Caret discret après le titre pour signaler que c'est cliquable */
+  .global-header .header-logo {
+    cursor: pointer;
+    position: relative;
+  }
+  .global-header .header-logo::after {
+    content: '▾';
+    font-size: 0.7em;
+    margin-left: 6px;
+    opacity: 0.55;
+    display: inline-block;
+    transition: transform 0.2s ease;
+    vertical-align: 1px;
+  }
+  body.mobile-nav-open .global-header .header-logo::after {
+    transform: rotate(180deg);
+  }
+
+  /* Cache la ligne 2 (nav) par défaut — elle est désormais un dropdown */
+  .global-header > .header-ligne-2 {
+    display: none !important;
+  }
+  /* Quand le menu est ouvert : la ligne 2 réapparaît en stack vertical,
+     en absolute pour ne pas affecter la mise en page sous le header. */
+  body.mobile-nav-open .global-header > .header-ligne-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    /* Positionné juste sous la ligne 1 du header — opaque pour cacher le contenu derrière. */
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 16px var(--grid-margin-x, 14px) 20px !important;
+    background: var(--bg);
+    /* Pas de bordure, pas de filet — juste la couleur de fond du body */
+    border: none !important;
+    z-index: 1100;
+    animation: mobileNavSlideDown 0.18s ease both;
+  }
+  body.dark-mode.mobile-nav-open .global-header > .header-ligne-2 {
+    background: #080809;
+  }
+  @keyframes mobileNavSlideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Dans le dropdown : les deux groupes (principale + experimentale) deviennent
+     un seul stack vertical, sans titre/séparation/dots. */
+  body.mobile-nav-open .global-header .nav-principale,
+  body.mobile-nav-open .global-header .nav-experimentale {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+  /* Pas de dots dans la nav-experimentale en mode dropdown */
+  body.mobile-nav-open .global-header .nav-experimentale .dot {
+    display: none !important;
+  }
+  /* Liens du dropdown : grande taille tactile + typo cohérente */
+  body.mobile-nav-open .global-header .nav-link {
+    display: block !important;
+    width: 100% !important;
+    padding: 8px 0 !important;
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    color: var(--text-2) !important;
+    background: transparent !important;
+  }
+  body.mobile-nav-open .global-header .nav-link.active {
+    color: var(--text) !important;
+  }
+  body.mobile-nav-open .global-header .nav-link:active {
+    opacity: 0.55;
+  }
+
+  /* Voile semi-transparent derrière le dropdown — tap pour fermer. */
+  .mobile-nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.18);
+    z-index: 1099;
+    display: none;
+  }
+  body.mobile-nav-open .mobile-nav-backdrop { display: block; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
    MOBILE — Toggle 1 / 2 colonnes (bouton mab-cols-toggle)
    ══════════════════════════════════════════════════════════════════════════
    Default mobile (<768px) : 1 colonne. Si .mobile-2-cols est posée par le JS
