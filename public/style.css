@@ -12105,7 +12105,7 @@ body.dark-mode .inv-dd-panel::after {
 .invt-left {
   display: inline-flex;
   align-items: baseline;
-  gap: 1.4rem;
+  gap: 1rem;                          /* resserré entre 28 objets / Plus récent / Tous */
   flex-shrink: 0;
 }
 .invt-count { white-space: nowrap; flex-shrink: 0; color: var(--text-3); }
