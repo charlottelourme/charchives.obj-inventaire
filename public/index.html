@@ -48,6 +48,30 @@
       <div class="header-actions">
         <button class="btn btn-ghost btn-icon-only" id="settingsBtn" title="Paramètres">⚙</button>
         <button class="btn btn-ghost btn-icon-only" id="darkModeBtn" title="Mode sombre">◑</button>
+        <!-- Bug report : à droite du Dark Mode -->
+        <button class="btn btn-ghost btn-icon-only" id="bugReportBtn" type="button" title="Signaler un bug" aria-label="Signaler un bug">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="8" y="6" width="8" height="14" rx="4"/>
+            <path d="M19 7l-3 2"/>
+            <path d="M5 7l3 2"/>
+            <path d="M19 13h-3"/>
+            <path d="M8 13H5"/>
+            <path d="M19 19l-3-2"/>
+            <path d="M5 19l3-2"/>
+            <path d="M12 6V4"/>
+            <path d="M9 4l3-2 3 2"/>
+          </svg>
+        </button>
+        <button class="btn btn-ghost btn-icon-only" id="bugHistoryBtn" type="button" title="Voir l'historique des bugs" aria-label="Historique des bugs">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="8" y1="6" x2="20" y2="6"/>
+            <line x1="8" y1="12" x2="20" y2="12"/>
+            <line x1="8" y1="18" x2="20" y2="18"/>
+            <line x1="4" y1="6" x2="4.01" y2="6"/>
+            <line x1="4" y1="12" x2="4.01" y2="12"/>
+            <line x1="4" y1="18" x2="4.01" y2="18"/>
+          </svg>
+        </button>
         <button class="btn btn-primary" id="newBtn">+ objet</button>
       </div>
     </div>
