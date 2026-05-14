@@ -10741,7 +10741,13 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   max-width: none;         /* taille naturelle de l'image — le zoom D3 scale tout */
   user-select: none;
   pointer-events: none;
+  /* Anti-flash : démarre invisible, fade-in dès que `applyCover` a appliqué
+     le scale (classe .dio-ready). Évite le flash où l'image apparaît
+     brièvement à sa taille naturelle avant d'être correctement positionnée. */
+  opacity: 0;
+  transition: opacity .15s ease-out;
 }
+.diorama-backdrop.dio-ready { opacity: 1; }
 
 /* ── Items placés sur la scène ── */
 .diorama-item {
