@@ -11538,12 +11538,15 @@ body.dark-mode .diorama-save-btn {
 }
 body.dark-mode .diorama-save-btn:hover { background: #fff; color: #1A1A1A; }
 
-/* ── Galerie des compositions enregistrées ────────────────────────────── */
+/* ── Galerie des Réminiscences (compositions enregistrées) ──────────────
+   Grille fixe à 3 colonnes, centrée, max-width généreux pour respirer. */
 .diorama-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-  padding: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 32px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 .diorama-gallery-empty {
   font-family: 'Compagnon', monospace;
