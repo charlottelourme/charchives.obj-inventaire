@@ -169,17 +169,13 @@
       <button class="sfb-pill sfb-pill-sm sfb-pill-selection" data-bookmark="1"><span class="sel-ast-wrap"><svg class="ast-icon sel-ast" viewBox="0 0 24 24" width="10" height="10" fill="none" aria-hidden="true"><line class="ast-s" x1="12" y1="4" x2="12" y2="20"/><line class="ast-s" x1="4" y1="12" x2="20" y2="12"/></svg></span>Sélection</button>
     </div>
 
-    <!-- Toolbar discrète : UNE SEULE ligne alignée sur le bandeau header.
-         Compteur (gauche) — Grille | Constellation + Trier ▾ + Statut ▾ (centre) — slider (droite).
-         Toute la ligne en typo unifiée (même police, même taille). -->
+    <!-- Toolbar : remontée à gauche sous le header.
+         23 objets · Plus récent ▾ · Tous ▾  (groupés à gauche, alignés sur le logo)
+         Slider à droite (aligné sur le dernier élément du header).
+         Le toggle Grille/Constellation a migré dans .inv-pillars (centré). -->
     <div class="inv-toolbar" id="invToolbar">
-      <span class="invt-count" id="countLabel"></span>
-      <div class="invt-mid">
-        <div class="inventory-view-toggle" id="inventoryViewToggle" role="tablist">
-          <button class="ivt-btn active" data-mode="grid" type="button">Grille</button>
-          <span class="ivt-sep">|</span>
-          <button class="ivt-btn" data-mode="constellation" type="button">Constellation</button>
-        </div>
+      <div class="invt-left">
+        <span class="invt-count" id="countLabel"></span>
         <select class="invt-select select-minimal" id="sortSelect">
           <option value="chrono-desc">Plus récent</option>
           <option value="chrono">Plus ancien</option>
