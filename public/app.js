@@ -3149,11 +3149,13 @@ function renderJournal(filtered) {
       const bg = c.backgroundColor || '#fbe7bc';
       const isDark = _luminance(bg) < 0.5;
       const text = (c.content || c.textContent || '').replace(/\n/g, '<br>');
+      // Taille du texte : applique la classe note-size-lg si "Grand", sinon défaut (Standard)
+      const textSizeCls = c.noteSize === 'large' ? ' note-size-lg' : '';
       item.classList.add('journal-note');
       item.innerHTML = `
         ${sizePickerHTML}
         <div class="journal-note-inner" style="background:${bg};color:${isDark ? '#F4F4F5' : '#2A2A2E'}">
-          <div class="journal-note-text">${text}</div>
+          <div class="journal-note-text${textSizeCls}">${text}</div>
         </div>`;
     } else {
       const src = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
