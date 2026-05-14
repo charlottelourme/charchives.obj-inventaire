@@ -11699,9 +11699,9 @@ body.dark-mode .inv-dd-panel::after {
   background-color: transparent;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'><path d='M0 0l5 6 5-6z' fill='%2352525B'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 2px center;
+  background-position: right 0 center;
   background-size: 6px 4px;
-  padding: 6px 14px 6px 4px;         /* place pour la flèche à droite */
+  padding: 6px 9px 6px 4px;          /* triangle quasi collé au texte */
   font: inherit;                      /* hérite de .inv-toolbar */
   color: var(--text-3);
   cursor: pointer;
