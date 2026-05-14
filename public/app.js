@@ -2821,7 +2821,28 @@ function _drawConGraph(canvas, nodes, links) {
         return nd.bookmarked ? 1 : 0;
       });
     })
-    .on('click', (event, d) => openDetail(d.id));
+    .on('click', (event, d) => openDetail(d.id))
+    // ── Mobile : touchend de secours pour ouvrir la fiche objet ──
+    // Sur mobile, le `click` synthétique peut ne pas être dispatché si la
+    // chaîne touchstart → drag passe par stopImmediatePropagation. On bind
+    // explicitement touchend (sans mouvement) → openDetail.
+    .on('touchend', function(event, d) {
+      const tch = event.changedTouches?.[0];
+      const start = this._touchStart;
+      if (!tch || !start) { this._touchStart = null; return; }
+      const dx = tch.clientX - start.x;
+      const dy = tch.clientY - start.y;
+      const moved = Math.hypot(dx, dy) > 8;            // seuil tap = 8px
+      this._touchStart = null;
+      if (moved) return;                                // c'était un drag, pas un tap
+      // Empêche le click synthétique d'ouvrir une 2e fois
+      event.preventDefault();
+      openDetail(d.id);
+    })
+    .on('touchstart', function(event) {
+      const tch = event.touches?.[0];
+      if (tch) this._touchStart = { x: tch.clientX, y: tch.clientY };
+    });
 
   // ── Labels de cluster (titre verbe en majuscules) ──
   // CRÉÉ EN DERNIER → rendu AU-DESSUS de tout (liens, halos, images)
