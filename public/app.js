@@ -5410,7 +5410,7 @@ function _renderInventoryStrip() {
     return;
   }
   if (emptyEl) emptyEl.style.display = 'none';
-  if (infoEl)  infoEl.textContent = `${selected.length} objet${selected.length > 1 ? 's' : ''} dans la sélection`;
+  if (infoEl)  infoEl.textContent = `${selected.length} objet${selected.length > 1 ? 's' : ''} sélectionné${selected.length > 1 ? 's' : ''}`;
   const items = selected;
   strip.innerHTML = items.map(c => {
     const img = c.photos?.[0] ? photoUrl(c.photos[0]) : null;
