@@ -11886,7 +11886,7 @@ body.dark-mode .diorama-save-btn:hover { background: #fff; color: #1A1A1A; }
   justify-content: center;
   align-items: baseline;
   gap: 1.8rem;                       /* gap resserré pour densité visuelle */
-  margin: 0 0 0.4rem;
+  margin: 0 0 1.4rem;                /* respiration entre Objets/Intentions et Grille/Constellation */
   position: relative;
   z-index: 50;
   padding: 0 var(--page-gutter, 24px);
@@ -11895,7 +11895,7 @@ body.dark-mode .diorama-save-btn:hover { background: #fff; color: #1A1A1A; }
 .inv-views-row {
   display: flex;
   justify-content: center;
-  margin: 0 0 0.6rem;                /* serré contre les piliers du dessus */
+  margin: 0 0 0.6rem;
   padding: 0 var(--page-gutter, 24px);
 }
 /* Toggle Grille / Constellation — typo « Piocher » du Triptyque :
