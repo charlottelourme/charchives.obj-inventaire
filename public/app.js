@@ -2288,19 +2288,19 @@ function _initNoteDragDrop(el, items) {
 }
 
 // ── Couleurs disponibles pour les notes ──────────────────────
+// Palette restreinte : les 7 duotones "Matières Brutes" + anthracite (gris foncé).
+// Si l'utilisatrice a personnalisé les verbes avec d'autres couleurs, elles ne
+// sont PAS exposées ici (la palette reste stable pour la cohérence éditoriale).
 function _noteColors() {
-  const verbeColors = getVerbes()
-    .filter(v => v.bgColor || v.color)
-    .map(v => ({ hex: v.bgColor || v.color, label: v.name }));
   return [
-    { hex: '#E5E5E5', label: 'Blanc chaud' },
-    { hex: '#F5E6D3', label: 'Parchemin' },
-    { hex: '#EDE8E0', label: 'Lin' },
-    { hex: '#D9D0C7', label: 'Pierre' },
-    { hex: '#E8EEF4', label: 'Ciel' },
-    { hex: '#E8F4EF', label: 'Menthe' },
+    { hex: '#F5E6D3', label: 'Ocre' },
+    { hex: '#E3E8E3', label: 'Sauge' },
+    { hex: '#E1E6EB', label: 'Indigo' },
+    { hex: '#F3E8E4', label: 'Plâtre' },
+    { hex: '#F7EFE1', label: 'Safran' },
+    { hex: '#E5E5E7', label: 'Ardoise' },
+    { hex: '#E8E2E6', label: 'Améthyste' },
     { hex: '#2D2D2D', label: 'Anthracite' },
-    ...verbeColors,
   ];
 }
 
