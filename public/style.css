@@ -12631,14 +12631,14 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
   to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
 }
 
-/* Actions sous le triptyque : Re-piocher · Effacer */
+/* Actions AU-DESSUS du triptyque : Re-piocher · Effacer (compact, inline) */
 .oracle-actions {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 14px;
-  margin-top: clamp(28px, 5vh, 56px);
-  padding-bottom: 60px;
+  margin-top: 0;
+  padding-bottom: 0;
 }
 .oracle-action {
   background: transparent;
