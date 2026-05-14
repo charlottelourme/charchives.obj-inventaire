@@ -4087,9 +4087,8 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
       });
     } else {
       cell.innerHTML = `
-        <label class="dio-slot-add" title="Ajouter un fond à ce slot">
+        <label class="dio-slot-add" title="Ajouter un fond au slot ${i + 1}">
           <span class="dio-slot-plus">+</span>
-          <span class="dio-slot-label">SLOT ${i + 1}</span>
           <input type="file" accept="image/*" class="dio-slot-input" hidden>
         </label>`;
       const input = cell.querySelector('.dio-slot-input');
