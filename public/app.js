@@ -2208,6 +2208,19 @@ window.addEventListener('resize', () => {
   _poemResizeTimer = setTimeout(() => _positionPoemOverlays(), 120);
 });
 
+// ── Constellation full-screen : re-render au resize de la fenêtre pour
+//    redistribuer les nœuds sur les nouvelles dimensions du viewport. ──
+let _conResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (state.view !== 'grid' || state.inventoryMode !== 'constellation') return;
+  clearTimeout(_conResizeTimer);
+  _conResizeTimer = setTimeout(() => {
+    if (state.view === 'grid' && state.inventoryMode === 'constellation') {
+      renderConstellation(state.detailList.length ? state.detailList : state.collections);
+    }
+  }, 200);
+});
+
 // ══════════════════════════════════════════════════════════════
 // NOTES INTERCALAIRES — Blocs de texte narratifs
 // ══════════════════════════════════════════════════════════════
