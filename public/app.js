@@ -5749,13 +5749,33 @@ function renderOracle() {
 
   if (!_oracleAnswered || !_oracleResults.length) {
     result.innerHTML = '';
+    // La galerie reste accessible même en état initial (scroll vers le bas)
+    _renderOracleGallery();
     return;
   }
 
-  // Triptyque — 3 cartes alignées au centre
+  // ── Bloc question d'archivage : 3 états possibles ──
+  //   null  → "Archiver cette lecture ? · Oui · Non"
+  //   true  → "✓ Lecture archivée"
+  //   false → vide (silencieux après refus)
+  let archiveBlock = '';
+  if (_oracleCurrentArchived === null) {
+    archiveBlock = `
+      <div class="oracle-archive-q">
+        <span class="oracle-archive-q-label">Archiver cette lecture&nbsp;?</span>
+        <button class="oracle-action oracle-action-archive" id="oracleArchiveYes" type="button">Oui</button>
+        <span class="oracle-action-sep">·</span>
+        <button class="oracle-action oracle-action-archive" id="oracleArchiveNo" type="button">Non</button>
+      </div>`;
+  } else if (_oracleCurrentArchived === true) {
+    archiveBlock = `<div class="oracle-archive-status">✓ Lecture archivée</div>`;
+  }
+
+  // Triptyque — 3 cartes alignées au centre + question d'archivage + actions
   const cardsHTML = _oracleResults.map(c => cardHTML(c)).join('');
   result.innerHTML = `
     <div class="oracle-triptyque">${cardsHTML}</div>
+    ${archiveBlock}
     <div class="oracle-actions">
       <button class="oracle-action" id="oracleRepick" type="button">Re-piocher</button>
       <span class="oracle-action-sep">·</span>
@@ -5766,10 +5786,16 @@ function renderOracle() {
   // Bind clics sur les cartes (ouverture fiche détail, navigation)
   bindCardEvents(result);
 
+  // Boutons Oui / Non de la question d'archivage
+  document.getElementById('oracleArchiveYes')?.addEventListener('click', _archiveOracleReading);
+  document.getElementById('oracleArchiveNo')?.addEventListener('click',  _declineOracleArchive);
+
   // Re-piocher : nouveau tirage avec la même query (utile pour re-randomiser
-  // en cas d'égalités de score)
+  // en cas d'égalités de score). Reset de l'état d'archivage car c'est une
+  // nouvelle "lecture" qui mérite une nouvelle décision.
   document.getElementById('oracleRepick')?.addEventListener('click', () => {
     _oracleResults = getOracleMatches(_oracleQuery, state.collections);
+    _oracleCurrentArchived = null;
     renderOracle();
   });
   // Effacer : retour à l'état initial
@@ -5777,9 +5803,13 @@ function renderOracle() {
     _oracleQuery = '';
     _oracleResults = [];
     _oracleAnswered = false;
+    _oracleCurrentArchived = null;
     renderOracle();
     document.getElementById('oracleInput')?.focus();
   });
+
+  // Galerie toujours rendue en bas (visible si archives existent)
+  _renderOracleGallery();
 }
 
 // Soumission de l'oracle — appelé sur Enter
@@ -5791,6 +5821,7 @@ function _oracleSubmit() {
   _oracleQuery = q;
   _oracleResults = getOracleMatches(q, state.collections);
   _oracleAnswered = true;
+  _oracleCurrentArchived = null;  // nouvelle lecture → question d'archivage à nouveau visible
   renderOracle();
 }
 
