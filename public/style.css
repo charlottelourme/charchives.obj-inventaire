@@ -8748,12 +8748,14 @@ body.dark-mode .trios-rule-dropdown {
 }
 .trios-rule-controls .trios-filter-sel { min-width: 180px; }
 
-/* ── Trios — Verrou de slot (modes Collisions / Affinités / Aléatoire) ── */
+/* ── Trios — Verrou de slot (modes Collisions / Affinités / Aléatoire)
+   z-index 8 pour passer au-dessus de .card-bookmark-btn (z=6) qui est
+   son voisin visuel en haut à droite. */
 .trios-slot-lock {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 3;
+  top: 10px;
+  left: 10px;
+  z-index: 8;
   width: 26px;
   height: 26px;
   display: flex;
@@ -8766,6 +8768,7 @@ body.dark-mode .trios-rule-dropdown {
   padding: 0;
   border-radius: 0;
   opacity: 0;
+  pointer-events: auto;
   transition: opacity .15s, background .15s, color .15s, border-color .15s;
 }
 .trios-slot-wrap.auto:hover .trios-slot-lock,
