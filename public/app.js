@@ -9962,6 +9962,9 @@ function bindEvents() {
   document.getElementById('viewAtelier').addEventListener('click', () => { _currentTrio = null; setView('trios'); });
   document.getElementById('viewDiorama').addEventListener('click', () => setView('diorama'));
   document.getElementById('viewOracle')?.addEventListener('click', () => {
+    // Quand on entre dans Oracle, on revient toujours sur le mode "tirage"
+    // (le mode "reminiscence" reste opt-in via le sub-nav).
+    _oracleMode = 'tirage';
     setView('oracle');
     // Filet de sécurité : si le préchargement initial a raté, retente.
     // Idempotent — n'effectue aucun refetch si déjà chargé.
@@ -9972,6 +9975,10 @@ function bindEvents() {
   // Oracle — soumission par Entrée
   document.getElementById('oracleInput')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); _oracleSubmit(); }
+  });
+  // Oracle — sub-nav (Nouveau tirage / Réminiscences) en top-right
+  document.querySelectorAll('.oracle-subnav-link').forEach(link => {
+    link.addEventListener('click', () => _setOracleMode(link.dataset.oracleMode));
   });
   document.getElementById('viewCalendar').addEventListener('click', () => setView('calendar'));
   document.getElementById('viewCatalogue').addEventListener('click', () => setView('catalogue'));
