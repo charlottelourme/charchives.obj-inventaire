@@ -11117,13 +11117,189 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   text-overflow: ellipsis;
 }
 
+/* ── Sub-nav Diorama (esthétique Oracle) ────────────────────────────────
+   Onglets "Nouvelle composition" / "Compositions" positionnés absolute
+   top-right pour "tomber" sous le mot Diorama du header. */
+.diorama-view { position: relative; }
+.diorama-subnav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  margin-right: 2rem;
+  z-index: 5;
+}
+.diorama-tab {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: 'Compagnon', monospace;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  color: var(--text-3, #A1A1AA);
+  text-decoration: none;
+  transition: color .2s ease;
+  white-space: nowrap;
+}
+.diorama-tab:hover { color: var(--text-2, #3F3F46); }
+.diorama-tab.active {
+  color: var(--text, #1A1A1A);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+body.dark-mode .diorama-tab:hover { color: var(--text-2, #D4D4D8); }
+body.dark-mode .diorama-tab.active { color: var(--text, #F4F4F5); }
+
+/* ── Modes — affichage exclusif via attribut hidden ───────────────────── */
+.diorama-mode-nouvelle { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.diorama-mode-nouvelle[hidden] { display: none; }
+.diorama-mode-compositions { display: block; flex: 1; min-height: 0; overflow: auto; }
+.diorama-mode-compositions[hidden] { display: none; }
+
+/* ── Sidebar droite : miroir de la gauche (bordure à gauche au lieu de droite) ── */
+.diorama-sidebar-right {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+/* La sidebar droite n'a pas de header (filtre/suggestions partagés avec la gauche) */
+.diorama-sidebar-right .diorama-sidebar-list { padding-top: 12px; }
+
+/* ── Listes groupées par intention ────────────────────────────────────── */
+.diorama-sidebar-list-grouped {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: stretch;
+  gap: 12px;
+}
+.diorama-lib-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.diorama-lib-section-title {
+  font-family: 'Compagnon', monospace;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--text-2);
+  margin: 0 0 4px 0;
+  padding: 0;
+  letter-spacing: 0.01em;
+}
+.diorama-lib-section-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── Bouton flottant "Enregistrer" sur la scène ───────────────────────── */
+.diorama-save-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+  font-family: 'Compagnon', monospace;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: #1A1A1A;
+  background: rgba(255,255,255,.92);
+  border: 1px solid #1A1A1A;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.diorama-save-btn:hover {
+  background: #1A1A1A;
+  color: #fff;
+}
+body.dark-mode .diorama-save-btn {
+  color: #fff;
+  background: rgba(26,26,26,.85);
+  border-color: #fff;
+}
+body.dark-mode .diorama-save-btn:hover { background: #fff; color: #1A1A1A; }
+
+/* ── Galerie des compositions enregistrées ────────────────────────────── */
+.diorama-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 24px;
+}
+.diorama-gallery-empty {
+  font-family: 'Compagnon', monospace;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text-3);
+  padding: 40px;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+.diorama-gallery-card {
+  border: 1px solid var(--border);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg);
+}
+.diorama-gallery-name {
+  font-family: 'Compagnon', monospace;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--text);
+  word-break: break-word;
+}
+.diorama-gallery-meta {
+  font-family: 'Compagnon', monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+}
+.diorama-gallery-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+.diorama-gallery-actions button {
+  flex: 1;
+  font-family: 'Compagnon', monospace;
+  font-size: 11px;
+  color: var(--text-2);
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 5px 0;
+  cursor: pointer;
+  transition: color .12s, border-color .12s;
+}
+.diorama-gallery-actions button:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
 /* ── Responsive mobile ── */
 @media (max-width: 520px) {
-  .diorama-sidebar { width: 100%; height: 120px; border-right: none; border-bottom: 1px solid var(--border); }
+  .diorama-sidebar { width: 100%; height: 120px; border-right: none; border-left: none; border-bottom: 1px solid var(--border); }
+  .diorama-sidebar-right { border-left: none; border-top: 1px solid var(--border); }
   .diorama-layout { flex-direction: column; }
   .diorama-sidebar-list { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; }
+  .diorama-sidebar-list-grouped { flex-direction: column; flex-wrap: wrap; }
   .diorama-lib-item { width: 60px; flex-shrink: 0; }
   .diorama-decor-thumb { width: 56px; height: 36px; }
+  .diorama-subnav { margin-right: 1rem; }
+  .diorama-gallery { grid-template-columns: 1fr; padding: 12px; }
 }
 
 
