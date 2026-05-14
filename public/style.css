@@ -844,9 +844,11 @@ header.global-header {
 .mfn-link:hover::before {
   content: '';
   position: absolute;
-  inset: -3px -8px;
-  background: rgba(42, 42, 46, 0.08);
-  filter: blur(8px);
+  inset: -50%;
+  background: radial-gradient(ellipse at center,
+              rgba(42, 42, 46, 0.10) 0%,
+              rgba(42, 42, 46, 0.05) 40%,
+              transparent 75%);
   z-index: -1;
   pointer-events: none;
 }
