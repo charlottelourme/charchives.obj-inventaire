@@ -5697,30 +5697,53 @@ function _lockSvg(closed) {
   </svg>`;
 }
 
-// Affiche / masque la barre d'actions (Re-piocher) selon onglet et présence d'un trio.
+// Affiche / masque la barre d'actions (Re-piocher + Sauvegarder) selon onglet et présence d'un trio.
+// - Modes auto (hasard/regles) : Re-piocher visible + Sauvegarder visible si _currentTrio existe.
+// - Mode manuel (Assemblage) : Re-piocher caché, Sauvegarder visible si 3 slots remplis.
 function _renderTriosActions() {
-  const actions = document.getElementById('triosActions');
+  const actions  = document.getElementById('triosActions');
   if (!actions) return;
-  const isGenerative = ['hasard', 'regles'].includes(_triosActiveTab);
-  const result = document.getElementById('triosResult');
-  const hasTrio = !!_currentTrio && result && result.style.display !== 'none';
-  if (!isGenerative || !hasTrio) {
+  const repick   = document.getElementById('triosRepickBtn');
+  const save     = document.getElementById('triosSaveBtn');
+  const result   = document.getElementById('triosResult');
+  const isAuto   = ['hasard', 'regles'].includes(_triosActiveTab);
+  const isManuel = _triosActiveTab === 'manuel';
+  const hasTrio  = !!_currentTrio && result && result.style.display !== 'none';
+  const manualReady = isManuel && _triosManualSlots.every(Boolean);
+
+  // Cas global "rien à afficher"
+  if (!(isAuto && hasTrio) && !manualReady && !isManuel) {
     actions.style.display = 'none';
     return;
   }
+  // Sur Assemblage : la barre est visible dès qu'on est sur l'onglet (info utilisateur),
+  // mais Sauvegarder est désactivé tant que les 3 slots ne sont pas remplis.
+  if (isManuel && !manualReady && !hasTrio) {
+    actions.style.display = '';
+    if (repick) repick.style.display = 'none';
+    if (save)   { save.style.display = ''; save.disabled = true; save.textContent = 'Sauvegarder'; }
+    return;
+  }
   actions.style.display = '';
-  const lockedCount = _triosLockedSlots.filter(Boolean).length;
-  const allLocked = lockedCount === 3;
-  const btn = document.getElementById('triosRepickBtn');
-  if (!btn) return;
-  btn.disabled = allLocked;
-  if (allLocked) {
-    btn.textContent = 'Tout est fixé';
-  } else if (lockedCount > 0) {
-    const n = 3 - lockedCount;
-    btn.textContent = `Re-piocher ${n} objet${n > 1 ? 's' : ''}`;
-  } else {
-    btn.textContent = 'Re-piocher';
+
+  // Re-piocher : modes auto uniquement
+  if (repick) {
+    repick.style.display = isAuto && hasTrio ? '' : 'none';
+    if (isAuto && hasTrio) {
+      const lockedCount = _triosLockedSlots.filter(Boolean).length;
+      const allLocked = lockedCount === 3;
+      repick.disabled = allLocked;
+      repick.textContent = allLocked
+        ? 'Tout est fixé'
+        : (lockedCount > 0 ? `Re-piocher ${3 - lockedCount} objet${3 - lockedCount > 1 ? 's' : ''}` : 'Re-piocher');
+    }
+  }
+  // Sauvegarder : auto (hasTrio) OU manuel (3 slots remplis)
+  if (save) {
+    const showSave = (isAuto && hasTrio) || (isManuel && manualReady);
+    save.style.display = showSave ? '' : 'none';
+    save.disabled = !showSave;
+    if (showSave) save.textContent = 'Sauvegarder';
   }
 }
 
