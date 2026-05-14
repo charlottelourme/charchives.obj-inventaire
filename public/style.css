@@ -831,6 +831,37 @@ header.global-header {
   position: relative;
   z-index: 0;
 }
+/* Halo universel via text-shadow : suit la forme du texte, JAMAIS de
+   rectangle visible, jamais clippé par un parent overflow. */
+.sfb-pill.active,
+.sfb-pill-verbe.active,
+.sfb-pill-sm.active,
+.sfb-pill-selection.active,
+.sfb-pill-typo.active,
+.tfb-pill.active,
+.tfb-all.active,
+.mf-btn.mf-active,
+.attr-chip.selected,
+.view-tab.active,
+.inv-pillar.is-open,
+.trios-tab-btn.active,
+.derive-seg-btn.active,
+.derive-shuffle-btn.active,
+.cal-jump-btn.active,
+.ivt-btn.active,
+.con-aff-btn.active,
+.note-opt-btn.active,
+.modal-tab-settings.active,
+.idx-alpha-pill.active,
+.jsp-dot.active,
+.mfn-link.active,
+.sm-trios-tab.active,
+.dp-month.selected,
+.vpt-pill.active,
+.btn-ghost.active {
+  text-shadow: 0 0 14px rgba(42, 42, 46, 0.22);
+}
+/* Plus de ::before — on annule l'ancienne version pour éviter tout résidu. */
 .sfb-pill.active::before,
 .sfb-pill-verbe.active::before,
 .sfb-pill-sm.active::before,
@@ -857,15 +888,7 @@ header.global-header {
 .dp-month.selected::before,
 .vpt-pill.active::before,
 .btn-ghost.active::before {
-  content: '';
-  position: absolute;
-  inset: -50%;                       /* halo très large pour dissiper le cœur rectangulaire */
-  background: radial-gradient(ellipse at center,
-              rgba(42, 42, 46, 0.14) 0%,
-              rgba(42, 42, 46, 0.08) 35%,
-              transparent 70%);
-  z-index: -1;
-  pointer-events: none;
+  content: none;
 }
 
 /* ══ HALO HOVER — boutons "actions" et liens cliquables non-actifs ═══════
