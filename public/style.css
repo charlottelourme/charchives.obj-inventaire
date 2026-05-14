@@ -12516,6 +12516,7 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
 }
 .oracle-stage.oracle-answered .oracle-input-wrap {
   transform: translateY(0);
+  gap: 0;                 /* Hint masqué, on récupère l'espace */
 }
 .oracle-input {
   width: 100%;
