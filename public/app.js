@@ -3895,6 +3895,49 @@ function _dioRenderSuggestions() {
   });
 }
 
+// ─────────────────────────────────────────────────────────────
+// Preview agrandie (6×) de l'objet de la bibliothèque latérale.
+// Au clic sur une vignette → overlay flottant centré qui affiche l'image en
+// 6× la largeur de la vignette source. Click ailleurs / Escape → ferme.
+// Pas en conflit avec le drag-and-drop : HTML5 garantit que `click` n'est
+// PAS émis après un drag réussi.
+function _dioShowLibPreview(col, photoSrc, sourceWidth) {
+  _dioHideLibPreview(); // ferme un éventuel preview précédent
+  const overlay = document.createElement('div');
+  overlay.className = 'dio-lib-preview-overlay';
+  overlay.innerHTML = `
+    <div class="dio-lib-preview-card" role="dialog" aria-label="Aperçu agrandi">
+      <button class="dio-lib-preview-close" type="button" aria-label="Fermer">×</button>
+      <img src="${esc(photoSrc)}" alt="${esc(col.name||'')}" draggable="false">
+      <div class="dio-lib-preview-name">${esc(col.name||'')}</div>
+    </div>`;
+  // Largeur cible = 6× la vignette source
+  overlay.style.setProperty('--dio-preview-w', `${Math.round((sourceWidth || 100) * 6)}px`);
+  document.body.appendChild(overlay);
+  // Click sur l'overlay (mais PAS sur la card) → ferme
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay || e.target.classList.contains('dio-lib-preview-close')) {
+      _dioHideLibPreview();
+    }
+  });
+  // Esc → ferme
+  const escHandler = (e) => {
+    if (e.key === 'Escape') {
+      _dioHideLibPreview();
+      window.removeEventListener('keydown', escHandler);
+    }
+  };
+  window.addEventListener('keydown', escHandler);
+  overlay._escHandler = escHandler;
+}
+
+function _dioHideLibPreview() {
+  const overlay = document.querySelector('.dio-lib-preview-overlay');
+  if (!overlay) return;
+  if (overlay._escHandler) window.removeEventListener('keydown', overlay._escHandler);
+  overlay.remove();
+}
+
 function renderDiorama() {
   // Injecte la description éditable
   const dioDescEl = document.getElementById('dioramaDesc');
