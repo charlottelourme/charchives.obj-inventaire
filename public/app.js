@@ -4601,11 +4601,19 @@ function _dioMakeResizable(el, item) {
       const origScale = item.scale;
       const onMove = ev => {
         const dist = _dioDistFromCenter(el, ev);
-        // Plancher 0.7 = ~84px à baseline 120 — l'objet reste vraiment visible,
-        // jamais riquiqui (cf. brief Charlotte). Plafond 12× — généreux, on
-        // peut agrandir librement sans aller à l'infini (perf + handles
-        // doivent rester accessibles à l'écran).
-        item.scale = Math.max(0.7, Math.min(12, origScale * (dist / startDist)));
+        // ── Plancher : 0.7 (~84px à baseline 120) — l'objet reste visible.
+        // ── Plafond DYNAMIQUE : la hauteur affichée de l'objet ne dépasse
+        //    jamais 2/3 de la hauteur du backdrop (cf. brief Charlotte).
+        //    h_obj = 120 * scale * (nh / nw)
+        //    Contrainte : h_obj <= bdH * 2/3
+        //    → scale_max = (bdH * 2/3) * nw / (120 * nh)
+        const bdrop = document.getElementById('dioBackdrop');
+        const bdH = bdrop?.naturalHeight || 800;
+        const imgEl = el.querySelector('img');
+        const nw = (imgEl?.naturalWidth)  || 1;
+        const nh = (imgEl?.naturalHeight) || 1;
+        const maxScale = (bdH * (2/3)) * nw / (120 * nh);
+        item.scale = Math.max(0.7, Math.min(maxScale, origScale * (dist / startDist)));
         el.style.width = Math.round(120 * item.scale) + 'px';
       };
       const onUp = () => {
