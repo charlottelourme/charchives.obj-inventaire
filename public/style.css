@@ -881,14 +881,22 @@ body.dark-mode .mfn-link.active::before,
 body.dark-mode .sm-trios-tab.active::before,
 body.dark-mode .dp-month.selected::before,
 body.dark-mode .vpt-pill.active::before,
-body.dark-mode .btn-ghost.active::before,
+body.dark-mode .btn-ghost.active::before {
+  background: radial-gradient(ellipse at center,
+              rgba(244, 244, 245, 0.18) 0%,
+              rgba(244, 244, 245, 0.10) 35%,
+              transparent 70%);
+}
 body.dark-mode .btn-primary:hover::before,
 body.dark-mode .btn-ghost:hover::before,
 body.dark-mode .btn-export:hover::before,
 body.dark-mode .btn-secondary:hover::before,
 body.dark-mode .bottom-nav .view-tab:hover::before,
 body.dark-mode .mfn-link:hover::before {
-  background: rgba(244, 244, 245, 0.14);
+  background: radial-gradient(ellipse at center,
+              rgba(244, 244, 245, 0.12) 0%,
+              rgba(244, 244, 245, 0.06) 40%,
+              transparent 75%);
 }
 /* Compensation de la hauteur du header fixed — repose sur --header-h
    (mesurée dynamiquement par JS, fallback CSS via :root). */
