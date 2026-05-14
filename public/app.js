@@ -2866,10 +2866,15 @@ function _drawConGraph(canvas, nodes, links) {
   const INITIAL_SCALE = 1.15;  // plus zoomé au chargement (avant 0.75)
   const zoom = d3.zoom()
     .scaleExtent([0.08, 4])
-    // Filtre : toujours accepter wheel ; pour mousedown, refuser les nœuds
+    // Filtre : toujours accepter wheel ; pour mousedown ET touchstart, refuser
+    // les nœuds (sinon le tap mobile est capturé par le pan et le click ne
+    // se synthétise pas → la fiche objet ne s'ouvre pas).
     .filter(event => {
       if (event.type === 'wheel')      return true;
-      if (event.type === 'touchstart') return true;
+      if (event.type === 'touchstart') {
+        if (event.target?.closest?.('.con-node')) return false; // nœud → tap/drag
+        return true;
+      }
       if (event.type === 'mousedown') {
         if (event.button !== 0)       return false;
         if (event.target?.closest?.('.con-node')) return false; // nœud → drag
