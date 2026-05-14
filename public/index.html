@@ -325,6 +325,11 @@
 
   <!-- ── Oracle view — Générateur de Triptyque par texte libre ── -->
   <div id="oracleView" class="oracle-view" style="display:none">
+    <!-- Sub-nav top-right sous le tab Oracle : deux modes empilés -->
+    <nav class="oracle-subnav" id="oracleSubnav" aria-label="Sous-navigation Oracle">
+      <button class="oracle-subnav-link active" id="oracleNavTirage"        data-oracle-mode="tirage"        type="button">Nouveau tirage</button>
+      <button class="oracle-subnav-link"        id="oracleNavReminiscence"  data-oracle-mode="reminiscence" type="button">Réminiscences</button>
+    </nav>
     <div class="oracle-stage" id="oracleStage">
       <!-- Zone de saisie : input pleine largeur, sans bordure, juste une fine ligne sous le curseur -->
       <div class="oracle-input-wrap" id="oracleInputWrap">
@@ -338,16 +343,13 @@
           aria-label="Saisie de l'Oracle">
         <div class="oracle-hint" id="oracleHint">Entrée ↵</div>
       </div>
-      <!-- Résultat : 3 cartes alignées en triptyque + question d'archivage + actions -->
+      <!-- Résultat : actions + archive AU-DESSUS du triptyque -->
       <div class="oracle-result" id="oracleResult"></div>
     </div>
-    <!-- Galerie des lectures archivées — discret en bas de page, scrollable -->
+    <!-- Mode "Réminiscences" : liste des lectures archivées (titre supprimé, c'est déjà dans le sub-nav). -->
     <section class="oracle-gallery" id="oracleGallery" hidden>
-      <header class="oracle-gallery-header">
-        <span class="oracle-gallery-title">Lectures archivées</span>
-        <span class="oracle-gallery-count" id="oracleGalleryCount"></span>
-      </header>
       <div class="oracle-gallery-list" id="oracleGalleryList"></div>
+      <p class="oracle-gallery-empty" id="oracleGalleryEmpty" hidden>Aucune réminiscence pour l'instant.</p>
     </section>
   </div>
 
