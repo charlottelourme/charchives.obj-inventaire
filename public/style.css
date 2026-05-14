@@ -745,9 +745,11 @@ header.global-header {
 .global-header .nav-experimentale .nav-link.active::before {
   content: '';
   position: absolute;
-  inset: -6px -14px;
-  background: rgba(42, 42, 46, 0.10);
-  filter: blur(12px);
+  inset: -50%;
+  background: radial-gradient(ellipse at center,
+              rgba(42, 42, 46, 0.14) 0%,
+              rgba(42, 42, 46, 0.08) 35%,
+              transparent 70%);
   z-index: -1;
   pointer-events: none;
 }
