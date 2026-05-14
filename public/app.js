@@ -1454,6 +1454,13 @@ function setView(v, _silent = false) {
     pushBreadcrumb(VIEW_LABELS[v], () => setView(v, true));
   }
   render();
+  // Le padding-bottom du header dépend de data-view (Diorama plus serré).
+  // On re-mesure après changement de vue pour synchroniser body padding-top
+  // avec la nouvelle hauteur réelle du header. Sinon le contenu apparaît
+  // décalé verticalement après switch entrant/sortant du Diorama.
+  if (typeof updateHeaderHeightVar === 'function') {
+    requestAnimationFrame(updateHeaderHeightVar);
+  }
 }
 
 // ── La Dérive : sub-mode Nuée / Constellation ──────────────────────────────
