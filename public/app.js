@@ -4109,10 +4109,6 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
       if (isActive) cell.classList.add('active');
       cell.innerHTML = `
         <img class="dio-slot-thumb" src="${url}" alt="${id}">
-        <label class="dio-slot-replace" title="Remplacer ce fond">
-          <span aria-hidden="true">↑</span>
-          <input type="file" accept="image/*" class="dio-slot-replace-input" hidden>
-        </label>
         <button class="dio-slot-del" title="Supprimer ce fond">×</button>`;
       cell.querySelector('.dio-slot-thumb').addEventListener('click', () => {
         state.diorama.backdropSlotId = id;
@@ -4120,23 +4116,7 @@ async function _dioRenderDecorBar(decBar, backdrop /*, _unused */) {
         decBar.querySelectorAll('.dio-slot, .dio-temp-btn').forEach(c => c.classList.remove('active'));
         cell.classList.add('active');
       });
-      // Remplace le slot — écrase l'ancien blob via _dioSlotPut (put = upsert)
-      cell.querySelector('.dio-slot-replace-input').addEventListener('change', async (e) => {
-        e.stopPropagation();
-        const file = e.target.files?.[0];
-        if (!file) return;
-        try {
-          // Révoque l'ancienne ObjectURL pour libérer la mémoire
-          if (_dioSlotURLs.has(id)) { URL.revokeObjectURL(_dioSlotURLs.get(id)); _dioSlotURLs.delete(id); }
-          await _dioSlotPut(id, file);
-          _dioToast(`Slot ${i + 1} remplacé`);
-          _dioRenderDecorBar(decBar, backdrop);
-        } catch (err) {
-          console.warn('IDB replace failed:', err);
-          alert('Impossible de remplacer : ' + err.message);
-        }
-      });
-      // Supprime le slot
+      // Supprime le slot (pour remplacer un fond : supprimer + ré-ajouter via le +).
       cell.querySelector('.dio-slot-del').addEventListener('click', async (e) => {
         e.stopPropagation();
         if (!confirm(`Supprimer le fond du slot ${i + 1} ?`)) return;
