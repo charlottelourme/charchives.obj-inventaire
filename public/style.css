@@ -752,7 +752,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
   outline: none;
   background: transparent;
   font-family: 'Compagnon', monospace;
-  font-size: 15px;
+  font-size: 13px;                  /* plus petit que la nav, aligné sur le titre */
   color: var(--text);
   min-width: 60px;
   flex: 1;
@@ -761,7 +761,7 @@ body.dark-mode header h1 { color: #F4F4F5 !important; }
 }
 .search-input-inner::placeholder {
   color: var(--text-3);
-  font-size: 15px;
+  font-size: 13px;
   font-style: normal;
 }
 
