@@ -8769,13 +8769,9 @@ body.dark-mode .trios-rule-dropdown {
   cursor: pointer;
   padding: 0;
   border-radius: 0;
-  opacity: 0;
+  opacity: 1;                          /* toujours visible — pas de hover requis */
   pointer-events: auto;
-  transition: opacity .15s, background .15s, color .15s, border-color .15s;
-}
-.trios-slot-wrap.auto:hover .trios-slot-lock,
-.trios-slot-wrap.auto.locked .trios-slot-lock {
-  opacity: 1;
+  transition: background .15s, color .15s, border-color .15s;
 }
 .trios-slot-lock:hover {
   background: var(--text);
