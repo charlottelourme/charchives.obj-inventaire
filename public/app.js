@@ -3962,6 +3962,91 @@ function _dioHideLibPreview() {
   overlay.remove();
 }
 
+// ─────────────────────────────────────────────────────────────
+// Compositions enregistrées — persistées avec state.diorama dans localStorage
+// via _dioSave. Pas d'IndexedDB (les compositions sont des objets JSON légers :
+// uniquement les positions/scales des items, pas les images elles-mêmes).
+function _dioSaveComposition() {
+  state.diorama.savedCompositions = state.diorama.savedCompositions || [];
+  const defaultName = `Composition ${state.diorama.savedCompositions.length + 1}`;
+  const name = prompt('Nom de la composition ?', defaultName);
+  if (name === null) return; // user annulé
+  const finalName = (name || '').trim() || defaultName;
+  state.diorama.savedCompositions.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    name: finalName,
+    items: JSON.parse(JSON.stringify(state.diorama.items)),
+    backdropSlotId: state.diorama.backdropSlotId || null,
+    backdropCredit: state.diorama.backdropCredit || '',
+    nextZ: state.diorama.nextZ || 1,
+    savedAt: Date.now()
+  });
+  _dioSave();
+  _dioToast(`Composition "${finalName}" enregistrée`);
+}
+
+function _dioRenderGallery() {
+  const gallery = document.getElementById('dioGallery');
+  if (!gallery) return;
+  const saves = state.diorama.savedCompositions || [];
+  if (!saves.length) {
+    gallery.innerHTML = `<div class="diorama-gallery-empty">Aucune composition enregistrée pour le moment.<br>Crée une scène en mode "Nouvelle composition" puis clique sur "Enregistrer".</div>`;
+    return;
+  }
+  // Plus récentes en premier
+  const sorted = saves.slice().sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
+  gallery.innerHTML = sorted.map(s => `
+    <div class="diorama-gallery-card" data-id="${esc(s.id)}">
+      <div class="diorama-gallery-name">${esc(s.name)}</div>
+      <div class="diorama-gallery-meta">${s.items.length} objet${s.items.length > 1 ? 's' : ''} · ${new Date(s.savedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+      <div class="diorama-gallery-actions">
+        <button class="diorama-gallery-restore" type="button">Restaurer</button>
+        <button class="diorama-gallery-delete" type="button">Supprimer</button>
+      </div>
+    </div>
+  `).join('');
+
+  gallery.querySelectorAll('.diorama-gallery-restore').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.closest('.diorama-gallery-card').dataset.id;
+      _dioRestoreComposition(id);
+    });
+  });
+  gallery.querySelectorAll('.diorama-gallery-delete').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.closest('.diorama-gallery-card').dataset.id;
+      _dioDeleteComposition(id);
+    });
+  });
+}
+
+function _dioRestoreComposition(id) {
+  const save = (state.diorama.savedCompositions || []).find(s => s.id === id);
+  if (!save) return;
+  state.diorama.items = JSON.parse(JSON.stringify(save.items));
+  state.diorama.backdropSlotId = save.backdropSlotId || null;
+  state.diorama.backdropCredit = save.backdropCredit || '';
+  state.diorama.nextZ = save.nextZ || 1;
+  state.diorama.mode = 'nouvelle'; // bascule vers la scène
+  _dioSave();
+  // Force le re-rendu de la décor bar (pour re-sélectionner le bon slot)
+  const decBar = document.getElementById('dioDecorBar');
+  const backdrop = document.getElementById('dioBackdrop');
+  if (decBar) decBar.innerHTML = ''; // forcera _dioRenderDecorBar dans renderDiorama
+  renderDiorama();
+  _dioToast(`Composition "${save.name}" restaurée`);
+}
+
+function _dioDeleteComposition(id) {
+  const save = (state.diorama.savedCompositions || []).find(s => s.id === id);
+  if (!save) return;
+  if (!confirm(`Supprimer la composition "${save.name}" ?`)) return;
+  state.diorama.savedCompositions = (state.diorama.savedCompositions || []).filter(s => s.id !== id);
+  _dioSave();
+  _dioRenderGallery();
+  _dioToast('Composition supprimée');
+}
+
 // Crée un élément `.diorama-lib-item` cliquable + draggable pour la sidebar.
 // Factorisé pour pouvoir le réutiliser dans la sidebar gauche ET la droite.
 function _dioMakeLibItem(c) {
