@@ -51,6 +51,7 @@
 .note-swatch, .frag-bg-swatch, .swatch-btn, .color-swatch,
 .sfb-dot-sm, .portrait-status-dot, .card-status-dot, .idx-dd-dot,
 .dio-handle, .dio-handle-rot, .sel-ast-wrap, .card-bookmark-btn,
+.trios-slot-lock,
 .con-add-btn circle { border-radius: 50% !important; }
 
 :root {
