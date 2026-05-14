@@ -8502,7 +8502,7 @@ body.dark-mode .trios-filter-sel {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 14px;
+  margin-bottom: 0;
 }
 .trios-rule-wrap { position: relative; }
 .trios-rule-pill {
