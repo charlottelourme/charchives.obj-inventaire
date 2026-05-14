@@ -3813,19 +3813,75 @@ const DIORAMA_DECORS = [];
 let _dioZoom = null;
 let _dioSelectedItem = null;
 
+// Bind des getters/setters dynamiques sur state.diorama.items et .nextZ.
+// Ils pointent vers state.diorama.byBackdrop[backdropSlotId || '__temp__'] :
+// chaque fond a sa propre composition, transparente pour tout le code existant
+// qui lit/écrit state.diorama.items ou .nextZ directement.
+function _dioBindStateGetters() {
+  if (!state.diorama) return;
+  // Si déjà bindé, ne rien faire (idempotent)
+  const desc = Object.getOwnPropertyDescriptor(state.diorama, 'items');
+  if (desc && desc.get) return;
+
+  // S'assure que byBackdrop existe
+  state.diorama.byBackdrop = state.diorama.byBackdrop || {};
+
+  function ensureSlot(self) {
+    const k = self.backdropSlotId || '__temp__';
+    self.byBackdrop = self.byBackdrop || {};
+    if (!self.byBackdrop[k]) self.byBackdrop[k] = { items: [], nextZ: 1 };
+    return self.byBackdrop[k];
+  }
+
+  Object.defineProperty(state.diorama, 'items', {
+    configurable: true,
+    enumerable: true,
+    get() { return ensureSlot(this).items; },
+    set(v) { ensureSlot(this).items = v; }
+  });
+  Object.defineProperty(state.diorama, 'nextZ', {
+    configurable: true,
+    enumerable: true,
+    get() { return ensureSlot(this).nextZ; },
+    set(v) { ensureSlot(this).nextZ = v; }
+  });
+}
+
 function _dioLoad() {
   try { const s = localStorage.getItem('charchives_diorama'); if (s) state.diorama = JSON.parse(s); }
   catch(e) { /* ignore */ }
-  // Migration : si l'ancien state n'a pas mode/savedCompositions, on les initialise
-  // (cf. extension brief Charlotte : enregistrement de compositions).
-  if (state.diorama) {
-    if (!state.diorama.mode) state.diorama.mode = 'nouvelle';
-    if (!Array.isArray(state.diorama.savedCompositions)) state.diorama.savedCompositions = [];
+  if (!state.diorama) state.diorama = {};
+  // Défauts pour les anciens states
+  if (!state.diorama.mode) state.diorama.mode = 'nouvelle';
+  if (!Array.isArray(state.diorama.savedCompositions)) state.diorama.savedCompositions = [];
+  if (!state.diorama.byBackdrop) state.diorama.byBackdrop = {};
+  // Migration : ancien state avec items/nextZ flat → on les pousse dans
+  // byBackdrop[currentSlot]. Évite la perte des compositions existantes.
+  if (Array.isArray(state.diorama.items)) {
+    const key = state.diorama.backdropSlotId || '__temp__';
+    if (!state.diorama.byBackdrop[key]) {
+      state.diorama.byBackdrop[key] = {
+        items: state.diorama.items,
+        nextZ: state.diorama.nextZ || 1
+      };
+    }
+    delete state.diorama.items;
+    delete state.diorama.nextZ;
   }
+  _dioBindStateGetters();
 }
+
 function _dioSave() {
-  try { localStorage.setItem('charchives_diorama', JSON.stringify(state.diorama)); }
-  catch(e) { /* ignore */ }
+  try {
+    // On exclut items/nextZ du JSON (ce sont des GETTERS pointant vers
+    // byBackdrop[currentSlot]) — sinon doublon et désynchro au reload.
+    const out = {};
+    for (const k of Object.keys(state.diorama)) {
+      if (k === 'items' || k === 'nextZ') continue;
+      out[k] = state.diorama[k];
+    }
+    localStorage.setItem('charchives_diorama', JSON.stringify(out));
+  } catch(e) { /* ignore */ }
 }
 
 // ─────────────────────────────────────────────────────────────
