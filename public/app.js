@@ -4419,16 +4419,18 @@ function _dioInitZoom(wrap) {
   const scene   = document.getElementById('dioScene');
   const bdrop   = document.getElementById('dioBackdrop');
 
-  // Calcule le zoom MINIMUM "cover" : l'image couvre 100% du viewport sur les
-  // deux axes (jamais de bande grise visible). Le user peut zoomer plus mais
-  // pas moins — on ne peut PAS dézoomer au-delà des limites de l'image, on
-  // reste toujours "dans l'image" (cf. brief Charlotte).
-  function coverScale() {
+  // Calcule le zoom "CONTAIN" : l'image entière est toujours visible (avec
+  // d'éventuelles bandes letterbox sur les côtés ou en haut/bas selon le
+  // ratio image/viewport). Indispensable pour les photos PORTRAIT dans une
+  // viewport landscape : en mode cover elles seraient coupées en haut/bas.
+  // Le user peut toujours zoomer plus (jusqu'à 4×) ; le plancher garantit
+  // simplement que l'image entière reste accessible visuellement.
+  function containScale() {
     const vw = wrap.clientWidth  || 800;
     const vh = wrap.clientHeight || 600;
     const iw = bdrop?.naturalWidth  || 1200;
     const ih = bdrop?.naturalHeight || 800;
-    return Math.max(vw / iw, vh / ih);
+    return Math.min(vw / iw, vh / ih);
   }
 
   _dioZoom = d3.zoom()
@@ -4444,9 +4446,8 @@ function _dioInitZoom(wrap) {
     })
     .on('zoom', event => {
       let { x, y, k } = event.transform;
-      // Plancher de zoom = cover : on ne descend JAMAIS sous le niveau qui
-      // garantit que l'image couvre tout le viewport (pas de bande grise).
-      const cs = coverScale();
+      // Plancher de zoom = contain (image entière visible).
+      const cs = containScale();
       k = Math.max(k, cs);
 
       const vw = wrap.clientWidth;
@@ -4454,11 +4455,20 @@ function _dioInitZoom(wrap) {
       const iw = (bdrop?.naturalWidth  || 1200) * k;
       const ih = (bdrop?.naturalHeight || 800)  * k;
 
-      // Contraintes de pan : l'image reste toujours collée aux bords du
-      // viewport — pas de zone grise visible. En cover (k >= cs) on a
-      // garanti iw >= vw et ih >= vh, donc les bornes sont négatives.
-      x = Math.min(0, Math.max(x, vw - iw));
-      y = Math.min(0, Math.max(y, vh - ih));
+      // Contraintes de pan : si l'image (scaled) est PLUS PETITE que la
+      // viewport sur un axe → on la CENTRE (typique : portrait dans viewport
+      // landscape, ou inverse). Sinon, l'image reste collée aux bords du
+      // viewport (cas d'un zoom > contain où le user veut explorer).
+      if (iw <= vw) {
+        x = (vw - iw) / 2;
+      } else {
+        x = Math.min(0, Math.max(x, vw - iw));
+      }
+      if (ih <= vh) {
+        y = (vh - ih) / 2;
+      } else {
+        y = Math.min(0, Math.max(y, vh - ih));
+      }
 
       scene.style.transform = `translate(${x}px, ${y}px) scale(${k})`;
       // Synchronise le transform D3 réel pour que le prochain événement parte du bon état
@@ -4468,17 +4478,18 @@ function _dioInitZoom(wrap) {
     });
   d3.select(wrap).call(_dioZoom);
 
-  // Au chargement / changement de décor : applique le scale cover initial.
-  // L'image couvre tout le viewport et le pan est contraint dans ses limites.
+  // Au chargement / changement de décor : applique le scale contain initial.
+  // L'image entière est visible, centrée. Le pan est aligné automatiquement
+  // par le handler on('zoom') via les branches iw<=vw / ih<=vh.
   // On rajoute la classe `dio-ready` APRÈS application du transform → le
   // backdrop apparaît en fade-in une fois bien positionné (anti-flash).
-  function applyCover() {
-    const cs = coverScale();
+  function applyContain() {
+    const cs = containScale();
     d3.select(wrap).call(_dioZoom.transform, d3.zoomIdentity.scale(cs));
     bdrop?.classList.add('dio-ready');
   }
-  bdrop?.addEventListener('load', applyCover);
-  if (bdrop?.complete && bdrop.naturalWidth) applyCover();
+  bdrop?.addEventListener('load', applyContain);
+  if (bdrop?.complete && bdrop.naturalWidth) applyContain();
 }
 
 function _initGalleryParallax() {
