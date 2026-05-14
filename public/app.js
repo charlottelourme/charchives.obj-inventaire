@@ -3743,6 +3743,12 @@ let _dioSelectedItem = null;
 function _dioLoad() {
   try { const s = localStorage.getItem('charchives_diorama'); if (s) state.diorama = JSON.parse(s); }
   catch(e) { /* ignore */ }
+  // Migration : si l'ancien state n'a pas mode/savedCompositions, on les initialise
+  // (cf. extension brief Charlotte : enregistrement de compositions).
+  if (state.diorama) {
+    if (!state.diorama.mode) state.diorama.mode = 'nouvelle';
+    if (!Array.isArray(state.diorama.savedCompositions)) state.diorama.savedCompositions = [];
+  }
 }
 function _dioSave() {
   try { localStorage.setItem('charchives_diorama', JSON.stringify(state.diorama)); }
