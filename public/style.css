@@ -12536,15 +12536,14 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   MOBILE — Navigation déroulante depuis le logo Chacharlatan
+   MOBILE — Overlay de navigation plein écran (depuis le logo Chacharlatan)
    ══════════════════════════════════════════════════════════════════════════
-   Sur mobile, .header-ligne-2 (qui contient nav-principale + nav-experimentale)
-   est CACHÉE par défaut. Un tap sur #siteTitle ajoute la classe .mobile-nav-open
-   sur body → la ligne 2 se déplie comme un menu vertical sous le logo, en
-   absolute positioning pour ne pas pousser le contenu de la page.
-   Pas de séparateurs ni de bordures — pure typographie. */
+   Tap sur #siteTitle → body.mobile-nav-open. .header-ligne-2 devient un
+   overlay plein écran avec les 5 onglets en GROS, CENTRÉS. Un X en haut à
+   droite pour fermer. Quand une vue est sélectionnée, son nom apparaît
+   dans le coin droit du header (.header-page-indicator, géré par JS). */
 @media (max-width: 520px) {
-  /* Caret discret après le titre pour signaler que c'est cliquable */
+  /* Caret discret après le titre pour signaler qu'il est cliquable */
   .global-header .header-logo {
     cursor: pointer;
     position: relative;
@@ -12562,61 +12561,78 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
     transform: rotate(180deg);
   }
 
-  /* Cache la ligne 2 (nav) par défaut — elle est désormais un dropdown */
+  /* Indicateur de page courante dans le coin droit (avant les boutons d'actions).
+     Injecté dynamiquement par JS — cf. _ensurePageIndicator / setView. */
+  .header-page-indicator {
+    font-family: 'Compagnon', monospace;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--text);
+    white-space: nowrap;
+    margin-right: 6px;
+    user-select: none;
+    pointer-events: none;
+  }
+  body.dark-mode .header-page-indicator { color: var(--text); }
+
+  /* Cache la ligne 2 (nav) par défaut */
   .global-header > .header-ligne-2 {
     display: none !important;
   }
-  /* Quand le menu est ouvert : la ligne 2 réapparaît en stack vertical,
-     en absolute pour ne pas affecter la mise en page sous le header. */
+  /* Quand le menu est ouvert : overlay PLEIN ÉCRAN, opaque, items au centre. */
   body.mobile-nav-open .global-header > .header-ligne-2 {
     display: flex !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    background: var(--bg) !important;
     flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 6px !important;
-    /* Positionné juste sous la ligne 1 du header — opaque pour cacher le contenu derrière. */
-    position: absolute !important;
-    top: 100% !important;
-    left: 0 !important;
-    right: 0 !important;
-    padding: 16px var(--grid-margin-x, 14px) 20px !important;
-    background: var(--bg);
-    /* Pas de bordure, pas de filet — juste la couleur de fond du body */
-    border: none !important;
-    z-index: 1100;
-    animation: mobileNavSlideDown 0.18s ease both;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 20px !important;
+    padding: 80px 24px !important;
+    z-index: 9500 !important;
+    animation: mobileNavFadeIn 0.18s ease both;
   }
   body.dark-mode.mobile-nav-open .global-header > .header-ligne-2 {
-    background: #080809;
+    background: #080809 !important;
   }
-  @keyframes mobileNavSlideDown {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
+  @keyframes mobileNavFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
 
-  /* Dans le dropdown : les deux groupes (principale + experimentale) deviennent
-     un seul stack vertical, sans titre/séparation/dots. */
+  /* Les deux groupes (principale + experimentale) deviennent un seul stack
+     centré, sans séparation, sans dots. */
   body.mobile-nav-open .global-header .nav-principale,
   body.mobile-nav-open .global-header .nav-experimentale {
     display: flex !important;
     flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 6px !important;
-    width: 100% !important;
+    align-items: center !important;
+    gap: 20px !important;
     flex: 0 0 auto !important;
+    width: 100% !important;
   }
-  /* Pas de dots dans la nav-experimentale en mode dropdown */
   body.mobile-nav-open .global-header .nav-experimentale .dot {
     display: none !important;
   }
-  /* Liens du dropdown : grande taille tactile + typo cohérente */
+
+  /* Liens du menu : GROS, centrés, italique Compagnon Light */
   body.mobile-nav-open .global-header .nav-link {
     display: block !important;
-    width: 100% !important;
-    padding: 8px 0 !important;
-    font-size: 22px !important;
-    line-height: 1.2 !important;
-    color: var(--text-2) !important;
+    width: auto !important;
+    padding: 6px 16px !important;
+    font-family: 'Compagnon', monospace !important;
+    font-style: italic !important;
+    font-weight: 300 !important;
+    font-size: 38px !important;
+    line-height: 1.1 !important;
+    color: var(--text-3) !important;
     background: transparent !important;
+    text-align: center !important;
+    text-decoration: none !important;
   }
   body.mobile-nav-open .global-header .nav-link.active {
     color: var(--text) !important;
@@ -12625,15 +12641,33 @@ body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-stan
     opacity: 0.55;
   }
 
-  /* Voile semi-transparent derrière le dropdown — tap pour fermer. */
-  .mobile-nav-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.18);
-    z-index: 1099;
-    display: none;
+  /* Bouton fermer X — injecté dans l'overlay par JS */
+  .mobile-nav-close {
+    position: absolute;
+    top: calc(20px + env(safe-area-inset-top));
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-2);
+    font-size: 28px;
+    line-height: 1;
+    padding: 0;
   }
-  body.mobile-nav-open .mobile-nav-backdrop { display: block; }
+  .mobile-nav-close:active { opacity: 0.55; }
+}
+
+/* Desktop : page-indicator caché, overlay/close inutiles */
+@media (min-width: 521px) {
+  .header-page-indicator,
+  .mobile-nav-close {
+    display: none !important;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
