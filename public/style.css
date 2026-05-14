@@ -745,7 +745,7 @@ header.global-header {
 .global-header .nav-principale .nav-link:hover { color: #2A2A2E !important; }
 .global-header .nav-principale .nav-link.active { color: #2A2A2E !important; }
 .global-header .nav-principale .nav-link.active {
-  text-shadow: 0 0 16px rgba(42, 42, 46, 0.28);
+  text-shadow: 0 0 16px rgba(42, 42, 46, 0.40);
 }
 .global-header .nav-principale .nav-link.active::before { content: none; }
 
@@ -782,7 +782,7 @@ header.global-header {
 .global-header .nav-experimentale .nav-link:hover { color: #2A2A2E !important; }
 .global-header .nav-experimentale .nav-link.active { color: #2A2A2E !important; }
 .global-header .nav-experimentale .nav-link.active {
-  text-shadow: 0 0 16px rgba(42, 42, 46, 0.28);
+  text-shadow: 0 0 16px rgba(42, 42, 46, 0.40);
 }
 .global-header .nav-experimentale .nav-link.active::before { content: none; }
 
