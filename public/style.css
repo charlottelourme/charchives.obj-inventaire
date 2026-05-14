@@ -677,13 +677,17 @@ header.global-header {
 .global-header .nav-principale .nav-link.active,
 .global-header .nav-principale .nav-link:hover { color: #2A2A2E !important; }
 
+/* nav-experimentale alignée sur nav-principale : même typo Compagnon Bold,
+   même taille 1.6rem, même casse (texte HTML respecté, plus de lowercase).
+   Inventaire / Journal / Triptyque / Diorama / Oracle ont désormais le
+   même rendu visuel — les 5 onglets sur un pied d'égalité. */
 .global-header .nav-experimentale .nav-link {
   font-family: 'Compagnon', monospace !important;
-  font-style: italic !important;
-  font-weight: 300 !important;
-  font-size: 1rem !important;
-  text-transform: lowercase !important;
-  letter-spacing: .01em !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  font-size: 1.6rem !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
   line-height: 1.1 !important;
   color: #71717A !important;
   background: transparent !important;
@@ -691,6 +695,16 @@ header.global-header {
   padding: 0 !important;
   cursor: pointer;
   text-decoration: none;
+}
+/* Les "·" séparateurs entre triptyque/diorama/oracle s'alignent visuellement
+   sur la nouvelle taille des liens (sinon ils paraîtraient ridicules). */
+.global-header .nav-experimentale .dot {
+  font-family: 'Compagnon', monospace !important;
+  font-size: 1.6rem !important;
+  font-weight: 300 !important;
+  line-height: 1.1 !important;
+  color: #C4C4C4 !important;
+  margin: 0 .1em;
 }
 .global-header .nav-experimentale .nav-link.active,
 .global-header .nav-experimentale .nav-link:hover { color: #2A2A2E !important; }
