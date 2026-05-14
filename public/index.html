@@ -29,10 +29,10 @@
 </div>
 
 <header class="global-header">
-  <!-- ══ LIGNE 1 : Institution (logo gauche) + Utilitaires (droite) ══ -->
+  <!-- ══ LIGNE 1 — Institution (logo gauche) + Outils (droite) ══ -->
   <div class="header-ligne-1">
-    <h1 id="siteTitle">Charchives . obj</h1>
-    <div class="header-utilitaires">
+    <h1 class="header-logo" id="siteTitle">Charchives . obj</h1>
+    <div class="header-outils">
       <div class="search-wrap" id="searchWrap">
         <div class="search-bar" id="searchBar">
           <div class="search-active-tags" id="searchActiveTags"></div>
@@ -53,19 +53,19 @@
     </div>
   </div>
 
-  <!-- ══ LIGNE 2 : Navigation hiérarchisée — principale (gauche) / lentilles expérimentales (droite) ══ -->
+  <!-- ══ LIGNE 2 — Navigation principale (gauche) + Lentilles expérimentales (droite) ══ -->
   <div class="header-ligne-2">
-    <nav class="nav-principale view-tabs">
-      <button class="view-tab nav-principale-tab active" id="viewInventaire">Inventaire</button>
-      <button class="view-tab nav-principale-tab" id="viewDerive">Journal</button>
-    </nav>
-    <nav class="nav-lentilles view-tabs">
-      <button class="view-tab nav-lentille-tab" id="viewAtelier">triptyque</button>
-      <span class="nav-lentille-sep" aria-hidden="true">·</span>
-      <button class="view-tab nav-lentille-tab" id="viewDiorama">diorama</button>
-      <span class="nav-lentille-sep" aria-hidden="true">·</span>
-      <button class="view-tab nav-lentille-tab" id="viewOracle">oracle</button>
-    </nav>
+    <div class="nav-principale">
+      <a class="nav-link active" id="viewInventaire" tabindex="0" role="button">Inventaire</a>
+      <a class="nav-link" id="viewDerive" tabindex="0" role="button">Journal</a>
+    </div>
+    <div class="nav-experimentale">
+      <a class="nav-link" id="viewAtelier" tabindex="0" role="button">triptyque</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <a class="nav-link" id="viewDiorama" tabindex="0" role="button">diorama</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <a class="nav-link" id="viewOracle" tabindex="0" role="button">oracle</a>
+    </div>
   </div>
 </header>
 
