@@ -2390,14 +2390,15 @@ function _renderNoteColorSwatches() {
 }
 
 function _syncNoteOptBtns() {
-  document.querySelectorAll('#noteFontGroup [data-font]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.font === _noteSelectedFont);
-  });
+  // Picker police supprimé : une seule police (Compagnon italique)
   document.querySelectorAll('#noteWidthGroup [data-width]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.width === _noteSelectedWidth);
   });
+  // Tailles : seulement 'standard' et 'large'. Si une vieille note a 'small',
+  // on retombe sur 'standard' visuellement (mais sans modifier la donnée).
+  const effectiveSize = _noteSelectedSize === 'large' ? 'large' : 'standard';
   document.querySelectorAll('#noteSizeGroup [data-size]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.size === _noteSelectedSize);
+    btn.classList.toggle('active', btn.dataset.size === effectiveSize);
   });
 }
 
@@ -2410,8 +2411,9 @@ function _updateNotePreview() {
   const fg  = lum > 0.35 ? '#2A2A2E' : '#f5f5f0';
   preview.style.background = bg;
   preview.style.color      = fg;
-  const sizeCls = _noteSelectedSize === 'small' ? ' note-size-sm' : _noteSelectedSize === 'large' ? ' note-size-lg' : '';
-  textEl.className = 'note-preview-text ' + (_noteSelectedFont === 'terrain' ? 'font-terrain' : 'font-poetic') + sizeCls;
+  const sizeCls = _noteSelectedSize === 'large' ? ' note-size-lg' : '';
+  // Police unique (Compagnon italique) — plus de switch poetic/terrain
+  textEl.className = 'note-preview-text' + sizeCls;
   const content = document.getElementById('nContent')?.value || '';
   textEl.textContent = content || '—';
 }
