@@ -12563,7 +12563,12 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
   pointer-events: none;
   transition: opacity .4s ease;
 }
-.oracle-stage.oracle-answered .oracle-hint { opacity: 0; }
+.oracle-stage.oracle-answered .oracle-hint {
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  overflow: hidden;       /* Collapse complet pour récupérer la place verticale */
+}
 
 /* ── Résultat — actions/archive PUIS triptyque (decision-first, tout à l'écran) ── */
 .oracle-result {
