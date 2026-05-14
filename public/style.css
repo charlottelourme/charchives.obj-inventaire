@@ -11169,8 +11169,8 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   display: flex;
   justify-content: center;
   align-items: baseline;
-  gap: 4rem;
-  margin: 1rem 0 1.25rem;            /* top : 1rem (16px) — cohérent avec Triptyque */
+  gap: 3rem;
+  margin: 0.25rem 0 0.6rem;         /* top resserré : 0.25rem (était 1rem) */
   position: relative;
   z-index: 50;
   padding: 0 var(--page-gutter, 24px);
@@ -11181,13 +11181,13 @@ body.dark-mode .diorama-sidebar-suggestion:hover {
   cursor: pointer;
   font-family: 'Compagnon', monospace;
   font-style: normal;
-  font-size: clamp(28px, 3.6vw, 44px);
+  font-size: clamp(20px, 2.4vw, 30px); /* réduit (était 28-44px) */
   line-height: 1;
   color: var(--text);
   display: inline-flex;
   align-items: baseline;
-  gap: 0.4rem;
-  padding: 0.25rem 0.5rem;
+  gap: 0.35rem;
+  padding: 0.2rem 0.4rem;
   transition: opacity .25s ease;
 }
 .inv-pillar:hover { opacity: 0.78; }
