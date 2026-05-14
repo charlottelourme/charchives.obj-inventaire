@@ -12416,6 +12416,216 @@ body.dark-mode .oracle-action,
 body.dark-mode .oracle-action-sep { color: var(--text-3, #A1A1AA); }
 body.dark-mode .oracle-action:hover { color: var(--text, #F4F4F5); }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   ORACLE — Question d'archivage (Oui/Non) + Statut "✓ Archivée"
+   ══════════════════════════════════════════════════════════════════════════ */
+.oracle-archive-q,
+.oracle-archive-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: clamp(24px, 4vh, 40px);
+  animation: oracleArchiveFade .6s ease both;
+}
+@keyframes oracleArchiveFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.oracle-archive-q-label {
+  /* Voix poétique → Compagnon italic Light (cohérent avec l'input) */
+  font-family: 'Compagnon', monospace;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(13px, 1.3vw, 15px);
+  color: var(--text-2, #3F3F46);
+  letter-spacing: 0;
+}
+body.dark-mode .oracle-archive-q-label { color: var(--text-2, #D4D4D8); }
+.oracle-action-archive {
+  /* Boutons Oui/Non — légèrement plus saillants que les actions secondaires */
+  color: var(--text, #1A1A1A);
+  opacity: 0.85;
+}
+.oracle-action-archive:hover { opacity: 1; }
+body.dark-mode .oracle-action-archive { color: var(--text, #F4F4F5); }
+
+.oracle-archive-status {
+  /* État "Archivée" — confirmation discrète */
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3, #A1A1AA);
+  opacity: 0.7;
+}
+body.dark-mode .oracle-archive-status { color: var(--text-3, #A1A1AA); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ORACLE — Galerie des lectures archivées
+   --------------------------------------------------------------------------
+   Section discrète en bas du stage. Chaque "lecture" = une ligne avec :
+   - 3 mini-thumbnails à gauche (carrés colorés selon l'intention)
+   - phrase en italic + date
+   - bouton × en bout de ligne
+   Clic sur la ligne (hors ×) → restitue le triptyque.
+   ══════════════════════════════════════════════════════════════════════════ */
+.oracle-gallery {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(40px, 6vh, 72px) clamp(16px, 4vw, 48px) 80px;
+  border-top: 1px solid var(--border-light, #E8E4DE);
+}
+body.dark-mode .oracle-gallery { border-top-color: var(--border, #27272A); }
+
+.oracle-gallery-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: clamp(20px, 3vh, 32px);
+  gap: 16px;
+}
+.oracle-gallery-title {
+  font-family: 'Compagnon', monospace;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  color: var(--text, #1A1A1A);
+}
+body.dark-mode .oracle-gallery-title { color: var(--text, #F4F4F5); }
+.oracle-gallery-count {
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3, #A1A1AA);
+}
+
+.oracle-gallery-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Une lecture archivée — une ligne cliquable */
+.orc-arch-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: clamp(18px, 3vw, 32px);
+  padding: clamp(14px, 2.2vh, 22px) 0;
+  border-bottom: 1px solid var(--border-light, #E8E4DE);
+  cursor: pointer;
+  transition: background .25s ease, padding-left .25s ease;
+  outline: none;
+}
+.orc-arch-item:hover,
+.orc-arch-item:focus-visible {
+  background: rgba(0, 0, 0, 0.025);
+  padding-left: 8px;
+}
+body.dark-mode .orc-arch-item { border-bottom-color: var(--border, #27272A); }
+body.dark-mode .orc-arch-item:hover,
+body.dark-mode .orc-arch-item:focus-visible {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Mini-thumbnails — 3 carrés alignés à gauche */
+.orc-arch-thumbs {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.orc-arch-thumb {
+  width: clamp(40px, 5vw, 60px);
+  height: clamp(40px, 5vw, 60px);
+  background: var(--orc-thumb-col, rgba(0,0,0,0.05));
+  overflow: hidden;
+  position: relative;
+}
+.orc-arch-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.orc-arch-thumb-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3, #A1A1AA);
+  font-size: 14px;
+  background: rgba(0,0,0,0.04);
+}
+.orc-arch-thumb-missing {
+  opacity: 0.4;
+  background: transparent;
+  border: 1px dashed var(--border-light, #E8E4DE);
+}
+
+/* Bloc texte central : phrase + date */
+.orc-arch-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.orc-arch-query {
+  font-family: 'Compagnon', monospace;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  color: var(--text, #1A1A1A);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+body.dark-mode .orc-arch-query { color: var(--text, #F4F4F5); }
+.orc-arch-date {
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3, #A1A1AA);
+  opacity: 0.8;
+}
+
+/* Bouton supprimer — discret, visible au hover de la ligne */
+.orc-arch-delete {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Compagnon', monospace;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--text-3, #A1A1AA);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.35;
+  transition: opacity .2s ease, color .2s ease, transform .2s ease;
+  flex-shrink: 0;
+}
+.orc-arch-item:hover .orc-arch-delete,
+.orc-arch-item:focus-visible .orc-arch-delete { opacity: 0.8; }
+.orc-arch-delete:hover {
+  opacity: 1;
+  color: var(--text, #1A1A1A);
+  transform: scale(1.15);
+}
+body.dark-mode .orc-arch-delete:hover { color: var(--text, #F4F4F5); }
+
 /* Responsive — triptyque empilé sur mobile */
 @media (max-width: 720px) {
   .oracle-triptyque {
@@ -12427,5 +12637,29 @@ body.dark-mode .oracle-action:hover { color: var(--text, #F4F4F5); }
   .oracle-stage { min-height: calc(100vh - 180px); }
   .oracle-input { font-size: clamp(1.2rem, 5.5vw, 1.9rem); }
   .oracle-stage.oracle-answered .oracle-input { font-size: 1.05rem; }
+  /* Galerie mobile : items plus compacts */
+  .oracle-gallery { padding: 32px 16px 60px; }
+  .oracle-gallery-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .orc-arch-item {
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    padding: 14px 0;
+  }
+  .orc-arch-delete {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: start;
+    width: 28px;
+    height: 28px;
+    font-size: 20px;
+  }
+  .orc-arch-meta { grid-column: 1 / -1; }
+  .orc-arch-thumb { width: 44px; height: 44px; }
+  .orc-arch-query { font-size: 1rem; }
 }
 
