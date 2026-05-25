@@ -10556,26 +10556,24 @@ function bindEvents() {
   // Init thumb position once fonts are loaded (needs layout)
   requestAnimationFrame(() => requestAnimationFrame(_updateDeriveThumb));
 
-  // Trios — tab switching (4 onglets : Collisions / Affinités / Assemblage / Aléatoire)
+  // Trios — tab switching (2 onglets : Collisions fusionné / Oracle placeholder)
   document.querySelectorAll('.trios-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       _triosActiveTab = btn.dataset.tab;
       _currentTrio = null;
       _resetTriosLocks();
       document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
-      document.getElementById('triosPanelHashard').style.display    = _triosActiveTab === 'hasard'    ? '' : 'none';
-      document.getElementById('triosPanelRegles').style.display     = _triosActiveTab === 'regles'    ? '' : 'none';
-      document.getElementById('triosPanelManuel').style.display     = _triosActiveTab === 'manuel'    ? '' : 'none';
-      // Reset visuel de la section Affinités à chaque changement d'onglet
+      document.getElementById('triosPanelHashard').style.display = _triosActiveTab === 'hasard' ? '' : 'none';
+      const oraclePanel = document.getElementById('triosPanelOracle');
+      if (oraclePanel) oraclePanel.style.display = _triosActiveTab === 'oracle' ? '' : 'none';
+      // Reset visuel des pills Affinités à chaque changement d'onglet
       document.querySelectorAll('.trios-rule-pill').forEach(p => p.classList.remove('active'));
       _closeTriosRuleDropdowns();
       _resetTriosRulePillLabels();
       const ruleDesc = document.getElementById('triosRuleDesc');
       if (ruleDesc) ruleDesc.textContent = '';
-      if (_triosActiveTab !== 'manuel') {
-        document.getElementById('triosResult').style.display = 'none';
-        document.getElementById('triosLinkBar').innerHTML = '';
-      }
+      document.getElementById('triosResult').style.display = 'none';
+      document.getElementById('triosLinkBar').innerHTML = '';
       renderTrios();
     });
   });
