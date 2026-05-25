@@ -381,17 +381,13 @@
     <!-- STRATE 3 : ToolBar universelle (onglets du Triptyque) -->
     <div class="trios-tabs-nav toolbar-strate">
       <button class="trios-tab-btn active" data-tab="hasard">Collisions</button>
-      <button class="trios-tab-btn" data-tab="regles">Affinités</button>
-      <button class="trios-tab-btn" data-tab="manuel">Assemblage</button>
+      <button class="trios-tab-btn" data-tab="oracle">Oracle</button>
     </div>
     <div class="trios-view">
 
-      <!-- Panel : Collisions — pioche aléatoire dans tout l'inventaire (génération auto à l'arrivée).
-           Le bouton Re-piocher sous le trio sert d'unique action utilisateur. -->
-      <div class="trios-tab-panel" id="triosPanelHashard"></div>
-
-      <!-- Panel : Affinités — chaque pill ouvre un dropdown avec ses valeurs -->
-      <div class="trios-tab-panel" id="triosPanelRegles" style="display:none">
+      <!-- Panel : Collisions (fusion Collisions + Affinités) — pioche aléatoire ou par règle.
+           Pills Couleur/Époque/Matière en option, sinon trio aléatoire par défaut. -->
+      <div class="trios-tab-panel" id="triosPanelHashard">
         <div class="trios-rules-pills">
           <div class="trios-rule-wrap">
             <button class="trios-rule-pill" data-rule="monochrome" type="button" aria-haspopup="true" aria-expanded="false">
@@ -418,8 +414,15 @@
         <div class="trios-rule-desc" id="triosRuleDesc"></div>
       </div>
 
-      <!-- Panel : Assemblage (anciennement Éditeur Manuel) — utilise la sélection (objets bookmarked) -->
-      <div class="trios-tab-panel" id="triosPanelManuel" style="display:none">
+      <!-- Panel : Oracle (lentille expérimentale — en construction) -->
+      <div class="trios-tab-panel" id="triosPanelOracle" style="display:none">
+        <div class="trios-oracle-placeholder">Oracle — en construction</div>
+      </div>
+
+      <!-- Panel Affinités fusionné dans Collisions (gardé masqué pour compat code) -->
+      <div class="trios-tab-panel" id="triosPanelRegles" style="display:none" hidden></div>
+      <!-- Panel Assemblage retiré du flux principal (gardé pour ne pas casser les références code) -->
+      <div class="trios-tab-panel" id="triosPanelManuel" style="display:none" hidden>
         <div class="trios-manual-header">
           <span class="trios-selection-info" id="triosSelectionInfo"></span>
         </div>
@@ -429,8 +432,6 @@
           <p class="trios-empty-hint">Ajoutez des objets depuis l'Inventaire en cliquant sur le « + » de chaque carte.</p>
         </div>
       </div>
-
-      <!-- (Onglet Aléatoire fusionné avec Collisions) -->
 
       <!-- Actions universelles sous les onglets : Re-piocher (modes auto) + Sauvegarder (3 modes) -->
       <div class="trios-actions" id="triosActions" style="display:none">
