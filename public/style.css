@@ -10124,12 +10124,12 @@ body {
 }
 
 /* Labels en majuscules : chasse augmentée, très petits
-   (.card-meta-row retiré : chaque label dedans gère sa propre casse) */
+   (.card-meta-row retiré : chaque label dedans gère sa propre casse).
+   Fiche produit (portrait-*) EXCLUE : la fiche objet utilise la charte
+   typo unifiée Compagnon casse normale. */
 .sfb-label,
 .vpt-count,
 .card-typo-label,
-.portrait-typo-pill,
-.portrait-attr-label,
 .trios-eyebrow,
 .vab-typos,
 .gef-label,
