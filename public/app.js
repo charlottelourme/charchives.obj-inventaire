@@ -6384,7 +6384,8 @@ function renderOracle() {
   const input  = document.getElementById('oracleInput');
   if (!stage || !wrap || !result || !input) return;
 
-  // Sync sub-nav active state (au cas où on a setView('oracle') sans passer par _setOracleMode)
+  // Sync sub-nav active state (au cas où renderOracle est appelé depuis renderTrios
+  // sans passer par _setOracleMode — typiquement au clic sur l'onglet Triptyque>Oracle).
   document.querySelectorAll('.oracle-tab').forEach(tab => {
     tab.classList.toggle('active', tab.dataset.target === _oracleMode);
   });
