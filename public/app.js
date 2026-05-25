@@ -5992,9 +5992,12 @@ function renderTrios() {
     if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
     else result.style.display = 'none';
   } else if (_triosActiveTab === 'oracle') {
-    // Oracle : placeholder — pas de trio, pas d'actions
+    // Oracle : sous-mode du Triptyque. Le panel Oracle gère lui-même sa scène
+    // (input + triptyque) et sa galerie via renderOracle(). On masque les
+    // éléments communs Triptyque (trio result, link bar, saved).
     result.style.display = 'none';
     document.getElementById('triosLinkBar').innerHTML = '';
+    renderOracle();
   }
   _renderSavedTrios();
   _renderTriosActions();
