@@ -5792,10 +5792,13 @@ function _regenerateTrio() {
   const locked = _triosLockedSlots;
   let trio = null;
   if (_triosActiveTab === 'hasard') {
-    // Collisions = pioche aléatoire dans tout l'inventaire (Aléatoire fusionné)
-    trio = _generateAleatoireTrio(prev, locked);
-  } else if (_triosActiveTab === 'regles' && _currentTrio._rule) {
-    trio = _generateTrioByRule(_currentTrio._rule, _currentTrio._ruleValue || '', prev, locked);
+    // Collisions fusionné : si une règle est en mémoire, re-pioche par règle ;
+    // sinon, pioche aléatoire dans tout l'inventaire.
+    if (_currentTrio._rule) {
+      trio = _generateTrioByRule(_currentTrio._rule, _currentTrio._ruleValue || '', prev, locked);
+    } else {
+      trio = _generateAleatoireTrio(prev, locked);
+    }
   }
   if (!trio) {
     _showTriosToast('Pas assez d\'objets pour re-piocher.');
