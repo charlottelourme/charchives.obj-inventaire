@@ -13304,9 +13304,11 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
    État répondu : input glissé vers le haut, triptyque (3 cartes) en dessous.
    ══════════════════════════════════════════════════════════════════════════ */
 .oracle-view {
-  position: relative;          /* anchor pour le sub-nav absolu */
+  /* Désormais portée par #triosPanelOracle (onglet du Triptyque).
+     position: relative → ancrage pour le sub-nav absolu (top-right). */
+  position: relative;
   width: 100%;
-  min-height: calc(100vh - 220px);
+  min-height: calc(100vh - 280px);   /* compte les onglets Triptyque au-dessus */
   padding: 0 clamp(16px, 4vw, 64px);
   box-sizing: border-box;
 }
