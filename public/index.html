@@ -376,9 +376,39 @@
         <div class="trios-rule-desc" id="triosRuleDesc"></div>
       </div>
 
-      <!-- Panel : Oracle (lentille expérimentale — en construction) -->
-      <div class="trios-tab-panel" id="triosPanelOracle" style="display:none">
-        <div class="trios-oracle-placeholder">Oracle — en construction</div>
+      <!-- Panel : Oracle — Générateur de Triptyque par texte libre.
+           Contient son propre sub-nav interne (Nouveau tirage / Réminiscences). -->
+      <div class="trios-tab-panel oracle-view" id="triosPanelOracle" style="display:none">
+        <!-- Sous-menu interne — top-right du panel Oracle (illusion qu'il tombe sous le mot "Oracle" des onglets Triptyque) -->
+        <div class="oracle-subnav">
+          <button class="oracle-tab active" data-target="nouveau"       type="button">Nouveau tirage</button>
+          <button class="oracle-tab"        data-target="reminiscences" type="button">Réminiscences</button>
+        </div>
+
+        <!-- Sous-section 1 : Nouveau tirage (input + triptyque) -->
+        <div id="oracle-nouveau">
+          <div class="oracle-stage" id="oracleStage">
+            <div class="oracle-input-wrap" id="oracleInputWrap">
+              <input
+                type="text"
+                id="oracleInput"
+                class="oracle-input"
+                placeholder="Une pensée contre des objets"
+                autocomplete="off"
+                spellcheck="false"
+                aria-label="Saisie de l'Oracle">
+              <div class="oracle-hint" id="oracleHint">Entrée ↵</div>
+            </div>
+            <!-- Résultat : actions + archive AU-DESSUS du triptyque -->
+            <div class="oracle-result" id="oracleResult"></div>
+          </div>
+        </div>
+
+        <!-- Sous-section 2 : Réminiscences — Le Registre -->
+        <div id="oracle-reminiscences" style="display:none">
+          <div class="reminiscence-registry" id="reminiscenceRegistry"></div>
+          <p class="reminiscence-empty" id="reminiscenceEmpty" hidden>Aucune réminiscence pour l'instant.</p>
+        </div>
       </div>
 
       <!-- Panel Affinités fusionné dans Collisions (gardé masqué pour compat code) -->
