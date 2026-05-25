@@ -8529,19 +8529,19 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
   letter-spacing: .01em;
   text-transform: none;
 }
-/* Typologie — factuel Cutive Mono, casse d'origine, pas de soulignement */
+/* Typologie — Compagnon Roman, casse normale (charte typo unifiée) */
 .portrait-typo-pill {
   font-family: 'Compagnon', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .06em;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .02em;
   padding: 0;
   border-radius: 0;
   border: none;
   background: transparent;
   color: var(--text-2);
   text-decoration: none;
-  text-transform: none;
+  text-transform: none !important;
 }
 /* Titre : XXL Spectral italique — la vedette */
 .portrait-title {
