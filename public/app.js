@@ -10518,20 +10518,15 @@ function bindEvents() {
     setView('grid');
   });
   document.getElementById('viewDerive').addEventListener('click', () => setView('derive'));
-  document.getElementById('viewAtelier').addEventListener('click', () => { _currentTrio = null; setView('trios'); });
-  document.getElementById('viewDiorama').addEventListener('click', () => setView('diorama'));
-  document.getElementById('viewOracle')?.addEventListener('click', () => {
-    // Quand on entre dans Oracle, on revient toujours sur "Nouveau tirage"
-    // (le mode "Réminiscences" reste opt-in via le sub-nav interne).
-    _oracleMode = 'nouveau';
-    setView('oracle');
-    // Filet de sécurité : si le préchargement initial a raté, retente.
+  document.getElementById('viewAtelier').addEventListener('click', () => {
+    _currentTrio = null;
+    setView('trios');
+    // Précharge le thésaurus dès qu'on entre dans Triptyque (Oracle vit ici désormais).
     // Idempotent — n'effectue aucun refetch si déjà chargé.
     loadThesaurus();
-    // Focus sur le champ après que la vue soit affichée
-    setTimeout(() => document.getElementById('oracleInput')?.focus(), 80);
   });
-  // Oracle — soumission par Entrée
+  document.getElementById('viewDiorama').addEventListener('click', () => setView('diorama'));
+  // Oracle — soumission par Entrée (l'input vit dans #triosPanelOracle)
   document.getElementById('oracleInput')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); _oracleSubmit(); }
   });
