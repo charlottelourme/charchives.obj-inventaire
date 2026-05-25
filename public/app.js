@@ -8651,7 +8651,7 @@ const SM_SECTION_DEFAULTS = {
 
 // Labels par défaut des onglets Trios
 const TRIOS_TAB_DEFAULTS = ['Collisions', 'Oracle'];
-const TRIOS_TAB_KEYS     = ['triosTab0', 'triosTab1', 'triosTab2', 'triosTab3'];
+const TRIOS_TAB_KEYS     = ['triosTab0', 'triosTab1'];
 
 function getTriosTabLabel(idx) {
   const key = TRIOS_TAB_KEYS[idx];
