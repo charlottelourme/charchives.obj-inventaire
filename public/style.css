@@ -8619,12 +8619,12 @@ h1, h2, h3, .modal-title, .card-name, .card-verbe-badge,
 }
 .portrait-attr-label {
   font-family: 'Compagnon', monospace;
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .12em;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: none !important;
+  letter-spacing: .02em;
   color: var(--text-3);
-  min-width: 82px;
+  min-width: 92px;
   padding-top: 4px;
   flex-shrink: 0;
 }
