@@ -10157,9 +10157,9 @@ body {
 .card-typo-label   { font-size: 9px;  letter-spacing: .14em; }
 .card-price        { font-size: 11px; }
 
-/* Fiche objet (portrait) */
-.portrait-attr-label { font-size: 8px; letter-spacing: .22em; }
-.portrait-attr-pill  { font-size: 10px; letter-spacing: .03em; }
+/* Fiche objet (portrait) — charte typo unifiée Compagnon */
+.portrait-attr-label { font-size: 12px; letter-spacing: .02em; }
+.portrait-attr-pill  { font-size: 12px; letter-spacing: .01em; }
 .portrait-desc       { font-size: 14px; line-height: 1.7; }
 
 /* Header h1 — Compagnon Light, casse douce */
