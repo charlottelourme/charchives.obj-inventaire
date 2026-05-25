@@ -5978,16 +5978,15 @@ function renderTrios() {
   // Applique la visibilité des onglets (Paramètres > Onglets Triptyque > Masquer)
   _syncTriosTabLabels();
   // Si l'onglet actif est masqué, bascule sur le premier visible
-  const tabIdxMap = { hasard: 0, regles: 1, manuel: 2 };
+  const tabIdxMap = { hasard: 0, oracle: 1 };
   const activeIdx = tabIdxMap[_triosActiveTab];
   if (activeIdx != null && isTriosTabHidden(activeIdx)) {
-    const firstVisible = ['hasard', 'regles', 'manuel'].find((t, i) => !isTriosTabHidden(i));
+    const firstVisible = ['hasard', 'oracle'].find((t, i) => !isTriosTabHidden(i));
     if (firstVisible) {
       _triosActiveTab = firstVisible;
       document.querySelectorAll('.trios-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === firstVisible));
-      document.getElementById('triosPanelHashard').style.display    = firstVisible === 'hasard'    ? '' : 'none';
-      document.getElementById('triosPanelRegles').style.display     = firstVisible === 'regles'    ? '' : 'none';
-      document.getElementById('triosPanelManuel').style.display     = firstVisible === 'manuel'    ? '' : 'none';
+      document.getElementById('triosPanelHashard').style.display = firstVisible === 'hasard' ? '' : 'none';
+      document.getElementById('triosPanelOracle')?.style.setProperty('display', firstVisible === 'oracle' ? '' : 'none');
     }
   }
   const result  = document.getElementById('triosResult');
@@ -5998,25 +5997,23 @@ function renderTrios() {
   empty.style.display = 'none';
 
   if (_triosActiveTab === 'hasard') {
-    // Collisions : génération aléatoire à l'arrivée si pas de trio courant
-    if (!_currentTrio) _currentTrio = _generateAleatoireTrio();
-    if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
-    else result.style.display = 'none';
-  } else if (_triosActiveTab === 'regles') {
+    // Collisions fusionné : aléatoire par défaut, ou par règle si _currentTrio._rule existe.
     // Restaure la pill active + son label (valeur sélectionnée) si une règle est en mémoire.
     if (_currentTrio?._rule) {
       document.querySelectorAll('.trios-rule-pill').forEach(p =>
         p.classList.toggle('active', p.dataset.rule === _currentTrio._rule));
       _resetTriosRulePillLabels();
       _updateTriosRulePillLabel(_currentTrio._rule, _currentTrio._ruleValue || '');
-      _setTriosLinkBar(_currentTrio);
-      _renderTriosCards(_currentTrio.objects);
-      result.style.display = '';
     } else {
-      result.style.display = 'none';
+      // Pas de règle active → trio aléatoire (généré à l'arrivée si nécessaire)
+      if (!_currentTrio) _currentTrio = _generateAleatoireTrio();
     }
-  } else {
-    _renderTriosManualState();
+    if (_currentTrio) { _setTriosLinkBar(_currentTrio); _renderTriosCards(_currentTrio.objects); result.style.display = ''; }
+    else result.style.display = 'none';
+  } else if (_triosActiveTab === 'oracle') {
+    // Oracle : placeholder — pas de trio, pas d'actions
+    result.style.display = 'none';
+    document.getElementById('triosLinkBar').innerHTML = '';
   }
   _renderSavedTrios();
   _renderTriosActions();
