@@ -9074,6 +9074,17 @@ body.dark-mode .trios-rule-dropdown {
   color: var(--text-3);
   min-height: 18px;
 }
+/* Oracle — lentille expérimentale en construction */
+.trios-oracle-placeholder {
+  font-family: 'Compagnon', monospace;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--text-3);
+  text-align: center;
+  padding: 80px 16px;
+  letter-spacing: .02em;
+}
 
 /* ── Trios — Affinités : sélecteur de valeur (couleur/époque/matière) ── */
 .trios-rule-controls {
