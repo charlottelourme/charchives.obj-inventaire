@@ -13312,9 +13312,9 @@ html:not(.dark-mode) body:not(.dark-mode) #gridView .grid .card-thumb-area .img-
 }
 
 /* ── Sub-menu interne de l'Oracle ───────────────────────────────────────────
-   Vit À L'INTÉRIEUR de la page Oracle (jamais dans .global-header).
+   Vit À L'INTÉRIEUR du panel Oracle du Triptyque (#triosPanelOracle.oracle-view).
    Position absolute top: 0 / right: 0 + margin pour donner l'illusion qu'il
-   "tombe" juste sous le mot "Oracle" du header global.
+   "tombe" juste sous le mot "Oracle" des onglets Triptyque.
    Stack vertical, aligné à droite (flex-end).
    ───────────────────────────────────────────────────────────────────────── */
 .oracle-subnav {
