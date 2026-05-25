@@ -10558,7 +10558,7 @@ function bindEvents() {
   // Init thumb position once fonts are loaded (needs layout)
   requestAnimationFrame(() => requestAnimationFrame(_updateDeriveThumb));
 
-  // Trios — tab switching (2 onglets : Collisions fusionné / Oracle placeholder)
+  // Trios — tab switching (2 onglets : Collisions fusionné / Oracle)
   document.querySelectorAll('.trios-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       _triosActiveTab = btn.dataset.tab;
@@ -10576,6 +10576,12 @@ function bindEvents() {
       if (ruleDesc) ruleDesc.textContent = '';
       document.getElementById('triosResult').style.display = 'none';
       document.getElementById('triosLinkBar').innerHTML = '';
+      // Spécifique Oracle : revient toujours sur "Nouveau tirage" + focus + précharge thésaurus
+      if (_triosActiveTab === 'oracle') {
+        _oracleMode = 'nouveau';
+        loadThesaurus();
+        setTimeout(() => document.getElementById('oracleInput')?.focus(), 80);
+      }
       renderTrios();
     });
   });
