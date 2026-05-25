@@ -3184,14 +3184,13 @@ function renderJournal(filtered) {
   _galleryItems = [];
   if (_galleryRafId) { cancelAnimationFrame(_galleryRafId); _galleryRafId = null; }
 
-  // Source du Journal :
-  //  - TOUTES les notes (exclusivement créées ici)
-  //  - TOUTES les photos de contexte (type 'journal-photo' — uploadées directement)
-  //  - SEULEMENT les objets d'inventaire flaggés `inJournal: true`
+  // Source du Journal — limitée aux contenus créés DEPUIS le Journal :
+  //  - TOUTES les notes (type 'note')
+  //  - TOUTES les photos de contexte (type 'journal-photo')
+  //  Les objets d'inventaire (`inJournal === true`) ne sont PLUS affichés
+  //  (toggle Journal supprimé des cartes Inventaire).
   const items = state.collections.filter(c =>
-    c.type === 'note' ||
-    c.type === 'journal-photo' ||
-    (c.inJournal === true && c.photos && c.photos.length > 0)
+    c.type === 'note' || c.type === 'journal-photo'
   );
 
   // Tri : items déjà placés sur le canvas viennent d'abord (plus stables),
