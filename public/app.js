@@ -8655,11 +8655,21 @@ function isTriosTabHidden(idx) {
   return !!(state.settings.triosTabHidden?.[key]);
 }
 
+// Labels fixes par data-tab — source de vérité unique (évite que d'anciennes valeurs
+// dans settings.triosTabLabels n'écrasent les nouveaux noms d'onglets).
+const TRIOS_TAB_LABELS_BY_KEY = {
+  hasard: 'Collisions',
+  oracle: 'Oracle'
+};
 function _syncTriosTabLabels() {
   document.querySelectorAll('.trios-tab-btn').forEach((btn, i) => {
-    const label = getTriosTabLabel(i);
-    // Ne pas écraser le HTML si pas de label défini (préserve "Aléatoire" écrit en dur)
-    if (label) btn.textContent = label;
+    const fixed = TRIOS_TAB_LABELS_BY_KEY[btn.dataset.tab];
+    if (fixed) {
+      btn.textContent = fixed;
+    } else {
+      const label = getTriosTabLabel(i);
+      if (label) btn.textContent = label;
+    }
     btn.style.display = isTriosTabHidden(i) ? 'none' : '';
   });
 }
