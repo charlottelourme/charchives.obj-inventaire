@@ -5750,44 +5750,30 @@ function _renderTriosActions() {
   const repick   = document.getElementById('triosRepickBtn');
   const save     = document.getElementById('triosSaveBtn');
   const result   = document.getElementById('triosResult');
-  const isAuto   = ['hasard', 'regles'].includes(_triosActiveTab);
-  const isManuel = _triosActiveTab === 'manuel';
-  const hasTrio  = !!_currentTrio && result && result.style.display !== 'none';
-  const manualReady = isManuel && _triosManualSlots.every(Boolean);
+  const isAuto  = _triosActiveTab === 'hasard';
+  const hasTrio = !!_currentTrio && result && result.style.display !== 'none';
 
-  // Cas global "rien à afficher"
-  if (!(isAuto && hasTrio) && !manualReady && !isManuel) {
+  if (!isAuto || !hasTrio) {
     actions.style.display = 'none';
-    return;
-  }
-  // Sur Assemblage : la barre est visible dès qu'on est sur l'onglet (info utilisateur),
-  // mais Sauvegarder est désactivé tant que les 3 slots ne sont pas remplis.
-  if (isManuel && !manualReady && !hasTrio) {
-    actions.style.display = '';
-    if (repick) repick.style.display = 'none';
-    if (save)   { save.style.display = ''; save.disabled = true; save.textContent = 'Sauvegarder'; }
     return;
   }
   actions.style.display = '';
 
-  // Re-piocher : modes auto uniquement
+  // Re-piocher (visible quand un trio est affiché)
   if (repick) {
-    repick.style.display = isAuto && hasTrio ? '' : 'none';
-    if (isAuto && hasTrio) {
-      const lockedCount = _triosLockedSlots.filter(Boolean).length;
-      const allLocked = lockedCount === 3;
-      repick.disabled = allLocked;
-      repick.textContent = allLocked
-        ? 'Tout est fixé'
-        : (lockedCount > 0 ? `Re-piocher ${3 - lockedCount} objet${3 - lockedCount > 1 ? 's' : ''}` : 'Re-piocher');
-    }
+    repick.style.display = '';
+    const lockedCount = _triosLockedSlots.filter(Boolean).length;
+    const allLocked = lockedCount === 3;
+    repick.disabled = allLocked;
+    repick.textContent = allLocked
+      ? 'Tout est fixé'
+      : (lockedCount > 0 ? `Re-piocher ${3 - lockedCount} objet${3 - lockedCount > 1 ? 's' : ''}` : 'Re-piocher');
   }
-  // Sauvegarder : auto (hasTrio) OU manuel (3 slots remplis)
+  // Sauvegarder (toujours visible avec un trio courant)
   if (save) {
-    const showSave = (isAuto && hasTrio) || (isManuel && manualReady);
-    save.style.display = showSave ? '' : 'none';
-    save.disabled = !showSave;
-    if (showSave) save.textContent = 'Sauvegarder';
+    save.style.display = '';
+    save.disabled = false;
+    save.textContent = 'Sauvegarder';
   }
 }
 
