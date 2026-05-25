@@ -1406,7 +1406,7 @@ function setView(v, _silent = false) {
 
   const views = {
     grid: 'gridWrapper', derive: 'deriveView',
-    trios: 'triosView',  diorama: 'dioramaView', oracle: 'oracleView',
+    trios: 'triosView',  diorama: 'dioramaView',
     calendar: 'calendarView', catalogue: 'catalogueView', stats: 'statsView'
   };
   Object.entries(views).forEach(([k, id]) => {
@@ -1422,7 +1422,6 @@ function setView(v, _silent = false) {
     derive:    ['viewDerive'],
     trios:     ['viewAtelier'],
     diorama:   ['viewDiorama'],
-    oracle:    ['viewOracle'],
     calendar:  ['viewCalendar', 'mfnViewCalendar'],
     catalogue: ['viewCatalogue', 'mfnViewCatalogue'],
     stats:     ['viewStats', 'mfnViewStats']
