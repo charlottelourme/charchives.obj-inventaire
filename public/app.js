@@ -6372,8 +6372,9 @@ function getOracleMatches(inputText, items) {
 }
 
 function renderOracle() {
-  const view = document.getElementById('oracleView');
-  if (!view) return;
+  // Oracle vit désormais dans #triosPanelOracle (onglet du Triptyque).
+  const panel = document.getElementById('triosPanelOracle');
+  if (!panel) return;
 
   // Synchronise les classes selon l'état (initial vs répondu)
   const stage = document.getElementById('oracleStage');
