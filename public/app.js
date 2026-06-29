@@ -2118,13 +2118,12 @@ function cardHTML(c) {
         <button class="card-next" data-id="${c.id}">›</button>
       </div>` : ''}
       <div class="card-drop-hint">Déposer les photos ici</div>
+      <!-- Aperçu description AU SURVOL — tronqué aux 2 premières phrases,
+           superposé sur le 1/3 bas de l'image (à l'intérieur du card-thumb-area). -->
+      ${c.description && c.description.trim()
+        ? `<div class="card-poem-overlay" aria-hidden="true"><p class="card-poem-text">${esc(_firstSentences(c.description, 2))}</p></div>`
+        : ''}
     </div>
-    <!-- Calque poème : sortie de .card-thumb-area pour échapper à overflow:hidden.
-         Positionné absolu dans .card (qui a overflow: visible) — peut donc déborder
-         pour former une fenêtre XXL flottante au survol. -->
-    ${c.description && c.description.trim()
-      ? `<div class="card-poem-overlay" aria-hidden="true"><div class="card-poem-grain"></div><p class="card-poem-text">${esc(c.description)}</p></div>`
-      : ''}
     <div class="card-body">
       ${metaRow}
       <div class="card-name">${esc(c.name)}</div>
