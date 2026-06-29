@@ -10622,8 +10622,8 @@ function bindEvents() {
     renderSearchActiveTags();
     setView('grid');
   });
-  document.getElementById('viewDerive').addEventListener('click', () => setView('derive'));
-  document.getElementById('viewAtelier').addEventListener('click', () => {
+  on('viewDerive', 'click', () => setView('derive'));
+  on('viewAtelier', 'click', () => {
     _currentTrio = null;
     setView('trios');
     // Précharge le thésaurus dès qu'on entre dans Triptyque (Oracle vit ici désormais).
