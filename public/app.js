@@ -6272,6 +6272,94 @@ function _oracleTokenize(text) {
     .filter(t => t.length >= 2 && !ORACLE_STOPWORDS.has(t));
 }
 
+// ══ BOÎTE À MOTS ═══════════════════════════════════════════════════════════
+// Pool de mots cliquables pour aider à composer une pensée.
+// Sources :
+//   - item.keywords[]  → tags libres saisis manuellement (poids ×3, "haut signal")
+//   - item.description → mots des poèmes (poids ×1, tokenisés et filtrés)
+// Stopwords + longueur min (3) appliqués. Retourne la liste des entrées
+// [mot, score] triée par fréquence décroissante.
+function _buildOracleWordPool() {
+  const counts = new Map();
+  const bump = (word, weight) => {
+    if (!word || word.length < 3) return;
+    if (ORACLE_STOPWORDS.has(word)) return;
+    counts.set(word, (counts.get(word) || 0) + weight);
+  };
+  const pool = state.collections.filter(c =>
+    c.type !== 'note' && c.type !== 'journal-photo'
+  );
+  pool.forEach(c => {
+    // Keywords : poids fort, normalisés et tokenisés (un keyword peut être multi-mots)
+    (c.keywords || []).forEach(kw => {
+      _oracleTokenize(String(kw)).forEach(w => bump(w, 3));
+    });
+    // Description : poids standard
+    if (c.description) {
+      _oracleTokenize(c.description).forEach(w => bump(w, 1));
+    }
+  });
+  // Tri par fréquence décroissante (utile pour le pool large)
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+}
+
+// Échantillonne N mots à montrer dans la boîte. On prend les TOP 60 puis on
+// mélange aléatoirement pour ne montrer que SAMPLE_SIZE — chaque "Mélanger"
+// donne une nouvelle constellation, mais reste dans les mots les plus riches.
+const ORACLE_WORDBOX_POOL_TOP   = 60;
+const ORACLE_WORDBOX_SAMPLE_SIZE = 22;
+
+function _sampleOracleWords() {
+  const pool = _buildOracleWordPool();
+  if (!pool.length) return [];
+  const topSlice = pool.slice(0, ORACLE_WORDBOX_POOL_TOP);
+  // Fisher-Yates shuffle puis tronque
+  const shuffled = [...topSlice];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, ORACLE_WORDBOX_SAMPLE_SIZE).map(([w]) => w);
+}
+
+// Rend la boîte à mots dans #oracleWordBox.
+// Comportement :
+//   - Clic sur un mot → append à l'input (avec espace si nécessaire) + focus
+//   - Bouton "Mélanger" → re-tire un nouvel échantillon de mots
+function _renderOracleWordBox() {
+  const box = document.getElementById('oracleWordBox');
+  if (!box) return;
+  const words = _sampleOracleWords();
+  if (!words.length) {
+    box.innerHTML = '';
+    return;
+  }
+  const wordsHTML = words.map(w =>
+    `<button class="oracle-wordbox-word" data-word="${esc(w)}" type="button">${esc(w)}</button>`
+  ).join('');
+  box.innerHTML = `
+    <div class="oracle-wordbox-label">
+      <span>Inspirations</span>
+      <span class="oracle-wordbox-sep">·</span>
+      <button class="oracle-wordbox-shuffle" id="oracleWordBoxShuffle" type="button">Mélanger</button>
+    </div>
+    <div class="oracle-wordbox-words">${wordsHTML}</div>
+  `;
+  // Clic mot → append à l'input
+  box.querySelectorAll('.oracle-wordbox-word').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById('oracleInput');
+      if (!input) return;
+      const w = btn.dataset.word;
+      const current = (input.value || '').trim();
+      input.value = current ? `${current} ${w}` : w;
+      input.focus();
+    });
+  });
+  // Mélanger → nouveau tirage
+  document.getElementById('oracleWordBoxShuffle')?.addEventListener('click', _renderOracleWordBox);
+}
+
 // Calcule un score de résonance entre un objet et les tokens de la requête.
 // Logique :
 //   - Description (poèmes) : 6 pts par occurrence (champ le plus précieux)
