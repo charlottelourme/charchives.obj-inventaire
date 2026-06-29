@@ -2150,22 +2150,12 @@ function cardHTML(c) {
       <div class="card-grain" aria-hidden="true"></div>
       ${photo
         ? (() => {
-            // Stratégie d'affichage :
-            // - DARK mode : la version PNG détourée (s'il en existe une) est l'image
-            //   principale → CSS `body.dark-mode … .img-cutout { display: block }`.
-            // - LIGHT mode : photo originale (photos[idx]) visible.
-            // - DARK mode : si un PNG détouré existe dans c.photos, il devient
-            //   AUTOMATIQUEMENT l'image principale (CSS swap .img-standard /
-            //   .img-cutout). On rend TOUJOURS .img-cutout dès qu'un PNG existe,
-            //   même si c'est aussi photos[idx] — comme ça la règle dark mode
-            //   `.img-cutout { display: block }` trouve toujours sa cible et
-            //   le swap est garanti, sans dépendre du fallback :has().
-            const cutout = (photos.find(p => p && p.toLowerCase().endsWith('.png')) || null);
+            // Inventaire / Grille : on n'affiche QUE la photo standard (photos[idx]),
+            // jamais le PNG détouré. Le détourage est réservé à la Constellation
+            // (qui pioche elle-même via _dioPhotoFor sur photos[]) et au Diorama.
+            // Vaut pour light mode ET dark mode — pas de swap conditionnel.
             const standardImg = `<img class="card-thumb img-standard" src="${photoUrl(photo)}" alt="" loading="lazy">`;
-            const cutoutImg = cutout
-              ? `<img class="card-thumb img-cutout" src="${photoUrl(cutout)}" alt="" loading="lazy">`
-              : '';
-            const mainSlide = `<div class="swipe-slide swipe-slide-main">${standardImg}${cutoutImg}</div>`;
+            const mainSlide = `<div class="swipe-slide swipe-slide-main">${standardImg}</div>`;
             const poemSlide = (c.description && c.description.trim())
               ? `<div class="swipe-slide poem-slide" data-intention="${esc(c.category||'')}"><p class="swipe-poem-text">${esc(c.description)}</p></div>`
               : '';
