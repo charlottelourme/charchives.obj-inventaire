@@ -1569,104 +1569,53 @@ body.dark-mode .card .card-grain {
    blur) joue le rôle de fenêtre. Les angles disparaissent dans le flou, comme
    le halo des cartes au survol — esthétique cohérente avec le reste du site.
    Le texte sur dessus reste net (Inter italic, couleur duotone du verbe). ════ */
+/* ══ APERÇU DESCRIPTION AU HOVER — Superposition interne 1/3 bas ════════════
+   L'overlay est désormais positionné À L'INTÉRIEUR de .card-thumb-area
+   (qui est position: relative), couvre uniquement le tiers inférieur de
+   l'image, et se fond via un dégradé du transparent vers la couleur claire
+   du verbe. Affichage exclusif au survol (.card:hover). Mobile : pas de
+   hover, l'overlay est masqué (le poème reste accessible via swipe slide). */
 .card-poem-overlay {
   position: absolute;
-  top: 50%;
-  left: calc(100% + 16px);              /* posé À CÔTÉ de la carte, 16px de gap, AUCUN chevauchement */
-  width: 340px;
-  max-height: min(75vh, 520px);
-  transform: translate(-12px, -50%) scale(0.96);   /* léger slide-in à l'animation */
-  transform-origin: left center;
-  z-index: 1000;
-  padding: 2rem 2.25rem;
-  background: transparent;
-  border: none;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 33.33%;
+  z-index: 4;
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 16px 14px;
+  pointer-events: none;
   opacity: 0;
-  visibility: hidden;
-  transition: opacity .35s ease-in-out, transform .45s cubic-bezier(.22,.68,0,1.1), visibility 0s linear .35s;
-  pointer-events: none;
-  overflow: visible;
+  transition: opacity .26s ease-in-out;
+  /* Dégradé : transparent en haut → fond CLAIR (--verbe-light) en bas.
+     Permet à l'image de respirer dans sa moitié haute et de céder la place
+     au texte sans rupture brutale. */
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--verbe-light, rgba(232, 226, 214, 0.55)) 55%,
+    var(--verbe-light, rgba(232, 226, 214, 0.95)) 100%
+  );
 }
-/* Le « blob » coloré flou — duotone INVERSÉ : fond foncé (--verbe-dark), texte
-   clair (--verbe-light). Forme RECTANGLE (coins légèrement arrondis), bords
-   franchement floutés. Le blur + un border-radius modéré adoucissent les
-   angles sans transformer la fenêtre en ovale. */
-.card-poem-overlay::before {
-  content: '';
-  position: absolute;
-  inset: -18px -24px;
-  background: var(--verbe-light, rgba(232, 226, 214, 0.92)); /* duotone INVERSÉ : fond CLAIR */
-  filter: blur(40px);
-  opacity: 0.88;
-  border-radius: 18px;
-  z-index: -2;
-  pointer-events: none;
-}
-.card-poem-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 8px;
-  background: var(--verbe-light, rgba(232, 226, 214, 1));    /* fond CLAIR */
-  filter: blur(8px);
-  opacity: 0.92;
-  border-radius: 14px;
-  z-index: -1;
-  pointer-events: none;
-}
-.card:hover .card-poem-overlay {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(0, -50%) scale(1);
-  transition: opacity .35s ease-in-out, transform .45s cubic-bezier(.22,.68,0,1.1);
-}
-/* Cartes proches du bord droit du viewport : la classe .card-poem-flip-left
-   est ajoutée par JS (cf. _positionPoemOverlays dans app.js) quand la fenêtre
-   risque de déborder à droite. On la bascule à gauche, sans toucher aux
-   marges du grid (qui restent symétriques). */
-.card.card-poem-flip-left .card-poem-overlay {
-  left: auto;
-  right: calc(100% + 16px);             /* gap 16px à gauche, AUCUN chevauchement */
-  transform-origin: right center;
-  transform: translate(12px, -50%) scale(0.96);
-}
-.card.card-poem-flip-left:hover .card-poem-overlay {
-  transform: translate(0, -50%) scale(1);
-}
-/* La carte survolée passe au-dessus de ses voisines pour que la fenêtre XXL
-   ne soit pas masquée par la carte d'à côté. */
-.card { z-index: 0; }
-.card:hover { z-index: 100; }
+.card:hover .card-poem-overlay { opacity: 1; }
 
-/* Grain papier discret sur le blob coloré — cohérence avec .card-grain et bg-grain. */
-.card-poem-grain {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.08;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='pn'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23pn)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 80%);
-          mask-image: radial-gradient(ellipse at center, #000 40%, transparent 80%);
-}
-body.dark-mode .card-poem-grain { mix-blend-mode: overlay; opacity: 0.16; }
-
-/* Typographie éditoriale : Feroniapi (display Velvetyne MediumItalic) — c'est
-   la typo qui porte l'identité poétique du projet ; le poème mérite la voix
-   "concept" plutôt que le labeur Inter. Taille resserrée. */
 .card-poem-text {
-  position: relative;
-  z-index: 1;
   font-family: 'Compagnon', monospace;
-  font-style: normal;                    /* le woff2 est déjà l'italique — pas de synthétique */
+  font-style: italic;
   font-weight: 400;
-  font-size: 1.18rem;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.4;
   letter-spacing: 0.005em;
-  color: var(--verbe-dark, #2A2A2E);     /* duotone : texte FONCÉ sur fond clair */
-  text-align: left;
-  white-space: pre-wrap;
+  color: var(--verbe-dark, #2A2A2E);     /* texte foncé sur fond clair */
   margin: 0;
+  /* Garde-fou : si la description dépasse 2 phrases courtes, on tronque
+     proprement à 3 lignes maximum avec ellipsis. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ══ Hover : les textes de la carte virent en duotone foncé ══════════════════
