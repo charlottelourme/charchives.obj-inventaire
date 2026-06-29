@@ -10630,7 +10630,7 @@ function bindEvents() {
     // Idempotent — n'effectue aucun refetch si déjà chargé.
     loadThesaurus();
   });
-  document.getElementById('viewDiorama').addEventListener('click', () => setView('diorama'));
+  on('viewDiorama', 'click', () => setView('diorama'));
   // Oracle — soumission par Entrée (l'input vit dans #triosPanelOracle)
   document.getElementById('oracleInput')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); _oracleSubmit(); }
