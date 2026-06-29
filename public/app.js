@@ -10601,7 +10601,7 @@ function bindEvents() {
   });
 
   // View tabs
-  document.getElementById('viewInventaire').addEventListener('click', () => {
+  on('viewInventaire', 'click', () => {
     // Retour à l'état initial : Toutes (intentions) / Tous (objets)
     state.categoryFilter        = '';
     state.typoFilter            = '';
