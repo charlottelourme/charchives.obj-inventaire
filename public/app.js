@@ -1657,6 +1657,16 @@ function applySortTo(items) {
   });
 }
 
+// Extrait les N premières phrases d'un texte (split sur . ! ? … suivi
+// d'un espace). Utilisé par cardHTML pour l'aperçu de description au hover.
+function _firstSentences(text, n = 2) {
+  if (!text || typeof text !== 'string') return '';
+  const trimmed = text.trim();
+  if (!trimmed) return '';
+  const parts = trimmed.split(/(?<=[.!?…])\s+/);
+  return parts.slice(0, n).join(' ').trim();
+}
+
 // Convertit un hex en RGB pour composer des rgba() avec alpha dynamique
 function _hexToRgb(hex) {
   if (!hex) return null;
