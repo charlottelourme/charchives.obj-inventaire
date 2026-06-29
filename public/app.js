@@ -10321,6 +10321,12 @@ function bindEvents() {
     on('newBtn', 'click', openNew);
     on('fabBtn', 'click', openNew);
     on('settingsBtn', 'click', openSettingsModal);
+    // Cadenas : déverrouille (saisie du mot de passe) ou verrouille la session.
+    on('adminLockBtn', 'click', () => {
+      if (getAdminToken()) setAdminToken('');   // verrouille
+      else promptAdminUnlock();                 // déverrouille
+    });
+    _syncAdminLockUI();
   }
   on('darkModeBtn', 'click', toggleDarkMode);
   // Logo "Charchives . obj" :
