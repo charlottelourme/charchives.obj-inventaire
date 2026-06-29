@@ -13862,6 +13862,10 @@ body.dark-mode .reminiscence-delete:hover { color: var(--text, #F4F4F5); }
   .oracle-stage { min-height: calc(100vh - 180px); }
   .oracle-input { font-size: clamp(1.2rem, 5.5vw, 1.9rem); }
   .oracle-stage.oracle-answered .oracle-input { font-size: 1.05rem; }
+  /* Boîte à mots mobile : moins de gap, mots plus serrés mais lisibles */
+  .oracle-wordbox { margin-top: 24px; padding: 0 8px; }
+  .oracle-wordbox-words { gap: 8px 14px; }
+  .oracle-wordbox-word { font-size: 1rem; }
   /* Sub-nav mobile : repose en ligne horizontale en haut (toujours aligné droit) */
   .oracle-subnav {
     position: relative;
