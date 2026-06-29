@@ -1,4 +1,23 @@
 // ══════════════════════════════════════════════════════════════════════════════
+// RÔLE D'EXÉCUTION — architecture « Deux Portes » (Front public / Back admin).
+// La porte est déclarée par <body data-app-role="public|admin"> :
+//   index.html → "public" (vitrine, lecture seule + Panier)
+//   admin.html → "admin"  (laboratoire : ajout, édition, exports, Diorama…)
+// IS_ADMIN gate les init/bindings réservés au Back. on() sécurise tout binding
+// dont l'élément peut être absent selon la porte → le Front ne plante jamais.
+// ══════════════════════════════════════════════════════════════════════════════
+const APP_ROLE = document.body.dataset.appRole || 'public';
+const IS_ADMIN = APP_ROLE === 'admin';
+const CAN_EDIT = IS_ADMIN;
+
+// addEventListener tolérant : no-op si l'élément n'existe pas sur cette porte.
+function on(id, evt, fn, opts) {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener(evt, fn, opts);
+  return el;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 // PAGE_DESCRIPTIONS — textes par défaut des bandeaux de chaque page.
 // L'utilisateur peut surcharger ces valeurs depuis la vue Paramètres ; les
 // overrides sont stockés dans localStorage (clé : "charchives_pageDescriptions")
