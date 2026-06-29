@@ -17,6 +17,33 @@ function on(id, evt, fn, opts) {
   return el;
 }
 
+// ── Auth Back-Office (admin uniquement) ───────────────────────────────────────
+// Le secret est saisi par l'utilisatrice et conservé le temps de la session
+// (sessionStorage : effacé à la fermeture de l'onglet). Il est injecté en en-tête
+// `X-Admin-Password` sur chaque écriture par _apiFetch. Le Front n'a jamais de token.
+const ADMIN_TOKEN_KEY = 'charchives_admin_token';
+function getAdminToken() { return IS_ADMIN ? (sessionStorage.getItem(ADMIN_TOKEN_KEY) || '') : ''; }
+function setAdminToken(t) {
+  if (t) sessionStorage.setItem(ADMIN_TOKEN_KEY, t);
+  else   sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+  _syncAdminLockUI();
+}
+function promptAdminUnlock() {
+  const t = window.prompt('Mot de passe administrateur pour débloquer l’édition :', '');
+  if (t === null) return false;               // annulé
+  setAdminToken(t.trim());
+  return true;
+}
+function _syncAdminLockUI() {
+  const btn = document.getElementById('adminLockBtn');
+  if (!btn) return;
+  const unlocked = !!getAdminToken();
+  btn.classList.toggle('is-unlocked', unlocked);
+  btn.title = unlocked
+    ? 'Édition déverrouillée — cliquer pour verrouiller'
+    : 'Déverrouiller l’édition (mot de passe)';
+}
+
 // ══════════════════════════════════════════════════════════════════════════════
 // PAGE_DESCRIPTIONS — textes par défaut des bandeaux de chaque page.
 // L'utilisateur peut surcharger ces valeurs depuis la vue Paramètres ; les
