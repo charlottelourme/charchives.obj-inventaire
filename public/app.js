@@ -519,7 +519,13 @@ let _conPanier = []; // IDs des objets mis de côté dans la constellation
 
 // ── API helpers ────────────────────────────────────────────────────────────────
 // _apiFetch : wrapper commun qui parse la réponse et lance une erreur typée
-async function _apiFetch(url, opts = {}) {
+async function _apiFetch(url, opts = {}, _retried = false) {
+  // Injecte le secret admin sur les écritures (Back-Office déverrouillé).
+  const method = (opts.method || 'GET').toUpperCase();
+  if (method !== 'GET' && IS_ADMIN) {
+    const tok = getAdminToken();
+    if (tok) opts.headers = { ...(opts.headers || {}), 'X-Admin-Password': tok };
+  }
   let res;
   try {
     res = await fetch(url, opts);
@@ -528,6 +534,10 @@ async function _apiFetch(url, opts = {}) {
     const e = new Error('network');
     e.type = 'network';
     throw e;
+  }
+  // 401 sur une écriture → demande (ou re-demande) le mot de passe et retente 1 fois.
+  if (res.status === 401 && IS_ADMIN && !_retried) {
+    if (promptAdminUnlock()) return _apiFetch(url, opts, true);
   }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
