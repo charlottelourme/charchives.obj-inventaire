@@ -1,3 +1,10 @@
+/* ══ ARCHITECTURE « DEUX PORTES » — visibilité par rôle ════════════════════
+      <body data-app-role="public"> = Front (index.html) · "admin" = Back (admin.html).
+      .admin-only  : masqué sur la porte publique (édition, exports, outils labo).
+      .public-only : masqué sur la porte admin (ex : Panier visiteur). */
+body[data-app-role="public"] .admin-only  { display: none !important; }
+body[data-app-role="admin"]  .public-only { display: none !important; }
+
 /* ══ FONT-FACE — Compagnon (4 graisses, identité unique du site) ═══════════
       Hébergées localement (.woff2 + .woff fallback).
       Light = display + logo, Italic = accents, Roman = labeur, Bold = navigation.
