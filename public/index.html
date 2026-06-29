@@ -30,6 +30,7 @@
 
 <header class="global-header">
   <!-- ══ LIGNE 1 — Institution (logo gauche) + Outils (droite) ══ -->
+  <!-- PORTE PUBLIQUE : pas de ⚙ Paramètres, pas de + objet, pas d'historique bugs. -->
   <div class="header-ligne-1">
     <h1 class="header-logo" id="siteTitle">Charchives . obj</h1>
     <div class="header-outils">
@@ -46,7 +47,6 @@
         </div>
       </div>
       <div class="header-actions">
-        <button class="btn btn-ghost btn-icon-only" id="settingsBtn" title="Paramètres">⚙</button>
         <button class="btn btn-ghost btn-icon-only" id="darkModeBtn" title="Mode sombre">◑</button>
         <!-- Bug report : à droite du Dark Mode -->
         <button class="btn btn-ghost btn-icon-only" id="bugReportBtn" type="button" title="Signaler un bug" aria-label="Signaler un bug">
@@ -62,22 +62,15 @@
             <path d="M9 4l3-2 3 2"/>
           </svg>
         </button>
-        <button class="btn btn-ghost btn-icon-only" id="bugHistoryBtn" type="button" title="Voir l'historique des bugs" aria-label="Historique des bugs">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="8" y1="6" x2="20" y2="6"/>
-            <line x1="8" y1="12" x2="20" y2="12"/>
-            <line x1="8" y1="18" x2="20" y2="18"/>
-            <line x1="4" y1="6" x2="4.01" y2="6"/>
-            <line x1="4" y1="12" x2="4.01" y2="12"/>
-            <line x1="4" y1="18" x2="4.01" y2="18"/>
-          </svg>
-        </button>
-        <button class="btn btn-primary" id="newBtn">+ objet</button>
+        <!-- Panier (Front uniquement) — sélection côté visiteur, stockée en localStorage.
+             Handler à câbler à l'étape « Panier ». -->
+        <button class="btn btn-ghost public-only" id="cartBtn" type="button" title="Panier">Panier <span id="cartCount" class="cart-count">0</span></button>
       </div>
     </div>
   </div>
 
-  <!-- ══ LIGNE 2 — Triptyque + Inventaire à gauche, Journal + Diorama à droite ══ -->
+  <!-- ══ LIGNE 2 — Triptyque + Inventaire à gauche, Journal à droite ══ -->
+  <!-- PORTE PUBLIQUE : Diorama retiré (sous-fonction du Journal, Back-Office only). -->
   <div class="header-ligne-2">
     <div class="nav-principale">
       <a class="nav-link" id="viewAtelier" tabindex="0" role="button">Triptyque</a>
@@ -85,8 +78,6 @@
     </div>
     <div class="nav-experimentale">
       <a class="nav-link" id="viewDerive" tabindex="0" role="button">Journal</a>
-      <span class="dot" aria-hidden="true">·</span>
-      <a class="nav-link" id="viewDiorama" tabindex="0" role="button">Diorama</a>
     </div>
   </div>
 </header>
