@@ -10639,9 +10639,9 @@ function bindEvents() {
   document.querySelectorAll('.oracle-tab').forEach(tab => {
     tab.addEventListener('click', () => _setOracleMode(tab.dataset.target));
   });
-  document.getElementById('viewCalendar').addEventListener('click', () => setView('calendar'));
-  document.getElementById('viewCatalogue').addEventListener('click', () => setView('catalogue'));
-  document.getElementById('viewStats').addEventListener('click', () => setView('stats'));
+  on('viewCalendar', 'click', () => setView('calendar'));
+  on('viewCatalogue', 'click', () => setView('catalogue'));
+  on('viewStats', 'click', () => setView('stats'));
   // Mobile footer — mêmes vues, IDs distincts pour éviter les doublons HTML
   document.getElementById('mfnViewCalendar')?.addEventListener('click', () => setView('calendar'));
   document.getElementById('mfnViewCatalogue')?.addEventListener('click', () => setView('catalogue'));
