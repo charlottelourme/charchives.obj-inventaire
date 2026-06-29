@@ -6305,6 +6305,17 @@ function _oracleTokenize(text) {
     .filter(t => t.length >= 2 && !ORACLE_STOPWORDS.has(t));
 }
 
+// Tokenise EN PRÉSERVANT LES ACCENTS — pour l'AFFICHAGE de la boîte à mots.
+// Les stopwords sont quand même filtrés en comparant la forme normalisée.
+// Différent de _oracleTokenize qui aplatit les accents (utile pour le matching
+// du scoring, pas pour montrer "étoile" en gardant son tréma).
+function _oracleTokenizeDisplay(text) {
+  return (text || '').toLowerCase()
+    .replace(/[.,;:!?'"`’()\[\]{}«»…–—-]/g, ' ')
+    .split(/\s+/)
+    .filter(t => t.length >= 3 && !ORACLE_STOPWORDS.has(_normalize(t)));
+}
+
 // ══ BOÎTE À MOTS ═══════════════════════════════════════════════════════════
 // Pool de mots cliquables pour aider à composer une pensée.
 // Deux sources distinctes (séparées pour un échantillonnage à quota) :
@@ -6312,28 +6323,30 @@ function _oracleTokenize(text) {
 //   - ATTRIBUTS de la fiche objet → "matières & apparence", teintes, ambiance
 //     (gardés en valeurs entières, ex: "bleu pâle", "années 50")
 // Stopwords + longueur 3–30 caractères appliqués sur les deux pools.
+// Les ACCENTS sont préservés dans la clé (= forme affichée).
 function _buildOracleWordPool() {
   const descCounts = new Map();
   const attrCounts = new Map();
   const bumpDesc = (word) => {
-    if (!word || word.length < 3) return;
-    if (ORACLE_STOPWORDS.has(word)) return;
+    // word déjà filtré par _oracleTokenizeDisplay (length + stopwords) — on dedupe
     descCounts.set(word, (descCounts.get(word) || 0) + 1);
   };
   const bumpAttr = (rawVal) => {
     if (!rawVal) return;
-    const norm = _normalize(String(rawVal)).trim();
-    if (norm.length < 3 || norm.length > 30) return;
-    if (ORACLE_STOPWORDS.has(norm)) return;
-    attrCounts.set(norm, (attrCounts.get(norm) || 0) + 1);
+    // Préserve les accents pour l'affichage ; n'utilise _normalize que pour le
+    // test de stopword (comparaison insensible aux accents).
+    const display = String(rawVal).toLowerCase().trim();
+    if (display.length < 3 || display.length > 30) return;
+    if (ORACLE_STOPWORDS.has(_normalize(display))) return;
+    attrCounts.set(display, (attrCounts.get(display) || 0) + 1);
   };
   const pool = state.collections.filter(c =>
     c.type !== 'note' && c.type !== 'journal-photo'
   );
   pool.forEach(c => {
-    // STAR : la description (poème) — tokenisée mot à mot
+    // STAR : la description (poème) — tokenisée mot à mot, accents préservés
     if (c.description) {
-      _oracleTokenize(c.description).forEach(bumpDesc);
+      _oracleTokenizeDisplay(c.description).forEach(bumpDesc);
     }
     // ASSAISONNEMENT : valeurs de la fiche objet
     (c.attributes?.matieres    || []).forEach(bumpAttr);  // matières
