@@ -10253,10 +10253,13 @@ function _setupInvPillars() {
 // ── Events ─────────────────────────────────────────────────────────────────────
 function bindEvents() {
   // Header
-  document.getElementById('newBtn').addEventListener('click', openNew);
-  document.getElementById('fabBtn')?.addEventListener('click', openNew);
-  document.getElementById('darkModeBtn').addEventListener('click', toggleDarkMode);
-  document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+  // Boutons d'édition réservés au Back-Office (absents de la porte publique).
+  if (IS_ADMIN) {
+    on('newBtn', 'click', openNew);
+    on('fabBtn', 'click', openNew);
+    on('settingsBtn', 'click', openSettingsModal);
+  }
+  on('darkModeBtn', 'click', toggleDarkMode);
   // Logo "Charchives . obj" :
   //  - desktop  → bascule vers Journal (vue Dérive)
   //  - mobile   → ouvre l'overlay plein écran de navigation (5 onglets en gros au centre)
