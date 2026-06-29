@@ -12447,53 +12447,16 @@ body.modal-open .card:hover {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   SWITCH PHOTO STANDARD / PNG DÉTOURÉ AU DARK MODE (Inventaire uniquement)
+   INVENTAIRE / GRILLE — Affichage strict de la photo standard
    ══════════════════════════════════════════════════════════════════════════
-   Convention projet : un .png dans c.photos[] = version sans fond (la même
-   que celle utilisée par le Diorama). renderCard injecte les deux <img>
-   (img-standard + img-cutout) dans la même thumb-area, et on bascule
-   l'affichage en CSS :
-     - Light mode  → photo originale visible (img-standard)
-     - Dark mode   → PNG détouré visible à la place (img-cutout)
-   Scope strict : seulement dans #gridView .grid (les cartes Inventaire).
-   Le Diorama, le Triptyque, le Journal et les autres vues ne sont PAS
-   impactés — chacun a son propre rendu d'images. */
-
-/* Light mode (défaut) : standard visible, cutout caché. */
-.card-thumb-area .img-standard { display: block; }
-.card-thumb-area .img-cutout   { display: none; }
-
-/* Dark mode + grille Inventaire : on bascule. */
-body.dark-mode #gridView .grid .card-thumb-area .img-standard { display: none !important; }
-body.dark-mode #gridView .grid .card-thumb-area .img-cutout   { display: block !important; }
-
-/* Fallback : si un objet n'a PAS de PNG détouré (img-cutout absente du DOM),
-   on garde la photo standard visible — pas de carte vide en dark. */
-body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-standard {
-  display: block !important;
-}
-
-/* Override de spécificité : la règle masonry bulletproof force
-   `.card-thumb { display: block !important }`. On doit donc passer aussi en
-   !important pour cacher le cutout en light mode. */
-.card-thumb-area .img-cutout { display: none !important; }
+   Le PNG détouré n'est PAS affiché dans Inventaire (light comme dark mode).
+   Il est réservé à la Constellation (qui pioche via _dioPhotoFor sur c.photos[])
+   et au Diorama (qui a son propre rendu). cardHTML n'injecte plus que
+   .img-standard dans la thumb-area — pas de .img-cutout. La règle ci-dessous
+   sert de garde-fou contre la règle masonry bulletproof qui force display:block
+   sur tous les .card-thumb. */
 .card-thumb-area .img-standard { display: block !important; }
-body.dark-mode #gridView .grid .card-thumb-area .img-standard { display: none !important; }
-body.dark-mode #gridView .grid .card-thumb-area .img-cutout   { display: block !important; }
-body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-standard {
-  display: block !important;
-}
-
-/* Spécificité plus haute (#gridView ID + 3 classes) pour battre la règle
-   bulletproof masonry `.grid .card .card-thumb { display:block !important }`
-   (spécificité 0,3,0). On force ainsi le toggle Light/Dark à gagner. */
-#gridView .grid .card-thumb-area .img-cutout { display: none !important; }
-#gridView .grid .card-thumb-area .img-standard { display: block !important; }
-body.dark-mode #gridView .grid .card-thumb-area .img-standard { display: none !important; }
-body.dark-mode #gridView .grid .card-thumb-area .img-cutout   { display: block !important; }
-body.dark-mode #gridView .grid .card-thumb-area:not(:has(.img-cutout)) .img-standard {
-  display: block !important;
-}
+.card-thumb-area .img-cutout   { display: none !important; }
 
 /* ══════════════════════════════════════════════════════════════════════════
    MOBILE — Header sans lignes + barre Rechercher repositionnée à gauche
