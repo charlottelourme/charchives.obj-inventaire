@@ -6492,6 +6492,13 @@ function renderOracle() {
   stage.classList.toggle('oracle-answered', _oracleAnswered);
   if (input.value !== _oracleQuery) input.value = _oracleQuery;
 
+  // Boîte à mots — rendue paresseusement la première fois (et après collections
+  // chargées). Le bouton "Mélanger" interne la rafraîchit ensuite.
+  const wordbox = document.getElementById('oracleWordBox');
+  if (wordbox && !wordbox.children.length && state.collections.length) {
+    _renderOracleWordBox();
+  }
+
   if (!_oracleAnswered || !_oracleResults.length) {
     result.innerHTML = '';
     _renderOracleGallery();   // garde le registre à jour pour quand on bascule
