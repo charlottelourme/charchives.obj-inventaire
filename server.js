@@ -4,6 +4,7 @@ const multer   = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const path     = require('path');
 const fs       = require('fs');
+const crypto   = require('crypto');
 const archiver = require('archiver');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -39,7 +40,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Admin-Password');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
@@ -72,6 +73,34 @@ function requireDb(req, res, next) {
   }
   next();
 }
+
+// ── Auth Back-Office — protège les ÉCRITURES (architecture « Deux Portes ») ────
+// Le Front-Office (index.html) ne fait que des GET → lecture publique, jamais de
+// mot de passe. Le Back-Office (admin.html) envoie le secret ADMIN_PASSWORD dans
+// l'en-tête `X-Admin-Password` (ou `Authorization: Bearer <secret>`) sur chaque
+// écriture. Monté sur tout /api → couvre aussi les futures routes d'écriture.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const AUTH_ENABLED   = !!ADMIN_PASSWORD;
+
+// Comparaison à temps constant (anti-timing-attack) ; false si tailles différentes.
+function _safeEqual(provided, secret) {
+  const a = Buffer.from(String(provided));
+  const b = Buffer.from(String(secret));
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+function requireAuth(req, res, next) {
+  // Lecture publique : le Front doit pouvoir afficher l'inventaire sans secret.
+  if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') return next();
+  // Aucun secret configuré → on laisse passer (confort dev), mais c'est loggé au boot.
+  if (!AUTH_ENABLED) return next();
+  const provided = req.get('X-Admin-Password')
+                || (req.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+  if (provided && _safeEqual(provided, ADMIN_PASSWORD)) return next();
+  return res.status(401).json({ error: 'unauthorized', message: 'Mot de passe administrateur requis.' });
+}
+app.use('/api', requireAuth);
 
 // ── Health check (Render le fait au boot, pas de garde-fou dbReady) ───────────
 // Expose le statut des deux dépendances critiques (MongoDB + Cloudinary) pour
@@ -955,5 +984,10 @@ connectMongo()
       console.log(`  Mode : ${MONGO_REQUIRED ? 'MongoDB (prod)' : 'JSON local (dev)'}`);
       console.log(`  Cloudinary : ${cloudinary ? 'activé' : 'inactif (stockage local)'}`);
       console.log(`  dbReady : ${dbReady}`);
+      if (AUTH_ENABLED) {
+        console.log(`  Auth Back-Office : ACTIVE (écritures protégées par ADMIN_PASSWORD)`);
+      } else {
+        console.warn(`  ⚠ Auth Back-Office : DÉSACTIVÉE — ADMIN_PASSWORD non défini, les écritures sont OUVERTES.`);
+      }
     });
   });

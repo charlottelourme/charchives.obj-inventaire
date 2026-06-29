@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2D2D2D">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CHARCHIVES">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <title>Brocante Archive</title>
+  <!-- Preload des polices Compagnon utilisées au-dessus du fold (logo, navigation, corps).
+       crossorigin obligatoire pour les fonts même same-origin (sinon Safari ignore le preload). -->
+  <link rel="preload" href="/fonts/Compagnon-Light.woff2"  as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Compagnon-Roman.woff2"  as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Compagnon-Italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+</head>
+<body data-view="grid" data-app-role="admin">
+
+<!-- ══ Sandwich de calques pour la thématisation (fond, vignette, grain) ══ -->
+<div id="bgLayers" aria-hidden="true">
+  <div class="bg-base"></div>         <!-- Calque 1 : base gris perle / zinc-950 -->
+  <div class="bg-vignette"></div>     <!-- Calque 2 : vignette blanche aux coins -->
+  <div class="bg-radial"></div>       <!-- Calque 3 : dégradé latéral verbe (JS) -->
+  <div class="bg-grain"></div>        <!-- Calque 4 : grain papier (SVG inline) -->
+</div>
+
+<header class="global-header">
+  <!-- ══ LIGNE 1 — Institution (logo gauche) + Outils (droite) ══ -->
+  <div class="header-ligne-1">
+    <h1 class="header-logo" id="siteTitle">Charchives . obj</h1>
+    <div class="header-outils">
+      <div class="search-wrap" id="searchWrap">
+        <div class="search-bar" id="searchBar">
+          <div class="search-active-tags" id="searchActiveTags"></div>
+          <input class="search-input-inner" type="text" id="searchInput" placeholder="Rechercher" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="search-dropdown" id="searchDropdown">
+          <div class="search-dd-results" id="searchKwList"></div>
+          <div class="search-index-footer">
+            <button class="search-index-link" id="searchIndexLink">+ Parcourir les typologies</button>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Cadenas Back-Office : déverrouille les écritures (mot de passe → en-tête). -->
+        <button class="btn btn-ghost btn-icon-only" id="adminLockBtn" type="button" title="Déverrouiller l’édition (mot de passe)" aria-label="Déverrouiller l'édition">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="11" width="14" height="9" rx="1"/>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+          </svg>
+        </button>
+        <button class="btn btn-ghost btn-icon-only" id="settingsBtn" title="Paramètres">⚙</button>
+        <button class="btn btn-ghost btn-icon-only" id="darkModeBtn" title="Mode sombre">◑</button>
+        <!-- Bug report : à droite du Dark Mode -->
+        <button class="btn btn-ghost btn-icon-only" id="bugReportBtn" type="button" title="Signaler un bug" aria-label="Signaler un bug">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="8" y="6" width="8" height="14" rx="4"/>
+            <path d="M19 7l-3 2"/>
+            <path d="M5 7l3 2"/>
+            <path d="M19 13h-3"/>
+            <path d="M8 13H5"/>
+            <path d="M19 19l-3-2"/>
+            <path d="M5 19l3-2"/>
+            <path d="M12 6V4"/>
+            <path d="M9 4l3-2 3 2"/>
+          </svg>
+        </button>
+        <button class="btn btn-ghost btn-icon-only" id="bugHistoryBtn" type="button" title="Voir l'historique des bugs" aria-label="Historique des bugs">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="8" y1="6" x2="20" y2="6"/>
+            <line x1="8" y1="12" x2="20" y2="12"/>
+            <line x1="8" y1="18" x2="20" y2="18"/>
+            <line x1="4" y1="6" x2="4.01" y2="6"/>
+            <line x1="4" y1="12" x2="4.01" y2="12"/>
+            <line x1="4" y1="18" x2="4.01" y2="18"/>
+          </svg>
+        </button>
+        <button class="btn btn-primary" id="newBtn">+ objet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ LIGNE 2 — Triptyque + Inventaire à gauche, Journal + Diorama à droite ══ -->
+  <div class="header-ligne-2">
+    <div class="nav-principale">
+      <a class="nav-link" id="viewAtelier" tabindex="0" role="button">Triptyque</a>
+      <a class="nav-link active" id="viewInventaire" tabindex="0" role="button">Inventaire</a>
+    </div>
+    <div class="nav-experimentale">
+      <a class="nav-link" id="viewDerive" tabindex="0" role="button">Journal</a>
+      <span class="dot" aria-hidden="true">·</span>
+      <a class="nav-link" id="viewDiorama" tabindex="0" role="button">Diorama</a>
+    </div>
+  </div>
+</header>
+
+<main id="mainArea">
+
+  <!-- ── Grid view ── -->
+  <div id="gridWrapper">
+    <!-- ── Action Bar mobile : compteur + toggle 1/2 colonnes + bouton Filtres ── -->
+    <div class="mobile-action-bar" id="mobileActionBar">
+      <span class="mab-count" id="mabCount">0 objets</span>
+      <div class="mab-actions">
+        <button class="mab-cols-toggle" id="mabColsToggle" type="button" aria-label="Basculer 1 ou 2 colonnes" title="1 / 2 colonnes">
+          <span class="mab-cols-label">1 | 2</span>
+        </button>
+        <button class="mab-filter-btn" id="mabFilterBtn">+ Filtres</button>
+      </div>
+    </div>
+    <!-- ══ BANDEAU 3 strates :
+         Strate 1 (en haut, gauche sous le header) : 23 objets · Plus récent ▾ · Tous ▾  +  slider à droite
+         Strate 2 (centrée) : Objets ▾    Intentions ▾
+         Strate 3 (centrée, juste en dessous, plus petit) : Grille    Constellation
+    ══ -->
+
+    <!-- Strate 1 : toolbar remontée tout en haut, à gauche sous le header -->
+    <div class="inv-toolbar" id="invToolbar">
+      <div class="invt-left">
+        <span class="invt-count" id="countLabel"></span>
+        <select class="invt-select select-minimal" id="sortSelect">
+          <option value="chrono-desc">Plus récent</option>
+          <option value="chrono">Plus ancien</option>
+          <option value="alpha">Alphabétique</option>
+          <option value="category">Par intention</option>
+          <option value="price-asc">Prix croissant</option>
+          <option value="price-desc">Prix décroissant</option>
+        </select>
+        <select class="invt-select select-minimal" id="statusSelect">
+          <option value="">Tous</option>
+          <option value="Disponible">Disponible</option>
+          <option value="Vendu">Vendu</option>
+          <option value="Pas à vendre">Pas à vendre</option>
+          <option value="Brouillon">Brouillon</option>
+          <option value="__selection__">Sélection</option>
+        </select>
+      </div>
+      <input type="range" id="cardSizeSlider" class="card-size-slider" min="140" max="480" value="310" step="10">
+    </div>
+
+    <!-- Strate 2 : 2 piliers Objets / Intentions, centrés -->
+    <div class="inv-pillars" id="invPillars">
+      <button class="inv-pillar" id="invPillarObjet" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="inv-pillar-text">Objets</span>
+        <span class="inv-pillar-caret">▾</span>
+      </button>
+      <button class="inv-pillar" id="invPillarIntention" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="inv-pillar-text">Intentions</span>
+        <span class="inv-pillar-caret">▾</span>
+      </button>
+    </div>
+
+    <!-- Strate 3 : toggle Grille / Constellation, centré juste sous les piliers -->
+    <div class="inv-views-row">
+      <div class="inventory-view-toggle inv-pillars-views" id="inventoryViewToggle" role="tablist">
+        <button class="ivt-btn active" data-mode="grid" type="button">Grille</button>
+        <button class="ivt-btn" data-mode="constellation" type="button">Constellation</button>
+      </div>
+    </div>
+
+    <!-- Dropdown Intentions — liste des verbes en Feroniapi (sans label) -->
+    <div class="inv-dropdown" id="invDropdownIntention" hidden>
+      <div class="inv-dd-panel">
+        <div class="status-filter-bar inv-dd-list inv-dd-list-feronia" id="categoryFilterBar">
+          <button class="sfb-pill active" data-cat="">Toutes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dropdown Objets — Trier par : Identité / Matière / Couleur / Ambiance / Usages
+         (en haut), puis Index typologies (groupes A→V) en dessous. -->
+    <div class="inv-dropdown" id="invDropdownObjet" hidden>
+      <div class="inv-dd-panel inv-dd-panel-objet">
+        <!-- Trier par : remonté tout en haut du déroulé -->
+        <div class="attr-filter-bar inv-dd-attrs" id="attrFilterBar">
+          <div class="mf-wrap" id="filterStylesWrap"></div>     <!-- Identité -->
+          <div class="mf-wrap" id="filterMatieresWrap"></div>    <!-- Matière -->
+          <div class="mf-wrap" id="filterCouleursWrap"></div>    <!-- Couleur -->
+          <div class="mf-wrap" id="filterUniversWrap"></div>     <!-- Ambiance (univers) -->
+          <div class="mf-wrap" id="filterUsagesWrap"></div>      <!-- Usages (usage) -->
+          <button class="clear-attr-btn" id="clearAttrFilters">Effacer</button>
+        </div>
+        <!-- Index typologies (groupes A→V) — l'input recherche reste rendu (caché)
+             pour que _buildIndexGroups() fonctionne sans modif. -->
+        <input type="text" id="idxSearchInput" placeholder="Rechercher" autocomplete="off" spellcheck="false" hidden style="display:none">
+        <div class="idx-groups" id="idxGroups"></div>
+        <!-- Anciens conteneurs gardés masqués (rétrocompat des build*) -->
+        <div class="status-filter-bar" id="subcategoryFilterBar" style="display:none" hidden>
+          <span class="sfb-label">Sous-cat.</span>
+        </div>
+        <div class="typo-filter-bar" id="typologyFilterBar" style="display:none" hidden>
+          <button class="tfb-all active" data-typo="">Tout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status filter pills — gardé caché (statut désormais dans la toolbar discrète) -->
+    <div class="status-filter-bar status-filter-bar-sm" id="statusFilterBar" style="display:none" hidden>
+      <button class="sfb-pill sfb-pill-sm active" data-status="">Tous</button>
+      <button class="sfb-pill sfb-pill-sm" data-status="Disponible"><span class="sfb-dot sfb-dot-sm" style="background:#22c55e"></span>Disponible</button>
+      <button class="sfb-pill sfb-pill-sm" data-status="Vendu"><span class="sfb-dot sfb-dot-sm" style="background:#9ca3af"></span>Vendu</button>
+      <button class="sfb-pill sfb-pill-sm" data-status="Pas à vendre"><span class="sfb-dot sfb-dot-sm" style="background:#7c3aed"></span>Pas à vendre</button>
+      <button class="sfb-pill sfb-pill-sm" data-status="Brouillon"><span class="sfb-dot sfb-dot-sm" style="background:#d1d5db"></span>Brouillon</button>
+      <button class="sfb-pill sfb-pill-sm sfb-pill-selection" data-bookmark="1"><span class="sel-ast-wrap"><svg class="ast-icon sel-ast" viewBox="0 0 24 24" width="10" height="10" fill="none" aria-hidden="true"><line class="ast-s" x1="12" y1="4" x2="12" y2="20"/><line class="ast-s" x1="4" y1="12" x2="20" y2="12"/></svg></span>Sélection</button>
+    </div>
+
+    <!-- Toolbar déplacée tout en haut (sous le header, avant les piliers) — cf. plus haut. -->
+    <div id="gridView"></div>
+    <!-- Mode Gravité — canvas D3 force -->
+    <div id="gravityPane"></div>
+    <!-- export footer supprimé — exports dans le bottom-nav uniquement -->
+  </div>
+
+  <!-- L'ancien Index Overlay (typologies) a été déplacé DANS le déroulé Objets
+       de l'Inventaire — voir #invDropdownObjet plus haut. Le wrapper #indexOverlay
+       est conservé vide pour rétrocompatibilité avec openIndexOverlay() qui
+       redirige désormais vers l'ouverture du déroulé Objets. -->
+  <div id="indexOverlay" class="idx-overlay" style="display:none" hidden></div>
+
+  <!-- ── Journal — moodboard statique de notes & photos ── -->
+  <div id="deriveView" style="display:none">
+    <!-- Actions Journal : centrées (Inter), sans titre redondant -->
+    <div class="journal-actions">
+      <input type="file" id="journalPhotoInput" accept="image/*" multiple style="display:none">
+      <button class="btn btn-primary journal-action-btn" id="journalAddPhotoBtn">+ photo</button>
+      <button class="btn btn-primary journal-action-btn" id="journalAddNoteBtn">+ note</button>
+    </div>
+    <!-- Pane Nuée — Galerie Masonry -->
+    <div class="derive-pane" id="deriveNueePane">
+      <div id="galleryScroll" class="gallery-scroll">
+        <div id="galleryGrid" class="gallery-grid"></div>
+      </div>
+    </div>
+    <!-- Pane Constellation — D3 -->
+    <div class="derive-pane derive-pane-hidden" id="deriveReseauPane">
+      <div class="con-toolbar">
+        <div class="con-aff-bar">
+          <button class="con-aff-btn active" data-aff="intention">Intention</button>
+          <button class="con-aff-btn" data-aff="matiere">Matière</button>
+          <button class="con-aff-btn" data-aff="identite">Identité</button>
+        </div>
+        <div class="con-zoom-wrap" id="conZoomWrap">
+          <input type="range" class="card-size-slider" id="conZoomSlider" min="10" max="200" value="75" step="5">
+        </div>
+      </div>
+      <div id="conCanvas" class="con-canvas"></div>
+      <!-- Panier flottant — sélection d'objets à comparer -->
+      <div class="con-panier" id="conPanier" style="display:none">
+        <div class="con-panier-header">
+          <span class="con-panier-title">Sélection</span>
+          <button class="con-panier-clear" id="conPanierClear" title="Vider la sélection" aria-label="Vider"><svg class="ui-icon ui-icon-close" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        </div>
+        <div class="con-panier-items" id="conPanierItems"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Timeline view (merged into calendar) ── -->
+  <div id="timelineView" style="display:none"></div>
+
+  <!-- ── Calendar view — horizontal timeline ── -->
+  <div id="calendarView" style="display:none">
+    <div class="cal-h-toolbar">
+      <span class="cal-h-toolbar-title">Frise temporelle</span>
+      <select id="calDateTypeSelect" class="cal-h-date-sel">
+        <option value="dateAchat" selected>Par date d'acquisition</option>
+        <option value="createdAt">Par date d'ajout</option>
+      </select>
+      <button class="cal-jump-btn" id="calJumpBtn">⊞ Naviguer</button>
+    </div>
+    <!-- Mini calendar popup -->
+    <div id="calMiniPopup" class="cal-mini-popup" style="display:none">
+      <div class="cal-mini-head">
+        <button id="calMiniPrevYear" class="cal-mini-nav-btn">‹</button>
+        <span id="calMiniYearLabel" class="cal-mini-year-label">2025</span>
+        <button id="calMiniNextYear" class="cal-mini-nav-btn">›</button>
+      </div>
+      <div id="calMiniMonths" class="cal-mini-months"></div>
+    </div>
+    <!-- Horizontal scroll timeline -->
+    <div id="calHorizScroll" class="cal-h-scroll">
+      <div id="calHorizTrack" class="cal-h-track"></div>
+    </div>
+  </div>
+
+  <!-- ── Catalogue view ── -->
+  <div id="catalogueView" style="display:none">
+    <div class="toolbar catalogue-toolbar">
+      <span class="count-label" id="catalogueCountLabel"></span>
+      <div class="toolbar-gap"></div>
+      <button class="btn btn-ghost" id="catalogueSelectAll">Tout sélectionner</button>
+      <button class="btn btn-primary" id="cataloguePrintBtn">Imprimer / PDF</button>
+    </div>
+    <div id="catalogueContent" class="catalogue-content"></div>
+  </div>
+
+  <!-- ── Diorama — Canvas interactif ── -->
+  <div id="dioramaView" class="diorama-view" style="display:none">
+    <!-- Sous-menu interne (esthétique Oracle) — positionné absolute top-right
+         pour "tomber" sous le mot Diorama du header. -->
+    <div class="diorama-subnav">
+      <button class="diorama-tab active" data-mode="nouvelle" type="button">Nouvelle composition</button>
+      <button class="diorama-tab" data-mode="compositions" type="button">Réminiscences</button>
+    </div>
+
+    <!-- Décor bar (visible uniquement en mode "Nouvelle composition") -->
+    <div class="diorama-decor-bar" id="dioDecorBar"></div>
+
+    <!-- MODE 1 : Nouvelle composition — scène + 2 bibliothèques latérales -->
+    <div id="dioModeNouvelle" class="diorama-mode diorama-mode-nouvelle">
+      <div class="diorama-layout">
+        <!-- Bibliothèque GAUCHE — première moitié des intentions -->
+        <div class="diorama-sidebar diorama-sidebar-left" id="dioSidebarLeft">
+          <div class="diorama-sidebar-header">
+            <input type="text" class="diorama-sidebar-search" id="dioSearch" placeholder="Filtrer…" autocomplete="off">
+            <div class="diorama-sidebar-suggestions" id="dioSuggestions"></div>
+          </div>
+          <div class="diorama-sidebar-list diorama-sidebar-list-grouped" id="dioLibListLeft"></div>
+        </div>
+
+        <!-- Scène (drop zone + pan/zoom D3) -->
+        <div class="diorama-scene-wrap" id="dioSceneWrap">
+          <div class="diorama-scene" id="dioScene">
+            <img class="diorama-backdrop" id="dioBackdrop" alt="" draggable="false">
+            <!-- Items placés sont ajoutés ici dynamiquement -->
+          </div>
+          <!-- Bouton flottant : enregistrer la composition courante -->
+          <button class="diorama-save-btn" id="dioSaveBtn" type="button" title="Enregistrer cette composition">Enregistrer</button>
+        </div>
+
+        <!-- Bibliothèque DROITE — seconde moitié des intentions -->
+        <div class="diorama-sidebar diorama-sidebar-right" id="dioSidebarRight">
+          <div class="diorama-sidebar-list diorama-sidebar-list-grouped" id="dioLibListRight"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODE 2 : Compositions enregistrées (galerie) -->
+    <div id="dioModeCompositions" class="diorama-mode diorama-mode-compositions" hidden>
+      <div class="diorama-gallery" id="dioGallery"></div>
+    </div>
+  </div>
+
+  <!-- ── Trios view ── -->
+  <div id="triosView" style="display:none">
+    <!-- STRATE 3 : ToolBar universelle (onglets du Triptyque) -->
+    <div class="trios-tabs-nav toolbar-strate">
+      <button class="trios-tab-btn active" data-tab="hasard">Collisions</button>
+      <button class="trios-tab-btn" data-tab="oracle">Oracle</button>
+    </div>
+    <div class="trios-view">
+
+      <!-- Panel : Collisions (fusion Collisions + Affinités) — pioche aléatoire ou par règle.
+           Pills Couleur/Époque/Matière en option, sinon trio aléatoire par défaut. -->
+      <div class="trios-tab-panel" id="triosPanelHashard">
+        <div class="trios-rules-pills">
+          <div class="trios-rule-wrap">
+            <button class="trios-rule-pill" data-rule="monochrome" type="button" aria-haspopup="true" aria-expanded="false">
+              <span class="trios-rule-pill-text">Couleur</span>
+              <span class="trios-rule-pill-caret">▾</span>
+            </button>
+            <div class="trios-rule-dropdown" data-rule="monochrome" hidden></div>
+          </div>
+          <div class="trios-rule-wrap">
+            <button class="trios-rule-pill" data-rule="epoque" type="button" aria-haspopup="true" aria-expanded="false">
+              <span class="trios-rule-pill-text">Même Époque</span>
+              <span class="trios-rule-pill-caret">▾</span>
+            </button>
+            <div class="trios-rule-dropdown" data-rule="epoque" hidden></div>
+          </div>
+          <div class="trios-rule-wrap">
+            <button class="trios-rule-pill" data-rule="matiere" type="button" aria-haspopup="true" aria-expanded="false">
+              <span class="trios-rule-pill-text">Même Matière</span>
+              <span class="trios-rule-pill-caret">▾</span>
+            </button>
+            <div class="trios-rule-dropdown" data-rule="matiere" hidden></div>
+          </div>
+        </div>
+        <div class="trios-rule-desc" id="triosRuleDesc"></div>
+      </div>
+
+      <!-- Panel : Oracle — Générateur de Triptyque par texte libre.
+           Contient son propre sub-nav interne (Nouveau tirage / Réminiscences). -->
+      <div class="trios-tab-panel oracle-view" id="triosPanelOracle" style="display:none">
+        <!-- Sous-menu interne — top-right du panel Oracle (illusion qu'il tombe sous le mot "Oracle" des onglets Triptyque) -->
+        <div class="oracle-subnav">
+          <button class="oracle-tab active" data-target="nouveau"       type="button">Nouveau tirage</button>
+          <button class="oracle-tab"        data-target="reminiscences" type="button">Réminiscences</button>
+        </div>
+
+        <!-- Sous-section 1 : Nouveau tirage (input + triptyque) -->
+        <div id="oracle-nouveau">
+          <div class="oracle-stage" id="oracleStage">
+            <div class="oracle-input-wrap" id="oracleInputWrap">
+              <input
+                type="text"
+                id="oracleInput"
+                class="oracle-input"
+                placeholder="Une pensée contre des objets"
+                autocomplete="off"
+                spellcheck="false"
+                aria-label="Saisie de l'Oracle">
+              <div class="oracle-hint" id="oracleHint">Entrée ↵</div>
+            </div>
+            <!-- Boîte à mots — inspiration cliquable issue des keywords + descriptions des objets.
+                 Masquée automatiquement quand l'oracle a répondu (.oracle-answered). -->
+            <div class="oracle-wordbox" id="oracleWordBox" aria-label="Boîte à mots — cliquer pour composer une pensée"></div>
+            <!-- Résultat : actions + archive AU-DESSUS du triptyque -->
+            <div class="oracle-result" id="oracleResult"></div>
+          </div>
+        </div>
+
+        <!-- Sous-section 2 : Réminiscences — Le Registre -->
+        <div id="oracle-reminiscences" style="display:none">
+          <div class="reminiscence-registry" id="reminiscenceRegistry"></div>
+          <p class="reminiscence-empty" id="reminiscenceEmpty" hidden>Aucune réminiscence pour l'instant.</p>
+        </div>
+      </div>
+
+      <!-- Panel Affinités fusionné dans Collisions (gardé masqué pour compat code) -->
+      <div class="trios-tab-panel" id="triosPanelRegles" style="display:none" hidden></div>
+      <!-- Panel Assemblage retiré du flux principal (gardé pour ne pas casser les références code) -->
+      <div class="trios-tab-panel" id="triosPanelManuel" style="display:none" hidden>
+        <div class="trios-manual-header">
+          <span class="trios-selection-info" id="triosSelectionInfo"></span>
+        </div>
+        <div class="trios-inventory-strip" id="triosInventoryStrip"></div>
+        <div class="trios-empty-selection" id="triosEmptySelection" style="display:none">
+          <p>Aucun objet dans votre sélection.</p>
+          <p class="trios-empty-hint">Ajoutez des objets depuis l'Inventaire en cliquant sur le « + » de chaque carte.</p>
+        </div>
+      </div>
+
+      <!-- Actions universelles sous les onglets : Re-piocher (modes auto) + Sauvegarder (3 modes) -->
+      <div class="trios-actions" id="triosActions" style="display:none">
+        <button class="trios-repick-btn" id="triosRepickBtn">Re-piocher</button>
+        <button class="trios-save-btn" id="triosSaveBtn">Sauvegarder</button>
+      </div>
+
+      <!-- Lien narratif -->
+      <div class="trios-link-bar" id="triosLinkBar"></div>
+
+      <!-- Trio cards (drop zones en mode manuel) -->
+      <div id="triosResult" class="trios-result" style="display:none">
+        <div class="trios-grid" id="triosGrid"></div>
+      </div>
+
+      <!-- Compositions sauvegardées (localStorage) -->
+      <div class="trios-saved-section" id="triosSavedSection" style="display:none">
+        <div class="trios-saved-header">
+          <span class="trios-saved-label">Compositions sauvegardées</span>
+          <span class="trios-saved-count" id="triosSavedCount"></span>
+        </div>
+        <div class="trios-saved-list" id="triosSavedList"></div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="triosEmpty" class="trios-empty" style="display:none">
+        Il faut au moins 3 objets dans votre inventaire pour composer un trio.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Stats view ── -->
+  <div id="statsView" style="display:none">
+    <div class="stats-scroll">
+
+      <!-- KPIs typographiques -->
+      <section class="stats-section stats-section-kpis">
+        <div class="stats-kpi-grid">
+          <div class="stats-kpi-item">
+            <div class="stats-kpi-number" id="kpiTotal">—</div>
+            <div class="stats-kpi-label">Objets au total</div>
+          </div>
+          <div class="stats-kpi-item">
+            <div class="stats-kpi-number" id="kpiDisponible">—</div>
+            <div class="stats-kpi-label">Disponibles</div>
+          </div>
+          <div class="stats-kpi-item">
+            <div class="stats-kpi-number stats-kpi-number-text" id="kpiCat">—</div>
+            <div class="stats-kpi-label">Catégorie dominante</div>
+          </div>
+          <div class="stats-kpi-item">
+            <div class="stats-kpi-number" id="kpiValeur">—</div>
+            <div class="stats-kpi-label">Valeur disponible</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Intentions — bulles duotone -->
+      <section class="stats-section">
+        <div class="stats-section-label">Intentions</div>
+        <div id="statsBubbles" class="stats-bubbles"></div>
+      </section>
+
+      <!-- Statuts — barres dégradé -->
+      <section class="stats-section">
+        <div class="stats-section-label">Statuts</div>
+        <div id="statsStatusBars" class="stats-gradient-bars"></div>
+      </section>
+
+      <!-- Mots-clés -->
+      <section class="stats-section">
+        <div class="stats-section-label">Mots-clés</div>
+        <div class="stats-chart-wrap stats-chart-wrap-kw"><canvas id="chartKw"></canvas></div>
+        <button id="kwShowAllBtn" class="btn btn-ghost" style="display:none;margin-top:10px;width:100%;font-size:12px"></button>
+      </section>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Floating mobile button ── -->
+<button class="fab" id="fabBtn" title="Ajouter un objet">+</button>
+
+<!-- ── Footer global : socle opaque avec 2 lignes (breadcrumb + outils) ── -->
+<footer class="global-footer">
+  <!-- Ligne 1 : fil d'Ariane (à gauche, discret) -->
+  <div id="breadcrumbBar" class="breadcrumb-bar global-footer-breadcrumb" style="display:none"></div>
+  <!-- Ligne 2 : outils — INVERSION : Vues à gauche, Exports à droite -->
+  <nav class="bottom-nav global-footer-tools">
+    <div class="bottom-nav-views">
+      <button class="view-tab" id="viewCalendar">Calendrier</button>
+      <button class="view-tab" id="viewCatalogue">Catalogue</button>
+      <button class="view-tab" id="viewStats">Stats</button>
+    </div>
+    <div class="bottom-nav-exports">
+      <button class="btn-export" id="exportJsonBtn" title="Télécharger les données JSON">↓ JSON</button>
+      <button class="btn-export" id="exportShopifyBtn" title="Exporter Shopify CSV">↓ Shopify</button>
+      <a class="btn-export" href="/api/export/photos-zip" download title="Télécharger toutes les photos en ZIP">↓ Photos ZIP</a>
+    </div>
+  </nav>
+</footer>
+
+<!-- ── Edit / Create Modal ── -->
+<div class="modal-overlay" id="editModal" style="display:none">
+  <div class="modal modal-edit">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Nouvel objet</span>
+      <button class="modal-close" id="editModalClose" aria-label="Fermer"><svg class="ui-icon ui-icon-close" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    </div>
+
+    <!-- Modal tabs -->
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-tab="public">Fiche publique</button>
+      <button class="modal-tab" data-tab="private">Privé</button>
+      <button class="modal-tab modal-tab-settings" data-tab="settings">⚙ Paramètres</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Bandeau analyse IA -->
+      <div id="aiAnalyzeBanner" style="display:none" class="ai-analyze-banner">
+        <span class="ai-analyze-spinner"></span>
+        <span id="aiAnalyzeLabel">Analyse en cours…</span>
+      </div>
+
+      <!-- ── Tab PUBLIC ── -->
+      <div class="tab-pane active" id="tabPublic">
+
+        <!-- 1. Photos -->
+        <div id="photosZone">
+        <div class="field">
+          <label>Photos</label>
+          <div class="photos-drop-zone" id="photosDropZone">
+            <div>Glisser les images ici ou <u>parcourir</u></div>
+            <input type="file" id="photosInput" accept="image/*" multiple>
+          </div>
+          <div class="photos-grid" id="photosList"></div>
+        </div>
+        </div><!-- /photosZone -->
+
+        <!-- 2. Nom -->
+        <div class="field">
+          <label>Nom de l'objet</label>
+          <input type="text" id="fName" placeholder="Titre de la fiche…">
+        </div>
+
+        <!-- 3. Intention + Typologie -->
+        <div class="form-intent-band">
+          <div class="field-row">
+            <div class="field">
+              <label>Intention</label>
+              <select id="fCategory">
+                <option value="">— Choisir —</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Typologie <span class="field-hint">2 max.</span></label>
+              <div id="subcatChipsContainer" class="subcat-chips-wrap"></div>
+            </div>
+          </div>
+          <div class="field" id="fSubcategoryCustomField" style="display:none">
+            <label>Préciser la typologie</label>
+            <input type="text" id="fSubcategoryCustom" placeholder="Votre typologie…">
+          </div>
+        </div>
+
+        <!-- 4. Prix + Statut (compact) -->
+        <div class="field-row field-row-compact">
+          <div class="field">
+            <label class="label-sm">Prix de vente (€)</label>
+            <input type="number" id="fPrice" min="0" step="0.50" placeholder="0.00" class="input-sm">
+          </div>
+          <div class="field">
+            <label class="label-sm">Statut</label>
+            <select id="fItemStatus" class="input-sm">
+              <option value="Disponible">Disponible</option>
+              <option value="Vendu">Vendu</option>
+              <option value="Pas à vendre">Pas à vendre</option>
+              <option value="Brouillon">Brouillon</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 5. Description -->
+        <div class="field">
+          <label>Description</label>
+          <textarea id="fDesc" placeholder="Description, notes, contexte…" rows="3"></textarea>
+        </div>
+
+        <!-- Attributs accordion + Atmosphère — tout rendu dynamiquement par renderAllAttributes() -->
+        <div class="attrs-accordion" id="attrsAccordion"></div>
+
+        <!-- 7. Tags libres -->
+        <div class="field">
+          <label>Tags libres <span class="field-hint">pour la recherche</span></label>
+          <div class="tags-input-wrap" id="keywordsWrap">
+            <input class="tags-input" id="keywordsInput" placeholder="Taper et Entrée pour ajouter…">
+            <div class="tags-suggestions" id="keywordsSuggestions"></div>
+          </div>
+        </div>
+
+        <!-- 8. Dépôt vente + Pièce d'artiste -->
+        <div class="checkbox-rows">
+          <div class="checkbox-line">
+            <label class="checkbox-label">
+              <input type="checkbox" id="fDepotVente"> Dépôt-vente
+            </label>
+            <input type="text" class="checkbox-name-input" id="fDepotVenteName" placeholder="Nom du déposant…">
+          </div>
+          <div class="checkbox-line">
+            <label class="checkbox-label">
+              <input type="checkbox" id="fArtiste"> Création
+            </label>
+            <input type="text" class="checkbox-name-input" id="fArtisteName" placeholder="Nom de l'artiste…">
+          </div>
+        </div>
+
+
+      </div><!-- /tabPublic -->
+
+      <!-- ── Tab PRIVÉ ── -->
+      <div class="tab-pane" id="tabPrivate" style="display:none">
+        <div class="private-notice">Ces informations sont uniquement visibles ici. Elles ne sont jamais exportées (ni CSV Shopify, ni PDF).</div>
+
+        <!-- Photos privées -->
+        <div class="field">
+          <label>Photos privées <span class="field-hint">non exportées</span></label>
+          <div class="photos-drop-zone photos-drop-zone-sm" id="privatePhotosDropZone">
+            <div>Glisser ou <u>parcourir</u></div>
+            <input type="file" id="privatePhotosInput" accept="image/*" multiple>
+          </div>
+          <div class="photos-grid photos-grid-sm" id="privatePhotosList"></div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Prix d'achat (€)</label>
+            <input type="number" id="fPrixAchat" min="0" step="0.50" placeholder="0.00">
+          </div>
+          <div class="field">
+            <label>Date d'achat</label>
+            <div class="date-picker-wrap" id="dateAchatPicker">
+              <div class="date-display" id="dateAchatDisplay">
+                <span id="dateAchatDisplayText">Choisir une date</span>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="date-picker" id="dateAchatPickerPanel">
+                <div class="dp-header">
+                  <button class="dp-nav" id="dpAchatPrev">‹</button>
+                  <span class="dp-year" id="dpAchatYear">2024</span>
+                  <button class="dp-nav" id="dpAchatNext">›</button>
+                </div>
+                <div class="dp-months" id="dpAchatMonths"></div>
+                <button class="dp-clear" id="dpAchatClear">Effacer</button>
+              </div>
+            </div>
+            <input type="hidden" id="fDateAchat">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Lieu d'achat</label>
+          <input type="text" id="fLieuAchat" placeholder="Marché d'Aligre, vide-grenier…">
+        </div>
+
+        <div class="field">
+          <label>Emplacement actuel</label>
+          <select id="fLocation">
+            <option value="">— Choisir —</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Notes annexes</label>
+          <textarea id="fNotes" rows="4" placeholder="Observations, provenance, histoire…"></textarea>
+        </div>
+      </div><!-- /tabPrivate -->
+
+      <!-- ── Tab PARAMÈTRES ── -->
+      <div class="tab-pane" id="tabSettings" style="display:none">
+
+        <!-- Titre du site -->
+        <div class="field" style="margin-bottom:16px">
+          <label>Titre du site</label>
+          <input type="text" id="settingsSiteTitle" placeholder="ARCHIVE">
+        </div>
+
+        <div id="settingsSections" class="settings-accordion">
+
+          <div class="settings-sec settings-section-draggable" data-section="categories">
+            <div class="settings-sec-header">
+              <span class="settings-sec-handle">⠿</span>
+              <span>Verbes &amp; Typologies</span>
+              <span class="attr-toggle">▾</span>
+            </div>
+            <div class="settings-sec-body">
+              <div id="settingsCats" class="settings-cats-list"></div>
+              <div class="settings-add-row">
+                <input type="text" id="newCatName" placeholder="Nouveau verbe…">
+                <button class="btn btn-ghost btn-sm" id="addCatBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="locations">
+            <div class="settings-sec-header">
+              <span>Emplacements de stockage</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsLocations" class="settings-list"></div>
+              <div class="settings-add-row">
+                <input type="text" id="newLocationName" placeholder="Nouvel emplacement…">
+                <button class="btn btn-ghost btn-sm" id="addLocationBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="colors">
+            <div class="settings-sec-header">
+              <span>Couleurs</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsColors" class="settings-chips-list"></div>
+              <div class="settings-add-row">
+                <input type="color" id="newColorHex" value="#888888" class="settings-color-picker">
+                <input type="text" id="newColorName" placeholder="Nom de la couleur…">
+                <button class="btn btn-ghost btn-sm" id="addColorBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="motifs">
+            <div class="settings-sec-header">
+              <span>Motifs</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsMotifs" class="settings-chips-list"></div>
+              <div class="settings-add-row">
+                <input type="text" id="newMotifName" placeholder="Nouveau motif…">
+                <button class="btn btn-ghost btn-sm" id="addMotifBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="univers">
+            <div class="settings-sec-header">
+              <span>Univers &amp; Atmosphère</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsUnivers" class="settings-chips-list"></div>
+              <div class="settings-add-row">
+                <input type="text" id="newUniversName" placeholder="Nouvel univers…">
+                <button class="btn btn-ghost btn-sm" id="addUniversBtn">+ Ajouter</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-sec settings-section-draggable" data-section="attrOrder">
+            <div class="settings-sec-header">
+              <span>Rubriques du formulaire</span>
+              <span class="attr-toggle">›</span>
+            </div>
+            <div class="settings-sec-body" style="display:none">
+              <div id="settingsAttrOrder" class="settings-attr-order-list"></div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /tabSettings -->
+
+    </div><!-- /modal-body -->
+
+    <div class="modal-footer" id="editModalFooter">
+      <!-- Footer fiche (public/privé) -->
+      <div id="footerFiche">
+        <button class="btn btn-danger" id="deleteBtn" style="display:none;margin-right:auto">Supprimer</button>
+        <button class="btn btn-ghost" id="cancelBtn">Annuler</button>
+        <button class="btn btn-ghost" id="draftBtn">Brouillon</button>
+        <button class="btn btn-primary" id="saveBtn">Enregistrer</button>
+      </div>
+      <!-- Footer paramètres -->
+      <div id="footerSettings" style="display:none">
+        <button class="btn btn-ghost" id="settingsCancelBtn">← Retour à la fiche</button>
+        <button class="btn btn-primary" id="settingsSaveBtn">Enregistrer les paramètres</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Detail Modal ── -->
+<div class="modal-overlay" id="detailModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="detail-nav">
+        <button class="detail-nav-btn" id="detailPrev" aria-label="Précédent"><svg class="ui-icon ui-icon-chevron" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <span class="detail-nav-pos" id="detailNavPos">1 / 1</span>
+        <button class="detail-nav-btn" id="detailNext" aria-label="Suivant"><svg class="ui-icon ui-icon-chevron" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <span class="modal-title" id="detailTitle"></span>
+      <button class="modal-close" id="detailModalClose" aria-label="Fermer"><svg class="ui-icon ui-icon-close" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="detailEditBtn">Modifier</button>
+      <button class="btn btn-ghost" id="detailCloseBtn">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Keyword floating preview -->
+<div id="kwFloatPreview" style="display:none;position:fixed;z-index:500;width:264px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(26,26,26,.14);overflow:hidden;pointer-events:none"></div>
+
+<!-- Timeline floating preview -->
+<div id="timelineFloatPreview" style="display:none;position:fixed;z-index:500;width:220px;background:#fff;border:1px solid #c8c4be;border-radius:6px;box-shadow:0 8px 32px rgba(26,26,26,.14);overflow:hidden;pointer-events:none"></div>
+
+<!-- ── Image Cropper ── -->
+<div class="canvas-editor-overlay" id="cropperOverlay" style="display:none">
+  <div class="canvas-editor-modal">
+    <div class="canvas-editor-header">
+      <span class="canvas-editor-title">Recadrer l'image</span>
+      <button class="canvas-editor-close" id="cropperClose">✕</button>
+    </div>
+    <div class="canvas-editor-toolbar">
+      <button class="canvas-tool-btn active" id="cropRatioFree" data-ratio="free">Libre</button>
+      <button class="canvas-tool-btn" id="cropRatioSquare" data-ratio="1">Carré 1:1</button>
+      <button class="canvas-tool-btn" id="cropRatio43" data-ratio="1.333">Paysage 4:3</button>
+      <button class="canvas-tool-btn" id="cropRatio34" data-ratio="0.75">Portrait 3:4</button>
+    </div>
+    <div class="canvas-editor-stage cropper-stage" id="cropperStage">
+      <canvas id="cropperCanvas" class="ce-canvas cropper-canvas"></canvas>
+    </div>
+    <div class="canvas-editor-footer">
+      <button class="canvas-editor-cancel" id="cropperCancel">Annuler</button>
+      <button class="canvas-editor-validate" id="cropperValidate">Recadrer &amp; Utiliser</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Canvas Brush Editor ── -->
+<div class="canvas-editor-overlay" id="canvasEditorOverlay" style="display:none">
+  <div class="canvas-editor-modal">
+    <div class="canvas-editor-header">
+      <span class="canvas-editor-title">Retouche manuelle</span>
+      <button class="canvas-editor-close" id="canvasEditorClose">✕</button>
+    </div>
+    <div class="canvas-editor-toolbar">
+      <button class="canvas-tool-btn active" id="ceBrushErase" title="Gomme — efface le fond résiduel">
+        <span class="canvas-tool-icon">◯</span> Gomme
+      </button>
+      <button class="canvas-tool-btn" id="ceBrushRestore" title="Restaurer — restitue l'image originale">
+        <span class="canvas-tool-icon">●</span> Restaurer
+      </button>
+      <div class="canvas-tool-sep"></div>
+      <label class="canvas-size-label">
+        <span id="ceSizeVal">24</span> px
+        <input type="range" id="ceBrushSize" min="4" max="80" value="24" step="2">
+      </label>
+      <div class="canvas-tool-sep"></div>
+      <button class="canvas-tool-btn canvas-tool-undo" id="ceUndo" title="Annuler">↩ Annuler</button>
+    </div>
+    <div class="canvas-editor-stage" id="canvasEditorStage">
+      <!-- checkerboard bg for transparency -->
+      <canvas id="ceCanvas" class="ce-canvas"></canvas>
+      <div class="canvas-editor-cursor" id="ceCursor"></div>
+    </div>
+    <div class="canvas-editor-footer">
+      <button class="canvas-editor-cancel" id="canvasEditorCancel">Annuler</button>
+      <button class="canvas-editor-validate" id="canvasEditorValidate">
+        <span id="ceValidateLabel">Valider la retouche</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" style="display:none">
+  <button class="lb-btn lb-close" id="lbClose">✕</button>
+  <button class="lb-btn lb-prev" id="lbPrev">‹</button>
+  <div class="lb-center">
+    <img id="lightboxImg" src="" alt="">
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+  <button class="lb-btn lb-next" id="lbNext">›</button>
+</div>
+
+<!-- Export footer fusionné dans le bottom-nav -->
+
+<!-- ── Journal — Modale d'agrandissement des photos ── -->
+<div class="modal-overlay" id="journalPhotoModal" style="display:none">
+  <div class="modal modal-lg journal-photo-modal-inner">
+    <button class="modal-close" id="journalPhotoModalClose" aria-label="Fermer"><svg class="ui-icon ui-icon-close" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    <div class="journal-photo-modal-body">
+      <img id="journalPhotoModalImg" src="" alt="">
+      <div class="journal-photo-modal-caption" id="journalPhotoModalCaption"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Note Modal — Intercalaires narratifs ── -->
+<div class="modal-overlay" id="noteModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="noteModalTitle">Nouvelle note</span>
+      <button class="modal-close" id="noteModalClose" aria-label="Fermer"><svg class="ui-icon ui-icon-close" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Texte</label>
+        <textarea id="nContent" rows="5" placeholder="Souvenir, citation, note de chine…" style="font-family:inherit;line-height:1.6"></textarea>
+      </div>
+      <div class="field">
+        <label>Taille du texte</label>
+        <div class="note-opt-group" id="noteSizeGroup">
+          <button class="note-opt-btn active" data-size="standard">Standard</button>
+          <button class="note-opt-btn" data-size="large">Grand</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Format dans la grille</label>
+        <div class="note-opt-group" id="noteWidthGroup">
+          <button class="note-opt-btn active" data-width="single">Intercalaire</button>
+          <button class="note-opt-btn" data-width="wide">Séparateur pleine largeur</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Couleur</label>
+        <div class="note-color-swatches" id="noteColorSwatches"></div>
+      </div>
+      <div class="note-preview" id="notePreview">
+        <span class="note-preview-text" id="notePreviewText">Aperçu</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost note-delete-btn" id="noteDeleteBtn" style="display:none">Supprimer</button>
+      <button class="btn btn-ghost" id="noteModalCancel">Annuler</button>
+      <button class="btn btn-primary" id="noteModalSave">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Settings Modal (standalone) ── -->
+<div class="modal-overlay" id="settingsModal" style="display:none">
+  <div class="modal modal-edit">
+    <div class="modal-header">
+      <div class="section-header" style="padding:16px 0 12px;background:transparent;border-bottom:none">
+        <h2 class="section-header-title" style="font-size:24px">Paramètres</h2>
+        <p class="section-header-desc">Gérez vos catégories, typologies et duotones.</p>
+      </div>
+      <button class="modal-close" id="settingsModalClose" aria-label="Fermer"><svg class="ui-icon ui-icon-close" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" id="settingsModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="settingsModalCancel">Annuler</button>
+      <button class="btn btn-primary" id="settingsModalSave">Enregistrer les modifications</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="app.js"></script>
+<!-- ── Mobile Filters Bottom Sheet : tiroir de filtres remontant du bas ── -->
+<div id="filtersSheet" class="filters-sheet" hidden>
+  <div class="fs-overlay" id="fsOverlay"></div>
+  <div class="fs-panel">
+    <div class="fs-handle"></div>
+    <div class="fs-header">
+      <span class="fs-title">Filtres</span>
+      <button class="fs-close" id="fsClose" aria-label="Fermer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    </div>
+    <div class="fs-body" id="fsBody">
+      <!-- Rempli dynamiquement depuis app.js (accordéons Intention/Identité/Statut/Trier) -->
+    </div>
+  </div>
+</div>
+
+<!-- ── Mobile Hamburger Drawer : menu des actions secondaires ── -->
+<div id="hamburgerDrawer" class="hamburger-drawer" hidden>
+  <div class="hd-overlay" id="hdOverlay"></div>
+  <div class="hd-panel">
+    <button class="hd-close" id="hdClose" aria-label="Fermer le menu">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
+    <button class="hd-item" id="hdAddBtn">+ Ajouter un objet</button>
+    <button class="hd-item" id="hdSettingsBtn">Paramètres</button>
+    <button class="hd-item" id="hdDarkBtn">Mode sombre</button>
+    <button class="hd-item" id="hdAboutBtn">À propos</button>
+  </div>
+</div>
+
+<!-- ── Mobile Footer Navigation : 2 lignes : (1) retour+breadcrumb (2) outils+darkmode ── -->
+<nav id="mobileFooterNav" class="mobile-footer-nav" aria-label="Navigation de pied de page">
+  <!-- Ligne 1 : Retour + fil d'Ariane -->
+  <div class="mfn-row mfn-row-breadcrumb">
+    <button class="mfn-back" id="mfnBackBtn" aria-label="Page précédente">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="mfn-breadcrumb" id="mfnBreadcrumb"></div>
+  </div>
+  <!-- Ligne 2 : Calendrier / Catalogue / Stats + dark mode (mêmes pictos que desktop) -->
+  <div class="mfn-row mfn-row-tools">
+    <button class="mfn-tool-btn view-tab" id="mfnViewCalendar">Calendrier</button>
+    <button class="mfn-tool-btn view-tab" id="mfnViewCatalogue">Catalogue</button>
+    <button class="mfn-tool-btn view-tab" id="mfnViewStats">Stats</button>
+    <button class="mfn-darkmode" id="mfnDarkBtn" aria-label="Mode sombre" title="Mode sombre">◑</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     BUG REPORT — Bouton flottant + modale signalement + historique
+     Permet à Charlotte de signaler un bug avec auto-détection du contexte
+     (page courante, vue, filtre, viewport, dark mode) puis d'exporter une
+     sélection de bugs au format prompt Claude (« bug* sur cette discussion »).
+     ══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- (Boutons bug + historique déplacés dans .header-actions, à côté de Dark Mode) -->
+
+<!-- Modale de signalement -->
+<div id="bugReportModal" class="modal-overlay bug-modal-overlay" hidden>
+  <div class="modal bug-modal">
+    <div class="modal-header bug-modal-header">
+      <h2 class="bug-modal-title">Signaler un bug</h2>
+      <button class="modal-close" id="bugReportClose" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body bug-modal-body">
+      <label class="bug-field">
+        <span class="bug-field-label">Description</span>
+        <textarea id="bugReportDesc" class="bug-textarea" rows="5" placeholder="Décris ce qui ne va pas, ce que tu attendais, comment reproduire…"></textarea>
+      </label>
+      <div class="bug-context" id="bugContext">
+        <!-- Auto-rempli par JS : page, vue, filtre, viewport, mode -->
+      </div>
+    </div>
+    <div class="modal-footer bug-modal-footer">
+      <button class="btn btn-ghost" id="bugReportCancel">Annuler</button>
+      <button class="btn btn-primary" id="bugReportSubmit">Enregistrer le bug</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modale historique des bugs -->
+<div id="bugHistoryModal" class="modal-overlay bug-modal-overlay" hidden>
+  <div class="modal bug-modal bug-modal-history">
+    <div class="modal-header bug-modal-header">
+      <h2 class="bug-modal-title">Historique des bugs <span class="bug-history-count" id="bugHistoryCount"></span></h2>
+      <button class="modal-close" id="bugHistoryClose" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body bug-modal-body bug-history-body">
+      <div class="bug-history-toolbar">
+        <button class="bug-history-action" id="bugHistorySelectAll" type="button">Tout sélectionner</button>
+        <button class="bug-history-action" id="bugHistoryClear" type="button">Tout supprimer</button>
+        <button class="bug-history-action" id="bugHistoryNew" type="button">+ Nouveau bug</button>
+      </div>
+      <ul class="bug-history-list" id="bugHistoryList"></ul>
+      <p class="bug-history-empty" id="bugHistoryEmpty">Aucun bug enregistré.</p>
+    </div>
+    <div class="modal-footer bug-modal-footer">
+      <button class="btn btn-ghost" id="bugHistoryDelete">Supprimer la sélection</button>
+      <button class="btn btn-primary" id="bugHistoryExport">Envoyer à Claude</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
